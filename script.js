@@ -1,204 +1,413 @@
-// Better Hacker Interactive Lab System
+// Better Hacker Interactive Features
 
 document.addEventListener("DOMContentLoaded", function () {
 
+  /* =========================
+     CYBERSECURITY LAB SYSTEM
+  ========================= */
+
   const labSection = document.querySelector("#labs");
 
-  if (!labSection) return;
+  if (labSection) {
 
-  const labButton = document.createElement("button");
+    const labButton = document.createElement("button");
 
-  labButton.textContent = "Start Cybersecurity Labs";
-  labButton.className = "primary-button lab-start-button";
+    labButton.textContent = "Start Cybersecurity Labs";
+    labButton.className = "primary-button lab-start-button";
 
-  labSection.appendChild(labButton);
+    labSection.appendChild(labButton);
 
-  // Progress display
-  const progress = document.createElement("p");
-  progress.id = "lab-progress";
-  progress.textContent = "Labs Completed: 0 / 4";
-  progress.style.marginTop = "20px";
-  progress.style.color = "#38bdf8";
+    const progress = document.createElement("p");
 
-  labSection.appendChild(progress);
+    progress.id = "lab-progress";
+    progress.textContent = "Labs Completed: 0 / 4";
+    progress.style.marginTop = "20px";
+    progress.style.color = "#38bdf8";
 
-  let completedLabs = 0;
+    labSection.appendChild(progress);
 
-  const labs = [
-    {
-      title: "🧪 Lab 1 — Linux Basics",
-      question:
-        "Which Linux command displays the contents of a file named flag.txt?",
-      answer: "cat flag.txt",
-      success:
-        "Correct! The cat command can display the contents of a file.",
-      hint:
-        "Think about the Linux command used to read a text file."
-    },
+    let completedLabs = 0;
+    let currentLab = 0;
 
-    {
-      title: "🌐 Lab 2 — Network Recon",
-      question:
-        "A simulated Nmap scan shows ports 22, 80, and 443 open. Which port is commonly associated with HTTP?",
-      answer: "80",
-      success:
-        "Correct! Port 80 is commonly associated with HTTP.",
-      hint:
-        "HTTP commonly uses a well-known port below 100."
-    },
+    const labs = [
 
-    {
-      title: "🔐 Lab 3 — Cryptography",
-      question:
-        "Which security concept transforms readable data into an unreadable form using encryption?",
-      answer: "encryption",
-      success:
-        "Correct! Encryption transforms plaintext into ciphertext.",
-      hint:
-        "This protects information so unauthorized people cannot easily read it."
-    },
+      {
+        title: "🧪 Lab 1 — Linux Basics",
 
-    {
-      title: "🛡️ Lab 4 — Web Security",
-      question:
-        "A website accepts user input and places it directly into a database query. What type of vulnerability could this create?",
-      answer: "sql injection",
-      success:
-        "Correct! Unsafe database input can create a SQL injection vulnerability.",
-      hint:
-        "Think about attacks involving database queries."
-    }
-  ];
+        question:
+          "Which Linux command displays the contents of a file named flag.txt?",
 
-  let currentLab = 0;
+        answer: "cat flag.txt",
 
-  labButton.addEventListener("click", function () {
+        success:
+          "Correct! The cat command can display the contents of a file.",
 
-    const existingChallenge =
-      document.querySelector(".lab-challenge");
+        hint:
+          "Think about the Linux command used to read a text file."
+      },
 
-    if (existingChallenge) {
-      existingChallenge.remove();
-    }
+      {
+        title: "🌐 Lab 2 — Network Recon",
 
-    if (currentLab >= labs.length) {
+        question:
+          "A simulated Nmap scan shows ports 22, 80, and 443 open. Which port is commonly associated with HTTP?",
 
-      const finished = document.createElement("div");
+        answer: "80",
 
-      finished.className = "lab-challenge";
+        success:
+          "Correct! Port 80 is commonly associated with HTTP.",
 
-      finished.innerHTML = `
-        <h3>🎉 All Labs Completed!</h3>
-        <p>
-          You completed all four Better Hacker beginner challenges.
-        </p>
-        <p>
-          Keep learning and continue building your cybersecurity skills.
-        </p>
-      `;
+        hint:
+          "HTTP commonly uses a well-known port below 100."
+      },
 
-      labSection.appendChild(finished);
+      {
+        title: "🔐 Lab 3 — Cryptography",
 
-      return;
-    }
+        question:
+          "Which security concept transforms readable data into an unreadable form using encryption?",
 
-    const lab = labs[currentLab];
+        answer: "encryption",
 
-    const challenge = document.createElement("div");
+        success:
+          "Correct! Encryption transforms plaintext into ciphertext.",
 
-    challenge.className = "lab-challenge";
+        hint:
+          "This protects information so unauthorized people cannot easily read it."
+      },
 
-    challenge.innerHTML = `
-      <h3>${lab.title}</h3>
+      {
+        title: "🛡️ Lab 4 — Web Security",
 
-      <p>${lab.question}</p>
+        question:
+          "A website accepts user input and places it directly into a database query. What type of vulnerability could this create?",
 
-      <input
-        type="text"
-        id="lab-answer"
-        placeholder="Type your answer..."
-        autocomplete="off"
-      >
+        answer: "sql injection",
 
-      <br>
+        success:
+          "Correct! Unsafe database input can create a SQL injection vulnerability.",
 
-      <button id="submit-answer" class="primary-button">
-        Submit Answer
-      </button>
-
-      <button id="hint-button" class="secondary-button">
-        Hint
-      </button>
-
-      <p id="lab-result"></p>
-    `;
-
-    labSection.appendChild(challenge);
-
-    const submitButton =
-      document.querySelector("#submit-answer");
-
-    const hintButton =
-      document.querySelector("#hint-button");
-
-    const answerInput =
-      document.querySelector("#lab-answer");
-
-    const result =
-      document.querySelector("#lab-result");
-
-    submitButton.addEventListener("click", function () {
-
-      const answer =
-        answerInput.value.trim().toLowerCase();
-
-      if (answer === lab.answer) {
-
-        result.textContent = "✅ " + lab.success;
-        result.style.color = "#38bdf8";
-
-        completedLabs++;
-
-        progress.textContent =
-          `Labs Completed: ${completedLabs} / ${labs.length}`;
-
-        currentLab++;
-
-        submitButton.disabled = true;
-        answerInput.disabled = true;
-
-        setTimeout(function () {
-          challenge.remove();
-
-          if (currentLab < labs.length) {
-            labButton.textContent =
-              `Start Lab ${currentLab + 1}`;
-          } else {
-            labButton.textContent =
-              "View Completed Labs";
-          }
-
-        }, 1200);
-
-      } else {
-
-        result.textContent =
-          "❌ Not quite. Try again.";
-
-        result.style.color = "#f87171";
+        hint:
+          "Think about attacks involving database queries."
       }
 
+    ];
+
+    labButton.addEventListener("click", function () {
+
+      const existingChallenge =
+        document.querySelector(".lab-challenge");
+
+      if (existingChallenge) {
+        existingChallenge.remove();
+      }
+
+      if (currentLab >= labs.length) {
+
+        const finished = document.createElement("div");
+
+        finished.className = "lab-challenge";
+
+        finished.innerHTML = `
+          <h3>🎉 All Labs Completed!</h3>
+          <p>
+            You completed all four Better Hacker beginner challenges.
+          </p>
+          <p>
+            Keep learning and continue building your cybersecurity skills.
+          </p>
+        `;
+
+        labSection.appendChild(finished);
+
+        return;
+      }
+
+      const lab = labs[currentLab];
+
+      const challenge = document.createElement("div");
+
+      challenge.className = "lab-challenge";
+
+      challenge.innerHTML = `
+        <h3>${lab.title}</h3>
+
+        <p>${lab.question}</p>
+
+        <input
+          type="text"
+          id="lab-answer"
+          placeholder="Type your answer..."
+          autocomplete="off"
+        >
+
+        <br>
+
+        <button id="submit-answer" class="primary-button">
+          Submit Answer
+        </button>
+
+        <button id="hint-button" class="secondary-button">
+          Hint
+        </button>
+
+        <p id="lab-result"></p>
+      `;
+
+      labSection.appendChild(challenge);
+
+      const submitButton =
+        document.querySelector("#submit-answer");
+
+      const hintButton =
+        document.querySelector("#hint-button");
+
+      const answerInput =
+        document.querySelector("#lab-answer");
+
+      const result =
+        document.querySelector("#lab-result");
+
+      submitButton.addEventListener("click", function () {
+
+        const answer =
+          answerInput.value.trim().toLowerCase();
+
+        if (answer === lab.answer) {
+
+          result.textContent = "✅ " + lab.success;
+          result.style.color = "#38bdf8";
+
+          completedLabs++;
+
+          progress.textContent =
+            `Labs Completed: ${completedLabs} / ${labs.length}`;
+
+          currentLab++;
+
+          submitButton.disabled = true;
+          answerInput.disabled = true;
+
+          setTimeout(function () {
+
+            challenge.remove();
+
+            if (currentLab < labs.length) {
+
+              labButton.textContent =
+                `Start Lab ${currentLab + 1}`;
+
+            } else {
+
+              labButton.textContent =
+                "View Completed Labs";
+
+            }
+
+          }, 1200);
+
+        } else {
+
+          result.textContent =
+            "❌ Not quite. Try again.";
+
+          result.style.color = "#f87171";
+        }
+
+      });
+
+      hintButton.addEventListener("click", function () {
+
+        result.textContent =
+          "💡 Hint: " + lab.hint;
+
+        result.style.color = "#facc15";
+
+      });
+
     });
 
-    hintButton.addEventListener("click", function () {
+  }
 
-      result.textContent =
-        "💡 Hint: " + lab.hint;
 
-      result.style.color = "#facc15";
+  /* =========================
+     BETTER HACKER AI COACH
+  ========================= */
 
-    });
+  const coachSection =
+    document.querySelector("#coach");
 
-  });
+  if (coachSection) {
+
+    const coachBox =
+      coachSection.querySelector(".coach-box");
+
+    if (coachBox) {
+
+      const coachInterface =
+        document.createElement("div");
+
+      coachInterface.className =
+        "coach-interface";
+
+      coachInterface.innerHTML = `
+
+        <div class="coach-header">
+          <span class="coach-status"></span>
+          <strong>Better Hacker Coach</strong>
+          <span class="coach-online">Ready to help</span>
+        </div>
+
+        <p class="coach-question">
+          What would you like help with?
+        </p>
+
+        <div class="coach-topics">
+
+          <button class="coach-topic" data-topic="linux">
+            🐧 Linux
+          </button>
+
+          <button class="coach-topic" data-topic="networking">
+            🌐 Networking
+          </button>
+
+          <button class="coach-topic" data-topic="crypto">
+            🔐 Cryptography
+          </button>
+
+          <button class="coach-topic" data-topic="web">
+            🌎 Web Security
+          </button>
+
+          <button class="coach-topic" data-topic="soc">
+            🛡️ SOC / SIEM
+          </button>
+
+          <button class="coach-topic" data-topic="labs">
+            🧪 Labs
+          </button>
+
+        </div>
+
+        <div id="coach-response" class="coach-response">
+
+          <p>
+            Select a topic and I'll give you a beginner-friendly
+            explanation and a suggested next step.
+          </p>
+
+        </div>
+
+      `;
+
+      coachBox.appendChild(coachInterface);
+
+
+      const responses = {
+
+        linux: {
+          title: "🐧 Linux",
+
+          text:
+            "Linux is important in cybersecurity because many servers, security tools, and cloud systems use it.",
+
+          next:
+            "Next step: practice commands such as pwd, ls, cd, cat, grep, and find."
+        },
+
+        networking: {
+          title: "🌐 Networking",
+
+          text:
+            "Networking is the foundation of cybersecurity. Understanding IP addresses, ports, protocols, DNS, TCP, and HTTP makes security concepts much easier to understand.",
+
+          next:
+            "Next step: learn what an IP address, port, and protocol do."
+        },
+
+        crypto: {
+          title: "🔐 Cryptography",
+
+          text:
+            "Cryptography protects information through techniques such as encryption, hashing, and digital signatures.",
+
+          next:
+            "Next step: learn the difference between encryption and hashing."
+        },
+
+        web: {
+          title: "🌎 Web Security",
+
+          text:
+            "Web security focuses on protecting websites and applications from vulnerabilities involving authentication, input validation, sessions, databases, and more.",
+
+          next:
+            "Next step: study the OWASP Top 10 and learn why input validation matters."
+        },
+
+        soc: {
+          title: "🛡️ SOC / SIEM",
+
+          text:
+            "A Security Operations Center monitors systems for suspicious activity. SIEM platforms help security teams collect and analyze logs and security events.",
+
+          next:
+            "Next step: learn what logs are and why security analysts investigate them."
+        },
+
+        labs: {
+          title: "🧪 Better Hacker Labs",
+
+          text:
+            "Hands-on practice helps turn cybersecurity knowledge into practical skills. Start with the Linux lab and work through the challenges in order.",
+
+          next:
+            "Next step: go to Hands-On Practice and complete Lab 1."
+        }
+
+      };
+
+
+      const topicButtons =
+        coachInterface.querySelectorAll(".coach-topic");
+
+      const responseBox =
+        coachInterface.querySelector("#coach-response");
+
+
+      topicButtons.forEach(function (button) {
+
+        button.addEventListener("click", function () {
+
+          const topic =
+            button.dataset.topic;
+
+          const response =
+            responses[topic];
+
+          responseBox.innerHTML = `
+
+            <h3>${response.title}</h3>
+
+            <p>${response.text}</p>
+
+            <div class="coach-next">
+
+              <strong>🎯 Recommended Next Step</strong>
+
+              <p>${response.next}</p>
+
+            </div>
+
+          `;
+
+        });
+
+      });
+
+    }
+
+  }
 
 });
