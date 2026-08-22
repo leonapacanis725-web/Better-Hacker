@@ -28,11 +28,12 @@ a {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #07111f;
+  background: rgba(7, 17, 31, 0.96);
   border-bottom: 1px solid #1e293b;
   position: sticky;
   top: 0;
   z-index: 1000;
+  backdrop-filter: blur(10px);
 }
 
 .logo {
@@ -47,13 +48,14 @@ a {
 
 .nav-links {
   display: flex;
-  gap: 28px;
+  gap: 24px;
   list-style: none;
 }
 
 .nav-links a {
   color: #cbd5e1;
-  font-size: 15px;
+  font-size: 14px;
+  transition: 0.2s;
 }
 
 .nav-links a:hover {
@@ -70,7 +72,7 @@ a {
   text-align: center;
   padding: 80px 20px;
   background:
-    radial-gradient(circle at center, #12345a 0%, #07111f 55%);
+    radial-gradient(circle at 50% 35%, #12345a 0%, #07111f 55%, #050b14 100%);
 }
 
 .hero-content {
@@ -103,6 +105,15 @@ a {
   font-size: 19px;
 }
 
+/* Hero Buttons */
+
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
 /* Buttons */
 
 .primary-button,
@@ -111,17 +122,20 @@ a {
   padding: 15px 28px;
   border-radius: 8px;
   font-weight: bold;
-  transition: 0.2s;
+  transition: 0.2s ease;
+  margin-top: 10px;
 }
 
 .primary-button {
   background: #38bdf8;
   color: #07111f;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
 }
 
 .primary-button:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
   background: #7dd3fc;
+  box-shadow: 0 8px 25px rgba(56, 189, 248, 0.2);
 }
 
 .secondary-button {
@@ -132,6 +146,7 @@ a {
 .secondary-button:hover {
   background: #38bdf8;
   color: #07111f;
+  transform: translateY(-3px);
 }
 
 /* Sections */
@@ -148,6 +163,7 @@ a {
 
 .section h2 {
   font-size: 42px;
+  line-height: 1.2;
   margin-bottom: 18px;
 }
 
@@ -171,27 +187,29 @@ a {
 .card {
   text-align: left;
   padding: 30px;
-  background: #111f33;
+  background: linear-gradient(145deg, #111f33, #0d1a2c);
   border: 1px solid #1e3a56;
   border-radius: 12px;
-  transition: 0.2s;
+  transition: 0.25s ease;
 }
 
 .card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-6px);
   border-color: #38bdf8;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
 }
 
 .card h3 {
   margin-bottom: 12px;
   color: #ffffff;
+  font-size: 20px;
 }
 
 .card p {
   color: #94a3b8;
 }
 
-/* AI Coach */
+/* Coach */
 
 .coach-box {
   max-width: 700px;
@@ -199,12 +217,48 @@ a {
   padding: 40px;
   border: 1px solid #1e3a56;
   border-radius: 14px;
-  background: #111f33;
+  background: linear-gradient(145deg, #111f33, #0d1a2c);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
 }
 
 .coach-box h3 {
   color: #38bdf8;
+  font-size: 25px;
   margin-bottom: 12px;
+}
+
+.coach-box p {
+  color: #94a3b8;
+}
+
+.coach-features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 25px;
+}
+
+.coach-features span {
+  padding: 12px;
+  background: #0b1728;
+  border: 1px solid #1e3a56;
+  border-radius: 8px;
+  color: #cbd5e1;
+  font-size: 14px;
+}
+
+/* CTA */
+
+.cta-section {
+  background:
+    radial-gradient(circle at center, #12345a 0%, #07111f 70%);
+  border-top: 1px solid #1e3a56;
+}
+
+.cta-section h2 {
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Footer */
@@ -221,6 +275,13 @@ footer p {
   color: #64748b;
 }
 
+/* Selection */
+
+::selection {
+  background: #38bdf8;
+  color: #07111f;
+}
+
 /* Mobile */
 
 @media (max-width: 700px) {
@@ -228,16 +289,30 @@ footer p {
   .navbar {
     flex-direction: column;
     gap: 15px;
+    padding: 18px 20px;
   }
 
   .nav-links {
-    gap: 15px;
+    gap: 12px;
     flex-wrap: wrap;
     justify-content: center;
   }
 
+  .nav-links a {
+    font-size: 13px;
+  }
+
   .hero {
     min-height: 550px;
+    padding: 70px 20px;
+  }
+
+  .hero h1 {
+    font-size: 48px;
+  }
+
+  .hero-text {
+    font-size: 17px;
   }
 
   .section {
@@ -248,8 +323,30 @@ footer p {
     font-size: 32px;
   }
 
+  .section-intro {
+    font-size: 16px;
+  }
+
   .cards {
     grid-template-columns: 1fr;
+  }
+
+  .coach-features {
+    grid-template-columns: 1fr;
+  }
+
+  .coach-box {
+    padding: 28px 20px;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero-buttons a {
+    width: 100%;
+    max-width: 260px;
   }
 
 }
