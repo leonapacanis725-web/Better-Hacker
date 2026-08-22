@@ -471,4 +471,120 @@ footer p {
     margin-bottom: 8px;
   }
 
+}/* =========================
+   AI COACH INTERFACE
+========================= */
+
+.coach-interface {
+  margin-top: 35px;
+  padding: 25px;
+  background: #07111f;
+  border: 1px solid #1e3a56;
+  border-radius: 12px;
+  text-align: left;
+}
+
+.coach-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #1e293b;
+}
+
+.coach-status {
+  width: 10px;
+  height: 10px;
+  background: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.6);
+}
+
+.coach-online {
+  margin-left: auto;
+  color: #22c55e;
+  font-size: 13px;
+}
+
+.coach-question {
+  margin: 25px 0 15px;
+  color: #cbd5e1;
+  font-weight: bold;
+}
+
+.coach-topics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.coach-topic {
+  padding: 15px;
+  background: #111f33;
+  border: 1px solid #1e3a56;
+  border-radius: 8px;
+  color: #cbd5e1;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s ease;
+}
+
+.coach-topic:hover {
+  border-color: #38bdf8;
+  color: #38bdf8;
+  transform: translateY(-2px);
+}
+
+.coach-response {
+  margin-top: 20px;
+  padding: 22px;
+  background: #0b1728;
+  border-left: 3px solid #38bdf8;
+  border-radius: 8px;
+  min-height: 100px;
+}
+
+.coach-response h3 {
+  color: #38bdf8;
+  margin-bottom: 10px;
+}
+
+.coach-response p {
+  color: #94a3b8;
+}
+
+.coach-next {
+  margin-top: 18px;
+  padding: 15px;
+  background: #07111f;
+  border: 1px solid #1e3a56;
+  border-radius: 8px;
+}
+
+.coach-next strong {
+  color: #ffffff;
+}
+
+.coach-next p {
+  margin-top: 6px;
+}
+
+
+/* Mobile Coach */
+
+@media (max-width: 700px) {
+
+  .coach-topics {
+    grid-template-columns: 1fr;
+  }
+
+  .coach-header {
+    flex-wrap: wrap;
+  }
+
+  .coach-online {
+    margin-left: 0;
+    width: 100%;
+  }
+
 }
