@@ -26,8 +26,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
     labSection.appendChild(progress);
 
-    let completedLabs = 0;
-    let currentLab = 0;
+    let completedLabs =
+  parseInt(localStorage.getItem("betterHackerCompletedLabs")) || 0;
+
+let currentLab = completedLabs;
+
+progress.textContent =
+  `Labs Completed: ${completedLabs} / 4`;
+
+if (completedLabs >= 4) {
+  labButton.textContent = "View Completed Labs";
+} else if (completedLabs > 0) {
+  labButton.textContent = `Continue Lab ${completedLabs + 1}`;
+}
 
     const labs = [
 
@@ -178,12 +189,16 @@ document.addEventListener("DOMContentLoaded", function () {
           result.textContent = "✅ " + lab.success;
           result.style.color = "#38bdf8";
 
-          completedLabs++;
+completedLabs++;
+currentLab++;
 
-          progress.textContent =
-            `Labs Completed: ${completedLabs} / ${labs.length}`;
+localStorage.setItem(
+  "betterHackerCompletedLabs",
+  completedLabs
+);
 
-          currentLab++;
+progress.textContent =
+  `Labs Completed: ${completedLabs} / ${labs.length}`;
 
           submitButton.disabled = true;
           answerInput.disabled = true;
