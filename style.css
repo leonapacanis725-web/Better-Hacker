@@ -588,3 +588,105 @@ footer p {
   }
 
 }
+/* =========================
+   LESSON SYSTEM
+========================= */
+
+.lesson-card {
+  display: block;
+  color: inherit;
+}
+
+.lesson-link {
+  display: inline-block;
+  margin-top: 18px;
+  color: #38bdf8;
+  font-weight: bold;
+}
+
+.lesson-container {
+  max-width: 850px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.lesson-block {
+  margin-bottom: 25px;
+  padding: 28px;
+  background: linear-gradient(145deg, #111f33, #0d1a2c);
+  border: 1px solid #1e3a56;
+  border-radius: 12px;
+}
+
+.lesson-block h3 {
+  margin-bottom: 15px;
+  color: #38bdf8;
+}
+
+.lesson-block p {
+  color: #cbd5e1;
+}
+
+.command-list {
+  display: grid;
+  gap: 12px;
+}
+
+.command-item {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 14px;
+  background: #07111f;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
+}
+
+.command-item code,
+.lesson-block pre {
+  color: #38bdf8;
+}
+
+.lesson-block pre {
+  margin-top: 15px;
+  padding: 15px;
+  background: #050b14;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+#linux-check-answer {
+  width: 100%;
+  padding: 14px;
+  margin: 12px 0;
+  border-radius: 8px;
+  border: 1px solid #1e3a56;
+  background: #050b14;
+  color: white;
+  font-size: 16px;
+}
+
+#linux-check-answer:focus {
+  outline: none;
+  border-color: #38bdf8;
+}
+
+#linux-check-result {
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.lesson-finish {
+  text-align: center;
+}
+
+@media (max-width: 700px) {
+  .command-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .lesson-block {
+    padding: 22px 18px;
+  }
+}
