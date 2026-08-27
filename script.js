@@ -573,4 +573,66 @@ if (
   );
 
 }
+/* =========================
+   NETWORKING KNOWLEDGE CHECK
+========================= */
+
+const networkCheckButton =
+  document.querySelector("#network-check-button");
+
+const networkCheckAnswer =
+  document.querySelector("#network-check-answer");
+
+const networkCheckResult =
+  document.querySelector("#network-check-result");
+
+if (
+  networkCheckButton &&
+  networkCheckAnswer &&
+  networkCheckResult
+) {
+
+  function checkNetworkAnswer() {
+
+    const answer =
+      networkCheckAnswer.value.trim();
+
+    if (answer === "443") {
+
+      networkCheckResult.textContent =
+        "✅ Correct! Port 443 is commonly used for HTTPS.";
+
+      networkCheckResult.style.color = "#38bdf8";
+
+      localStorage.setItem(
+        "betterHackerNetworkingComplete",
+        "true"
+      );
+
+    } else {
+
+      networkCheckResult.textContent =
+        "❌ Not quite. Try again.";
+
+      networkCheckResult.style.color = "#f87171";
+    }
+  }
+
+  networkCheckButton.addEventListener(
+    "click",
+    checkNetworkAnswer
+  );
+
+  networkCheckAnswer.addEventListener(
+    "keydown",
+    function (event) {
+
+      if (event.key === "Enter") {
+        checkNetworkAnswer();
+      }
+
+    }
+  );
+
+}
 });
