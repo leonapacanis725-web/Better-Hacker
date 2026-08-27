@@ -424,60 +424,7 @@ progress.textContent =
     }
 
   }
-/* =========================
-   LINUX KNOWLEDGE CHECK
-========================= */
 
-const linuxCheckButton =
-  document.querySelector("#linux-check-button");
-
-const linuxCheckAnswer =
-  document.querySelector("#linux-check-answer");
-
-const linuxCheckResult =
-  document.querySelector("#linux-check-result");
-
-if (linuxCheckButton && linuxCheckAnswer && linuxCheckResult) {
-
-  function checkLinuxAnswer() {
-
-    const answer =
-      linuxCheckAnswer.value.trim().toLowerCase();
-
-    if (answer === "cat") {
-
-      linuxCheckResult.textContent =
-        "✅ Correct! The cat command displays file contents.";
-
-      linuxCheckResult.style.color = "#38bdf8";
-
-    } else {
-
-      linuxCheckResult.textContent =
-        "❌ Not quite. Try again.";
-
-      linuxCheckResult.style.color = "#f87171";
-    }
-
-  }
-
-  linuxCheckButton.addEventListener(
-    "click",
-    checkLinuxAnswer
-  );
-
-  linuxCheckAnswer.addEventListener(
-    "keydown",
-    function (event) {
-
-      if (event.key === "Enter") {
-        checkLinuxAnswer();
-      }
-
-    }
-  );
-
-}
 /* =========================
    LINUX LESSON COMPLETION
 ========================= */
