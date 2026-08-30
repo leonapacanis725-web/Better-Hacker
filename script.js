@@ -424,7 +424,52 @@ progress.textContent =
     }
 
   }
+/* =========================
+   COURSE PROGRESS SYSTEM
+========================= */
 
+function updateCourseProgress() {
+
+  const lessonKeys = [
+    "betterHackerFundamentalsComplete",
+    "betterHackerNetworkingComplete",
+    "betterHackerLinuxComplete",
+    "betterHackerWebSecurityComplete",
+    "betterHackerCryptographyComplete",
+    "betterHackerActiveDirectoryComplete",
+    "betterHackerSocComplete",
+    "betterHackerSecurityTestingComplete"
+  ];
+
+  let completedLessons = 0;
+
+  lessonKeys.forEach(function (key) {
+    if (localStorage.getItem(key) === "true") {
+      completedLessons++;
+    }
+  });
+
+  const progressText =
+    document.querySelector("#course-progress-text");
+
+  const progressFill =
+    document.querySelector("#course-progress-fill");
+
+  if (progressText) {
+    progressText.textContent =
+      `${completedLessons} / 8 Lessons Completed`;
+  }
+
+  if (progressFill) {
+    const percentage =
+      (completedLessons / 8) * 100;
+
+    progressFill.style.width =
+      `${percentage}%`;
+  }
+}
+
+updateCourseProgress();
 /* =========================
    LINUX LESSON COMPLETION
 ========================= */
@@ -482,6 +527,7 @@ if (
         "true"
       );
 
+      updateCourseProgress();
       if (
         !document.querySelector(".lesson-complete-badge")
       ) {
@@ -556,6 +602,7 @@ if (
         "true"
       );
 
+      updateCourseProgress();
     } else {
 
       networkCheckResult.textContent =
