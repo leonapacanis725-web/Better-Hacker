@@ -527,7 +527,7 @@ if (
         "true"
       );
 
-      updateCourseProgress();
+    updateCourseProgress();
       if (
         !document.querySelector(".lesson-complete-badge")
       ) {
@@ -602,7 +602,7 @@ if (
         "true"
       );
 
-      updateCourseProgress();
+  updateCourseProgress();
     } else {
 
       networkCheckResult.textContent =
