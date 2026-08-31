@@ -698,7 +698,71 @@ if (
   );
 
 }
+/* =========================
+   CRYPTOGRAPHY KNOWLEDGE CHECK
+========================= */
 
+const cryptoCheckButton =
+  document.querySelector("#crypto-check-button");
+
+const cryptoCheckAnswer =
+  document.querySelector("#crypto-check-answer");
+
+const cryptoCheckResult =
+  document.querySelector("#crypto-check-result");
+
+if (
+  cryptoCheckButton &&
+  cryptoCheckAnswer &&
+  cryptoCheckResult
+) {
+
+  function checkCryptoAnswer() {
+
+    const answer =
+      cryptoCheckAnswer.value.trim().toLowerCase();
+
+    if (answer === "encryption") {
+
+      cryptoCheckResult.textContent =
+        "✅ Correct! Encryption transforms readable plaintext into unreadable ciphertext.";
+
+      cryptoCheckResult.style.color = "#38bdf8";
+
+      localStorage.setItem(
+        "betterHackerCryptographyComplete",
+        "true"
+      );
+
+      updateCourseProgress();
+
+    } else {
+
+      cryptoCheckResult.textContent =
+        "❌ Not quite. Think about transforming readable data into ciphertext.";
+
+      cryptoCheckResult.style.color = "#f87171";
+
+    }
+  }
+
+  cryptoCheckButton.addEventListener(
+    "click",
+    checkCryptoAnswer
+  );
+
+  cryptoCheckAnswer.addEventListener(
+    "keydown",
+    function (event) {
+
+      if (event.key === "Enter") {
+        checkCryptoAnswer();
+      }
+
+    }
+  );
+
+}
 });
 
 
