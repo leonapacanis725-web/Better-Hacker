@@ -763,6 +763,74 @@ if (
   );
 
 }
+/* =========================
+   ACTIVE DIRECTORY KNOWLEDGE CHECK
+========================= */
+
+const adCheckButton =
+  document.querySelector("#ad-check-button");
+
+const adCheckAnswer =
+  document.querySelector("#ad-check-answer");
+
+const adCheckResult =
+  document.querySelector("#ad-check-result");
+
+if (
+  adCheckButton &&
+  adCheckAnswer &&
+  adCheckResult
+) {
+
+  function checkAdAnswer() {
+
+    const answer =
+      adCheckAnswer.value.trim().toLowerCase();
+
+    if (
+      answer === "user" ||
+      answer === "user account"
+    ) {
+
+      adCheckResult.textContent =
+        "✅ Correct! A user account represents a person who can sign in to the network.";
+
+      adCheckResult.style.color = "#38bdf8";
+
+      localStorage.setItem(
+        "betterHackerActiveDirectoryComplete",
+        "true"
+      );
+
+      updateCourseProgress();
+
+    } else {
+
+      adCheckResult.textContent =
+        "❌ Not quite. Think about the account assigned to a person.";
+
+      adCheckResult.style.color = "#f87171";
+
+    }
+  }
+
+  adCheckButton.addEventListener(
+    "click",
+    checkAdAnswer
+  );
+
+  adCheckAnswer.addEventListener(
+    "keydown",
+    function (event) {
+
+      if (event.key === "Enter") {
+        checkAdAnswer();
+      }
+
+    }
+  );
+
+}
 });
 
 
