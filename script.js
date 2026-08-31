@@ -629,4 +629,76 @@ if (
   );
 
 }
+/* =========================
+   WEB SECURITY KNOWLEDGE CHECK
+========================= */
+
+const webCheckButton =
+  document.querySelector("#web-check-button");
+
+const webCheckAnswer =
+  document.querySelector("#web-check-answer");
+
+const webCheckResult =
+  document.querySelector("#web-check-result");
+
+if (
+  webCheckButton &&
+  webCheckAnswer &&
+  webCheckResult
+) {
+
+  function checkWebAnswer() {
+
+    const answer =
+      webCheckAnswer.value.trim().toLowerCase();
+
+    if (
+      answer === "sql injection" ||
+      answer === "sql injection attack" ||
+      answer === "sqli"
+    ) {
+
+      webCheckResult.textContent =
+        "✅ Correct! SQL injection can occur when unsafe input is placed directly into a database query.";
+
+      webCheckResult.style.color = "#38bdf8";
+
+      localStorage.setItem(
+        "betterHackerWebSecurityComplete",
+        "true"
+      );
+
+      updateCourseProgress();
+
+    } else {
+
+      webCheckResult.textContent =
+        "❌ Not quite. Think about an attack involving database queries.";
+
+      webCheckResult.style.color = "#f87171";
+
+    }
+  }
+
+  webCheckButton.addEventListener(
+    "click",
+    checkWebAnswer
+  );
+
+    webCheckAnswer.addEventListener(
+    "keydown",
+    function (event) {
+
+      if (event.key === "Enter") {
+        checkWebAnswer();
+      }
+
+    }
+  );
+
+}
+
 });
+
+
