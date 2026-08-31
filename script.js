@@ -831,6 +831,71 @@ if (
   );
 
 }
+/* =========================
+   SOC & SIEM KNOWLEDGE CHECK
+========================= */
+
+const socCheckButton =
+  document.querySelector("#soc-check-button");
+
+const socCheckAnswer =
+  document.querySelector("#soc-check-answer");
+
+const socCheckResult =
+  document.querySelector("#soc-check-result");
+
+if (
+  socCheckButton &&
+  socCheckAnswer &&
+  socCheckResult
+) {
+
+  function checkSocAnswer() {
+
+    const answer =
+      socCheckAnswer.value.trim().toLowerCase();
+
+    if (answer === "siem") {
+
+      socCheckResult.textContent =
+        "✅ Correct! A SIEM collects and analyzes security logs from many systems.";
+
+      socCheckResult.style.color = "#38bdf8";
+
+      localStorage.setItem(
+        "betterHackerSocComplete",
+        "true"
+      );
+
+      updateCourseProgress();
+
+    } else {
+
+      socCheckResult.textContent =
+        "❌ Not quite. Think about the platform security teams use to centralize and analyze logs.";
+
+      socCheckResult.style.color = "#f87171";
+
+    }
+  }
+
+  socCheckButton.addEventListener(
+    "click",
+    checkSocAnswer
+  );
+
+  socCheckAnswer.addEventListener(
+    "keydown",
+    function (event) {
+
+      if (event.key === "Enter") {
+        checkSocAnswer();
+      }
+
+    }
+  );
+
+}
 });
 
 
