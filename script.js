@@ -1199,6 +1199,6 @@ if (networkTrafficSection) {
   });
 
 }
-});
+
 
 
