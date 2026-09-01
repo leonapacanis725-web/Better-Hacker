@@ -1093,6 +1093,137 @@ if (socLabSection) {
   });
 
 }
+/* =========================
+   NETWORK TRAFFIC INVESTIGATION LAB
+========================= */
+
+const networkTrafficSection = document.querySelector("#labs");
+
+if (networkTrafficSection) {
+
+  const networkInvestigation = document.createElement("div");
+
+  networkInvestigation.className =
+    "lab-challenge network-investigation-lab";
+
+  networkInvestigation.innerHTML = `
+
+    <h3>🌐 Network Traffic Investigation</h3>
+
+    <p>
+      You are reviewing network traffic from a workstation.
+      Examine the activity below and identify the most suspicious connection.
+    </p>
+
+    <div class="command-list">
+
+      <div class="command-item">
+        <code>Connection 1</code>
+        <span>Port 443 — HTTPS — 18 connections</span>
+      </div>
+
+      <div class="command-item">
+        <code>Connection 2</code>
+        <span>Port 53 — DNS — 7 connections</span>
+      </div>
+
+      <div class="command-item">
+        <code>Connection 3</code>
+        <span>Port 22 — SSH — 2 connections</span>
+      </div>
+
+      <div class="command-item">
+        <code>Connection 4</code>
+        <span>Port 4444 — Unknown service — 96 outbound connections</span>
+      </div>
+
+    </div>
+
+    <p>
+      <strong>Question:</strong>
+      Which connection should the analyst investigate first?
+    </p>
+
+    <div class="network-answer-options">
+
+      <button
+        class="secondary-button network-answer"
+        data-answer="443"
+      >
+        Port 443
+      </button>
+
+      <button
+        class="secondary-button network-answer"
+        data-answer="53"
+      >
+        Port 53
+      </button>
+
+      <button
+        class="secondary-button network-answer"
+        data-answer="22"
+      >
+        Port 22
+      </button>
+
+      <button
+        class="secondary-button network-answer"
+        data-answer="4444"
+      >
+        Port 4444
+      </button>
+
+    </div>
+
+    <p id="network-investigation-result"></p>
+
+  `;
+
+  networkTrafficSection.appendChild(networkInvestigation);
+
+  const networkAnswerButtons =
+    networkInvestigation.querySelectorAll(".network-answer");
+
+  const networkInvestigationResult =
+    networkInvestigation.querySelector(
+      "#network-investigation-result"
+    );
+
+  networkAnswerButtons.forEach(function (button) {
+
+    button.addEventListener("click", function () {
+
+      const answer = button.dataset.answer;
+
+      if (answer === "4444") {
+
+        networkInvestigationResult.textContent =
+          "✅ Correct! Port 4444 with an unknown service and 96 outbound connections is unusual and should be investigated.";
+
+        networkInvestigationResult.style.color =
+          "#38bdf8";
+
+        localStorage.setItem(
+          "betterHackerNetworkInvestigationComplete",
+          "true"
+        );
+
+      } else {
+
+        networkInvestigationResult.textContent =
+          "❌ Not quite. Look for the connection with unusual traffic volume and an unknown service.";
+
+        networkInvestigationResult.style.color =
+          "#f87171";
+
+      }
+
+    });
+
+  });
+
+}
 });
 
 
