@@ -493,21 +493,6 @@ if (
   linuxLesson
 ) {
 
-  
-  completionBadge.className = "lesson-complete-badge";
-
-  const savedLinuxProgress =
-    localStorage.getItem("betterHackerLinuxComplete");
-
-  if (savedLinuxProgress === "true") {
-
-    completionBadge.textContent =
-      "✅ Linux Fundamentals Completed";
-
-    linuxLesson.prepend(completionBadge);
-  }
-
-
   function checkLinuxAnswer() {
 
     const answer =
@@ -525,16 +510,7 @@ if (
         "true"
       );
 
-    updateCourseProgress();
-      if (
-        !document.querySelector(".lesson-complete-badge")
-      ) {
-
-        completionBadge.textContent =
-          "✅ Linux Fundamentals Completed";
-
-        linuxLesson.prepend(completionBadge);
-      }
+      updateCourseProgress();
 
     } else {
 
@@ -545,12 +521,10 @@ if (
     }
   }
 
-
   linuxCheckButton.addEventListener(
     "click",
     checkLinuxAnswer
   );
-
 
   linuxCheckAnswer.addEventListener(
     "keydown",
@@ -563,6 +537,7 @@ if (
     }
   );
 
+}
 }
 /* =========================
    NETWORKING KNOWLEDGE CHECK
