@@ -966,6 +966,135 @@ if (
   );
 
 }
+/* =========================
+   SOC ALERT INVESTIGATION LAB
+========================= */
+
+const socLabSection = document.querySelector("#labs");
+
+if (socLabSection) {
+
+  const socInvestigation = document.createElement("div");
+
+  socInvestigation.className = "lab-challenge soc-investigation-lab";
+
+  socInvestigation.innerHTML = `
+
+    <h3>🛡️ SOC Alert Investigation</h3>
+
+    <p>
+      You are a SOC analyst reviewing a suspicious login alert.
+      Examine the activity below and decide what should happen next.
+    </p>
+
+    <div class="command-list">
+
+      <div class="command-item">
+        <code>User</code>
+        <span>j.smith</span>
+      </div>
+
+      <div class="command-item">
+        <code>Login Time</code>
+        <span>2:14 AM</span>
+      </div>
+
+      <div class="command-item">
+        <code>Location</code>
+        <span>Detroit, Michigan</span>
+      </div>
+
+      <div class="command-item">
+        <code>Failed Attempts</code>
+        <span>14</span>
+      </div>
+
+      <div class="command-item">
+        <code>Successful Login</code>
+        <span>Yes — after the failed attempts</span>
+      </div>
+
+      <div class="command-item">
+        <code>Device</code>
+        <span>Unknown device</span>
+      </div>
+
+    </div>
+
+    <p>
+      <strong>Question:</strong>
+      Which action is the best next step for the SOC analyst?
+    </p>
+
+    <div class="soc-answer-options">
+
+      <button
+        class="secondary-button soc-answer"
+        data-answer="ignore"
+      >
+        Ignore the alert
+      </button>
+
+      <button
+        class="secondary-button soc-answer"
+        data-answer="investigate"
+      >
+        Investigate the login activity
+      </button>
+
+      <button
+        class="secondary-button soc-answer"
+        data-answer="delete"
+      >
+        Delete the security logs
+      </button>
+
+    </div>
+
+    <p id="soc-lab-result"></p>
+
+  `;
+
+  socLabSection.appendChild(socInvestigation);
+
+  const socAnswerButtons =
+    socInvestigation.querySelectorAll(".soc-answer");
+
+  const socLabResult =
+    socInvestigation.querySelector("#soc-lab-result");
+
+  socAnswerButtons.forEach(function (button) {
+
+    button.addEventListener("click", function () {
+
+      const answer = button.dataset.answer;
+
+      if (answer === "investigate") {
+
+        socLabResult.textContent =
+          "✅ Correct! Multiple failed logins followed by a successful login from an unknown device should be investigated.";
+
+        socLabResult.style.color = "#38bdf8";
+
+        localStorage.setItem(
+          "betterHackerSocInvestigationComplete",
+          "true"
+        );
+
+      } else {
+
+        socLabResult.textContent =
+          "❌ Not quite. Look at the failed login attempts, successful login, and unknown device.";
+
+        socLabResult.style.color = "#f87171";
+
+      }
+
+    });
+
+  });
+
+}
 });
 
 
