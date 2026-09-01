@@ -896,6 +896,76 @@ if (
   );
 
 }
+/* =========================
+   SECURITY TESTING KNOWLEDGE CHECK
+========================= */
+
+const testingCheckButton =
+  document.querySelector("#testing-check-button");
+
+const testingCheckAnswer =
+  document.querySelector("#testing-check-answer");
+
+const testingCheckResult =
+  document.querySelector("#testing-check-result");
+
+if (
+  testingCheckButton &&
+  testingCheckAnswer &&
+  testingCheckResult
+) {
+
+  function checkTestingAnswer() {
+
+    const answer =
+      testingCheckAnswer.value.trim().toLowerCase();
+
+    if (
+      answer === "permission" ||
+      answer === "authorization" ||
+      answer === "written permission" ||
+      answer === "written authorization"
+    ) {
+
+      testingCheckResult.textContent =
+        "✅ Correct! Security testing must only be performed with proper authorization.";
+
+      testingCheckResult.style.color = "#38bdf8";
+
+      localStorage.setItem(
+        "betterHackerSecurityTestingComplete",
+        "true"
+      );
+
+      updateCourseProgress();
+
+    } else {
+
+      testingCheckResult.textContent =
+        "❌ Not quite. Think about what makes security testing legal and authorized.";
+
+      testingCheckResult.style.color = "#f87171";
+
+    }
+  }
+
+  testingCheckButton.addEventListener(
+    "click",
+    checkTestingAnswer
+  );
+
+  testingCheckAnswer.addEventListener(
+    "keydown",
+    function (event) {
+
+      if (event.key === "Enter") {
+        checkTestingAnswer();
+      }
+
+    }
+  );
+
+}
 });
 
 
