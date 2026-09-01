@@ -493,9 +493,7 @@ if (
   linuxLesson
 ) {
 
-  const completionBadge =
-    document.createElement("div");
-
+  
   completionBadge.className = "lesson-complete-badge";
 
   const savedLinuxProgress =
