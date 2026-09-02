@@ -1568,4 +1568,137 @@ if (windowsInvestigationSection) {
   });
 
 }
+/* =========================
+   MALWARE INVESTIGATION LAB
+========================= */
+
+const malwareInvestigationSection =
+  document.querySelector("#labs");
+
+if (malwareInvestigationSection) {
+
+  const malwareInvestigation =
+    document.createElement("div");
+
+  malwareInvestigation.className =
+    "lab-challenge malware-investigation-lab";
+
+  malwareInvestigation.innerHTML = `
+
+    <h3>🔎 Malware Investigation</h3>
+
+    <p>
+      You are investigating suspicious activity
+      detected on an employee workstation.
+    </p>
+
+    <div class="command-list">
+
+      <div class="command-item">
+        <code>Process</code>
+        <span>invoice_update.exe</span>
+      </div>
+
+      <div class="command-item">
+        <code>Location</code>
+        <span>Downloads folder</span>
+      </div>
+
+      <div class="command-item">
+        <code>Parent Process</code>
+        <span>WINWORD.EXE</span>
+      </div>
+
+      <div class="command-item">
+        <code>Network Activity</code>
+        <span>Repeated outbound connections to an unknown server</span>
+      </div>
+
+      <div class="command-item">
+        <code>Security Alert</code>
+        <span>Suspicious executable behavior detected</span>
+      </div>
+
+    </div>
+
+    <p>
+      <strong>Question:</strong>
+      What is the best next action?
+    </p>
+
+    <div class="malware-answer-options">
+
+      <button
+        class="secondary-button malware-answer"
+        data-answer="ignore"
+      >
+        Ignore the process
+      </button>
+
+      <button
+        class="secondary-button malware-answer"
+        data-answer="investigate"
+      >
+        Isolate and investigate the workstation
+      </button>
+
+      <button
+        class="secondary-button malware-answer"
+        data-answer="allow"
+      >
+        Allow the program to continue
+      </button>
+
+    </div>
+
+    <p id="malware-investigation-result"></p>
+
+  `;
+
+  malwareInvestigationSection.appendChild(
+    malwareInvestigation
+  );
+
+  const malwareAnswerButtons =
+    malwareInvestigation.querySelectorAll(
+      ".malware-answer"
+    );
+
+  const malwareResult =
+    malwareInvestigation.querySelector(
+      "#malware-investigation-result"
+    );
+
+  malwareAnswerButtons.forEach(function (button) {
+
+    button.addEventListener("click", function () {
+
+      const answer = button.dataset.answer;
+
+      if (answer === "investigate") {
+
+        malwareResult.textContent =
+          "✅ Correct! The suspicious executable and outbound connections justify isolating and investigating the workstation.";
+
+        malwareResult.style.color = "#38bdf8";
+
+        localStorage.setItem(
+          "betterHackerMalwareInvestigationComplete",
+          "true"
+        );
+
+      } else {
+
+        malwareResult.textContent =
+          "❌ Not quite. Look at the suspicious executable, parent process, and outbound network activity.";
+
+        malwareResult.style.color = "#f87171";
+
+      }
+
+    });
+
+  });
+
+}
 });
