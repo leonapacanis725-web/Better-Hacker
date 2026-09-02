@@ -1201,4 +1201,3 @@ if (networkTrafficSection) {
 }
 
 });
-
