@@ -1419,4 +1419,142 @@ if (phishingSection) {
   });
 
 }
+/* =========================
+   WINDOWS / ACTIVE DIRECTORY INVESTIGATION
+========================= */
+
+const windowsInvestigationSection =
+  document.querySelector("#labs");
+
+if (windowsInvestigationSection) {
+
+  const windowsInvestigation =
+    document.createElement("div");
+
+  windowsInvestigation.className =
+    "lab-challenge windows-investigation-lab";
+
+  windowsInvestigation.innerHTML = `
+
+    <h3>🪟 Windows / Active Directory Investigation</h3>
+
+    <p>
+      You are a security analyst reviewing unusual activity
+      involving an employee account.
+    </p>
+
+    <div class="command-list">
+
+      <div class="command-item">
+        <code>User</code>
+        <span>m.williams</span>
+      </div>
+
+      <div class="command-item">
+        <code>Time</code>
+        <span>3:42 AM</span>
+      </div>
+
+      <div class="command-item">
+        <code>Failed Logins</code>
+        <span>11 attempts</span>
+      </div>
+
+      <div class="command-item">
+        <code>Successful Login</code>
+        <span>Yes</span>
+      </div>
+
+      <div class="command-item">
+        <code>Account Change</code>
+        <span>User added to Administrators group</span>
+      </div>
+
+      <div class="command-item">
+        <code>Device</code>
+        <span>Unknown workstation</span>
+      </div>
+
+    </div>
+
+    <p>
+      <strong>Question:</strong>
+      What should the security analyst do first?
+    </p>
+
+    <div class="windows-answer-options">
+
+      <button
+        class="secondary-button windows-answer"
+        data-answer="ignore"
+      >
+        Ignore the activity
+      </button>
+
+      <button
+        class="secondary-button windows-answer"
+        data-answer="investigate"
+      >
+        Investigate and verify the account activity
+      </button>
+
+      <button
+        class="secondary-button windows-answer"
+        data-answer="delete"
+      >
+        Delete the logs
+      </button>
+
+    </div>
+
+    <p id="windows-investigation-result"></p>
+
+  `;
+
+  windowsInvestigationSection.appendChild(
+    windowsInvestigation
+  );
+
+  const windowsAnswerButtons =
+    windowsInvestigation.querySelectorAll(
+      ".windows-answer"
+    );
+
+  const windowsResult =
+    windowsInvestigation.querySelector(
+      "#windows-investigation-result"
+    );
+
+  windowsAnswerButtons.forEach(function (button) {
+
+    button.addEventListener("click", function () {
+
+      const answer = button.dataset.answer;
+
+      if (answer === "investigate") {
+
+        windowsResult.textContent =
+          "✅ Correct! The unusual login, unknown device, and administrator-group change should be investigated and verified.";
+
+        windowsResult.style.color = "#38bdf8";
+
+        localStorage.setItem(
+          "betterHackerWindowsInvestigationComplete",
+          "true"
+        );
+
+      } else {
+
+        windowsResult.textContent =
+          "❌ Not quite. Pay attention to the login activity, unknown device, and privilege change.";
+
+        windowsResult.style.color = "#f87171";
+
+      }
+
+    });
+
+  });
+
+}
 });
