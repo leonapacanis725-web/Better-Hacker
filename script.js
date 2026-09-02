@@ -1230,10 +1230,16 @@ if (investigationSection) {
         "betterHackerNetworkInvestigationComplete"
       ) === "true";
 
+    const phishingComplete =
+      localStorage.getItem(
+        "betterHackerPhishingInvestigationComplete"
+      ) === "true";
+
     let completed = 0;
 
     if (socComplete) completed++;
     if (networkComplete) completed++;
+    if (phishingComplete) completed++;
 
     investigationProgress.innerHTML = `
 
@@ -1249,12 +1255,17 @@ if (investigationSection) {
         Network Traffic Investigation
       </p>
 
+      <p>
+        ${phishingComplete ? "✅" : "⬜"}
+        Phishing Email Investigation
+      </p>
+
       <strong>
-        ${completed} / 2 Investigations Completed
+        ${completed} / 3 Investigations Completed
       </strong>
 
       ${
-        completed === 2
+        completed === 3
           ? "<p>🎉 Investigation Level Complete!</p>"
           : ""
       }
@@ -1266,7 +1277,9 @@ if (investigationSection) {
   updateInvestigationProgress();
 
   document
-    .querySelectorAll(".soc-answer, .network-answer")
+    .querySelectorAll(
+      ".soc-answer, .network-answer, .phishing-answer"
+    )
     .forEach(function (button) {
 
       button.addEventListener(
