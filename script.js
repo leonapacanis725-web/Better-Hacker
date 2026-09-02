@@ -1199,5 +1199,82 @@ if (networkTrafficSection) {
   });
 
 }
+/* =========================
+   INVESTIGATION PROGRESS
+========================= */
 
+const investigationSection =
+  document.querySelector("#labs");
+
+if (investigationSection) {
+
+  const investigationProgress =
+    document.createElement("div");
+
+  investigationProgress.className =
+    "investigation-progress";
+
+  investigationSection.appendChild(
+    investigationProgress
+  );
+
+  function updateInvestigationProgress() {
+
+    const socComplete =
+      localStorage.getItem(
+        "betterHackerSocInvestigationComplete"
+      ) === "true";
+
+    const networkComplete =
+      localStorage.getItem(
+        "betterHackerNetworkInvestigationComplete"
+      ) === "true";
+
+    let completed = 0;
+
+    if (socComplete) completed++;
+    if (networkComplete) completed++;
+
+    investigationProgress.innerHTML = `
+
+      <h3>🏆 Investigation Progress</h3>
+
+      <p>
+        ${socComplete ? "✅" : "⬜"}
+        SOC Alert Investigation
+      </p>
+
+      <p>
+        ${networkComplete ? "✅" : "⬜"}
+        Network Traffic Investigation
+      </p>
+
+      <strong>
+        ${completed} / 2 Investigations Completed
+      </strong>
+
+      ${
+        completed === 2
+          ? "<p>🎉 Investigation Level Complete!</p>"
+          : ""
+      }
+
+    `;
+
+  }
+
+  updateInvestigationProgress();
+
+  document
+    .querySelectorAll(".soc-answer, .network-answer")
+    .forEach(function (button) {
+
+      button.addEventListener(
+        "click",
+        updateInvestigationProgress
+      );
+
+    });
+
+}
 });
