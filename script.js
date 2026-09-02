@@ -1277,4 +1277,133 @@ if (investigationSection) {
     });
 
 }
+/* =========================
+   PHISHING EMAIL INVESTIGATION
+========================= */
+
+const phishingSection =
+  document.querySelector("#labs");
+
+if (phishingSection) {
+
+  const phishingLab =
+    document.createElement("div");
+
+  phishingLab.className =
+    "lab-challenge phishing-investigation-lab";
+
+  phishingLab.innerHTML = `
+
+    <h3>📧 Phishing Email Investigation</h3>
+
+    <p>
+      You are reviewing a suspicious email reported by an employee.
+      Examine the details and decide whether the message is likely phishing.
+    </p>
+
+    <div class="command-list">
+
+      <div class="command-item">
+        <code>Sender</code>
+        <span>security@micros0ft-support.com</span>
+      </div>
+
+      <div class="command-item">
+        <code>Subject</code>
+        <span>URGENT: Your account will be disabled today</span>
+      </div>
+
+      <div class="command-item">
+        <code>Message</code>
+        <span>Verify your account immediately to avoid suspension.</span>
+      </div>
+
+      <div class="command-item">
+        <code>Link</code>
+        <span>http://account-verification-login.example</span>
+      </div>
+
+      <div class="command-item">
+        <code>Attachment</code>
+        <span>Account_Update.zip</span>
+      </div>
+
+    </div>
+
+    <p>
+      <strong>Question:</strong>
+      What is the best assessment of this email?
+    </p>
+
+    <div class="phishing-answer-options">
+
+      <button
+        class="secondary-button phishing-answer"
+        data-answer="safe"
+      >
+        Safe email
+      </button>
+
+      <button
+        class="secondary-button phishing-answer"
+        data-answer="phishing"
+      >
+        Likely phishing
+      </button>
+
+      <button
+        class="secondary-button phishing-answer"
+        data-answer="ignore"
+      >
+        Ignore it without reviewing
+      </button>
+
+    </div>
+
+    <p id="phishing-result"></p>
+
+  `;
+
+  phishingSection.appendChild(phishingLab);
+
+  const phishingAnswerButtons =
+    phishingLab.querySelectorAll(".phishing-answer");
+
+  const phishingResult =
+    phishingLab.querySelector("#phishing-result");
+
+  phishingAnswerButtons.forEach(function (button) {
+
+    button.addEventListener("click", function () {
+
+      const answer = button.dataset.answer;
+
+      if (answer === "phishing") {
+
+        phishingResult.textContent =
+          "✅ Correct! The lookalike sender domain, urgent language, suspicious link, and ZIP attachment are strong phishing indicators.";
+
+        phishingResult.style.color =
+          "#38bdf8";
+
+        localStorage.setItem(
+          "betterHackerPhishingInvestigationComplete",
+          "true"
+        );
+
+      } else {
+
+        phishingResult.textContent =
+          "❌ Not quite. Check the sender domain, urgency, link, and attachment.";
+
+        phishingResult.style.color =
+          "#f87171";
+
+      }
+
+    });
+
+  });
+
+}
 });
