@@ -246,182 +246,226 @@ progress.textContent =
 
 
   /* =========================
-     BETTER HACKER AI COACH
-  ========================= */
+   BETTER HACKER AI COACH
+========================= */
 
-  const coachSection =
-    document.querySelector("#coach");
+const coachSection =
+  document.querySelector("#coach");
 
-  if (coachSection) {
+if (coachSection) {
 
-    const coachBox =
-      coachSection.querySelector(".coach-box");
+  const coachBox =
+    coachSection.querySelector(".coach-box");
 
-    if (coachBox) {
+  if (coachBox) {
 
-      const coachInterface =
-        document.createElement("div");
+    const coachInterface =
+      document.createElement("div");
 
-      coachInterface.className =
-        "coach-interface";
+    coachInterface.className =
+      "coach-interface";
 
-      coachInterface.innerHTML = `
+    coachInterface.innerHTML = `
 
-        <div class="coach-header">
-          <span class="coach-status"></span>
-          <strong>Better Hacker Coach</strong>
-          <span class="coach-online">Ready to help</span>
-        </div>
+      <div class="coach-header">
+        <span class="coach-status"></span>
+        <strong>Better Hacker Coach</strong>
+        <span class="coach-online">Ready to help</span>
+      </div>
 
-        <p class="coach-question">
-          What would you like help with?
+      <p class="coach-question">
+        What would you like help with?
+      </p>
+
+      <div class="coach-topics">
+
+        <button class="coach-topic" data-topic="fundamentals">
+          🛡️ Fundamentals
+        </button>
+
+        <button class="coach-topic" data-topic="networking">
+          🌐 Networking
+        </button>
+
+        <button class="coach-topic" data-topic="linux">
+          🐧 Linux
+        </button>
+
+        <button class="coach-topic" data-topic="web">
+          🌎 Web Security
+        </button>
+
+        <button class="coach-topic" data-topic="crypto">
+          🔐 Cryptography
+        </button>
+
+        <button class="coach-topic" data-topic="ad">
+          🪟 Active Directory
+        </button>
+
+        <button class="coach-topic" data-topic="soc">
+          🛡️ SOC / SIEM
+        </button>
+
+        <button class="coach-topic" data-topic="testing">
+          🔎 Security Testing
+        </button>
+
+        <button class="coach-topic" data-topic="labs">
+          🧪 Labs
+        </button>
+
+      </div>
+
+      <div id="coach-response" class="coach-response">
+
+        <p>
+          Select a topic and I'll give you a beginner-friendly
+          explanation and a suggested next step.
         </p>
 
-        <div class="coach-topics">
+      </div>
 
-          <button class="coach-topic" data-topic="linux">
-            🐧 Linux
-          </button>
+    `;
 
-          <button class="coach-topic" data-topic="networking">
-            🌐 Networking
-          </button>
-
-          <button class="coach-topic" data-topic="crypto">
-            🔐 Cryptography
-          </button>
-
-          <button class="coach-topic" data-topic="web">
-            🌎 Web Security
-          </button>
-
-          <button class="coach-topic" data-topic="soc">
-            🛡️ SOC / SIEM
-          </button>
-
-          <button class="coach-topic" data-topic="labs">
-            🧪 Labs
-          </button>
-
-        </div>
-
-        <div id="coach-response" class="coach-response">
-
-          <p>
-            Select a topic and I'll give you a beginner-friendly
-            explanation and a suggested next step.
-          </p>
-
-        </div>
-
-      `;
-
-      coachBox.appendChild(coachInterface);
+    coachBox.appendChild(coachInterface);
 
 
-      const responses = {
+    const responses = {
 
-        linux: {
-          title: "🐧 Linux",
+      fundamentals: {
+        title: "🛡️ Cybersecurity Fundamentals",
 
-          text:
-            "Linux is important in cybersecurity because many servers, security tools, and cloud systems use it.",
+        text:
+          "Cybersecurity fundamentals include threats, vulnerabilities, risk, authentication, authorization, least privilege, and defense in depth.",
 
-          next:
-            "Next step: practice commands such as pwd, ls, cd, cat, grep, and find."
-        },
+        next:
+          "Next step: review the CIA Triad and make sure you understand the difference between authentication and authorization."
+      },
 
-        networking: {
-          title: "🌐 Networking",
+      networking: {
+        title: "🌐 Networking",
 
-          text:
-            "Networking is the foundation of cybersecurity. Understanding IP addresses, ports, protocols, DNS, TCP, and HTTP makes security concepts much easier to understand.",
+        text:
+          "Networking is the foundation of cybersecurity. Understanding IP addresses, ports, protocols, DNS, TCP, UDP, HTTP, and HTTPS makes security concepts much easier to understand.",
 
-          next:
-            "Next step: learn what an IP address, port, and protocol do."
-        },
+        next:
+          "Next step: review common ports such as 22, 53, 80, and 443."
+      },
 
-        crypto: {
-          title: "🔐 Cryptography",
+      linux: {
+        title: "🐧 Linux",
 
-          text:
-            "Cryptography protects information through techniques such as encryption, hashing, and digital signatures.",
+        text:
+          "Linux is important in cybersecurity because many servers, security tools, and cloud systems use it.",
 
-          next:
-            "Next step: learn the difference between encryption and hashing."
-        },
+        next:
+          "Next step: practice commands such as pwd, ls, cd, cat, grep, and find."
+      },
 
-        web: {
-          title: "🌎 Web Security",
+      web: {
+        title: "🌎 Web Security",
 
-          text:
-            "Web security focuses on protecting websites and applications from vulnerabilities involving authentication, input validation, sessions, databases, and more.",
+        text:
+          "Web security focuses on protecting websites and applications from vulnerabilities involving authentication, input validation, access control, sessions, and databases.",
 
-          next:
-            "Next step: study the OWASP Top 10 and learn why input validation matters."
-        },
+        next:
+          "Next step: review SQL injection, cross-site scripting, and broken access control."
+      },
 
-        soc: {
-          title: "🛡️ SOC / SIEM",
+      crypto: {
+        title: "🔐 Cryptography",
 
-          text:
-            "A Security Operations Center monitors systems for suspicious activity. SIEM platforms help security teams collect and analyze logs and security events.",
+        text:
+          "Cryptography protects information through techniques such as encryption, hashing, keys, and digital signatures.",
 
-          next:
-            "Next step: learn what logs are and why security analysts investigate them."
-        },
+        next:
+          "Next step: make sure you understand the difference between encryption and hashing."
+      },
 
-        labs: {
-          title: "🧪 Better Hacker Labs",
+      ad: {
+        title: "🪟 Active Directory",
 
-          text:
-            "Hands-on practice helps turn cybersecurity knowledge into practical skills. Start with the Linux lab and work through the challenges in order.",
+        text:
+          "Active Directory helps organizations manage users, computers, groups, authentication, and permissions across Windows environments.",
 
-          next:
-            "Next step: go to Hands-On Practice and complete Lab 1."
-        }
+        next:
+          "Next step: review users, groups, domains, domain controllers, and why administrative privileges must be protected."
+      },
 
-      };
+      soc: {
+        title: "🛡️ SOC / SIEM",
+
+        text:
+          "A Security Operations Center monitors systems for suspicious activity. SIEM platforms help security teams collect, search, and analyze logs and security events.",
+
+        next:
+          "Next step: practice identifying who performed an action, what happened, where it happened, and when it occurred."
+      },
+
+      testing: {
+        title: "🔎 Security Testing",
+
+        text:
+          "Security testing looks for weaknesses in systems, applications, and networks. Testing must always stay within an authorized scope.",
+
+        next:
+          "Next step: review reconnaissance, vulnerability assessment, authorization, reporting, and remediation."
+      },
+
+      labs: {
+        title: "🧪 Better Hacker Labs",
+
+        text:
+          "Hands-on practice helps turn cybersecurity knowledge into practical skills. Use the Better Hacker labs to apply what you learn in realistic scenarios.",
+
+        next:
+          "Next step: complete the beginner labs and then work through the investigation challenges."
+      }
+
+    };
 
 
-      const topicButtons =
-        coachInterface.querySelectorAll(".coach-topic");
+    const topicButtons =
+      coachInterface.querySelectorAll(".coach-topic");
 
-      const responseBox =
-        coachInterface.querySelector("#coach-response");
+    const responseBox =
+      coachInterface.querySelector("#coach-response");
 
 
-      topicButtons.forEach(function (button) {
+    topicButtons.forEach(function (button) {
 
-        button.addEventListener("click", function () {
+      button.addEventListener("click", function () {
 
-          const topic =
-            button.dataset.topic;
+        const topic =
+          button.dataset.topic;
 
-          const response =
-            responses[topic];
+        const response =
+          responses[topic];
 
-          responseBox.innerHTML = `
+        responseBox.innerHTML = `
 
-            <h3>${response.title}</h3>
+          <h3>${response.title}</h3>
 
-            <p>${response.text}</p>
+          <p>${response.text}</p>
 
-            <div class="coach-next">
+          <div class="coach-next">
 
-              <strong>🎯 Recommended Next Step</strong>
+            <strong>🎯 Recommended Next Step</strong>
 
-              <p>${response.next}</p>
+            <p>${response.next}</p>
 
-            </div>
+          </div>
 
-          `;
-
-        });
+        `;
 
       });
 
-    }
+    });
+
+  }
+
+}
 
   }
 /* =========================
