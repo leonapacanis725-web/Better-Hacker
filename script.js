@@ -1880,4 +1880,139 @@ if (bruteForceInvestigationSection) {
   });
 
 }
+/* =========================
+   WEB ATTACK INVESTIGATION LAB
+========================= */
+
+const webAttackSection =
+  document.querySelector("#labs");
+
+if (webAttackSection) {
+
+  const webAttackInvestigation =
+    document.createElement("div");
+
+  webAttackInvestigation.className =
+    "lab-challenge web-attack-investigation-lab";
+
+  webAttackInvestigation.innerHTML = `
+
+    <h3>🌐 Web Attack Investigation</h3>
+
+    <p>
+      You are a security analyst reviewing suspicious
+      requests sent to a company website.
+    </p>
+
+    <div class="command-list">
+
+      <div class="command-item">
+        <code>Target</code>
+        <span>/login.php</span>
+      </div>
+
+      <div class="command-item">
+        <code>Parameter</code>
+        <span>username</span>
+      </div>
+
+      <div class="command-item">
+        <code>Suspicious Input</code>
+        <span>' OR '1'='1</span>
+      </div>
+
+      <div class="command-item">
+        <code>Requests</code>
+        <span>37 attempts in 2 minutes</span>
+      </div>
+
+      <div class="command-item">
+        <code>Source</code>
+        <span>Unknown external IP</span>
+      </div>
+
+    </div>
+
+    <p>
+      <strong>Question:</strong>
+      What type of web attack should the analyst investigate?
+    </p>
+
+    <div class="web-attack-answer-options">
+
+      <button
+        class="secondary-button web-attack-answer"
+        data-answer="xss"
+      >
+        Cross-Site Scripting
+      </button>
+
+      <button
+        class="secondary-button web-attack-answer"
+        data-answer="sqli"
+      >
+        SQL Injection
+      </button>
+
+      <button
+        class="secondary-button web-attack-answer"
+        data-answer="phishing"
+      >
+        Phishing
+      </button>
+
+    </div>
+
+    <p id="web-attack-investigation-result"></p>
+
+  `;
+
+  webAttackSection.appendChild(
+    webAttackInvestigation
+  );
+
+  const webAttackButtons =
+    webAttackInvestigation.querySelectorAll(
+      ".web-attack-answer"
+    );
+
+  const webAttackResult =
+    webAttackInvestigation.querySelector(
+      "#web-attack-investigation-result"
+    );
+
+  webAttackButtons.forEach(function (button) {
+
+    button.addEventListener("click", function () {
+
+      const answer = button.dataset.answer;
+
+      if (answer === "sqli") {
+
+        webAttackResult.textContent =
+          "✅ Correct! The suspicious input attempts to manipulate the SQL query, indicating a SQL injection attack.";
+
+        webAttackResult.style.color =
+          "#38bdf8";
+
+        localStorage.setItem(
+          "betterHackerWebAttackInvestigationComplete",
+          "true"
+        );
+
+      } else {
+
+        webAttackResult.textContent =
+          "❌ Not quite. Examine how the input could affect a database query.";
+
+        webAttackResult.style.color =
+          "#f87171";
+
+      }
+
+    });
+
+  });
+
+}
 });
