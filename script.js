@@ -1264,86 +1264,109 @@ if (investigationSection) {
 
   function updateInvestigationProgress() {
 
-    const socComplete =
-      localStorage.getItem(
-        "betterHackerSocInvestigationComplete"
-      ) === "true";
+    const investigations = [
 
-    const networkComplete =
-      localStorage.getItem(
-        "betterHackerNetworkInvestigationComplete"
-      ) === "true";
+      {
+        key: "betterHackerSocInvestigationComplete",
+        name: "SOC Alert Investigation"
+      },
 
-    const phishingComplete =
-      localStorage.getItem(
-        "betterHackerPhishingInvestigationComplete"
-      ) === "true";
+      {
+        key: "betterHackerNetworkInvestigationComplete",
+        name: "Network Traffic Investigation"
+      },
 
-    const windowsComplete =
-      localStorage.getItem(
-        "betterHackerWindowsInvestigationComplete"
-      ) === "true";
+      {
+        key: "betterHackerPhishingInvestigationComplete",
+        name: "Phishing Email Investigation"
+      },
+
+      {
+        key: "betterHackerWindowsInvestigationComplete",
+        name: "Windows / Active Directory Investigation"
+      },
+
+      {
+        key: "betterHackerMalwareInvestigationComplete",
+        name: "Malware Investigation"
+      },
+
+      {
+        key: "betterHackerBruteForceInvestigationComplete",
+        name: "Brute Force Investigation"
+      },
+
+      {
+        key: "betterHackerWebAttackInvestigationComplete",
+        name: "Web Attack Investigation"
+      }
+
+    ];
 
     let completed = 0;
 
-    if (socComplete) completed++;
-    if (networkComplete) completed++;
-    if (phishingComplete) completed++;
-    if (windowsComplete) completed++;
+    let progressHTML =
+      "<h3>🏆 Investigation Progress</h3>";
 
-    investigationProgress.innerHTML = `
+    investigations.forEach(function (investigation) {
 
-      <h3>🏆 Investigation Progress</h3>
+      const complete =
+        localStorage.getItem(investigation.key) === "true";
 
-      <p>
-        ${socComplete ? "✅" : "⬜"}
-        SOC Alert Investigation
-      </p>
-
-      <p>
-        ${networkComplete ? "✅" : "⬜"}
-        Network Traffic Investigation
-      </p>
-
-      <p>
-        ${phishingComplete ? "✅" : "⬜"}
-        Phishing Email Investigation
-      </p>
-
-      <p>
-        ${windowsComplete ? "✅" : "⬜"}
-        Windows / Active Directory Investigation
-      </p>
-
-      <strong>
-        ${completed} / 4 Investigations Completed
-      </strong>
-
-      ${
-        completed === 4
-          ? "<p>🎉 Investigation Level Complete!</p>"
-          : ""
+      if (complete) {
+        completed++;
       }
 
+      progressHTML += `
+        <p>
+          ${complete ? "✅" : "⬜"}
+          ${investigation.name}
+        </p>
+      `;
+
+    });
+
+    progressHTML += `
+      <strong>
+        ${completed} / ${investigations.length}
+        Investigations Completed
+      </strong>
     `;
 
+    if (completed === investigations.length) {
+
+      progressHTML +=
+        "<p>🎉 Investigation Level Complete!</p>";
+
+    }
+
+    investigationProgress.innerHTML =
+      progressHTML;
   }
 
   updateInvestigationProgress();
 
-  document
-    .querySelectorAll(
-      ".soc-answer, .network-answer, .phishing-answer, .windows-answer"
-    )
-    .forEach(function (button) {
+  investigationSection.addEventListener(
+    "click",
+    function (event) {
 
-      button.addEventListener(
-        "click",
-        updateInvestigationProgress
-      );
+      if (
+        event.target.matches(
+          ".soc-answer, .network-answer, .phishing-answer, .windows-answer, .malware-answer, .brute-force-answer, .web-attack-answer"
+        )
+      ) {
 
-    });
+        setTimeout(
+          updateInvestigationProgress,
+          0
+        );
 
+      }
+
+    }
+  );
+
+}
 }
 /* =========================
    PHISHING EMAIL INVESTIGATION
