@@ -1392,6 +1392,7 @@ if (investigationSection) {
 
 }
 }
+
 /* =========================
    PHISHING EMAIL INVESTIGATION
 ========================= */
