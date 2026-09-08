@@ -1745,4 +1745,139 @@ if (malwareInvestigationSection) {
   });
 
 }
+/* =========================
+   BRUTE FORCE INVESTIGATION LAB
+========================= */
+
+const bruteForceInvestigationSection =
+  document.querySelector("#labs");
+
+if (bruteForceInvestigationSection) {
+
+  const bruteForceInvestigation =
+    document.createElement("div");
+
+  bruteForceInvestigation.className =
+    "lab-challenge brute-force-investigation-lab";
+
+  bruteForceInvestigation.innerHTML = `
+
+    <h3>🔐 Brute Force Investigation</h3>
+
+    <p>
+      You are reviewing suspicious login activity
+      targeting an employee account.
+    </p>
+
+    <div class="command-list">
+
+      <div class="command-item">
+        <code>User</code>
+        <span>a.johnson</span>
+      </div>
+
+      <div class="command-item">
+        <code>Failed Logins</code>
+        <span>86 attempts in 4 minutes</span>
+      </div>
+
+      <div class="command-item">
+        <code>Source IP</code>
+        <span>203.0.113.42</span>
+      </div>
+
+      <div class="command-item">
+        <code>Passwords Tried</code>
+        <span>Many different passwords</span>
+      </div>
+
+      <div class="command-item">
+        <code>Successful Login</code>
+        <span>No</span>
+      </div>
+
+    </div>
+
+    <p>
+      <strong>Question:</strong>
+      What type of attack is most likely occurring?
+    </p>
+
+    <div class="brute-force-answer-options">
+
+      <button
+        class="secondary-button brute-force-answer"
+        data-answer="phishing"
+      >
+        Phishing
+      </button>
+
+      <button
+        class="secondary-button brute-force-answer"
+        data-answer="bruteforce"
+      >
+        Brute Force Attack
+      </button>
+
+      <button
+        class="secondary-button brute-force-answer"
+        data-answer="malware"
+      >
+        Malware Infection
+      </button>
+
+    </div>
+
+    <p id="brute-force-investigation-result"></p>
+
+  `;
+
+  bruteForceInvestigationSection.appendChild(
+    bruteForceInvestigation
+  );
+
+  const bruteForceAnswerButtons =
+    bruteForceInvestigation.querySelectorAll(
+      ".brute-force-answer"
+    );
+
+  const bruteForceResult =
+    bruteForceInvestigation.querySelector(
+      "#brute-force-investigation-result"
+    );
+
+  bruteForceAnswerButtons.forEach(function (button) {
+
+    button.addEventListener("click", function () {
+
+      const answer = button.dataset.answer;
+
+      if (answer === "bruteforce") {
+
+        bruteForceResult.textContent =
+          "✅ Correct! A large number of rapid failed login attempts using many passwords strongly suggests a brute force attack.";
+
+        bruteForceResult.style.color =
+          "#38bdf8";
+
+        localStorage.setItem(
+          "betterHackerBruteForceInvestigationComplete",
+          "true"
+        );
+
+      } else {
+
+        bruteForceResult.textContent =
+          "❌ Not quite. Focus on the rapid failed login attempts and many password guesses.";
+
+        bruteForceResult.style.color =
+          "#f87171";
+
+      }
+
+    });
+
+  });
+
+}
 });
