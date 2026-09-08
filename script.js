@@ -1367,6 +1367,29 @@ if (investigationSection) {
   );
 
 }
+  updateInvestigationProgress();
+
+  investigationSection.addEventListener(
+    "click",
+    function (event) {
+
+      if (
+        event.target.matches(
+          ".soc-answer, .network-answer, .phishing-answer, .windows-answer, .malware-answer, .brute-force-answer, .web-attack-answer"
+        )
+      ) {
+
+        setTimeout(
+          updateInvestigationProgress,
+          0
+        );
+
+      }
+
+    }
+  );
+
+}
 }
 /* =========================
    PHISHING EMAIL INVESTIGATION
