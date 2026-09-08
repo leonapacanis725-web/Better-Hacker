@@ -467,7 +467,7 @@ if (coachSection) {
 
 }
 
-  }
+  
 /* =========================
    COURSE PROGRESS SYSTEM
 ========================= */
