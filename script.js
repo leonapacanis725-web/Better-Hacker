@@ -2060,7 +2060,7 @@ if (
 
   waitlistButton.addEventListener(
     "click",
-    function () {
+   async function () {
 
       const email =
         waitlistEmail.value.trim();
