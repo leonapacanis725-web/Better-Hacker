@@ -2065,10 +2065,6 @@ if (
       const email =
         waitlistEmail.value.trim();
 
-     2065  const email =
-2066    waitlistEmail.value.trim();
-
-2067  const response = await fetch(
       "https://formspree.io/f/xdeobdjl",
       {
         method: "POST",
