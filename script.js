@@ -2039,4 +2039,60 @@ if (webAttackSection) {
   });
 
 }
+/* =========================
+   WAITLIST SIGNUP
+========================= */
+
+const waitlistButton =
+  document.querySelector("#waitlist-button");
+
+const waitlistEmail =
+  document.querySelector("#waitlist-email");
+
+const waitlistResult =
+  document.querySelector("#waitlist-result");
+
+if (
+  waitlistButton &&
+  waitlistEmail &&
+  waitlistResult
+) {
+
+  waitlistButton.addEventListener(
+    "click",
+    function () {
+
+      const email =
+        waitlistEmail.value.trim();
+
+      if (
+        email &&
+        email.includes("@")
+      ) {
+
+        waitlistResult.textContent =
+          "✅ You're on the Better Hacker early-access list!";
+
+        waitlistResult.style.color =
+          "#38bdf8";
+
+        localStorage.setItem(
+          "betterHackerWaitlistEmail",
+          email
+        );
+
+        waitlistEmail.value = "";
+
+      } else {
+
+        waitlistResult.textContent =
+          "❌ Enter a valid email address.";
+
+        waitlistResult.style.color =
+          "#f87171";
+
+      }
+    }
+  );
+}
 });
