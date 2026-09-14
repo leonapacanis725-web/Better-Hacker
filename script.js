@@ -2065,16 +2065,17 @@ if (
       const email =
         waitlistEmail.value.trim();
 
-      "https://formspree.io/f/xdeobdjl",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json"
-        },
-        body: JSON.stringify({ email: email })
-      }
-    );
+      const response = await fetch(
+  "https://formspree.io/f/xdeobdjl",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json"
+    },
+    body: JSON.stringify({ email: email })
+  }
+);
       if (
         email &&
         email.includes("@")
