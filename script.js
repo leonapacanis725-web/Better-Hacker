@@ -2125,7 +2125,58 @@ if (learnSection) {
     );
   }
 }
-const waitlistButton =
+
+/* =========================
+   RESET LEARNING PROGRESS
+========================= */
+
+const resetProgressButton =
+  document.createElement("button");
+
+resetProgressButton.textContent =
+  "↻ Reset Learning Progress";
+
+resetProgressButton.className =
+  "secondary-button reset-progress-button";
+
+if (learnSection) {
+
+  continueLearningButton.insertAdjacentElement(
+    "afterend",
+    resetProgressButton
+  );
+
+  resetProgressButton.addEventListener(
+    "click",
+    function () {
+
+      const confirmed =
+        confirm(
+          "Reset all Better Hacker lesson, lab, and investigation progress?"
+        );
+
+      if (!confirmed) {
+        return;
+      }
+
+      Object.keys(localStorage).forEach(
+        function (key) {
+
+          if (
+            key.startsWith("betterHacker") &&
+            key !== "betterHackerWaitlistEmail"
+          ) {
+            localStorage.removeItem(key);
+          }
+
+        }
+      );
+
+      location.reload();
+    }
+  );
+}
+  const waitlistButton =
   document.querySelector("#waitlist-button");
 
 const waitlistEmail =
