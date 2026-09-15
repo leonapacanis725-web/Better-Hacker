@@ -2043,6 +2043,88 @@ if (webAttackSection) {
    WAITLIST SIGNUP
 ========================= */
 
+/* =========================
+   CONTINUE LEARNING
+========================= */
+
+const continueLearningButton =
+  document.createElement("a");
+
+const lessonProgress = [
+  {
+    key: "betterHackerFundamentalsComplete",
+    target: "#fundamentals-lesson",
+    name: "Cybersecurity Fundamentals"
+  },
+  {
+    key: "betterHackerNetworkingComplete",
+    target: "#networking-lesson",
+    name: "Networking"
+  },
+  {
+    key: "betterHackerLinuxComplete",
+    target: "#linux-lesson",
+    name: "Linux"
+  },
+  {
+    key: "betterHackerWebSecurityComplete",
+    target: "#web-security-lesson",
+    name: "Web Security"
+  },
+  {
+    key: "betterHackerCryptographyComplete",
+    target: "#cryptography-lesson",
+    name: "Cryptography"
+  },
+  {
+    key: "betterHackerActiveDirectoryComplete",
+    target: "#active-directory-lesson",
+    name: "Active Directory"
+  },
+  {
+    key: "betterHackerSocComplete",
+    target: "#soc-siem-lesson",
+    name: "SOC & SIEM"
+  },
+  {
+    key: "betterHackerSecurityTestingComplete",
+    target: "#security-testing-lesson",
+    name: "Security Testing"
+  }
+];
+
+const nextLesson =
+  lessonProgress.find(function (lesson) {
+    return localStorage.getItem(lesson.key) !== "true";
+  });
+
+if (nextLesson) {
+  continueLearningButton.href = nextLesson.target;
+  continueLearningButton.textContent =
+    "▶ Continue Learning: " + nextLesson.name;
+} else {
+  continueLearningButton.href = "#labs";
+  continueLearningButton.textContent =
+    "🎉 Lessons Complete — Continue to Labs";
+}
+
+continueLearningButton.className =
+  "primary-button continue-learning-button";
+
+const learnSection =
+  document.querySelector("#learn");
+
+if (learnSection) {
+  const progressText =
+    document.querySelector("#course-progress-text");
+
+  if (progressText) {
+    progressText.insertAdjacentElement(
+      "afterend",
+      continueLearningButton
+    );
+  }
+}
 const waitlistButton =
   document.querySelector("#waitlist-button");
 
