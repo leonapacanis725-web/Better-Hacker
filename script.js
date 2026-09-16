@@ -772,6 +772,7 @@ showNextLessonButton(
   "#cryptography-lesson",
   "Cryptography"
 );
+    
     } else {
 
       webCheckResult.textContent =
