@@ -695,6 +695,11 @@ if (
       );
 
   updateCourseProgress();
+    showNextLessonButton(
+  networkCheckResult,
+  "#linux-lesson",
+  "Linux"
+);
     } else {
 
       networkCheckResult.textContent =
