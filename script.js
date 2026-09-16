@@ -626,6 +626,11 @@ if (
 
       updateCourseProgress();
 
+      showNextLessonButton(
+  linuxCheckResult,
+  "#web-security-lesson",
+  "Web Security"
+);
     } else {
 
       linuxCheckResult.textContent =
