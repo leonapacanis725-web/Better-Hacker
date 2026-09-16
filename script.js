@@ -837,7 +837,12 @@ if (
       );
 
       updateCourseProgress();
-
+showNextLessonButton(
+  cryptoCheckResult,
+  "#active-directory-lesson",
+  "Active Directory"
+);
+    
     } else {
 
       cryptoCheckResult.textContent =
