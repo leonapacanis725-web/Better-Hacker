@@ -515,6 +515,42 @@ function updateCourseProgress() {
 
 updateCourseProgress();
 /* =========================
+   COMPLETED LESSON BADGES
+========================= */
+
+const lessonBadges = [
+  ["betterHackerFundamentalsComplete", "#fundamentals-lesson"],
+  ["betterHackerNetworkingComplete", "#networking-lesson"],
+  ["betterHackerLinuxComplete", "#linux-lesson"],
+  ["betterHackerWebSecurityComplete", "#web-security-lesson"],
+  ["betterHackerCryptographyComplete", "#cryptography-lesson"],
+  ["betterHackerActiveDirectoryComplete", "#active-directory-lesson"],
+  ["betterHackerSocComplete", "#soc-siem-lesson"],
+  ["betterHackerSecurityTestingComplete", "#security-testing-lesson"]
+];
+
+lessonBadges.forEach(function (lesson) {
+
+  if (localStorage.getItem(lesson[0]) === "true") {
+
+    const lessonCard =
+      document.querySelector(
+        `.lesson-card[href="${lesson[1]}"]`
+      );
+
+    if (lessonCard) {
+
+      const badge =
+        document.createElement("span");
+
+      badge.textContent = "✅ Completed";
+      badge.className = "lesson-complete-badge";
+
+      lessonCard.appendChild(badge);
+    }
+  }
+});
+  /* =========================
    LINUX LESSON COMPLETION
 ========================= */
 
