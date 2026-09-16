@@ -551,6 +551,40 @@ lessonBadges.forEach(function (lesson) {
   }
 });
   /* =========================
+   NEXT LESSON BUTTON
+========================= */
+
+function showNextLessonButton(resultElement, target, name) {
+
+  if (!resultElement) {
+    return;
+  }
+
+  const oldButton =
+    resultElement.parentElement.querySelector(
+      ".next-lesson-button"
+    );
+
+  if (oldButton) {
+    oldButton.remove();
+  }
+
+  const nextButton =
+    document.createElement("a");
+
+  nextButton.href = target;
+  nextButton.textContent =
+    "Next → " + name;
+
+  nextButton.className =
+    "primary-button next-lesson-button";
+
+  resultElement.insertAdjacentElement(
+    "afterend",
+    nextButton
+  );
+}
+  /* =========================
    LINUX LESSON COMPLETION
 ========================= */
 
