@@ -981,6 +981,11 @@ if (
 
       updateCourseProgress();
 
+      showNextLessonButton(
+  socCheckResult,
+  "#security-testing-lesson",
+  "Security Testing"
+);
     } else {
 
       socCheckResult.textContent =
