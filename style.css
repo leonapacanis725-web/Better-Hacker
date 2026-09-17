@@ -46,6 +46,12 @@ a {
   color: #38bdf8;
 }
 
+.logo img {
+  display: block;
+  width: 120px;
+  height: auto;
+  border-radius: 8px;
+}
 .nav-links {
   display: flex;
   gap: 24px;
