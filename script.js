@@ -1056,6 +1056,11 @@ if (
 
       updateCourseProgress();
 
+      showNextLessonButton(
+  testingCheckResult,
+  "#labs",
+  "Cybersecurity Labs"
+);
     } else {
 
       testingCheckResult.textContent =
