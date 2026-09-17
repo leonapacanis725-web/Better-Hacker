@@ -911,6 +911,11 @@ if (
 
       updateCourseProgress();
 
+      showNextLessonButton(
+  adCheckResult,
+  "#soc-siem-lesson",
+  "SOC & SIEM"
+);
     } else {
 
       adCheckResult.textContent =
