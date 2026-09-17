@@ -52,6 +52,7 @@ a {
   height: auto;
   border-radius: 8px;
 }
+
 .nav-links {
   display: flex;
   gap: 24px;
