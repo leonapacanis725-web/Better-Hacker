@@ -2,6 +2,40 @@
 
 document.addEventListener("DOMContentLoaded", function () {
 
+  const LESSON_PROGRESS = Object.freeze([
+    { key: "betterHackerFundamentalsComplete", target: "#fundamentals-lesson", name: "Cybersecurity Fundamentals" },
+    { key: "betterHackerNetworkingComplete", target: "#networking-lesson", name: "Networking" },
+    { key: "betterHackerLinuxComplete", target: "#linux-lesson", name: "Linux" },
+    { key: "betterHackerWebSecurityComplete", target: "#web-security-lesson", name: "Web Security" },
+    { key: "betterHackerCryptographyComplete", target: "#cryptography-lesson", name: "Cryptography" },
+    { key: "betterHackerActiveDirectoryComplete", target: "#active-directory-lesson", name: "Active Directory" },
+    { key: "betterHackerSocComplete", target: "#soc-siem-lesson", name: "SOC & SIEM" },
+    { key: "betterHackerSecurityTestingComplete", target: "#security-testing-lesson", name: "Security Testing" }
+  ]);
+
+  const INVESTIGATIONS = Object.freeze([
+    { key: "betterHackerSocInvestigationComplete", name: "SOC Alert Investigation", selector: ".soc-investigation-lab" },
+    { key: "betterHackerNetworkInvestigationComplete", name: "Network Traffic Investigation", selector: ".network-investigation-lab" },
+    { key: "betterHackerPhishingInvestigationComplete", name: "Phishing Email Investigation", selector: ".phishing-investigation-lab" },
+    { key: "betterHackerWindowsInvestigationComplete", name: "Windows / Active Directory Investigation", selector: ".windows-investigation-lab" },
+    { key: "betterHackerMalwareInvestigationComplete", name: "Malware Investigation", selector: ".malware-investigation-lab" },
+    { key: "betterHackerBruteForceInvestigationComplete", name: "Brute Force Investigation", selector: ".brute-force-investigation-lab" },
+    { key: "betterHackerWebAttackInvestigationComplete", name: "Web Attack Investigation", selector: ".web-attack-investigation-lab" }
+  ]);
+
+  const GUIDED_EXERCISE_TOTAL = 4;
+  const COURSE_REVIEW_STORAGE_KEY = "betterHackerCourseReviewResult";
+  const RetentionState = globalThis.BetterHackerState;
+  const DailyChallenges = globalThis.BetterHackerChallenges;
+  const Milestones = globalThis.BetterHackerMilestones;
+  const CompanionModule = globalThis.BetterHackerCompanion;
+
+  function readCompletedLabs() {
+    const raw = localStorage.getItem("betterHackerCompletedLabs");
+    if (!/^[0-4]$/.test(raw || "")) return 0;
+    return Number(raw);
+  }
+
   /* =========================
      CYBERSECURITY LAB SYSTEM
   ========================= */
@@ -26,8 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     labSection.appendChild(progress);
 
-    let completedLabs =
-  parseInt(localStorage.getItem("betterHackerCompletedLabs")) || 0;
+    let completedLabs = readCompletedLabs();
 
 let currentLab = completedLabs;
 
@@ -48,7 +81,9 @@ if (completedLabs >= 4) {
         question:
           "Which Linux command displays the contents of a file named flag.txt?",
 
-        answer: "cat flag.txt",
+        answers: ["cat flag.txt", "cat ./flag.txt"],
+        evidence: "The file is named flag.txt and is in the current directory.",
+        clue: "Use the Linux command that displays a file, followed by its path.",
 
         success:
           "Correct! The cat command can display the contents of a file.",
@@ -63,7 +98,9 @@ if (completedLabs >= 4) {
         question:
           "A simulated Nmap scan shows ports 22, 80, and 443 open. Which port is commonly associated with HTTP?",
 
-        answer: "80",
+        answers: ["80", "port 80"],
+        evidence: "The approved scan lists ports 22, 80, and 443.",
+        clue: "Identify the standard port associated with unencrypted HTTP.",
 
         success:
           "Correct! Port 80 is commonly associated with HTTP.",
@@ -78,7 +115,9 @@ if (completedLabs >= 4) {
         question:
           "Which security concept transforms readable data into an unreadable form using encryption?",
 
-        answer: "encryption",
+        answers: ["encryption", "encrypting"],
+        evidence: "Readable plaintext must become unreadable ciphertext.",
+        clue: "Name the protective transformation, not its output.",
 
         success:
           "Correct! Encryption transforms plaintext into ciphertext.",
@@ -93,7 +132,9 @@ if (completedLabs >= 4) {
         question:
           "A website accepts user input and places it directly into a database query. What type of vulnerability could this create?",
 
-        answer: "sql injection",
+        answers: ["sql injection", "sql injection attack", "sqli"],
+        evidence: "Untrusted input is inserted directly into a database query.",
+        clue: "Identify the vulnerability involving manipulation of SQL queries.",
 
         success:
           "Correct! Unsafe database input can create a SQL injection vulnerability.",
@@ -104,20 +145,21 @@ if (completedLabs >= 4) {
 
     ];
 
+    let activeGuidedExercise = null;
+
     labButton.addEventListener("click", function () {
 
-      const existingChallenge =
-        document.querySelector(".lab-challenge");
-
-      if (existingChallenge) {
-        existingChallenge.remove();
+      if (activeGuidedExercise) {
+        activeGuidedExercise.remove();
+        activeGuidedExercise = null;
       }
 
       if (currentLab >= labs.length) {
 
         const finished = document.createElement("div");
 
-        finished.className = "lab-challenge";
+        finished.className = "lab-challenge guided-exercise";
+        activeGuidedExercise = finished;
 
         finished.innerHTML = `
           <h3>🎉 All Labs Completed!</h3>
@@ -135,16 +177,22 @@ if (completedLabs >= 4) {
       }
 
       const lab = labs[currentLab];
+      if (typeof companion !== "undefined") companion.setContext({ type:"guided", topic:lab.title, hint:lab.hint, explanation:lab.success, submitted:false });
 
       const challenge = document.createElement("div");
 
-      challenge.className = "lab-challenge";
+      challenge.className = "lab-challenge guided-exercise";
+      activeGuidedExercise = challenge;
 
       challenge.innerHTML = `
         <h3>${lab.title}</h3>
 
+        <div class="guided-step"><strong>1. Review the evidence</strong><p>${lab.evidence}</p></div>
+        <div class="guided-step"><strong>2. Interpret the clue</strong><p>${lab.clue}</p></div>
+        <p><strong>3. Final answer</strong></p>
         <p>${lab.question}</p>
 
+        <label class="input-label" for="lab-answer">Your final answer</label>
         <input
           type="text"
           id="lab-answer"
@@ -162,7 +210,7 @@ if (completedLabs >= 4) {
           Hint
         </button>
 
-        <p id="lab-result"></p>
+        <p id="lab-result" role="status" aria-live="polite"></p>
       `;
 
       labSection.appendChild(challenge);
@@ -179,12 +227,12 @@ if (completedLabs >= 4) {
       const result =
         document.querySelector("#lab-result");
 
-      submitButton.addEventListener("click", function () {
+      function submitGuidedAnswer() {
 
         const answer =
           answerInput.value.trim().toLowerCase();
 
-        if (answer === lab.answer) {
+        if (lab.answers.includes(answer)) {
 
           result.textContent = "✅ " + lab.success;
           result.style.color = "#38bdf8";
@@ -199,6 +247,7 @@ localStorage.setItem(
 
 progress.textContent =
   `Labs Completed: ${completedLabs} / ${labs.length}`;
+refreshLearningUI();
 
           submitButton.disabled = true;
           answerInput.disabled = true;
@@ -206,6 +255,7 @@ progress.textContent =
           setTimeout(function () {
 
             challenge.remove();
+            if (activeGuidedExercise === challenge) activeGuidedExercise = null;
 
             if (currentLab < labs.length) {
 
@@ -229,6 +279,11 @@ progress.textContent =
           result.style.color = "#f87171";
         }
 
+      }
+
+      submitButton.addEventListener("click", submitGuidedAnswer);
+      answerInput.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") { event.preventDefault(); submitGuidedAnswer(); }
       });
 
       hintButton.addEventListener("click", function () {
@@ -246,7 +301,7 @@ progress.textContent =
 
 
   /* =========================
-   BETTER HACKER AI COACH
+   BETTER HACKER LEARNING ASSISTANT
 ========================= */
 
 const coachSection =
@@ -269,7 +324,7 @@ if (coachSection) {
 
       <div class="coach-header">
         <span class="coach-status"></span>
-        <strong>Better Hacker Coach</strong>
+        <strong>Better Hacker Learning Assistant</strong>
         <span class="coach-online">Ready to help</span>
       </div>
 
@@ -317,10 +372,10 @@ if (coachSection) {
 
       </div>
 
-      <div id="coach-response" class="coach-response">
+      <div id="coach-response" class="coach-response" role="status" aria-live="polite">
 
         <p>
-          Select a topic and I'll give you a beginner-friendly
+          Select a topic for a beginner-friendly authored
           explanation and a suggested next step.
         </p>
 
@@ -474,16 +529,7 @@ if (coachSection) {
 
 function updateCourseProgress() {
 
-  const lessonKeys = [
-    "betterHackerFundamentalsComplete",
-    "betterHackerNetworkingComplete",
-    "betterHackerLinuxComplete",
-    "betterHackerWebSecurityComplete",
-    "betterHackerCryptographyComplete",
-    "betterHackerActiveDirectoryComplete",
-    "betterHackerSocComplete",
-    "betterHackerSecurityTestingComplete"
-  ];
+  const lessonKeys = LESSON_PROGRESS.map(function (lesson) { return lesson.key; });
 
   let completedLessons = 0;
 
@@ -501,15 +547,18 @@ function updateCourseProgress() {
 
   if (progressText) {
     progressText.textContent =
-      `${completedLessons} / 8 Lessons Completed`;
+      `${completedLessons} / ${LESSON_PROGRESS.length} Lessons Completed`;
   }
 
   if (progressFill) {
     const percentage =
-      (completedLessons / 8) * 100;
+      (completedLessons / LESSON_PROGRESS.length) * 100;
 
     progressFill.style.width =
       `${percentage}%`;
+
+    const progressBar = document.querySelector("#course-progress-bar");
+    if (progressBar) progressBar.setAttribute("aria-valuenow", String(completedLessons));
   }
 }
 
@@ -518,38 +567,33 @@ updateCourseProgress();
    COMPLETED LESSON BADGES
 ========================= */
 
-const lessonBadges = [
-  ["betterHackerFundamentalsComplete", "#fundamentals-lesson"],
-  ["betterHackerNetworkingComplete", "#networking-lesson"],
-  ["betterHackerLinuxComplete", "#linux-lesson"],
-  ["betterHackerWebSecurityComplete", "#web-security-lesson"],
-  ["betterHackerCryptographyComplete", "#cryptography-lesson"],
-  ["betterHackerActiveDirectoryComplete", "#active-directory-lesson"],
-  ["betterHackerSocComplete", "#soc-siem-lesson"],
-  ["betterHackerSecurityTestingComplete", "#security-testing-lesson"]
-];
-
-lessonBadges.forEach(function (lesson) {
-
-  if (localStorage.getItem(lesson[0]) === "true") {
-
-    const lessonCard =
-      document.querySelector(
-        `.lesson-card[href="${lesson[1]}"]`
-      );
-
+function renderLessonCompletionStates() {
+  LESSON_PROGRESS.forEach(function (lesson) {
+    const lessonCard = document.querySelector(`.lesson-card[href="${lesson.target}"]`);
+    const lessonSection = document.querySelector(lesson.target);
+    const complete = localStorage.getItem(lesson.key) === "true";
     if (lessonCard) {
-
-      const badge =
-        document.createElement("span");
-
-      badge.textContent = "✅ Completed";
-      badge.className = "lesson-complete-badge";
-
-      lessonCard.appendChild(badge);
+      let badge = lessonCard.querySelector(".lesson-complete-badge");
+      if (complete && !badge) {
+        badge = document.createElement("span");
+        badge.textContent = "✓ Completed";
+        badge.className = "lesson-complete-badge";
+        lessonCard.appendChild(badge);
+      } else if (!complete && badge) badge.remove();
     }
-  }
-});
+    if (lessonSection) lessonSection.classList.toggle("activity-complete", complete);
+  });
+}
+
+function refreshLearningUI() {
+  updateCourseProgress();
+  renderLessonCompletionStates();
+  if (typeof renderDashboard === "function") renderDashboard();
+  if (typeof updateInvestigationProgress === "function") updateInvestigationProgress();
+  if (typeof renderInvestigationCompletionStates === "function") renderInvestigationCompletionStates();
+}
+
+renderLessonCompletionStates();
   /* =========================
    NEXT LESSON BUTTON
 ========================= */
@@ -584,6 +628,34 @@ function showNextLessonButton(resultElement, target, name) {
     nextButton
   );
 }
+  /* =========================
+   FUNDAMENTALS LESSON COMPLETION
+========================= */
+
+const fundamentalsCheckButton = document.querySelector("#fundamentals-check-button");
+const fundamentalsCheckAnswer = document.querySelector("#fundamentals-check-answer");
+const fundamentalsCheckResult = document.querySelector("#fundamentals-check-result");
+
+if (fundamentalsCheckButton && fundamentalsCheckAnswer && fundamentalsCheckResult) {
+  function checkFundamentalsAnswer() {
+    const answer = fundamentalsCheckAnswer.value.trim().toLowerCase().replace(/\s+/g, " ").replace(/^the /, "");
+    if (answer === "least privilege" || answer === "principle of least privilege") {
+      fundamentalsCheckResult.textContent = "✓ Correct. Least privilege limits people and systems to only the access they need, reducing the impact of mistakes or compromise.";
+      fundamentalsCheckResult.className = "feedback-success";
+      localStorage.setItem("betterHackerFundamentalsComplete", "true");
+      refreshLearningUI();
+      showNextLessonButton(fundamentalsCheckResult, "#networking-lesson", "Networking");
+    } else {
+      fundamentalsCheckResult.textContent = "Not quite yet. Review the principle that limits access to only what a person or system needs.";
+      fundamentalsCheckResult.className = "feedback-review";
+    }
+  }
+  fundamentalsCheckButton.addEventListener("click", checkFundamentalsAnswer);
+  fundamentalsCheckAnswer.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") { event.preventDefault(); checkFundamentalsAnswer(); }
+  });
+}
+
   /* =========================
    LINUX LESSON COMPLETION
 ========================= */
@@ -624,7 +696,7 @@ if (
         "true"
       );
 
-      updateCourseProgress();
+      refreshLearningUI();
 
       showNextLessonButton(
   linuxCheckResult,
@@ -694,7 +766,7 @@ if (
         "true"
       );
 
-  updateCourseProgress();
+  refreshLearningUI();
     showNextLessonButton(
   networkCheckResult,
   "#linux-lesson",
@@ -766,7 +838,7 @@ if (
         "true"
       );
 
-      updateCourseProgress();
+      refreshLearningUI();
 showNextLessonButton(
   webCheckResult,
   "#cryptography-lesson",
@@ -836,7 +908,7 @@ if (
         "true"
       );
 
-      updateCourseProgress();
+      refreshLearningUI();
 showNextLessonButton(
   cryptoCheckResult,
   "#active-directory-lesson",
@@ -909,7 +981,7 @@ if (
         "true"
       );
 
-      updateCourseProgress();
+      refreshLearningUI();
 
       showNextLessonButton(
   adCheckResult,
@@ -979,7 +1051,7 @@ if (
         "true"
       );
 
-      updateCourseProgress();
+      refreshLearningUI();
 
       showNextLessonButton(
   socCheckResult,
@@ -1054,7 +1126,7 @@ if (
         "true"
       );
 
-      updateCourseProgress();
+      refreshLearningUI();
 
       showNextLessonButton(
   testingCheckResult,
@@ -1173,7 +1245,7 @@ if (socLabSection) {
 
     </div>
 
-    <p id="soc-lab-result"></p>
+    <p id="soc-lab-result" role="status" aria-live="polite"></p>
 
   `;
 
@@ -1300,7 +1372,7 @@ if (networkTrafficSection) {
 
     </div>
 
-    <p id="network-investigation-result"></p>
+    <p id="network-investigation-result" role="status" aria-live="polite"></p>
 
   `;
 
@@ -1370,44 +1442,7 @@ if (investigationSection) {
 
   function updateInvestigationProgress() {
 
-    const investigations = [
-
-      {
-        key: "betterHackerSocInvestigationComplete",
-        name: "SOC Alert Investigation"
-      },
-
-      {
-        key: "betterHackerNetworkInvestigationComplete",
-        name: "Network Traffic Investigation"
-      },
-
-      {
-        key: "betterHackerPhishingInvestigationComplete",
-        name: "Phishing Email Investigation"
-      },
-
-      {
-        key: "betterHackerWindowsInvestigationComplete",
-        name: "Windows / Active Directory Investigation"
-      },
-
-      {
-        key: "betterHackerMalwareInvestigationComplete",
-        name: "Malware Investigation"
-      },
-
-      {
-        key: "betterHackerBruteForceInvestigationComplete",
-        name: "Brute Force Investigation"
-      },
-
-      {
-        key: "betterHackerWebAttackInvestigationComplete",
-        name: "Web Attack Investigation"
-      }
-
-    ];
+    const investigations = INVESTIGATIONS;
 
     let completed = 0;
 
@@ -1450,7 +1485,24 @@ if (investigationSection) {
       progressHTML;
   }
 
+  function renderInvestigationCompletionStates() {
+    INVESTIGATIONS.forEach(function (investigation) {
+      const card = document.querySelector(investigation.selector);
+      if (!card) return;
+      const complete = localStorage.getItem(investigation.key) === "true";
+      card.classList.toggle("activity-complete", complete);
+      let badge = card.querySelector(".activity-complete-badge");
+      if (complete && !badge) {
+        badge = document.createElement("p");
+        badge.className = "activity-complete-badge";
+        badge.textContent = "✓ Completed — you can review this investigation again.";
+        card.insertBefore(badge, card.firstChild);
+      } else if (!complete && badge) badge.remove();
+    });
+  }
+
   updateInvestigationProgress();
+  renderInvestigationCompletionStates();
 
   investigationSection.addEventListener(
     "click",
@@ -1462,10 +1514,11 @@ if (investigationSection) {
         )
       ) {
 
-        setTimeout(
-          updateInvestigationProgress,
-          0
-        );
+        setTimeout(function () {
+          updateInvestigationProgress();
+          renderInvestigationCompletionStates();
+          renderDashboard();
+        }, 0);
 
       }
 
@@ -1557,7 +1610,7 @@ if (phishingSection) {
 
     </div>
 
-    <p id="phishing-result"></p>
+    <p id="phishing-result" role="status" aria-live="polite"></p>
 
   `;
 
@@ -1691,7 +1744,7 @@ if (windowsInvestigationSection) {
 
     </div>
 
-    <p id="windows-investigation-result"></p>
+    <p id="windows-investigation-result" role="status" aria-live="polite"></p>
 
   `;
 
@@ -1824,7 +1877,7 @@ if (malwareInvestigationSection) {
 
     </div>
 
-    <p id="malware-investigation-result"></p>
+    <p id="malware-investigation-result" role="status" aria-live="polite"></p>
 
   `;
 
@@ -1957,7 +2010,7 @@ if (bruteForceInvestigationSection) {
 
     </div>
 
-    <p id="brute-force-investigation-result"></p>
+    <p id="brute-force-investigation-result" role="status" aria-live="polite"></p>
 
   `;
 
@@ -2092,7 +2145,7 @@ if (webAttackSection) {
 
     </div>
 
-    <p id="web-attack-investigation-result"></p>
+    <p id="web-attack-investigation-result" role="status" aria-live="polite"></p>
 
   `;
 
@@ -2149,86 +2202,479 @@ if (webAttackSection) {
 ========================= */
 
 /* =========================
-   CONTINUE LEARNING
+   LEARNER DASHBOARD & COURSE REVIEW
 ========================= */
 
-const continueLearningButton =
-  document.createElement("a");
-
-const lessonProgress = [
+const COURSE_REVIEW_QUESTIONS = [
   {
-    key: "betterHackerFundamentalsComplete",
-    target: "#fundamentals-lesson",
-    name: "Cybersecurity Fundamentals"
+    id: "fundamentals-least-privilege",
+       type: "choice", topic: "Cybersecurity Fundamentals", lesson: "#fundamentals-lesson",
+    scenario: "A teammate needs access to one shared project folder, but asks for an administrator account because it is faster.",
+    prompt: "What is the safest response?",
+    options: ["Give temporary administrator access", "Grant only the folder permission needed", "Share your own account", "Disable authentication for the folder"], answer: 1,
+    why: "Least privilege means granting only the access needed for the task.",
+    misconception: "Administrator access is tempting for convenience, but it unnecessarily increases the impact of mistakes or account compromise."
   },
   {
-    key: "betterHackerNetworkingComplete",
-    target: "#networking-lesson",
-    name: "Networking"
+    id: "networking-dns-resolution",
+       type: "choice", topic: "Networking", lesson: "#networking-lesson",
+    scenario: "A browser can reach a training site by IP address but not by its domain name.",
+    prompt: "Which service should you check first?",
+    options: ["DNS", "Bluetooth", "File permissions", "Disk encryption"], answer: 0,
+    why: "DNS translates domain names into IP addresses, so this symptom points first to name resolution.",
+    misconception: "The web server may be working because its IP responds; changing file permissions would not repair domain lookup."
   },
   {
-    key: "betterHackerLinuxComplete",
-    target: "#linux-lesson",
-    name: "Linux"
+    id: "linux-current-directory",
+       type: "short", topic: "Linux", lesson: "#linux-lesson",
+    scenario: "You are in an authorized practice terminal and need to confirm your current directory before opening a file.",
+    prompt: "Which Linux command should you run?", answers: ["pwd", "/bin/pwd"], displayAnswer: "pwd",
+    why: "pwd prints the full path of the current working directory.",
+    misconception: "Commands such as ls show directory contents, but do not directly answer which directory you are in."
   },
   {
-    key: "betterHackerWebSecurityComplete",
-    target: "#web-security-lesson",
-    name: "Web Security"
+    id: "web-parameterized-queries",
+       type: "choice", topic: "Web Security", lesson: "#web-security-lesson",
+    scenario: "A developer builds a database query by directly joining it with text submitted in a login form.",
+    prompt: "What is the most appropriate defensive improvement?",
+    options: ["Hide the login button", "Use parameterized queries and validate input", "Move the form lower on the page", "Publish the database password"], answer: 1,
+    why: "Parameterized queries keep submitted values separate from SQL instructions; validation adds another useful control.",
+    misconception: "Changing the interface does not address unsafe query construction and can create a false sense of security."
   },
   {
-    key: "betterHackerCryptographyComplete",
-    target: "#cryptography-lesson",
-    name: "Cryptography"
+    id: "cryptography-password-hashing",
+       type: "choice", topic: "Cryptography", lesson: "#cryptography-lesson",
+    scenario: "A service must verify passwords without needing to recover the original passwords.",
+    prompt: "Which approach is most appropriate?",
+    options: ["Store plaintext", "Use reversible encryption with a public key", "Store salted password hashes", "Put passwords in filenames"], answer: 2,
+    why: "A unique salt and a suitable password-hashing function allow verification without storing recoverable passwords.",
+    misconception: "Reversible encryption still creates a key that could expose every password if compromised."
   },
   {
-    key: "betterHackerActiveDirectoryComplete",
-    target: "#active-directory-lesson",
-    name: "Active Directory"
+    id: "active-directory-access-review",
+       type: "choice", topic: "Active Directory", lesson: "#active-directory-lesson",
+    scenario: "An employee changes departments and no longer needs access to finance resources.",
+    prompt: "What should an administrator do next?",
+    options: ["Leave access indefinitely", "Review group membership and remove unneeded access", "Delete all finance files", "Give the employee a second account"], answer: 1,
+    why: "Reviewing group membership applies least privilege while preserving the employee's legitimate account needs.",
+    misconception: "Leaving historical access is convenient, but creates unnecessary risk as roles change."
   },
   {
-    key: "betterHackerSocComplete",
-    target: "#soc-siem-lesson",
-    name: "SOC & SIEM"
+    id: "soc-alert-validation",
+       type: "choice", topic: "SOC & SIEM", lesson: "#soc-siem-lesson",
+    scenario: "A SIEM alert reports many failed logins followed by one success from an unfamiliar location.",
+    prompt: "What would you do next?",
+    options: ["Immediately erase every log", "Validate the alert using related authentication and account activity", "Ignore it because one login succeeded", "Post the username publicly"], answer: 1,
+    why: "Correlating related logs and context helps determine whether the alert represents account compromise before responding.",
+    misconception: "A successful login after repeated failures can increase concern; ignoring it would discard an important signal."
   },
   {
-    key: "betterHackerSecurityTestingComplete",
-    target: "#security-testing-lesson",
-    name: "Security Testing"
+    id: "testing-authorization",
+       type: "choice", topic: "Security Testing", lesson: "#security-testing-lesson",
+    scenario: "You discover a public website that looks interesting to scan for weaknesses.",
+    prompt: "Which action is appropriate?",
+    options: ["Scan it quietly", "Get explicit authorization and a defined scope first", "Test only late at night", "Ask a friend to scan it"], answer: 1,
+    why: "Security testing requires explicit permission and an agreed scope before any testing begins.",
+    misconception: "Low visibility or using someone else does not replace authorization and can still cause harm."
+  },
+  {
+    id: "fundamentals-confidentiality",
+       type: "choice", topic: "Cybersecurity Fundamentals", lesson: "#fundamentals-lesson",
+    scenario: "A laptop containing confidential work is stolen, but its storage was strongly encrypted and the key was protected.",
+    prompt: "Which part of the CIA triad did encryption primarily support?",
+    options: ["Confidentiality", "Availability", "Convenience", "Performance"], answer: 0,
+    why: "Encryption primarily protects confidentiality by making data unreadable without the key.",
+    misconception: "Encryption can support a broader security plan, but it does not make a stolen laptop more available."
+  },
+  {
+    id: "networking-https",
+       type: "short", topic: "Networking", lesson: "#networking-lesson",
+    scenario: "An approved inventory lists a web service using encrypted browser connections on its standard port.",
+    prompt: "What protocol should appear in the inventory?", answers: ["https", "https protocol", "the https protocol", "https/tls", "https tls", "https://"], displayAnswer: "HTTPS",
+    why: "HTTPS protects browser-to-server HTTP traffic with TLS.",
+    misconception: "HTTP alone does not provide the encrypted transport described in the scenario."
+  },
+  {
+    id: "linux-file-permissions",
+       type: "choice", topic: "Linux", lesson: "#linux-lesson",
+    scenario: "A script only needs to be read by its service account, but it is writable by every user.",
+    prompt: "What is the safest general next step?",
+    options: ["Review ownership and reduce permissions to what is required", "Make every file world-writable", "Disable logging", "Publish the script"], answer: 0,
+    why: "Reviewing ownership and tightening permissions reduces unauthorized modification while keeping required access.",
+    misconception: "Broad write permission may feel easier, but lets unrelated accounts alter the script."
+  },
+  {
+    id: "web-object-authorization",
+       type: "choice", topic: "Web Security", lesson: "#web-security-lesson",
+    scenario: "A signed-in learner changes an ID in a URL and can view another learner's private record.",
+    prompt: "Which control is most important to add?",
+    options: ["A brighter error page", "Server-side authorization for every record request", "A longer URL", "Client-side hiding only"], answer: 1,
+    why: "The server must verify that the signed-in user is authorized to access the requested object every time.",
+    misconception: "Hiding links in the browser does not stop a user from requesting a changed URL directly."
+  },
+  {
+    id: "cryptography-integrity-hash",
+       type: "choice", topic: "Cryptography", lesson: "#cryptography-lesson",
+    scenario: "You downloaded a legitimate training image and want to check whether the file changed during transfer.",
+    prompt: "What should you compare?",
+    options: ["Screen brightness", "A trusted published hash", "The filename length", "The folder color"], answer: 1,
+    why: "Matching a freshly calculated hash to a trusted published value provides an integrity check.",
+    misconception: "A filename can remain the same even when file contents have been altered."
+  },
+  {
+    id: "soc-containment",
+       type: "choice", topic: "SOC & SIEM", lesson: "#soc-siem-lesson",
+    scenario: "Investigation confirms a workstation is communicating with known malicious infrastructure.",
+    prompt: "What is the safest immediate response among these choices?",
+    options: ["Contain the workstation using the approved incident plan", "Delete all company backups", "Announce unverified details", "Keep it connected for convenience"], answer: 0,
+    why: "Approved containment limits further harm while preserving a coordinated investigation and response.",
+    misconception: "Leaving a confirmed affected device connected prioritizes convenience over limiting impact."
   }
 ];
 
-const nextLesson =
-  lessonProgress.find(function (lesson) {
-    return localStorage.getItem(lesson.key) !== "true";
-  });
-
-if (nextLesson) {
-  continueLearningButton.href = nextLesson.target;
-  continueLearningButton.textContent =
-    "▶ Continue Learning: " + nextLesson.name;
-} else {
-  continueLearningButton.href = "#labs";
-  continueLearningButton.textContent =
-    "🎉 Lessons Complete — Continue to Labs";
+function isReviewAnswerCorrect(question, value) {
+  if (question.type === "choice") return Number(value) === question.answer;
+  const normalized = String(value).trim().toLowerCase().replace(/[.!?]+$/, "");
+  return question.answers.includes(normalized);
 }
 
-continueLearningButton.className =
-  "primary-button continue-learning-button";
+function countCompleted(keys) {
+  return keys.filter(function (key) { return localStorage.getItem(key) === "true"; }).length;
+}
 
-const learnSection =
-  document.querySelector("#learn");
-
-if (learnSection) {
-  const progressText =
-    document.querySelector("#course-progress-text");
-
-  if (progressText) {
-    progressText.insertAdjacentElement(
-      "afterend",
-      continueLearningButton
-    );
+function readReviewResult() {
+  try {
+    const result = JSON.parse(localStorage.getItem(COURSE_REVIEW_STORAGE_KEY));
+    if (!result || result.completed !== true || !Number.isInteger(result.score) ||
+        result.total !== COURSE_REVIEW_QUESTIONS.length || result.score < 0 || result.score > result.total ||
+        result.percentage !== Math.round((result.score / result.total) * 100) ||
+        typeof result.completedAt !== "string" || !Number.isFinite(Date.parse(result.completedAt)) ||
+        !result.topics || typeof result.topics !== "object" || Array.isArray(result.topics)) return null;
+    const topicDefinitions = {};
+    COURSE_REVIEW_QUESTIONS.forEach(function (question) {
+      if (!topicDefinitions[question.topic]) topicDefinitions[question.topic] = { total: 0, lesson: question.lesson };
+      topicDefinitions[question.topic].total++;
+    });
+    const topicEntries = Object.entries(result.topics);
+    if (topicEntries.length !== Object.keys(topicDefinitions).length || topicEntries.some(function (entry) {
+      const topic = entry[0];
+      const value = entry[1];
+      const expected = topicDefinitions[topic];
+      return !expected || !value || !Number.isInteger(value.correct) || value.total !== expected.total ||
+        value.correct < 0 || value.correct > value.total || value.lesson !== expected.lesson;
+    })) return null;
+    return result;
+  } catch (error) {
+    return null;
   }
+}
+
+function getDashboardState() {
+  const lessonsCompleted = countCompleted(LESSON_PROGRESS.map(function (lesson) { return lesson.key; }));
+  const exercisesCompleted = readCompletedLabs();
+  const investigationsCompleted = countCompleted(INVESTIGATIONS.map(function (investigation) { return investigation.key; }));
+  const reviewResult = readReviewResult();
+  let recommendation;
+  const nextLesson = LESSON_PROGRESS.find(function (lesson) { return localStorage.getItem(lesson.key) !== "true"; });
+
+  if (nextLesson) {
+    recommendation = { target: nextLesson.target, label: "Continue Learning: " + nextLesson.name };
+  } else if (exercisesCompleted < GUIDED_EXERCISE_TOTAL) {
+    recommendation = { target: "#labs", label: "Lessons Complete — Continue Guided Exercises" };
+  } else if (investigationsCompleted < INVESTIGATIONS.length) {
+    recommendation = { target: "#labs", label: "Continue Security Investigations" };
+  } else if (!reviewResult) {
+    recommendation = { target: "#course-review", label: "Start the Course Review" };
+  } else {
+    recommendation = { target: "#course-review", label: "Course Complete — Review Course Again" };
+  }
+
+  return { lessonsCompleted: lessonsCompleted, exercisesCompleted: exercisesCompleted, investigationsCompleted: investigationsCompleted, reviewResult: reviewResult, recommendation: recommendation };
+}
+
+function buildRetentionSnapshot() {
+  const dashboard = getDashboardState();
+  const completedKeys = new Set();
+  LESSON_PROGRESS.forEach(function (item) { if (localStorage.getItem(item.key) === "true") completedKeys.add(item.key); });
+  INVESTIGATIONS.forEach(function (item) { if (localStorage.getItem(item.key) === "true") completedKeys.add(item.key); });
+  return Object.assign({}, dashboard, { completedKeys: completedKeys, daily: RetentionState.readDailyState(localStorage) });
+}
+
+function renderRetentionSummary() {
+  const snapshot = buildRetentionSnapshot();
+  const xp = RetentionState.deriveXp(snapshot, snapshot.daily);
+  const level = RetentionState.getLevel(xp);
+  const achievements = Milestones.evaluateAchievements(snapshot);
+  const badges = Milestones.evaluateBadges(snapshot);
+  const set = function (selector, value) { const element=document.querySelector(selector); if (element) element.textContent=value; };
+  set("#dashboard-xp", xp + " XP");
+  set("#dashboard-level", "Level " + level.level + " — " + level.name);
+  const today=RetentionState.localDateKey(new Date());
+  const dailyComplete=snapshot.daily.records.some(function(record){return record.date===today;});
+  set("#dashboard-daily", dailyComplete ? "Daily challenge completed" : "Daily challenge available");
+  set("#dashboard-streak", "Current streak: " + snapshot.daily.currentStreak + " days");
+  set("#dashboard-longest-streak", "Longest streak: " + snapshot.daily.longestStreak + " days");
+  set("#dashboard-achievements", achievements.filter(function (a) { return a.earned; }).length + " achievements");
+  set("#dashboard-badges", badges.filter(function (b) { return b.earned; }).length + " skill badges");
+  const progress=document.querySelector("#level-progress");
+  const fill=document.querySelector("#level-progress-fill");
+  if (progress) progress.setAttribute("aria-valuenow", String(level.progress));
+  if (fill) fill.style.width=level.progress + "%";
+  set("#level-progress-text", level.next ? level.xpToNext + " XP to " + level.next.name : "Top current level — more progression will be added");
+  const achievementList=document.querySelector("#achievements-list");
+  if (achievementList) achievementList.innerHTML=achievements.map(function (a) { return '<article class="milestone ' + (a.earned?'earned':'locked') + '"><strong>' + a.name + '</strong><span>' + (a.earned?'Earned':'Locked') + '</span><p>' + a.description + '</p></article>'; }).join("");
+  const badgeList=document.querySelector("#skill-badges-list");
+  if (badgeList) badgeList.innerHTML=badges.map(function (b) { return '<article class="milestone ' + (b.earned?'earned':'locked') + '"><strong>' + b.name + '</strong><span>' + (b.earned?'Earned':'In progress — '+b.completed+'/'+b.total+' requirements') + '</span><p>' + b.requirement + '</p><ul>' + b.evidence.map(function(e){return '<li>'+e+'</li>';}).join('') + '</ul></article>'; }).join("");
+  const skillsSummary=document.querySelector("#skills-summary");
+  if (skillsSummary) skillsSummary.textContent=achievements.filter(function(a){return a.earned;}).length + " of " + achievements.length + " achievements and " + badges.filter(function(b){return b.earned;}).length + " of " + badges.length + " skill badges earned.";
+  return { snapshot:snapshot, xp:xp, level:level, achievements:achievements, badges:badges };
+}
+
+function renderDashboard() {
+  const state = getDashboardState();
+  const setText = function (selector, value) {
+    const element = document.querySelector(selector);
+    if (element) element.textContent = value;
+  };
+  setText("#dashboard-lessons", state.lessonsCompleted + " / " + LESSON_PROGRESS.length + " completed");
+  setText("#dashboard-exercises", state.exercisesCompleted + " / " + GUIDED_EXERCISE_TOTAL + " completed");
+  setText("#dashboard-investigations", state.investigationsCompleted + " / " + INVESTIGATIONS.length + " completed");
+  setText("#dashboard-review-status", state.reviewResult ? "Completed — " + state.reviewResult.score + " / " + state.reviewResult.total + " (" + state.reviewResult.percentage + "%)" : "Not Started");
+
+  const next = document.querySelector("#dashboard-next");
+  if (next) next.innerHTML = '<strong>Recommended next action</strong><a class="primary-button" href="' + state.recommendation.target + '">' + state.recommendation.label + '</a>';
+
+  const achievement = document.querySelector("#knowledge-checkpoint");
+  if (achievement && state.reviewResult) {
+    achievement.classList.add("achievement-unlocked");
+    achievement.setAttribute("aria-label", "Knowledge Checkpoint achievement unlocked");
+    achievement.querySelector("span").textContent = "✓";
+  }
+  const existingContinueButton = document.querySelector(".continue-learning-button");
+  if (existingContinueButton) {
+    existingContinueButton.href = state.recommendation.target;
+    existingContinueButton.textContent = "▶ " + state.recommendation.label;
+  }
+  renderRetentionSummary();
+  return state;
+}
+
+const continueLearningButton = document.createElement("a");
+const dashboardState = renderDashboard();
+continueLearningButton.href = dashboardState.recommendation.target;
+continueLearningButton.textContent = "▶ " + dashboardState.recommendation.label;
+continueLearningButton.className = "primary-button continue-learning-button";
+const learnSection = document.querySelector("#learn");
+if (learnSection) {
+  const progressText = document.querySelector("#course-progress-text");
+  if (progressText) progressText.insertAdjacentElement("afterend", continueLearningButton);
+}
+
+const dashboardActivitySection = document.querySelector("#labs");
+if (dashboardActivitySection) {
+  dashboardActivitySection.addEventListener("click", function () {
+    setTimeout(renderDashboard, 0);
+  });
+}
+
+const reviewIntro = document.querySelector("#review-intro");
+const reviewForm = document.querySelector("#review-question");
+const reviewResults = document.querySelector("#review-results");
+let reviewIndex = 0;
+let reviewScore = 0;
+let reviewTopicResults = {};
+let reviewAnswered = false;
+
+function showStoredReviewResult() {
+  const result = readReviewResult();
+  const previous = document.querySelector("#review-previous-result");
+  if (previous && result) {
+    previous.textContent = "Most recent result: " + result.score + " / " + result.total + " (" + result.percentage + "%).";
+    const details = document.querySelector("#review-previous-topics");
+    if (details) {
+      details.innerHTML = "<h4>Most recent topic review</h4><ul>" + Object.keys(result.topics).map(function (topic) {
+        const value = result.topics[topic];
+        return '<li><a href="' + value.lesson + '">' + topic + '</a>: ' + value.correct + ' / ' + value.total + ' answered correctly</li>';
+      }).join("") + "</ul>";
+    }
+  }
+}
+
+function renderReviewQuestion() {
+  const question = COURSE_REVIEW_QUESTIONS[reviewIndex];
+  reviewAnswered = false;
+  if (typeof companion !== "undefined") companion.setContext({ type:"review", topic:question.topic, hint:question.misconception, explanation:question.why, submitted:false });
+  document.querySelector("#review-progress").textContent = "Question " + (reviewIndex + 1) + " of " + COURSE_REVIEW_QUESTIONS.length;
+  document.querySelector("#review-topic").textContent = question.topic;
+  document.querySelector("#review-prompt").textContent = question.prompt;
+  const scenario = document.querySelector("#review-scenario");
+  scenario.textContent = question.scenario;
+  scenario.hidden = !question.scenario;
+  const answers = document.querySelector("#review-answers");
+  answers.innerHTML = "";
+
+  if (question.type === "choice") {
+    question.options.forEach(function (option, index) {
+      const label = document.createElement("label");
+      label.className = "review-option";
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = "review-answer";
+      input.value = String(index);
+      label.appendChild(input);
+      label.appendChild(document.createTextNode(option));
+      answers.appendChild(label);
+    });
+  } else {
+    const label = document.createElement("label");
+    label.setAttribute("for", "review-short-answer");
+    label.textContent = "Your answer";
+    const input = document.createElement("input");
+    input.id = "review-short-answer";
+    input.name = "review-answer";
+    input.type = "text";
+    input.autocomplete = "off";
+    answers.appendChild(label);
+    answers.appendChild(input);
+  }
+  document.querySelector("#review-feedback").hidden = true;
+  document.querySelector("#next-review-question").hidden = true;
+  document.querySelector("#submit-review-answer").hidden = false;
+  const firstControl = answers.querySelector("input");
+  if (firstControl) firstControl.focus();
+}
+
+function startCourseReview() {
+  reviewIndex = 0;
+  reviewScore = 0;
+  reviewTopicResults = {};
+  reviewIntro.hidden = true;
+  reviewResults.hidden = true;
+  reviewForm.hidden = false;
+  renderReviewQuestion();
+}
+
+function submitReviewAnswer(event) {
+  event.preventDefault();
+  if (reviewAnswered) return;
+  const question = COURSE_REVIEW_QUESTIONS[reviewIndex];
+  const selected = reviewForm.querySelector('input[name="review-answer"]:checked');
+  const shortInput = reviewForm.querySelector('#review-short-answer');
+  if (!selected && (!shortInput || !shortInput.value.trim())) {
+    const feedback = document.querySelector("#review-feedback");
+    feedback.hidden = false;
+    feedback.className = "review-feedback review-feedback-neutral";
+    feedback.textContent = "Choose or enter an answer before submitting.";
+    return;
+  }
+  const correct = isReviewAnswerCorrect(question, question.type === "choice" ? selected.value : shortInput.value);
+  reviewAnswered = true;
+  if (typeof companion !== "undefined") companion.setContext({ submitted:true, explanation:question.why });
+  if (!reviewTopicResults[question.topic]) reviewTopicResults[question.topic] = { correct: 0, total: 0, lesson: question.lesson };
+  reviewTopicResults[question.topic].total++;
+  if (correct) {
+    reviewScore++;
+    reviewTopicResults[question.topic].correct++;
+  }
+  reviewForm.querySelectorAll("input").forEach(function (input) { input.disabled = true; });
+  const correctAnswer = question.type === "choice" ? question.options[question.answer] : question.displayAnswer;
+  const feedback = document.querySelector("#review-feedback");
+  feedback.hidden = false;
+  feedback.className = "review-feedback " + (correct ? "review-feedback-correct" : "review-feedback-learning");
+  feedback.innerHTML = "<h3>" + (correct ? "That’s right" : "A useful concept to revisit") + "</h3>" +
+    (correct ? "" : "<p><strong>Best answer:</strong> " + correctAnswer + "</p>") +
+    "<p>" + question.why + "</p><p><strong>Why another choice may be tempting:</strong> " + question.misconception + "</p>" +
+    '<p><strong>Lesson connection:</strong> <a href="' + question.lesson + '">' + question.topic + "</a></p>";
+  document.querySelector("#submit-review-answer").hidden = true;
+  const next = document.querySelector("#next-review-question");
+  next.textContent = reviewIndex === COURSE_REVIEW_QUESTIONS.length - 1 ? "See My Results" : "Next Question";
+  next.hidden = false;
+  next.focus();
+}
+
+function finishCourseReview() {
+  const total = COURSE_REVIEW_QUESTIONS.length;
+  const percentage = Math.round((reviewScore / total) * 100);
+  const result = { completed: true, score: reviewScore, total: total, percentage: percentage, completedAt: new Date().toISOString(), topics: reviewTopicResults };
+  localStorage.setItem(COURSE_REVIEW_STORAGE_KEY, JSON.stringify(result));
+  reviewForm.hidden = true;
+  reviewResults.hidden = false;
+  const strong = [];
+  const review = [];
+  Object.keys(reviewTopicResults).forEach(function (topic) {
+    const value = reviewTopicResults[topic];
+    (value.correct / value.total >= 0.5 ? strong : review).push({ topic: topic, lesson: value.lesson });
+  });
+  const links = function (items) { return items.length ? '<ul>' + items.map(function (item) { return '<li><a href="' + item.lesson + '">' + item.topic + '</a></li>'; }).join("") + '</ul>' : '<p>Keep using the lesson links below to reinforce every topic.</p>'; };
+  reviewResults.innerHTML = '<h3>Course Review Complete</h3><p class="review-score"><strong>' + reviewScore + ' / ' + total + '</strong><span>' + percentage + '%</span></p>' +
+    '<div class="review-topic-columns"><div><h4>Answered correctly</h4>' + links(strong) + '</div><div><h4>Worth revisiting</h4>' + links(review) + '</div></div>' +
+    '<p>Your result is a study guide, not a label. Revisit any lesson and try again whenever you are ready.</p><button id="review-again" class="primary-button" type="button">Review Again</button>';
+  document.querySelector("#review-again").addEventListener("click", startCourseReview);
+  renderDashboard();
+  reviewResults.focus();
+}
+
+if (reviewIntro && reviewForm && reviewResults) {
+  reviewResults.tabIndex = -1;
+  showStoredReviewResult();
+  document.querySelector("#start-course-review").addEventListener("click", startCourseReview);
+  reviewForm.addEventListener("submit", submitReviewAnswer);
+  document.querySelector("#next-review-question").addEventListener("click", function () {
+    if (reviewIndex < COURSE_REVIEW_QUESTIONS.length - 1) {
+      reviewIndex++;
+      renderReviewQuestion();
+    } else {
+      finishCourseReview();
+    }
+  });
+}
+
+/* =========================
+   DAILY CHALLENGE & AUTHORED COMPANION
+========================= */
+const companion = CompanionModule.createCompanion(new CompanionModule.AuthoredProvider());
+const dailyCard = document.querySelector("#daily-challenge-card");
+function renderDailyChallenge() {
+  if (!dailyCard) return;
+  const dateKey = RetentionState.localDateKey(new Date());
+  const challenge = DailyChallenges.challengeForDate(dateKey);
+  const state = RetentionState.readDailyState(localStorage);
+  const completed = state.records.some(function (record) { return record.date === dateKey && record.challengeId === challenge.id; });
+  dailyCard.innerHTML = '<p class="review-topic">' + challenge.topic + '</p><h3>' + challenge.title + '</h3><p>' + challenge.scenario + '</p>' +
+    '<p><strong>Reward:</strong> ' + challenge.xp + ' XP</p><fieldset><legend>Choose the safest answer</legend><div class="review-answers">' + challenge.choices.map(function(choice,index){return '<label class="review-option"><input type="radio" name="daily-answer" value="'+index+'">'+choice+'</label>';}).join('') + '</div></fieldset>' +
+    '<div class="daily-actions"><button type="button" class="primary-button" id="daily-submit">Submit Answer</button><button type="button" class="secondary-button" id="daily-hint">Hint</button></div><div id="daily-feedback" role="status" aria-live="polite"></div>' +
+    (completed?'<p class="activity-complete-badge">✓ Completed today — XP already awarded. You may review it again.</p>':'');
+  companion.setContext({ type:"daily", topic:challenge.topic, hint:challenge.hint, explanation:challenge.explanation, submitted:false });
+  const submit=dailyCard.querySelector("#daily-submit"), hint=dailyCard.querySelector("#daily-hint"), feedback=dailyCard.querySelector("#daily-feedback");
+  hint.addEventListener("click",function(){feedback.textContent="Hint: "+challenge.hint; companion.setContext({hint:challenge.hint});});
+  submit.addEventListener("click",function(){
+    const selected=dailyCard.querySelector('input[name="daily-answer"]:checked');
+    if(!selected){feedback.textContent="Choose an answer before submitting.";return;}
+    if(!DailyChallenges.isCorrect(challenge,selected.value)){feedback.textContent="Not quite yet. "+challenge.hint;companion.setContext({submitted:true});return;}
+    const result=RetentionState.completeDailyChallenge(state,dateKey,challenge.id,challenge.xp);
+    if(result.awarded)localStorage.setItem(RetentionState.DAILY_KEY,JSON.stringify(result.state));
+    feedback.textContent="✓ Correct. "+challenge.explanation+(result.awarded?" You earned "+challenge.xp+" XP.":" Today’s XP was already awarded.");
+    companion.setContext({submitted:true,explanation:challenge.explanation});
+    renderDailyChallenge(); renderDashboard();
+  });
+}
+renderDailyChallenge();
+
+document.querySelectorAll(".lesson-card").forEach(function(card){card.addEventListener("click",function(){companion.setContext({type:"lesson",topic:card.querySelector("h3").textContent,submitted:false});});});
+const labsForCompanion=document.querySelector("#labs");
+if(labsForCompanion)labsForCompanion.addEventListener("click",function(event){const card=event.target.closest&&event.target.closest(".lab-challenge");if(card){const heading=card.querySelector("h3");companion.setContext({type:"activity",topic:heading?heading.textContent:"Cybersecurity practice",submitted:false});}});
+
+const companionToggle=document.querySelector("#companion-toggle");
+const companionPanel=document.querySelector("#companion-panel");
+const companionClose=document.querySelector("#companion-close");
+const companionResponse=document.querySelector("#companion-response");
+let companionReturnFocus=null;
+function openCompanion(){companionReturnFocus=document.activeElement;companionPanel.hidden=false;companionToggle.setAttribute("aria-expanded","true");companionClose.focus();}
+function closeCompanion(){companionPanel.hidden=true;companionToggle.setAttribute("aria-expanded","false");if(companionReturnFocus&&companionReturnFocus.focus)companionReturnFocus.focus();}
+if(companionToggle&&companionPanel&&companionClose){
+  companionToggle.addEventListener("click",openCompanion); companionClose.addEventListener("click",closeCompanion);
+  companionPanel.addEventListener("click",function(event){const action=event.target.dataset.companionAction;if(action)companionResponse.textContent=companion.respond(action);});
+  document.addEventListener("keydown",function(event){if(event.key==="Escape"&&!companionPanel.hidden)closeCompanion();});
 }
 
 /* =========================
@@ -2257,7 +2703,7 @@ if (learnSection) {
 
       const confirmed =
         confirm(
-          "Reset all Better Hacker lesson, lab, and investigation progress?"
+          "Reset all Better Hacker learning, Daily Challenge, XP, streak, achievement, and skill badge progress?"
         );
 
       if (!confirmed) {
@@ -2281,67 +2727,63 @@ if (learnSection) {
     }
   );
 }
-  const waitlistButton =
-  document.querySelector("#waitlist-button");
+  const waitlistForm = document.querySelector("#waitlist-form");
+const waitlistButton = document.querySelector("#waitlist-button");
+const waitlistEmail = document.querySelector("#waitlist-email");
+const waitlistResult = document.querySelector("#waitlist-result");
+let waitlistPending = false;
 
-const waitlistEmail =
-  document.querySelector("#waitlist-email");
-
-const waitlistResult =
-  document.querySelector("#waitlist-result");
-
-if (
-  waitlistButton &&
-  waitlistEmail &&
-  waitlistResult
-) {
-
-  waitlistButton.addEventListener(
-    "click",
-   async function () {
-
-      const email =
-        waitlistEmail.value.trim();
-
-      const response = await fetch(
-  "https://formspree.io/f/xdeobdjl",
-  {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json"
-    },
-    body: JSON.stringify({ email: email })
-  }
-);
-      if (
-        email &&
-        email.includes("@")
-      ) {
-
-        waitlistResult.textContent =
-          "✅ You're on the Better Hacker early-access list!";
-
-        waitlistResult.style.color =
-          "#38bdf8";
-
-        localStorage.setItem(
-          "betterHackerWaitlistEmail",
-          email
-        );
-
-        waitlistEmail.value = "";
-
-      } else {
-
-        waitlistResult.textContent =
-          "❌ Enter a valid email address.";
-
-        waitlistResult.style.color =
-          "#f87171";
-
-      }
-    }
-  );
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
+
+function renderJoinedWaitlistState() {
+  const joinedEmail = localStorage.getItem("betterHackerWaitlistEmail");
+  if (!joinedEmail || !waitlistResult) return;
+  waitlistResult.textContent = "✓ Joined with " + joinedEmail + ".";
+  waitlistResult.className = "feedback-success";
+  if (waitlistEmail) waitlistEmail.value = joinedEmail;
+  if (waitlistButton) waitlistButton.textContent = "Update Waitlist Email";
+}
+
+if (waitlistForm && waitlistButton && waitlistEmail && waitlistResult) {
+  renderJoinedWaitlistState();
+  waitlistForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+    if (waitlistPending) return;
+    const email = waitlistEmail.value.trim().toLowerCase();
+    if (!isValidEmail(email)) {
+      waitlistResult.textContent = "Enter a complete email address, such as you@example.com.";
+      waitlistResult.className = "feedback-review";
+      waitlistEmail.setAttribute("aria-invalid", "true");
+      waitlistEmail.focus();
+      return;
+    }
+    waitlistEmail.removeAttribute("aria-invalid");
+    waitlistPending = true;
+    waitlistButton.disabled = true;
+    waitlistButton.textContent = "Joining…";
+    waitlistResult.textContent = "Submitting your email…";
+    try {
+      const response = await fetch("https://formspree.io/f/xdeobdjl", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ email: email })
+      });
+      if (!response.ok) throw new Error("Waitlist request failed with status " + response.status);
+      localStorage.setItem("betterHackerWaitlistEmail", email);
+      waitlistResult.textContent = "✓ You’re confirmed on the Better Hacker early-access list.";
+      waitlistResult.className = "feedback-success";
+      waitlistButton.textContent = "Update Waitlist Email";
+    } catch (error) {
+      waitlistResult.textContent = "We couldn’t confirm your signup. Check your connection and try again.";
+      waitlistResult.className = "feedback-review";
+      waitlistButton.textContent = "Retry Joining";
+    } finally {
+      waitlistPending = false;
+      waitlistButton.disabled = false;
+    }
+  });
+}
+
 });
