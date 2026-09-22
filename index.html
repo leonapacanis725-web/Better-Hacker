@@ -13,24 +13,28 @@
 
 <body>
 
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
   <!-- Navigation -->
   <nav class="navbar">
-    <a href="#home" class="logo">
-  <img src="better-hacker-logo.png" alt="Better Hacker">
-</a>
+    <a href="#home" class="logo" aria-label="Better Hacker home">
+      Better <span>Hacker</span>
+    </a>
 
     <ul class="nav-links">
       <li><a href="#home">Home</a></li>
       <li><a href="#learn">Learn</a></li>
       <li><a href="#roadmap">Roadmap</a></li>
       <li><a href="#labs">Labs</a></li>
-      <li><a href="#coach">AI Coach</a></li>
+      <li><a href="#coach">Learning Assistant</a></li>
       <li><a href="#about">About</a></li>
     <li><a href="#early-access">Early Access</a></li>
 <li><a href="#pricing">Pricing</a></li>
     </ul>
   </nav>
 
+
+  <main id="main-content">
 
   <!-- Hero Section -->
   <header id="home" class="hero">
@@ -43,7 +47,7 @@
 
       <p class="hero-text">
         Learn cybersecurity through guided lessons, hands-on practice,
-        and an AI coach designed to help beginners build real skills.
+        and an authored Learning Assistant that helps beginners build real skills.
       </p>
 
       <div class="hero-buttons">
@@ -65,7 +69,7 @@
     <span id="course-progress-text">0 / 8 Lessons Completed</span>
   </div>
 
-  <div class="progress-bar">
+  <div class="progress-bar" id="course-progress-bar" role="progressbar" aria-label="Course lesson progress" aria-valuemin="0" aria-valuemax="8" aria-valuenow="0">
     <div id="course-progress-fill"></div>
   </div>
 </div>
@@ -155,6 +159,103 @@
 </a>
     </div>
 
+    <div class="course-review-callout" id="course-review-link">
+      <div>
+        <h3>Ready to connect the concepts?</h3>
+        <p>Use the Course Review after the lessons to practise choosing safe, defensive next steps.</p>
+      </div>
+      <a href="#course-review" class="secondary-button">Open Course Review</a>
+    </div>
+
+  </section>
+
+  <!-- Learner Dashboard -->
+  <section id="dashboard" class="section dark-section">
+    <p class="section-label">YOUR PROGRESS</p>
+    <h2>Learner Dashboard</h2>
+    <p class="section-intro">See what you have completed and choose a useful next step.</p>
+    <div class="dashboard-grid" aria-label="Learning progress summary">
+      <article class="dashboard-card">
+        <h3>Core Lessons</h3>
+        <p id="dashboard-lessons">0 / 8 completed</p>
+      </article>
+      <article class="dashboard-card">
+        <h3>Guided Exercises</h3>
+        <p id="dashboard-exercises">0 / 4 completed</p>
+      </article>
+      <article class="dashboard-card">
+        <h3>Investigations</h3>
+        <p id="dashboard-investigations">0 / 7 completed</p>
+      </article>
+      <article class="dashboard-card">
+        <h3>Course Review</h3>
+        <p id="dashboard-review-status">Not Started</p>
+        <a href="#course-review" class="dashboard-review-link">Go to Course Review →</a>
+      </article>
+    </div>
+    <div class="dashboard-next" id="dashboard-next" aria-live="polite"></div>
+    <div class="retention-summary" aria-label="Learner level and daily activity summary">
+      <div><strong id="dashboard-xp">0 XP</strong><span id="dashboard-level">Level 1 — New Recruit</span></div>
+      <div><strong id="dashboard-daily">Daily challenge available</strong><span id="dashboard-streak">Current streak: 0 days</span><span id="dashboard-longest-streak">Longest streak: 0 days</span></div>
+      <div><strong id="dashboard-achievements">0 achievements</strong><span id="dashboard-badges">0 skill badges</span></div>
+    </div>
+    <div class="level-progress" id="level-progress" role="progressbar" aria-label="Progress to next learner level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <div id="level-progress-fill"></div>
+      <p id="level-progress-text">400 XP to Cyber Explorer</p>
+    </div>
+    <div class="dashboard-retention-actions">
+      <a href="#daily-challenge" class="primary-button">Today’s Cyber Challenge</a>
+      <a href="#skills-achievements" class="secondary-button">Skills &amp; Achievements</a>
+    </div>
+  </section>
+
+  <section id="daily-challenge" class="section">
+    <p class="section-label">RETURN AND PRACTICE</p>
+    <h2>Daily Cyber Challenge</h2>
+    <p class="section-intro">One safe, defensive scenario selected from your local calendar date. Complete it once today to earn XP and build your streak.</p>
+    <div id="daily-challenge-card" class="review-panel daily-challenge-card" aria-live="polite"></div>
+  </section>
+
+  <section id="skills-achievements" class="section dark-section">
+    <p class="section-label">YOUR LEARNING EVIDENCE</p>
+    <h2>Skills &amp; Achievements</h2>
+    <p class="section-intro">Achievements recognize milestones. Skill badges reflect demonstrated curriculum evidence and are Better Hacker educational badges—not certifications.</p>
+    <div class="skills-summary" id="skills-summary" aria-live="polite"></div>
+    <div class="milestone-columns">
+      <details open><summary>Achievements</summary><div id="achievements-list" class="milestone-list"></div></details>
+      <details open><summary>Skill Badges</summary><div id="skill-badges-list" class="milestone-list"></div></details>
+    </div>
+  </section>
+
+  <!-- Course Review -->
+  <section id="course-review" class="section">
+    <p class="section-label">COURSE REVIEW</p>
+    <h2>Beginner Cybersecurity Assessment</h2>
+    <p class="section-intro">
+      Apply ideas from all eight lessons to realistic, defensive decisions. Answers include teaching feedback, so this is a place to learn—not a pass-or-fail exam.
+    </p>
+    <div class="review-shell">
+      <div id="review-intro" class="review-panel">
+        <h3>Connect what you learned</h3>
+        <p>Work through 14 mixed questions, one at a time. Your most recent completed result is saved on this device. An unfinished attempt restarts if this page reloads.</p>
+        <p id="review-previous-result"></p>
+        <div id="review-previous-topics" class="review-previous-topics"></div>
+        <button id="start-course-review" class="primary-button" type="button">Start Course Review</button>
+      </div>
+      <form id="review-question" class="review-panel" hidden>
+        <p id="review-progress" class="review-progress" aria-live="polite"></p>
+        <p id="review-topic" class="review-topic"></p>
+        <fieldset>
+          <legend id="review-prompt"></legend>
+          <p id="review-scenario" class="review-scenario"></p>
+          <div id="review-answers" class="review-answers"></div>
+        </fieldset>
+        <button id="submit-review-answer" class="primary-button" type="submit">Submit Answer</button>
+        <div id="review-feedback" class="review-feedback" role="status" hidden></div>
+        <button id="next-review-question" class="secondary-button" type="button" hidden>Next Question</button>
+      </form>
+      <div id="review-results" class="review-panel" aria-live="polite" hidden></div>
+    </div>
   </section>
 <!-- Fundamentals Lesson Section -->
 <section id="fundamentals-lesson" class="section">
@@ -268,6 +369,8 @@
         the access they need?
       </p>
 
+      <label class="input-label" for="fundamentals-check-answer">Your answer to the Fundamentals knowledge check</label>
+
       <input
         type="text"
         id="fundamentals-check-answer"
@@ -282,7 +385,7 @@
         Check Answer
       </button>
 
-      <p id="fundamentals-check-result"></p>
+      <p id="fundamentals-check-result" role="status" aria-live="polite"></p>
 
     </div>
 
@@ -305,123 +408,6 @@
   </div>
 
 </section>
-<!-- Linux Lesson Section -->
-<section id="linux-lesson" class="section dark-section">
-
-  <p class="section-label">BEGINNER LESSON</p>
-
-  <h2>Linux Fundamentals</h2>
-
-  <p class="section-intro">
-    Linux is widely used in cybersecurity, servers, cloud systems,
-    and security tools. Learning the command line is an important
-    foundation for building cybersecurity skills.
-  </p>
-
-  <div class="lesson-container">
-
-    <div class="lesson-block">
-      <h3>1. What is Linux?</h3>
-
-      <p>
-        Linux is an operating system similar to Windows and macOS.
-        It is widely used on servers and is common in cybersecurity
-        environments.
-      </p>
-    </div>
-
-    <div class="lesson-block">
-      <h3>2. Basic Linux Commands</h3>
-
-      <div class="command-list">
-
-        <div class="command-item">
-          <code>pwd</code>
-          <span>Shows your current directory.</span>
-        </div>
-
-        <div class="command-item">
-          <code>ls</code>
-          <span>Lists files and folders.</span>
-        </div>
-
-        <div class="command-item">
-          <code>cd</code>
-          <span>Changes your current directory.</span>
-        </div>
-
-        <div class="command-item">
-          <code>cat</code>
-          <span>Displays the contents of a file.</span>
-        </div>
-
-        <div class="command-item">
-          <code>grep</code>
-          <span>Searches text for a word or pattern.</span>
-        </div>
-
-        <div class="command-item">
-          <code>find</code>
-          <span>Searches for files and directories.</span>
-        </div>
-
-      </div>
-    </div>
-
-    <div class="lesson-block">
-      <h3>3. Example</h3>
-
-      <p>
-        Imagine a file named <strong>flag.txt</strong> is stored
-        in your current directory.
-      </p>
-
-      <p>To view the file, you could run:</p>
-
-      <pre><code>cat flag.txt</code></pre>
-    </div>
-
-    <div class="lesson-block">
-      <h3>4. Knowledge Check</h3>
-
-      <p>
-        Which Linux command displays the contents of a file?
-      </p>
-
-      <input
-        type="text"
-        id="linux-check-answer"
-        placeholder="Type your answer..."
-        autocomplete="off"
-      >
-
-      <button
-        id="linux-check-button"
-        class="primary-button"
-      >
-        Check Answer
-      </button>
-
-      <p id="linux-check-result"></p>
-    </div>
-
-    <div class="lesson-block lesson-finish">
-      <h3>Ready to Practice?</h3>
-
-      <p>
-        After completing this lesson, try the Linux challenge
-        in the Better Hacker labs.
-      </p>
-
-      <a href="#labs" class="primary-button">
-        Go to Linux Lab
-      </a>
-    </div>
-
-   </div>
-
-</section>
-
 <!-- Networking Lesson Section -->
 <section id="networking-lesson" class="section">
 
@@ -521,6 +507,8 @@
         Which port is commonly used for HTTPS?
       </p>
 
+      <label class="input-label" for="network-check-answer">HTTPS port number</label>
+
       <input
         type="text"
         id="network-check-answer"
@@ -535,7 +523,7 @@
         Check Answer
       </button>
 
-      <p id="network-check-result"></p>
+      <p id="network-check-result" role="status" aria-live="polite"></p>
 
     </div>
 
@@ -558,6 +546,125 @@
   </div>
 
 </section>
+<!-- Linux Lesson Section -->
+<section id="linux-lesson" class="section dark-section">
+
+  <p class="section-label">BEGINNER LESSON</p>
+
+  <h2>Linux Fundamentals</h2>
+
+  <p class="section-intro">
+    Linux is widely used in cybersecurity, servers, cloud systems,
+    and security tools. Learning the command line is an important
+    foundation for building cybersecurity skills.
+  </p>
+
+  <div class="lesson-container">
+
+    <div class="lesson-block">
+      <h3>1. What is Linux?</h3>
+
+      <p>
+        Linux is an operating system similar to Windows and macOS.
+        It is widely used on servers and is common in cybersecurity
+        environments.
+      </p>
+    </div>
+
+    <div class="lesson-block">
+      <h3>2. Basic Linux Commands</h3>
+
+      <div class="command-list">
+
+        <div class="command-item">
+          <code>pwd</code>
+          <span>Shows your current directory.</span>
+        </div>
+
+        <div class="command-item">
+          <code>ls</code>
+          <span>Lists files and folders.</span>
+        </div>
+
+        <div class="command-item">
+          <code>cd</code>
+          <span>Changes your current directory.</span>
+        </div>
+
+        <div class="command-item">
+          <code>cat</code>
+          <span>Displays the contents of a file.</span>
+        </div>
+
+        <div class="command-item">
+          <code>grep</code>
+          <span>Searches text for a word or pattern.</span>
+        </div>
+
+        <div class="command-item">
+          <code>find</code>
+          <span>Searches for files and directories.</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="lesson-block">
+      <h3>3. Example</h3>
+
+      <p>
+        Imagine a file named <strong>flag.txt</strong> is stored
+        in your current directory.
+      </p>
+
+      <p>To view the file, you could run:</p>
+
+      <pre><code>cat flag.txt</code></pre>
+    </div>
+
+    <div class="lesson-block">
+      <h3>4. Knowledge Check</h3>
+
+      <p>
+        Which Linux command displays the contents of a file?
+      </p>
+
+      <label class="input-label" for="linux-check-answer">Your answer to the Linux knowledge check</label>
+
+      <input
+        type="text"
+        id="linux-check-answer"
+        placeholder="Type your answer..."
+        autocomplete="off"
+      >
+
+      <button
+        id="linux-check-button"
+        class="primary-button"
+      >
+        Check Answer
+      </button>
+
+      <p id="linux-check-result" role="status" aria-live="polite"></p>
+    </div>
+
+    <div class="lesson-block lesson-finish">
+      <h3>Ready to Practice?</h3>
+
+      <p>
+        After completing this lesson, try the Linux challenge
+        in the Better Hacker labs.
+      </p>
+
+      <a href="#labs" class="primary-button">
+        Go to Linux Lab
+      </a>
+    </div>
+
+   </div>
+
+</section>
+
 <!-- Web Security Lesson Section -->
 <section id="web-security-lesson" class="section dark-section">
 
@@ -685,6 +792,8 @@
         is placed directly into a database query?
       </p>
 
+      <label class="input-label" for="web-check-answer">Web vulnerability answer</label>
+
       <input
         type="text"
         id="web-check-answer"
@@ -699,7 +808,7 @@
         Check Answer
       </button>
 
-      <p id="web-check-result"></p>
+      <p id="web-check-result" role="status" aria-live="polite"></p>
 
     </div>
 
@@ -824,6 +933,8 @@
         into unreadable ciphertext?
       </p>
 
+      <label class="input-label" for="crypto-check-answer">Cryptography answer</label>
+
       <input
         type="text"
         id="crypto-check-answer"
@@ -838,7 +949,7 @@
         Check Answer
       </button>
 
-      <p id="crypto-check-result"></p>
+      <p id="crypto-check-result" role="status" aria-live="polite"></p>
 
     </div>
 
@@ -966,6 +1077,8 @@
         who can sign in to the network?
       </p>
 
+      <label class="input-label" for="ad-check-answer">Active Directory answer</label>
+
       <input
         type="text"
         id="ad-check-answer"
@@ -980,7 +1093,7 @@
         Check Answer
       </button>
 
-      <p id="ad-check-result"></p>
+      <p id="ad-check-result" role="status" aria-live="polite"></p>
 
     </div>
 
@@ -1113,6 +1226,8 @@
         from many different systems?
       </p>
 
+      <label class="input-label" for="soc-check-answer">SOC and SIEM answer</label>
+
       <input
         type="text"
         id="soc-check-answer"
@@ -1127,7 +1242,7 @@
         Check Answer
       </button>
 
-      <p id="soc-check-result"></p>
+      <p id="soc-check-result" role="status" aria-live="polite"></p>
 
     </div>
 
@@ -1256,6 +1371,8 @@
         on a system?
       </p>
 
+      <label class="input-label" for="testing-check-answer">Security testing authorization answer</label>
+
       <input
         type="text"
         id="testing-check-answer"
@@ -1270,7 +1387,7 @@
         Check Answer
       </button>
 
-      <p id="testing-check-result"></p>
+      <p id="testing-check-result" role="status" aria-live="polite"></p>
 
     </div>
 
@@ -1463,12 +1580,12 @@
   </section>
 
 
-  <!-- AI Coach Section -->
+  <!-- Learning Assistant Section -->
   <section id="coach" class="section dark-section">
 
-    <p class="section-label">YOUR DIGITAL COACH</p>
+    <p class="section-label">AUTHORED TOPIC GUIDE</p>
 
-    <h2>Meet Your AI Cybersecurity Coach</h2>
+    <h2>Meet Your Cybersecurity Learning Assistant</h2>
 
     <p class="section-intro">
       Don't get stuck for hours. Get explanations, hints,
@@ -1480,7 +1597,7 @@
       <h3>Learn. Practice. Improve.</h3>
 
       <p>
-        Your AI Coach is designed to explain cybersecurity concepts
+        This authored Topic Guide explains cybersecurity concepts
         in beginner-friendly language and help you understand
         why something works instead of simply giving you an answer.
       </p>
@@ -1633,21 +1750,19 @@
       progress tracking, and beginner-friendly cybersecurity practice.
     </p>
 
-    <input
-      type="email"
-      id="waitlist-email"
-      placeholder="Enter your email address"
-      autocomplete="email"
-    >
-
-    <button
-      id="waitlist-button"
-      class="primary-button"
-    >
-      Join Waitlist
-    </button>
-
-    <p id="waitlist-result"></p>
+    <form id="waitlist-form" novalidate>
+      <label class="input-label" for="waitlist-email">Email address</label>
+      <input
+        type="email"
+        id="waitlist-email"
+        name="email"
+        placeholder="you@example.com"
+        autocomplete="email"
+        required
+      >
+      <button id="waitlist-button" class="primary-button" type="submit">Join Waitlist</button>
+    </form>
+    <p id="waitlist-result" role="status" aria-live="polite"></p>
   </div>
 
 </section>
@@ -1748,6 +1863,8 @@
   </section>
 
 
+  </main>
+
   <!-- Footer -->
   <footer>
 
@@ -1764,6 +1881,22 @@
 
   </footer>
 
+<button id="companion-toggle" class="companion-toggle" type="button" aria-haspopup="dialog" aria-controls="companion-panel" aria-expanded="false">Open Byte Guide</button>
+<section id="companion-panel" class="companion-panel" role="dialog" aria-modal="false" aria-labelledby="companion-title" hidden>
+  <div class="companion-header"><h2 id="companion-title">Byte Learning Guide</h2><button id="companion-close" type="button" aria-label="Close Byte Learning Guide">×</button></div>
+  <p>Authored cybersecurity guidance based on the activity you are viewing. Byte does not use live AI.</p>
+  <div class="companion-actions">
+    <button type="button" data-companion-action="hint">Give Me a Hint</button>
+    <button type="button" data-companion-action="explain">Explain This Concept</button>
+    <button type="button" data-companion-action="look">What Should I Look For?</button>
+  </div>
+  <div id="companion-response" role="status" aria-live="polite"></div>
+</section>
+
+<script src="learner-state.js"></script>
+<script src="challenges.js"></script>
+<script src="achievements.js"></script>
+<script src="companion.js"></script>
 <script src="script.js"></script>
 
 </body>
