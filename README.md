@@ -8,6 +8,10 @@ The **Beginner Cybersecurity Assessment** is a 14-question, one-question-at-a-ti
 
 Unlike the knowledge check inside an individual lesson, the Course Review asks learners to connect and apply ideas across the curriculum. An answer is not revealed until the learner submits an attempt. Each response then explains the best answer, addresses a tempting misconception, and links to the relevant lesson. The final view shows the score, percentage, stronger topics, topics worth revisiting, direct lesson links, and a **Review Again** action. Results are descriptive and do not create a pass/fail label.
 
+## Guided labs
+
+The four existing guided exercises are presented as clickable Linux, Networking, Cryptography, and Web Security lab cards. Each opens a hash-addressable, keyboard-friendly lesson with an authored scenario, concept briefing, simulated evidence, task, hint, answer feedback, defensive relevance, and a next activity. Lab completion continues to use the original sequential `betterHackerCompletedLabs` value; no parallel completion store is introduced, and reviewing a completed lab cannot award XP again. Byte receives the current lab topic and authored guidance while withholding answer-level feedback until submission.
+
 ## Progress and local storage
 
 Progress remains local to the learner's browser; there are no accounts or cloud sync. Existing lesson, guided-exercise, investigation, and confirmed waitlist keys are preserved. Course Review adds one key:

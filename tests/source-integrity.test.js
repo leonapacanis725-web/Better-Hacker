@@ -54,7 +54,7 @@ test('dashboard, achievement, recommendation order, and reset integrate review s
 test('existing curriculum totals and waitlist endpoint remain intact', () => {
   assert.equal((html.match(/class="card lesson-card"/g) || []).length, 8);
   assert.match(script, /LESSON_PROGRESS\.length.*Lessons Completed/);
-  assert.match(script, /completedLabs.*\/ 4/s);
+  assert.match(script, /Guided exercises completed:.*GUIDED_LABS\.length/s);
   assert.equal((script.match(/InvestigationComplete"/g) || []).length >= 7, true);
   assert.match(script, /https:\/\/formspree\.io\/f\/xdeobdjl/);
   assert.doesNotMatch(script, /querySelector\("\.lab-challenge"\)/);
