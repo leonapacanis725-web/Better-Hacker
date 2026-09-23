@@ -60,7 +60,7 @@ function boot({ seed = {}, elements = {}, fetchImpl = async () => ({ ok: true, s
     createTextNode(text) { return { textContent: text }; }
   };
   const localStorage = new MemoryStorage(seed);
-  const exposed = source.replace(/\n\}\);\s*$/, `\n  globalThis.__app = { readCompletedLabs, readReviewResult, getDashboardState, isReviewAnswerCorrect, COURSE_REVIEW_QUESTIONS };\n});`);
+  const exposed = source.replace(/\n\}\);\s*$/, `\n  globalThis.__app = { readCompletedLabs, readReviewResult, getDashboardState, isReviewAnswerCorrect, COURSE_REVIEW_QUESTIONS, GUIDED_LABS, getLabStatus, getLabAction, completeGuidedLab, INVESTIGATION_ACTIVITIES, getInvestigationStatus, getInvestigationAction, completeInvestigation };\n});`);
   const context = { document, localStorage, __createdElements: createdElements, fetch: fetchImpl, setTimeout: fn => fn(), clearTimeout() {}, confirm: () => true,
     location: { reload() {} }, console, Date, JSON, Number, Math, Object, String, RegExp, Set,
     BetterHackerState, BetterHackerChallenges, BetterHackerMilestones, BetterHackerCompanion };
@@ -101,11 +101,30 @@ test('dashboard recommendation follows all learning phases using existing keys',
   lessons.forEach(name => localStorage.setItem(`betterHacker${name}Complete`, 'true'));
   assert.match(context.__app.getDashboardState().recommendation.label, /Guided Exercises/);
   localStorage.setItem('betterHackerCompletedLabs', '4');
-  assert.match(context.__app.getDashboardState().recommendation.label, /Investigations/);
+  assert.match(context.__app.getDashboardState().recommendation.label, /Continue Investigation/);
+  assert.equal(context.__app.getDashboardState().recommendation.target, '#investigation-soc-alert');
   ['Soc','Network','Phishing','Windows','Malware','BruteForce','WebAttack'].forEach(name => localStorage.setItem(`betterHacker${name}InvestigationComplete`, 'true'));
   assert.match(context.__app.getDashboardState().recommendation.label, /Course Review/);
 });
 
+
+
+test('completed curriculum recommends course review rather than completed activities', () => {
+  const { context, localStorage } = boot({ seed: { betterHackerCompletedLabs: '4' } });
+  ['Fundamentals','Networking','Linux','WebSecurity','Cryptography','ActiveDirectory','Soc','SecurityTesting'].forEach(name => localStorage.setItem(`betterHacker${name}Complete`, 'true'));
+  context.__app.INVESTIGATION_ACTIVITIES.forEach(item => localStorage.setItem(item.key, 'true'));
+  assert.deepEqual(JSON.parse(JSON.stringify(context.__app.getDashboardState().recommendation)), { target: '#course-review', label: 'Start the Course Review' });
+  const topics = {};
+  context.__app.COURSE_REVIEW_QUESTIONS.forEach(question => {
+    topics[question.topic] ||= { correct: 0, total: 0, lesson: question.lesson };
+    topics[question.topic].correct++;
+    topics[question.topic].total++;
+  });
+  localStorage.setItem('betterHackerCourseReviewResult', JSON.stringify({ completed:true, score:14, total:14, percentage:100, completedAt:new Date().toISOString(), topics }));
+  const finalRecommendation = context.__app.getDashboardState().recommendation;
+  assert.equal(finalRecommendation.target, '#course-review');
+  assert.match(finalRecommendation.label, /Course Complete.*Review Course Again/);
+});
 test('malformed guided exercise and review storage are rejected safely', () => {
   for (const value of ['-1', '2x', '5', '999', '']) {
     const { context } = boot({ seed: { betterHackerCompletedLabs: value } });
@@ -155,9 +174,90 @@ test('guided exercise definitions accept documented equivalents without using th
   const expected = ['cat flag.txt', 'cat ./flag.txt', '80', 'port 80', 'encryption', 'sql injection', 'sqli'];
   expected.forEach(answer => assert.ok(source.includes(`"${answer}"`), `missing guided equivalent ${answer}`));
   assert.equal((source.match(/InvestigationComplete", name:/g) || []).length, 7);
-  assert.match(source, /className = "lab-challenge guided-exercise"/);
+  assert.match(source, /className = "lab-challenge guided-exercise lab-workspace"/);
 });
 
+
+
+test('guided lab cards map to unique anchors and Start, Continue, and Review state', () => {
+  const { context, localStorage } = boot();
+  assert.deepEqual(Array.from(context.__app.GUIDED_LABS, lab => lab.id), ['linux', 'networking', 'cryptography', 'web-security']);
+  assert.equal(context.__app.getLabStatus(0, -1), 'Not Started');
+  assert.equal(context.__app.getLabAction('Not Started'), 'Start Lab');
+  assert.equal(context.__app.getLabStatus(0, 0), 'In Progress');
+  assert.equal(context.__app.getLabAction('In Progress'), 'Continue Lab');
+  localStorage.setItem('betterHackerCompletedLabs', '1');
+  assert.equal(context.__app.getLabStatus(0, -1), 'Completed');
+  assert.equal(context.__app.getLabAction('Completed'), 'Review Lab');
+  for (const lab of context.__app.GUIDED_LABS) assert.match(source, new RegExp('#lab-" \\+ lab\\.id'));
+});
+
+test('guided lab completion preserves sequential state and never duplicates XP evidence', () => {
+  const { context, localStorage } = boot({ seed: { betterHackerCompletedLabs: '2' } });
+  const before = BetterHackerState.deriveXp({ lessonsCompleted:0, exercisesCompleted:context.__app.readCompletedLabs(), investigationsCompleted:0, reviewResult:null }, BetterHackerState.emptyDailyState());
+  assert.equal(context.__app.completeGuidedLab(2), true);
+  assert.equal(localStorage.getItem('betterHackerCompletedLabs'), '3');
+  assert.equal(context.__app.completeGuidedLab(2), false);
+  assert.equal(localStorage.getItem('betterHackerCompletedLabs'), '3');
+  const snapshot = { lessonsCompleted:0, exercisesCompleted:3, investigationsCompleted:0, reviewResult:null, daily:{records:[]}, completedKeys:new Set() };
+  assert.equal(BetterHackerState.deriveXp(snapshot, BetterHackerState.emptyDailyState()) - before, 75);
+  assert.equal(BetterHackerMilestones.evaluateAchievements(snapshot).find(item => item.id === 'hands-on-learner').earned, true);
+});
+
+test('all guided labs contain the complete structured learning sequence', () => {
+  const { context } = boot();
+  for (const lab of context.__app.GUIDED_LABS) {
+    for (const key of ['learn','scenario','concept','evidence','task','question','hint','feedback','importance']) assert.ok(lab[key], `${lab.id} missing ${key}`);
+    assert.ok(lab.answers.length > 0);
+  }
+  for (const heading of ["What You’ll Learn", 'Scenario', 'Concept Explanation', 'Evidence', 'Step-by-Step Task', 'Learner Question / Decision', 'Submit Answer', 'Educational Feedback', 'Why This Matters in Cybersecurity', 'Complete Lab / Continue Learning']) assert.ok(source.includes(heading), `missing ${heading}`);
+});
+
+
+test('seven investigation cards retain existing keys and expose Start, Continue, and Review state', () => {
+  const { context, localStorage } = boot();
+  const activities = Array.from(context.__app.INVESTIGATION_ACTIVITIES);
+  assert.equal(activities.length, 7);
+  assert.equal(new Set(activities.map(item => item.id)).size, 7);
+  assert.deepEqual(activities.map(item => item.key), [
+    'betterHackerSocInvestigationComplete', 'betterHackerNetworkInvestigationComplete',
+    'betterHackerPhishingInvestigationComplete', 'betterHackerWindowsInvestigationComplete',
+    'betterHackerMalwareInvestigationComplete', 'betterHackerBruteForceInvestigationComplete',
+    'betterHackerWebAttackInvestigationComplete'
+  ]);
+  const first = context.__app.INVESTIGATION_ACTIVITIES[0];
+  assert.equal(context.__app.getInvestigationStatus(first, null), 'Not Started');
+  assert.equal(context.__app.getInvestigationAction('Not Started'), 'Start Investigation');
+  assert.equal(context.__app.getInvestigationStatus(first, first.id), 'In Progress');
+  assert.equal(context.__app.getInvestigationAction('In Progress'), 'Continue Investigation');
+  localStorage.setItem(first.key, 'true');
+  assert.equal(context.__app.getInvestigationStatus(first, null), 'Completed');
+  assert.equal(context.__app.getInvestigationAction('Completed'), 'Review Investigation');
+});
+
+test('investigation completion persists once and advances dashboard recommendations', () => {
+  const lessons = ['Fundamentals','Networking','Linux','WebSecurity','Cryptography','ActiveDirectory','Soc','SecurityTesting'];
+  const { context, localStorage } = boot({ seed: { betterHackerCompletedLabs: '4' } });
+  lessons.forEach(name => localStorage.setItem(`betterHacker${name}Complete`, 'true'));
+  const first = context.__app.INVESTIGATION_ACTIVITIES[0];
+  assert.equal(context.__app.completeInvestigation(first), true);
+  assert.equal(localStorage.getItem(first.key), 'true');
+  assert.equal(context.__app.completeInvestigation(first), false);
+  assert.equal(context.__app.getDashboardState().investigationsCompleted, 1);
+  assert.equal(context.__app.getDashboardState().recommendation.target, '#investigation-network-traffic');
+  context.__app.INVESTIGATION_ACTIVITIES.forEach(item => localStorage.setItem(item.key, 'true'));
+  assert.equal(context.__app.getDashboardState().recommendation.target, '#course-review');
+});
+
+test('each investigation has structured defensive content and Byte-safe context fields', () => {
+  const { context } = boot();
+  for (const activity of context.__app.INVESTIGATION_ACTIVITIES) {
+    for (const key of ['objective','scenario','concept','evidence','classify','question','choices','hint','feedback','importance']) assert.ok(activity[key], `${activity.id} missing ${key}`);
+    assert.ok(activity.evidence.length >= 4);
+    assert.ok(activity.choices[activity.answer]);
+  }
+  for (const token of ['type: "investigation"', 'activityId: activity.id', 'lookFor: activity.classify', 'submitted: false', 'submitted: true']) assert.ok(source.includes(token));
+});
 test('reset removes learning state and preserves the confirmed waitlist email', async () => {
   const progress = new FakeElement();
   const learn = new FakeElement();

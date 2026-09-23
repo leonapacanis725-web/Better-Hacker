@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const DailyChallenges = globalThis.BetterHackerChallenges;
   const Milestones = globalThis.BetterHackerMilestones;
   const CompanionModule = globalThis.BetterHackerCompanion;
+  const companion = CompanionModule.createCompanion(new CompanionModule.AuthoredProvider());
 
   function readCompletedLabs() {
     const raw = localStorage.getItem("betterHackerCompletedLabs");
@@ -37,266 +38,194 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   /* =========================
-     CYBERSECURITY LAB SYSTEM
+     CLICKABLE GUIDED LAB SYSTEM
   ========================= */
 
+  const GUIDED_LABS = Object.freeze([
+    {
+      id: "linux", icon: "💻", title: "Linux File Detective", topic: "Linux", time: "8–10 minutes",
+      description: "Interpret a safe directory listing and choose a command to read a text file.",
+      learn: "Read basic Linux file information and select an appropriate, non-destructive command.",
+      scenario: "You are helping review files in an authorized training workspace. Your goal is to inspect a notes file without changing it.",
+      concept: "The ls -l command lists names, types, permissions, owners, sizes, and dates. A leading d means directory; a leading - means regular file. cat prints a short text file to the terminal.",
+      evidence: "$ pwd\n/home/learner/training\n$ ls -l\ndrwxr-xr-x 2 learner learner 4096 Sep 23 09:00 reports\n-rw-r--r-- 1 learner learner   42 Sep 23 09:02 flag.txt",
+      task: "Identify which entry is the regular text file, then enter the command that safely displays it from the current directory.",
+      question: "Which command displays the contents of flag.txt?", answers: ["cat flag.txt", "cat ./flag.txt"],
+      hint: "The filename appears in the current directory. Use the short command commonly used to print a text file.",
+      feedback: "Correct. The leading - identifies flag.txt as a regular file, and cat flag.txt displays it without modifying it.",
+      importance: "Defenders routinely inspect files and logs. Recognizing file metadata and using read-only commands reduces accidental changes while investigating."
+    },
+    {
+      id: "networking", icon: "🌐", title: "Network Service Triage", topic: "Networking", time: "10–12 minutes",
+      description: "Connect ports, protocols, and services while interpreting simulated network evidence.",
+      learn: "Interpret common ports and connect a port to its likely protocol and service.",
+      scenario: "An approved inventory scan found three listening services on a training web server. You need to identify the service carrying ordinary unencrypted web traffic.",
+      concept: "A port identifies a network service endpoint. Common associations include 22/TCP for SSH, 80/TCP for HTTP, and 443/TCP for HTTPS. A port is evidence, not proof; defenders confirm it with service data.",
+      evidence: "SIMULATED AUTHORIZED SCAN\nPORT    PROTOCOL   STATE   SERVICE\n22      TCP        open    ssh\n80      TCP        open    http\n443     TCP        open    https",
+      task: "Compare the port, protocol, and service columns. Select the port conventionally associated with HTTP.",
+      question: "Which listed port is commonly associated with HTTP?", answers: ["80", "port 80"],
+      hint: "Look at the service column for http, then read the port in the same row.",
+      feedback: "Correct. Port 80/TCP is commonly associated with HTTP; HTTPS commonly uses 443/TCP.",
+      importance: "Knowing expected services helps defenders spot exposed, unexpected, or misconfigured network services during triage."
+    },
+    {
+      id: "cryptography", icon: "🔐", title: "Choose the Right Data Protection", topic: "Cryptography", time: "10–12 minutes",
+      description: "Distinguish encryption, hashing, and encoding by their security purpose.",
+      learn: "Tell encryption, hashing, and encoding apart and choose the right mechanism for a security need.",
+      scenario: "A team must protect a confidential backup so an authorized recipient can recover the original information with a key.",
+      concept: "Encryption is reversible with the proper key and protects confidentiality. Hashing creates a one-way digest useful for integrity checks and password verification. Encoding changes representation for compatibility and is not a security control.",
+      evidence: "REQUIREMENTS\n• Output must be unreadable without authorization\n• An approved recipient must recover the original data\n• A managed key is available",
+      task: "Match the requirements to the mechanism whose output can be reversed only with authorized key material.",
+      question: "Which mechanism best meets these requirements?", answers: ["encryption", "encrypting"],
+      hint: "Hashing is designed to be one-way, and encoding offers no confidentiality. Which option uses a key and is reversible?",
+      feedback: "Correct. Encryption transforms plaintext into ciphertext and permits authorized recovery with the proper key.",
+      importance: "Choosing the wrong mechanism can expose sensitive data. Encoding is not encryption, and hashes should not be treated as recoverable ciphertext."
+    },
+    {
+      id: "web-security", icon: "🛡️", title: "Defend a Database Query", topic: "Web Security", time: "12–15 minutes",
+      description: "Recognize unsafe input handling and learn why parameterized queries reduce SQL injection risk.",
+      learn: "Identify SQL injection risk and explain the defensive value of parameterized queries.",
+      scenario: "During an authorized code review, you see a login value being joined directly into a query string. You are asked to name the risk—not to exploit it.",
+      concept: "When an application treats untrusted input as part of SQL syntax, the input may change the query's meaning. Parameterized queries keep the SQL structure separate from data values, so the database treats input as data.",
+      evidence: "SIMULATED INSECURE PATTERN\nquery = \"SELECT id FROM users WHERE username = '\" + userInput + \"'\"\n\nDEFENSIVE PATTERN\nquery = \"SELECT id FROM users WHERE username = ?\"\ndatabase.execute(query, [userInput])",
+      task: "Compare how the two patterns handle userInput. Name the vulnerability risk created by the first pattern.",
+      question: "What vulnerability can direct insertion of untrusted input into a database query create?", answers: ["sql injection", "sql injection attack", "sqli"],
+      hint: "The risky input becomes part of SQL syntax. Name the injection category involving database queries.",
+      feedback: "Correct. Direct string construction can create SQL injection risk. Parameterized queries separate instructions from values and are a key defense.",
+      importance: "SQL injection can expose or alter data. Defensive input handling and parameterized queries protect confidentiality and integrity."
+    }
+  ]);
+
+  function getLabStatus(index, activeIndex) {
+    const completed = readCompletedLabs();
+    if (index < completed) return "Completed";
+    if (index === activeIndex) return "In Progress";
+    return "Not Started";
+  }
+
+  function getLabAction(status) {
+    return status === "Completed" ? "Review Lab" : status === "In Progress" ? "Continue Lab" : "Start Lab";
+  }
+
+  function completeGuidedLab(index) {
+    const completed = readCompletedLabs();
+    if (index < completed) return false;
+    if (index !== completed) return false;
+    localStorage.setItem("betterHackerCompletedLabs", String(completed + 1));
+    return true;
+  }
+
   const labSection = document.querySelector("#labs");
-
   if (labSection) {
-
-    const labButton = document.createElement("button");
-
-    labButton.textContent = "Start Cybersecurity Labs";
-    labButton.className = "primary-button lab-start-button";
-
-    labSection.appendChild(labButton);
-
-    const progress = document.createElement("p");
-
-    progress.id = "lab-progress";
-    progress.textContent = "Labs Completed: 0 / 4";
-    progress.style.marginTop = "20px";
-    progress.style.color = "#38bdf8";
-
-    labSection.appendChild(progress);
-
-    let completedLabs = readCompletedLabs();
-
-let currentLab = completedLabs;
-
-progress.textContent =
-  `Labs Completed: ${completedLabs} / 4`;
-
-if (completedLabs >= 4) {
-  labButton.textContent = "View Completed Labs";
-} else if (completedLabs > 0) {
-  labButton.textContent = `Continue Lab ${completedLabs + 1}`;
-}
-
-    const labs = [
-
-      {
-        title: "🧪 Lab 1 — Linux Basics",
-
-        question:
-          "Which Linux command displays the contents of a file named flag.txt?",
-
-        answers: ["cat flag.txt", "cat ./flag.txt"],
-        evidence: "The file is named flag.txt and is in the current directory.",
-        clue: "Use the Linux command that displays a file, followed by its path.",
-
-        success:
-          "Correct! The cat command can display the contents of a file.",
-
-        hint:
-          "Think about the Linux command used to read a text file."
-      },
-
-      {
-        title: "🌐 Lab 2 — Network Recon",
-
-        question:
-          "A simulated Nmap scan shows ports 22, 80, and 443 open. Which port is commonly associated with HTTP?",
-
-        answers: ["80", "port 80"],
-        evidence: "The approved scan lists ports 22, 80, and 443.",
-        clue: "Identify the standard port associated with unencrypted HTTP.",
-
-        success:
-          "Correct! Port 80 is commonly associated with HTTP.",
-
-        hint:
-          "HTTP commonly uses a well-known port below 100."
-      },
-
-      {
-        title: "🔐 Lab 3 — Cryptography",
-
-        question:
-          "Which security concept transforms readable data into an unreadable form using encryption?",
-
-        answers: ["encryption", "encrypting"],
-        evidence: "Readable plaintext must become unreadable ciphertext.",
-        clue: "Name the protective transformation, not its output.",
-
-        success:
-          "Correct! Encryption transforms plaintext into ciphertext.",
-
-        hint:
-          "This protects information so unauthorized people cannot easily read it."
-      },
-
-      {
-        title: "🛡️ Lab 4 — Web Security",
-
-        question:
-          "A website accepts user input and places it directly into a database query. What type of vulnerability could this create?",
-
-        answers: ["sql injection", "sql injection attack", "sqli"],
-        evidence: "Untrusted input is inserted directly into a database query.",
-        clue: "Identify the vulnerability involving manipulation of SQL queries.",
-
-        success:
-          "Correct! Unsafe database input can create a SQL injection vulnerability.",
-
-        hint:
-          "Think about attacks involving database queries."
-      }
-
-    ];
-
-    let activeGuidedExercise = null;
-
-    labButton.addEventListener("click", function () {
-
-      if (activeGuidedExercise) {
-        activeGuidedExercise.remove();
-        activeGuidedExercise = null;
-      }
-
-      if (currentLab >= labs.length) {
-
-        const finished = document.createElement("div");
-
-        finished.className = "lab-challenge guided-exercise";
-        activeGuidedExercise = finished;
-
-        finished.innerHTML = `
-          <h3>🎉 All Labs Completed!</h3>
-          <p>
-            You completed all four Better Hacker beginner challenges.
-          </p>
-          <p>
-            Keep learning and continue building your cybersecurity skills.
-          </p>
-        `;
-
-        labSection.appendChild(finished);
-
-        return;
-      }
-
-      const lab = labs[currentLab];
-      if (typeof companion !== "undefined") companion.setContext({ type:"guided", topic:lab.title, hint:lab.hint, explanation:lab.success, submitted:false });
-
-      const challenge = document.createElement("div");
-
-      challenge.className = "lab-challenge guided-exercise";
-      activeGuidedExercise = challenge;
-
-      challenge.innerHTML = `
-        <h3>${lab.title}</h3>
-
-        <div class="guided-step"><strong>1. Review the evidence</strong><p>${lab.evidence}</p></div>
-        <div class="guided-step"><strong>2. Interpret the clue</strong><p>${lab.clue}</p></div>
-        <p><strong>3. Final answer</strong></p>
-        <p>${lab.question}</p>
-
-        <label class="input-label" for="lab-answer">Your final answer</label>
-        <input
-          type="text"
-          id="lab-answer"
-          placeholder="Type your answer..."
-          autocomplete="off"
-        >
-
-        <br>
-
-        <button id="submit-answer" class="primary-button">
-          Submit Answer
-        </button>
-
-        <button id="hint-button" class="secondary-button">
-          Hint
-        </button>
-
-        <p id="lab-result" role="status" aria-live="polite"></p>
-      `;
-
-      labSection.appendChild(challenge);
-
-      const submitButton =
-        document.querySelector("#submit-answer");
-
-      const hintButton =
-        document.querySelector("#hint-button");
-
-      const answerInput =
-        document.querySelector("#lab-answer");
-
-      const result =
-        document.querySelector("#lab-result");
-
-      function submitGuidedAnswer() {
-
-        const answer =
-          answerInput.value.trim().toLowerCase();
-
-        if (lab.answers.includes(answer)) {
-
-          result.textContent = "✅ " + lab.success;
-          result.style.color = "#38bdf8";
-
-completedLabs++;
-currentLab++;
-
-localStorage.setItem(
-  "betterHackerCompletedLabs",
-  completedLabs
-);
-
-progress.textContent =
-  `Labs Completed: ${completedLabs} / ${labs.length}`;
-refreshLearningUI();
-
-          submitButton.disabled = true;
-          answerInput.disabled = true;
-
-          setTimeout(function () {
-
-            challenge.remove();
-            if (activeGuidedExercise === challenge) activeGuidedExercise = null;
-
-            if (currentLab < labs.length) {
-
-              labButton.textContent =
-                `Start Lab ${currentLab + 1}`;
-
-            } else {
-
-              labButton.textContent =
-                "View Completed Labs";
-
-            }
-
-          }, 1200);
-
-        } else {
-
-          result.textContent =
-            "❌ Not quite. Try again.";
-
-          result.style.color = "#f87171";
+    const existingCards = labSection.querySelector(".cards");
+    if (existingCards) existingCards.hidden = true;
+    const oldHelpLink = labSection.querySelector('a[href="#coach"]');
+    if (oldHelpLink) oldHelpLink.hidden = true;
+
+    const overview = document.createElement("div");
+    overview.className = "lab-overview";
+    overview.id = "lab-overview";
+    const workspace = document.createElement("article");
+    workspace.className = "lab-challenge guided-exercise lab-workspace";
+    workspace.id = "lab-workspace";
+    workspace.hidden = true;
+    labSection.appendChild(overview);
+    labSection.appendChild(workspace);
+
+    let activeLabIndex = -1;
+    let answerWasCorrect = false;
+
+    function renderLabCards() {
+      const completed = readCompletedLabs();
+      overview.innerHTML = '<p id="lab-progress" role="status" aria-live="polite">Guided exercises completed: ' + completed + ' / ' + GUIDED_LABS.length + '</p><p><a class="secondary-button" href="#investigations-overview">Browse Defensive Investigations</a></p><div class="lab-card-grid">' +
+        GUIDED_LABS.map(function (lab, index) {
+          const status = getLabStatus(index, activeLabIndex);
+          return '<article class="lab-card"><p class="lab-topic">' + lab.topic + ' · Beginner</p><h3>' + lab.icon + ' ' + lab.title + '</h3><p>' + lab.description + '</p><p class="lab-time">Estimated time: ' + lab.time + '</p><p class="lab-status lab-status-' + status.toLowerCase().replace(" ", "-") + '">Status: <strong>' + status + '</strong></p><button type="button" class="primary-button lab-card-action" data-lab-index="' + index + '" aria-label="' + getLabAction(status) + ': ' + lab.title + '">' + getLabAction(status) + '</button></article>';
+        }).join("") + '</div>';
+    }
+
+    function setLabHash(lab) {
+      if (typeof history !== "undefined" && history.pushState) history.pushState(null, "", "#lab-" + lab.id);
+      else if (typeof location !== "undefined") location.hash = "lab-" + lab.id;
+    }
+
+    function openLab(index, updateHash) {
+      const lab = GUIDED_LABS[index];
+      if (!lab) return;
+      activeLabIndex = index;
+      answerWasCorrect = false;
+      renderLabCards();
+      workspace.hidden = false;
+      workspace.setAttribute("data-lab-id", lab.id);
+      workspace.innerHTML = '<a class="lab-back-link" href="#lab-overview">← Back to all labs</a>' +
+        '<p class="lab-topic">' + lab.topic + ' · Beginner · ' + lab.time + '</p><h3 tabindex="-1">' + lab.icon + ' ' + lab.title + '</h3>' +
+        '<section aria-labelledby="lab-learn-heading"><h4 id="lab-learn-heading">1. What You’ll Learn</h4><p>' + lab.learn + '</p></section>' +
+        '<section><h4>2. Scenario</h4><p>' + lab.scenario + '</p></section>' +
+        '<section><h4>3. Concept Explanation</h4><p>' + lab.concept + '</p></section>' +
+        '<section><h4>4. Evidence</h4><pre><code>' + lab.evidence + '</code></pre></section>' +
+        '<section><h4>5. Step-by-Step Task</h4><ol><li>Read the scenario and concept.</li><li>Review each line of evidence.</li><li>' + lab.task + '</li></ol></section>' +
+        '<form id="guided-lab-form"><h4>6. Learner Question / Decision</h4><p>' + lab.question + '</p><label class="input-label" for="lab-answer">Your answer</label><input type="text" id="lab-answer" autocomplete="off" required><div class="lab-actions"><button type="button" id="hint-button" class="secondary-button">7. Show Hint</button><button type="submit" id="submit-answer" class="primary-button">8. Submit Answer</button></div></form>' +
+        '<div id="lab-result" role="status" aria-live="polite"></div><section class="lab-why"><h4>10. Why This Matters in Cybersecurity</h4><p>' + lab.importance + '</p></section><div id="lab-completion-actions"></div>';
+      if (updateHash !== false) setLabHash(lab);
+      if (typeof companion !== "undefined") companion.setContext({ type: "guided-lab", activityId: lab.id, topic: lab.topic + ": " + lab.title, hint: lab.hint, explanation: lab.concept, lookFor: lab.task, submitted: false });
+
+      const form = workspace.querySelector("#guided-lab-form");
+      const input = workspace.querySelector("#lab-answer");
+      const result = workspace.querySelector("#lab-result");
+      const submit = workspace.querySelector("#submit-answer");
+      workspace.querySelector("#hint-button").addEventListener("click", function () {
+        result.className = "feedback-review";
+        result.textContent = "💡 Hint: " + lab.hint;
+      });
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        const answer = input.value.trim().toLowerCase();
+        if (!lab.answers.includes(answer)) {
+          result.className = "feedback-review";
+          result.textContent = "Not quite yet. Recheck the evidence and use the hint; no progress was changed.";
+          return;
         }
-
-      }
-
-      submitButton.addEventListener("click", submitGuidedAnswer);
-      answerInput.addEventListener("keydown", function (event) {
-        if (event.key === "Enter") { event.preventDefault(); submitGuidedAnswer(); }
+        answerWasCorrect = true;
+        result.className = "feedback-success";
+        result.textContent = "9. Educational Feedback — " + lab.feedback;
+        submit.disabled = true;
+        input.disabled = true;
+        if (typeof companion !== "undefined") companion.setContext({ submitted: true, explanation: lab.feedback });
+        const completed = readCompletedLabs();
+        const alreadyComplete = index < completed;
+        const canComplete = index === completed;
+        const actions = workspace.querySelector("#lab-completion-actions");
+        actions.innerHTML = '<h4>11. Complete Lab / Continue Learning</h4>' +
+          (alreadyComplete ? '<p>This lab was already completed. Reviewing it does not award XP again.</p>' : canComplete ? '<button type="button" id="complete-lab" class="primary-button">Complete Lab</button>' : '<p>Practice complete. Finish the earlier lab first so existing sequential progress remains accurate.</p>') +
+          '<a class="secondary-button" href="#lab-overview">Return to Labs</a>';
+        const complete = workspace.querySelector("#complete-lab");
+        if (complete) complete.addEventListener("click", function () {
+          if (!answerWasCorrect || !completeGuidedLab(index)) return;
+          refreshLearningUI();
+          renderLabCards();
+          actions.innerHTML = '<h4>11. Lab Complete</h4><p class="feedback-success">Completed. Progress, XP, achievements, badge evidence, and your dashboard are now updated.</p>' +
+            (index + 1 < GUIDED_LABS.length ? '<button type="button" class="primary-button" id="next-guided-lab">Continue Learning: ' + GUIDED_LABS[index + 1].title + '</button>' : '<a class="primary-button" href="#dashboard">Continue Learning from Dashboard</a>') + '<a class="secondary-button" href="#lab-overview">Return to Labs</a>';
+          const next = workspace.querySelector("#next-guided-lab");
+          if (next) next.addEventListener("click", function () { openLab(index + 1, true); });
+        });
       });
+      const heading = workspace.querySelector("h3");
+      if (heading) heading.focus();
+    }
 
-      hintButton.addEventListener("click", function () {
-
-        result.textContent =
-          "💡 Hint: " + lab.hint;
-
-        result.style.color = "#facc15";
-
-      });
-
+    overview.addEventListener("click", function (event) {
+      const button = event.target.closest && event.target.closest(".lab-card-action");
+      if (button) openLab(Number(button.getAttribute("data-lab-index")), true);
     });
-
+    function openFromHash() {
+      const hash = typeof location !== "undefined" ? location.hash : "";
+      const index = GUIDED_LABS.findIndex(function (lab) { return hash === "#lab-" + lab.id; });
+      if (index >= 0) openLab(index, false);
+      if (hash === "#lab-overview" || hash === "#labs") { workspace.hidden = true; activeLabIndex = -1; renderLabCards(); }
+    }
+    if (typeof window !== "undefined") window.addEventListener("hashchange", openFromHash);
+    renderLabCards();
+    openFromHash();
   }
 
 
@@ -1161,1042 +1090,207 @@ if (
 
 }
 /* =========================
-   SOC ALERT INVESTIGATION LAB
+   CLICKABLE DEFENSIVE INVESTIGATIONS
 ========================= */
 
-const socLabSection = document.querySelector("#labs");
-
-if (socLabSection) {
-
-  const socInvestigation = document.createElement("div");
-
-  socInvestigation.className = "lab-challenge soc-investigation-lab";
-
-  socInvestigation.innerHTML = `
-
-    <h3>🛡️ SOC Alert Investigation</h3>
-
-    <p>
-      You are a SOC analyst reviewing a suspicious login alert.
-      Examine the activity below and decide what should happen next.
-    </p>
-
-    <div class="command-list">
-
-      <div class="command-item">
-        <code>User</code>
-        <span>j.smith</span>
-      </div>
-
-      <div class="command-item">
-        <code>Login Time</code>
-        <span>2:14 AM</span>
-      </div>
-
-      <div class="command-item">
-        <code>Location</code>
-        <span>Detroit, Michigan</span>
-      </div>
-
-      <div class="command-item">
-        <code>Failed Attempts</code>
-        <span>14</span>
-      </div>
-
-      <div class="command-item">
-        <code>Successful Login</code>
-        <span>Yes — after the failed attempts</span>
-      </div>
-
-      <div class="command-item">
-        <code>Device</code>
-        <span>Unknown device</span>
-      </div>
-
-    </div>
-
-    <p>
-      <strong>Question:</strong>
-      Which action is the best next step for the SOC analyst?
-    </p>
-
-    <div class="soc-answer-options">
-
-      <button
-        class="secondary-button soc-answer"
-        data-answer="ignore"
-      >
-        Ignore the alert
-      </button>
-
-      <button
-        class="secondary-button soc-answer"
-        data-answer="investigate"
-      >
-        Investigate the login activity
-      </button>
-
-      <button
-        class="secondary-button soc-answer"
-        data-answer="delete"
-      >
-        Delete the security logs
-      </button>
-
-    </div>
-
-    <p id="soc-lab-result" role="status" aria-live="polite"></p>
-
-  `;
-
-  socLabSection.appendChild(socInvestigation);
-
-  const socAnswerButtons =
-    socInvestigation.querySelectorAll(".soc-answer");
-
-  const socLabResult =
-    socInvestigation.querySelector("#soc-lab-result");
-
-  socAnswerButtons.forEach(function (button) {
-
-    button.addEventListener("click", function () {
-
-      const answer = button.dataset.answer;
-
-      if (answer === "investigate") {
-
-        socLabResult.textContent =
-          "✅ Correct! Multiple failed logins followed by a successful login from an unknown device should be investigated.";
-
-        socLabResult.style.color = "#38bdf8";
-
-        localStorage.setItem(
-          "betterHackerSocInvestigationComplete",
-          "true"
-        );
-
-      } else {
-
-        socLabResult.textContent =
-          "❌ Not quite. Look at the failed login attempts, successful login, and unknown device.";
-
-        socLabResult.style.color = "#f87171";
-
-      }
-
-    });
-
-  });
-
-}
-/* =========================
-   NETWORK TRAFFIC INVESTIGATION LAB
-========================= */
-
-const networkTrafficSection = document.querySelector("#labs");
-
-if (networkTrafficSection) {
-
-  const networkInvestigation = document.createElement("div");
-
-  networkInvestigation.className =
-    "lab-challenge network-investigation-lab";
-
-  networkInvestigation.innerHTML = `
-
-    <h3>🌐 Network Traffic Investigation</h3>
-
-    <p>
-      You are reviewing network traffic from a workstation.
-      Examine the activity below and identify the most suspicious connection.
-    </p>
-
-    <div class="command-list">
-
-      <div class="command-item">
-        <code>Connection 1</code>
-        <span>Port 443 — HTTPS — 18 connections</span>
-      </div>
-
-      <div class="command-item">
-        <code>Connection 2</code>
-        <span>Port 53 — DNS — 7 connections</span>
-      </div>
-
-      <div class="command-item">
-        <code>Connection 3</code>
-        <span>Port 22 — SSH — 2 connections</span>
-      </div>
-
-      <div class="command-item">
-        <code>Connection 4</code>
-        <span>Port 4444 — Unknown service — 96 outbound connections</span>
-      </div>
-
-    </div>
-
-    <p>
-      <strong>Question:</strong>
-      Which connection should the analyst investigate first?
-    </p>
-
-    <div class="network-answer-options">
-
-      <button
-        class="secondary-button network-answer"
-        data-answer="443"
-      >
-        Port 443
-      </button>
-
-      <button
-        class="secondary-button network-answer"
-        data-answer="53"
-      >
-        Port 53
-      </button>
-
-      <button
-        class="secondary-button network-answer"
-        data-answer="22"
-      >
-        Port 22
-      </button>
-
-      <button
-        class="secondary-button network-answer"
-        data-answer="4444"
-      >
-        Port 4444
-      </button>
-
-    </div>
-
-    <p id="network-investigation-result" role="status" aria-live="polite"></p>
-
-  `;
-
-  networkTrafficSection.appendChild(networkInvestigation);
-
-  const networkAnswerButtons =
-    networkInvestigation.querySelectorAll(".network-answer");
-
-  const networkInvestigationResult =
-    networkInvestigation.querySelector(
-      "#network-investigation-result"
-    );
-
-  networkAnswerButtons.forEach(function (button) {
-
-    button.addEventListener("click", function () {
-
-      const answer = button.dataset.answer;
-
-      if (answer === "4444") {
-
-        networkInvestigationResult.textContent =
-          "✅ Correct! Port 4444 with an unknown service and 96 outbound connections is unusual and should be investigated.";
-
-        networkInvestigationResult.style.color =
-          "#38bdf8";
-
-        localStorage.setItem(
-          "betterHackerNetworkInvestigationComplete",
-          "true"
-        );
-
-      } else {
-
-        networkInvestigationResult.textContent =
-          "❌ Not quite. Look for the connection with unusual traffic volume and an unknown service.";
-
-        networkInvestigationResult.style.color =
-          "#f87171";
-
-      }
-
-    });
-
-  });
-
+const INVESTIGATION_ACTIVITIES = Object.freeze([
+  {
+    id: "soc-alert", key: "betterHackerSocInvestigationComplete", icon: "🛡️", title: "SOC Alert Investigation", topic: "SOC & SIEM", difficulty: "Beginner", time: "10–12 minutes",
+    objective: "Correlate authentication signals and choose a proportionate first response.",
+    scenario: "You are a SOC analyst reviewing a simulated identity alert for an employee account.",
+    concept: "Authentication alerts become stronger when several signals align. Time, failed attempts, a later success, and device familiarity provide context; one field alone does not prove compromise.",
+    evidence: ["User: j.smith", "Time: 2:14 AM", "Failed attempts: 14", "Successful login: Yes, after failures", "Device: Unknown", "Location: Detroit, Michigan"],
+    classify: "Classify the event as routine, suspicious and needing validation, or safe to delete.",
+    question: "What is the best first action?", choices: ["Ignore the alert", "Investigate and verify the login activity", "Delete the security logs"], answer: 1,
+    hint: "Correlate the failures, later success, time, and unfamiliar device. Preserve evidence.",
+    feedback: "The combined signals justify investigation and identity verification. They are suspicious evidence, not automatic proof of compromise.",
+    importance: "Careful triage helps analysts respond quickly without destroying evidence or overreacting to a single signal."
+  },
+  {
+    id: "network-traffic", key: "betterHackerNetworkInvestigationComplete", icon: "🌐", title: "Network Traffic Investigation", topic: "Network Defense", difficulty: "Beginner", time: "10–12 minutes",
+    objective: "Compare network connections and prioritize the strongest anomaly for investigation.",
+    scenario: "An authorized monitoring tool summarized outbound connections from a training workstation.",
+    concept: "Ports suggest likely services, while direction, volume, destination reputation, and baseline determine whether traffic is unusual. An uncommon port is a lead, not proof.",
+    evidence: ["443/TCP · HTTPS · 18 outbound connections", "53/UDP · DNS · 7 outbound requests", "22/TCP · SSH · 2 approved admin connections", "4444/TCP · Unknown service · 96 outbound connections"],
+    classify: "Compare expected service, volume, and authorization. Identify the connection that should be prioritized.",
+    question: "Which connection should the analyst investigate first?", choices: ["Port 443", "Port 53", "Port 22", "Port 4444"], answer: 3,
+    hint: "Look for the row combining an unknown service with unusually high outbound volume.",
+    feedback: "Port 4444 with an unknown service and 96 outbound connections is the strongest anomaly. The next step is validation, not assuming maliciousness.",
+    importance: "Network prioritization helps defenders focus limited time on evidence that departs most clearly from an approved baseline."
+  },
+  {
+    id: "phishing-email", key: "betterHackerPhishingInvestigationComplete", icon: "📧", title: "Phishing Email Investigation", topic: "Email Security", difficulty: "Beginner", time: "10–12 minutes",
+    objective: "Evaluate sender, language, link, and attachment indicators without interacting with them.",
+    scenario: "An employee reported a simulated email. Review its displayed metadata safely; do not open its link or attachment.",
+    concept: "Phishing assessments use multiple indicators: lookalike domains, urgency, unexpected attachments, and mismatched or insecure links. Reporting preserves evidence for defenders.",
+    evidence: ["Sender: security@micros0ft-support.example", "Subject: URGENT: account disabled today", "Message: Verify immediately to avoid suspension", "Displayed link: http://account-verification.example", "Attachment: Account_Update.zip"],
+    classify: "Classify the message as routine, likely phishing, or impossible to assess, based on the combined indicators.",
+    question: "What is the best assessment and response?", choices: ["Safe—open the attachment", "Likely phishing—report it through the approved process", "Forward it widely for opinions"], answer: 1,
+    hint: "Examine the substituted character in the sender, urgency, HTTP link, and unexpected ZIP file.",
+    feedback: "The lookalike sender, urgency, suspicious link, and ZIP attachment support a likely-phishing classification and safe reporting.",
+    importance: "Recognizing and reporting phishing can prevent credential exposure while giving responders useful evidence."
+  },
+  {
+    id: "windows-ad", key: "betterHackerWindowsInvestigationComplete", icon: "🪟", title: "Windows / Active Directory Investigation", topic: "Identity Security", difficulty: "Beginner", time: "12–15 minutes",
+    objective: "Recognize a risky privilege change and select an evidence-preserving response.",
+    scenario: "You are reviewing simulated Windows identity events for an employee account.",
+    concept: "A privileged-group change raises impact. Defenders correlate who changed access, the source device, authentication events, and whether the change was approved.",
+    evidence: ["User: m.williams", "Time: 3:42 AM", "Failed logins: 11", "Successful login: Yes", "Group change: Added to Administrators", "Source: Unknown workstation"],
+    classify: "Decide whether the evidence represents ordinary access, suspicious privilege escalation evidence, or disposable logs.",
+    question: "What should the analyst do first?", choices: ["Ignore the activity", "Investigate, verify authorization, and preserve the events", "Delete the logs"], answer: 1,
+    hint: "Focus on the unfamiliar device and unexpected administrator-group membership change.",
+    feedback: "The login pattern and privileged-group change require prompt verification and preserved evidence. Access may also need containment under the organization’s process.",
+    importance: "Unauthorized privilege can increase the impact of account misuse, so timely, documented validation matters."
+  },
+  {
+    id: "malware", key: "betterHackerMalwareInvestigationComplete", icon: "🔎", title: "Malware Investigation", topic: "Endpoint Defense", difficulty: "Beginner", time: "12–15 minutes",
+    objective: "Correlate process and network evidence and choose a safe containment-first action.",
+    scenario: "A simulated endpoint alert reports unusual process behavior on an employee workstation.",
+    concept: "Process name, location, parent process, and network behavior are investigation clues. Isolation can reduce risk while responders preserve and analyze evidence.",
+    evidence: ["Process: invoice_update.exe", "Location: Downloads", "Parent: WINWORD.EXE", "Network: Repeated connections to an unknown server", "Alert: Suspicious executable behavior"],
+    classify: "Classify the endpoint as routine, requiring isolation and investigation, or safe to allow without review.",
+    question: "What is the safest next action?", choices: ["Ignore the process", "Use the approved process to isolate and investigate the workstation", "Allow the program to continue"], answer: 1,
+    hint: "Connect the document parent process, downloaded executable, alert, and repeated unknown network traffic.",
+    feedback: "The combined endpoint and network indicators justify approved isolation and investigation while preserving evidence.",
+    importance: "Fast, controlled containment can limit spread and communication while responders determine what actually occurred."
+  },
+  {
+    id: "brute-force", key: "betterHackerBruteForceInvestigationComplete", icon: "🔐", title: "Brute Force Investigation", topic: "Authentication Defense", difficulty: "Beginner", time: "8–10 minutes",
+    objective: "Classify a rapid password-guessing pattern and identify useful response evidence.",
+    scenario: "A simulated authentication report shows repeated attempts against one employee account.",
+    concept: "Brute-force activity typically produces many rapid failures with varied password guesses. Analysts also check source, target scope, success events, and approved testing context.",
+    evidence: ["User: a.johnson", "Failures: 86 in 4 minutes", "Source: 203.0.113.42 (documentation-only address)", "Passwords tried: Many different values", "Successful login: No"],
+    classify: "Classify the pattern as phishing, brute-force behavior, or endpoint malware evidence.",
+    question: "Which pattern best fits this evidence?", choices: ["Phishing", "Brute-force password guessing", "Malware execution"], answer: 1,
+    hint: "Consider the rate of failed logins and the many different password guesses.",
+    feedback: "The rapid failures and varied guesses match brute-force behavior. Analysts should preserve logs and follow approved account-protection procedures.",
+    importance: "Early recognition supports rate limiting, account safeguards, and source investigation before a guess succeeds."
+  },
+  {
+    id: "web-attack", key: "betterHackerWebAttackInvestigationComplete", icon: "🌐", title: "Web Attack Investigation", topic: "Web Defense", difficulty: "Beginner", time: "10–12 minutes",
+    objective: "Recognize simulated SQL-injection indicators and choose a defensive response.",
+    scenario: "An authorized web-monitoring system flagged repeated requests to a training login page.",
+    concept: "SQL injection risk appears when untrusted values can be interpreted as query syntax. Logs can show attempts; parameterized queries keep instructions separate from data.",
+    evidence: ["Target: /login.php", "Parameter: username", "Captured input: ' OR '1'='1", "Rate: 37 attempts in 2 minutes", "Source: Unknown external address"],
+    classify: "Classify the request pattern by the technology it appears to manipulate; do not reproduce it against any system.",
+    question: "What should the analyst investigate?", choices: ["Cross-site scripting", "SQL injection attempts and unsafe query handling", "Phishing email delivery"], answer: 1,
+    hint: "The input resembles a database condition and targets a login parameter.",
+    feedback: "The input is a simulated SQL-injection indicator. Defenders should review logs and ensure the application uses parameterized queries.",
+    importance: "Recognizing injection attempts and fixing unsafe query construction helps protect sensitive database information."
+  }
+]);
+
+function getInvestigationStatus(activity, activeId) {
+  if (localStorage.getItem(activity.key) === "true") return "Completed";
+  return activity.id === activeId ? "In Progress" : "Not Started";
 }
 
-  /* =========================
-   INVESTIGATION PROGRESS
-========================= */
+function getInvestigationAction(status) {
+  return status === "Completed" ? "Review Investigation" : status === "In Progress" ? "Continue Investigation" : "Start Investigation";
+}
 
-const investigationSection =
-  document.querySelector("#labs");
+function completeInvestigation(activity) {
+  if (!activity || localStorage.getItem(activity.key) === "true") return false;
+  localStorage.setItem(activity.key, "true");
+  return true;
+}
 
-if (investigationSection) {
+const investigationHost = document.querySelector("#labs");
+if (investigationHost) {
+  INVESTIGATIONS.forEach(function (legacy) {
+    const element = document.querySelector(legacy.selector);
+    if (element) element.hidden = true;
+  });
+  const legacyProgress = investigationHost.querySelector(".investigation-progress");
+  if (legacyProgress) legacyProgress.hidden = true;
 
-  const investigationProgress =
-    document.createElement("div");
+  const overview = document.createElement("section");
+  overview.id = "investigations-overview";
+  overview.className = "investigation-overview";
+  overview.setAttribute("aria-labelledby", "investigations-heading");
+  const workspace = document.createElement("article");
+  workspace.id = "investigation-workspace";
+  workspace.className = "lab-challenge investigation-workspace";
+  workspace.hidden = true;
+  investigationHost.appendChild(overview);
+  investigationHost.appendChild(workspace);
+  let activeInvestigationId = null;
 
-  investigationProgress.className =
-    "investigation-progress";
-
-  investigationSection.appendChild(
-    investigationProgress
-  );
-
-  function updateInvestigationProgress() {
-
-    const investigations = INVESTIGATIONS;
-
-    let completed = 0;
-
-    let progressHTML =
-      "<h3>🏆 Investigation Progress</h3>";
-
-    investigations.forEach(function (investigation) {
-
-      const complete =
-        localStorage.getItem(investigation.key) === "true";
-
-      if (complete) {
-        completed++;
-      }
-
-      progressHTML += `
-        <p>
-          ${complete ? "✅" : "⬜"}
-          ${investigation.name}
-        </p>
-      `;
-
-    });
-
-    progressHTML += `
-      <strong>
-        ${completed} / ${investigations.length}
-        Investigations Completed
-      </strong>
-    `;
-
-    if (completed === investigations.length) {
-
-      progressHTML +=
-        "<p>🎉 Investigation Level Complete!</p>";
-
-    }
-
-    investigationProgress.innerHTML =
-      progressHTML;
+  function renderInvestigationCards() {
+    const completed = INVESTIGATION_ACTIVITIES.filter(function (activity) { return localStorage.getItem(activity.key) === "true"; }).length;
+    overview.innerHTML = '<p class="section-label">DEFENSIVE INVESTIGATIONS</p><h3 id="investigations-heading">Practice Evidence-Based Decisions</h3><p>Inspect safe simulated evidence, make a defensive decision, and review the reasoning.</p><p class="investigation-count" role="status" aria-live="polite">Investigations completed: ' + completed + ' / ' + INVESTIGATION_ACTIVITIES.length + '</p><div class="investigation-card-grid">' + INVESTIGATION_ACTIVITIES.map(function (activity) {
+      const status = getInvestigationStatus(activity, activeInvestigationId);
+      const action = getInvestigationAction(status);
+      return '<article class="investigation-card"><p class="lab-topic">' + activity.topic + ' · ' + activity.difficulty + '</p><h4>' + activity.icon + ' ' + activity.title + '</h4><p>' + activity.objective + '</p><p>Estimated time: ' + activity.time + '</p><p class="lab-status lab-status-' + status.toLowerCase().replace(" ", "-") + '">Status: <strong>' + status + '</strong></p><button type="button" class="primary-button investigation-card-action" data-investigation-id="' + activity.id + '" aria-label="' + action + ': ' + activity.title + '">' + action + '</button></article>';
+    }).join("") + '</div>';
   }
 
-  function renderInvestigationCompletionStates() {
-    INVESTIGATIONS.forEach(function (investigation) {
-      const card = document.querySelector(investigation.selector);
-      if (!card) return;
-      const complete = localStorage.getItem(investigation.key) === "true";
-      card.classList.toggle("activity-complete", complete);
-      let badge = card.querySelector(".activity-complete-badge");
-      if (complete && !badge) {
-        badge = document.createElement("p");
-        badge.className = "activity-complete-badge";
-        badge.textContent = "✓ Completed — you can review this investigation again.";
-        card.insertBefore(badge, card.firstChild);
-      } else if (!complete && badge) badge.remove();
-    });
+  function setInvestigationHash(activity) {
+    if (typeof history !== "undefined" && history.pushState) history.pushState(null, "", "#investigation-" + activity.id);
+    else if (typeof location !== "undefined") location.hash = "investigation-" + activity.id;
   }
 
-  updateInvestigationProgress();
-  renderInvestigationCompletionStates();
-
-  investigationSection.addEventListener(
-    "click",
-    function (event) {
-
-      if (
-        event.target.matches(
-          ".soc-answer, .network-answer, .phishing-answer, .windows-answer, .malware-answer, .brute-force-answer, .web-attack-answer"
-        )
-      ) {
-
-        setTimeout(function () {
-          updateInvestigationProgress();
-          renderInvestigationCompletionStates();
-          renderDashboard();
-        }, 0);
-
-      }
-
-    }
-  );
-
-}
-  
-/* =========================
-   PHISHING EMAIL INVESTIGATION
-========================= */
-
-const phishingSection =
-  document.querySelector("#labs");
-
-if (phishingSection) {
-
-  const phishingLab =
-    document.createElement("div");
-
-  phishingLab.className =
-    "lab-challenge phishing-investigation-lab";
-
-  phishingLab.innerHTML = `
-
-    <h3>📧 Phishing Email Investigation</h3>
-
-    <p>
-      You are reviewing a suspicious email reported by an employee.
-      Examine the details and decide whether the message is likely phishing.
-    </p>
-
-    <div class="command-list">
-
-      <div class="command-item">
-        <code>Sender</code>
-        <span>security@micros0ft-support.com</span>
-      </div>
-
-      <div class="command-item">
-        <code>Subject</code>
-        <span>URGENT: Your account will be disabled today</span>
-      </div>
-
-      <div class="command-item">
-        <code>Message</code>
-        <span>Verify your account immediately to avoid suspension.</span>
-      </div>
-
-      <div class="command-item">
-        <code>Link</code>
-        <span>http://account-verification-login.example</span>
-      </div>
-
-      <div class="command-item">
-        <code>Attachment</code>
-        <span>Account_Update.zip</span>
-      </div>
-
-    </div>
-
-    <p>
-      <strong>Question:</strong>
-      What is the best assessment of this email?
-    </p>
-
-    <div class="phishing-answer-options">
-
-      <button
-        class="secondary-button phishing-answer"
-        data-answer="safe"
-      >
-        Safe email
-      </button>
-
-      <button
-        class="secondary-button phishing-answer"
-        data-answer="phishing"
-      >
-        Likely phishing
-      </button>
-
-      <button
-        class="secondary-button phishing-answer"
-        data-answer="ignore"
-      >
-        Ignore it without reviewing
-      </button>
-
-    </div>
-
-    <p id="phishing-result" role="status" aria-live="polite"></p>
-
-  `;
-
-  phishingSection.appendChild(phishingLab);
-
-  const phishingAnswerButtons =
-    phishingLab.querySelectorAll(".phishing-answer");
-
-  const phishingResult =
-    phishingLab.querySelector("#phishing-result");
-
-  phishingAnswerButtons.forEach(function (button) {
-
-    button.addEventListener("click", function () {
-
-      const answer = button.dataset.answer;
-
-      if (answer === "phishing") {
-
-        phishingResult.textContent =
-          "✅ Correct! The lookalike sender domain, urgent language, suspicious link, and ZIP attachment are strong phishing indicators.";
-
-        phishingResult.style.color =
-          "#38bdf8";
-
-        localStorage.setItem(
-          "betterHackerPhishingInvestigationComplete",
-          "true"
-        );
-
-      } else {
-
-        phishingResult.textContent =
-          "❌ Not quite. Check the sender domain, urgency, link, and attachment.";
-
-        phishingResult.style.color =
-          "#f87171";
-
-      }
-
+  function openInvestigation(activity, updateHash) {
+    if (!activity) return;
+    activeInvestigationId = activity.id;
+    renderInvestigationCards();
+    workspace.hidden = false;
+    workspace.setAttribute("data-investigation-id", activity.id);
+    const options = activity.choices.map(function (choice, index) {
+      return '<label class="investigation-option"><input type="radio" name="investigation-answer" value="' + index + '"><span>' + choice + '</span></label>';
+    }).join("");
+    workspace.innerHTML = '<a class="lab-back-link" href="#investigations-overview">← Back to investigation overview</a><p class="lab-topic">' + activity.topic + ' · ' + activity.difficulty + ' · ' + activity.time + '</p><h3 tabindex="-1">' + activity.icon + ' ' + activity.title + '</h3>' +
+      '<section><h4>Learning Objective</h4><p>' + activity.objective + '</p></section><section><h4>Scenario</h4><p>' + activity.scenario + '</p></section><section><h4>What the Evidence Represents</h4><p>' + activity.concept + '</p></section>' +
+      '<section><h4>Evidence to Inspect</h4><ul class="evidence-list">' + activity.evidence.map(function (item) { return '<li>' + item + '</li>'; }).join("") + '</ul></section><section><h4>Evidence Analysis</h4><p>' + activity.classify + '</p></section>' +
+      '<form id="investigation-form"><fieldset><legend>' + activity.question + '</legend><div class="investigation-options">' + options + '</div></fieldset><div class="lab-actions"><button type="button" class="secondary-button" id="investigation-hint">Show Hint</button><button type="submit" class="primary-button">Submit Decision</button></div></form><div id="investigation-feedback" role="status" aria-live="polite"></div><section class="lab-why"><h4>Why This Matters in Cybersecurity</h4><p>' + activity.importance + '</p></section><div id="investigation-completion"></div>';
+    if (updateHash !== false) setInvestigationHash(activity);
+    companion.setContext({ type: "investigation", activityId: activity.id, topic: activity.topic + ": " + activity.title, hint: activity.hint, explanation: activity.concept, lookFor: activity.classify, submitted: false });
+    const feedback = workspace.querySelector("#investigation-feedback");
+    workspace.querySelector("#investigation-hint").addEventListener("click", function () { feedback.className = "feedback-review"; feedback.textContent = "Hint: " + activity.hint; });
+    workspace.querySelector("#investigation-form").addEventListener("submit", function (event) {
+      event.preventDefault();
+      const selected = workspace.querySelector('input[name="investigation-answer"]:checked');
+      if (!selected) { feedback.className = "feedback-review"; feedback.textContent = "Choose the decision best supported by the evidence before submitting."; return; }
+      if (Number(selected.value) !== activity.answer) { feedback.className = "feedback-review"; feedback.textContent = "Not quite. Re-examine how the evidence fits together, then try again."; return; }
+      feedback.className = "feedback-success";
+      feedback.textContent = "Educational feedback: " + activity.feedback;
+      workspace.querySelectorAll('input[name="investigation-answer"]').forEach(function (input) { input.disabled = true; });
+      workspace.querySelector('button[type="submit"]').disabled = true;
+      companion.setContext({ submitted: true, explanation: activity.feedback });
+      const completion = workspace.querySelector("#investigation-completion");
+      const wasComplete = localStorage.getItem(activity.key) === "true";
+      completion.innerHTML = wasComplete ? '<h4>Review Complete</h4><p>This investigation was already completed. Review does not award XP again.</p><a class="secondary-button" href="#investigations-overview">Return to Investigations</a>' : '<h4>Complete Investigation</h4><button type="button" class="primary-button" id="complete-investigation">Complete Investigation</button><a class="secondary-button" href="#investigations-overview">Return to Investigations</a>';
+      const completeButton = workspace.querySelector("#complete-investigation");
+      if (completeButton) completeButton.addEventListener("click", function () {
+        if (!completeInvestigation(activity)) return;
+        refreshLearningUI();
+        renderInvestigationCards();
+        const next = INVESTIGATION_ACTIVITIES.find(function (candidate) { return localStorage.getItem(candidate.key) !== "true"; });
+        completion.innerHTML = '<h4>Investigation Complete</h4><p class="feedback-success">Progress, XP, achievements, badge evidence, and dashboard recommendations are updated.</p>' + (next ? '<button type="button" class="primary-button" id="next-investigation">Continue Learning: ' + next.title + '</button>' : '<a class="primary-button" href="#course-review">Continue Learning: Course Review</a>') + '<a class="secondary-button" href="#investigations-overview">Return to Investigations</a>';
+        const nextButton = workspace.querySelector("#next-investigation");
+        if (nextButton) nextButton.addEventListener("click", function () { openInvestigation(next, true); });
+      });
     });
+    const heading = workspace.querySelector("h3");
+    if (heading) heading.focus();
+  }
 
+  overview.addEventListener("click", function (event) {
+    const button = event.target.closest && event.target.closest(".investigation-card-action");
+    if (!button) return;
+    openInvestigation(INVESTIGATION_ACTIVITIES.find(function (activity) { return activity.id === button.getAttribute("data-investigation-id"); }), true);
   });
-
+  function openInvestigationFromHash() {
+    const hash = typeof location !== "undefined" ? location.hash : "";
+    const activity = INVESTIGATION_ACTIVITIES.find(function (candidate) { return hash === "#investigation-" + candidate.id; });
+    if (activity) openInvestigation(activity, false);
+    if (hash === "#investigations-overview") { workspace.hidden = true; activeInvestigationId = null; renderInvestigationCards(); }
+  }
+  if (typeof window !== "undefined") window.addEventListener("hashchange", openInvestigationFromHash);
+  renderInvestigationCards();
+  openInvestigationFromHash();
 }
-/* =========================
-   WINDOWS / ACTIVE DIRECTORY INVESTIGATION
-========================= */
 
-const windowsInvestigationSection =
-  document.querySelector("#labs");
-
-if (windowsInvestigationSection) {
-
-  const windowsInvestigation =
-    document.createElement("div");
-
-  windowsInvestigation.className =
-    "lab-challenge windows-investigation-lab";
-
-  windowsInvestigation.innerHTML = `
-
-    <h3>🪟 Windows / Active Directory Investigation</h3>
-
-    <p>
-      You are a security analyst reviewing unusual activity
-      involving an employee account.
-    </p>
-
-    <div class="command-list">
-
-      <div class="command-item">
-        <code>User</code>
-        <span>m.williams</span>
-      </div>
-
-      <div class="command-item">
-        <code>Time</code>
-        <span>3:42 AM</span>
-      </div>
-
-      <div class="command-item">
-        <code>Failed Logins</code>
-        <span>11 attempts</span>
-      </div>
-
-      <div class="command-item">
-        <code>Successful Login</code>
-        <span>Yes</span>
-      </div>
-
-      <div class="command-item">
-        <code>Account Change</code>
-        <span>User added to Administrators group</span>
-      </div>
-
-      <div class="command-item">
-        <code>Device</code>
-        <span>Unknown workstation</span>
-      </div>
-
-    </div>
-
-    <p>
-      <strong>Question:</strong>
-      What should the security analyst do first?
-    </p>
-
-    <div class="windows-answer-options">
-
-      <button
-        class="secondary-button windows-answer"
-        data-answer="ignore"
-      >
-        Ignore the activity
-      </button>
-
-      <button
-        class="secondary-button windows-answer"
-        data-answer="investigate"
-      >
-        Investigate and verify the account activity
-      </button>
-
-      <button
-        class="secondary-button windows-answer"
-        data-answer="delete"
-      >
-        Delete the logs
-      </button>
-
-    </div>
-
-    <p id="windows-investigation-result" role="status" aria-live="polite"></p>
-
-  `;
-
-  windowsInvestigationSection.appendChild(
-    windowsInvestigation
-  );
-
-  const windowsAnswerButtons =
-    windowsInvestigation.querySelectorAll(
-      ".windows-answer"
-    );
-
-  const windowsResult =
-    windowsInvestigation.querySelector(
-      "#windows-investigation-result"
-    );
-
-  windowsAnswerButtons.forEach(function (button) {
-
-    button.addEventListener("click", function () {
-
-      const answer = button.dataset.answer;
-
-      if (answer === "investigate") {
-
-        windowsResult.textContent =
-          "✅ Correct! The unusual login, unknown device, and administrator-group change should be investigated and verified.";
-
-        windowsResult.style.color = "#38bdf8";
-
-        localStorage.setItem(
-          "betterHackerWindowsInvestigationComplete",
-          "true"
-        );
-
-      } else {
-
-        windowsResult.textContent =
-          "❌ Not quite. Pay attention to the login activity, unknown device, and privilege change.";
-
-        windowsResult.style.color = "#f87171";
-
-      }
-
-    });
-
-  });
-
-}
-/* =========================
-   MALWARE INVESTIGATION LAB
-========================= */
-
-const malwareInvestigationSection =
-  document.querySelector("#labs");
-
-if (malwareInvestigationSection) {
-
-  const malwareInvestigation =
-    document.createElement("div");
-
-  malwareInvestigation.className =
-    "lab-challenge malware-investigation-lab";
-
-  malwareInvestigation.innerHTML = `
-
-    <h3>🔎 Malware Investigation</h3>
-
-    <p>
-      You are investigating suspicious activity
-      detected on an employee workstation.
-    </p>
-
-    <div class="command-list">
-
-      <div class="command-item">
-        <code>Process</code>
-        <span>invoice_update.exe</span>
-      </div>
-
-      <div class="command-item">
-        <code>Location</code>
-        <span>Downloads folder</span>
-      </div>
-
-      <div class="command-item">
-        <code>Parent Process</code>
-        <span>WINWORD.EXE</span>
-      </div>
-
-      <div class="command-item">
-        <code>Network Activity</code>
-        <span>Repeated outbound connections to an unknown server</span>
-      </div>
-
-      <div class="command-item">
-        <code>Security Alert</code>
-        <span>Suspicious executable behavior detected</span>
-      </div>
-
-    </div>
-
-    <p>
-      <strong>Question:</strong>
-      What is the best next action?
-    </p>
-
-    <div class="malware-answer-options">
-
-      <button
-        class="secondary-button malware-answer"
-        data-answer="ignore"
-      >
-        Ignore the process
-      </button>
-
-      <button
-        class="secondary-button malware-answer"
-        data-answer="investigate"
-      >
-        Isolate and investigate the workstation
-      </button>
-
-      <button
-        class="secondary-button malware-answer"
-        data-answer="allow"
-      >
-        Allow the program to continue
-      </button>
-
-    </div>
-
-    <p id="malware-investigation-result" role="status" aria-live="polite"></p>
-
-  `;
-
-  malwareInvestigationSection.appendChild(
-    malwareInvestigation
-  );
-
-  const malwareAnswerButtons =
-    malwareInvestigation.querySelectorAll(
-      ".malware-answer"
-    );
-
-  const malwareResult =
-    malwareInvestigation.querySelector(
-      "#malware-investigation-result"
-    );
-
-  malwareAnswerButtons.forEach(function (button) {
-
-    button.addEventListener("click", function () {
-
-      const answer = button.dataset.answer;
-
-      if (answer === "investigate") {
-
-        malwareResult.textContent =
-          "✅ Correct! The suspicious executable and outbound connections justify isolating and investigating the workstation.";
-
-        malwareResult.style.color = "#38bdf8";
-
-        localStorage.setItem(
-          "betterHackerMalwareInvestigationComplete",
-          "true"
-        );
-
-      } else {
-
-        malwareResult.textContent =
-          "❌ Not quite. Look at the suspicious executable, parent process, and outbound network activity.";
-
-        malwareResult.style.color = "#f87171";
-
-      }
-
-    });
-
-  });
-
-}
-/* =========================
-   BRUTE FORCE INVESTIGATION LAB
-========================= */
-
-const bruteForceInvestigationSection =
-  document.querySelector("#labs");
-
-if (bruteForceInvestigationSection) {
-
-  const bruteForceInvestigation =
-    document.createElement("div");
-
-  bruteForceInvestigation.className =
-    "lab-challenge brute-force-investigation-lab";
-
-  bruteForceInvestigation.innerHTML = `
-
-    <h3>🔐 Brute Force Investigation</h3>
-
-    <p>
-      You are reviewing suspicious login activity
-      targeting an employee account.
-    </p>
-
-    <div class="command-list">
-
-      <div class="command-item">
-        <code>User</code>
-        <span>a.johnson</span>
-      </div>
-
-      <div class="command-item">
-        <code>Failed Logins</code>
-        <span>86 attempts in 4 minutes</span>
-      </div>
-
-      <div class="command-item">
-        <code>Source IP</code>
-        <span>203.0.113.42</span>
-      </div>
-
-      <div class="command-item">
-        <code>Passwords Tried</code>
-        <span>Many different passwords</span>
-      </div>
-
-      <div class="command-item">
-        <code>Successful Login</code>
-        <span>No</span>
-      </div>
-
-    </div>
-
-    <p>
-      <strong>Question:</strong>
-      What type of attack is most likely occurring?
-    </p>
-
-    <div class="brute-force-answer-options">
-
-      <button
-        class="secondary-button brute-force-answer"
-        data-answer="phishing"
-      >
-        Phishing
-      </button>
-
-      <button
-        class="secondary-button brute-force-answer"
-        data-answer="bruteforce"
-      >
-        Brute Force Attack
-      </button>
-
-      <button
-        class="secondary-button brute-force-answer"
-        data-answer="malware"
-      >
-        Malware Infection
-      </button>
-
-    </div>
-
-    <p id="brute-force-investigation-result" role="status" aria-live="polite"></p>
-
-  `;
-
-  bruteForceInvestigationSection.appendChild(
-    bruteForceInvestigation
-  );
-
-  const bruteForceAnswerButtons =
-    bruteForceInvestigation.querySelectorAll(
-      ".brute-force-answer"
-    );
-
-  const bruteForceResult =
-    bruteForceInvestigation.querySelector(
-      "#brute-force-investigation-result"
-    );
-
-  bruteForceAnswerButtons.forEach(function (button) {
-
-    button.addEventListener("click", function () {
-
-      const answer = button.dataset.answer;
-
-      if (answer === "bruteforce") {
-
-        bruteForceResult.textContent =
-          "✅ Correct! A large number of rapid failed login attempts using many passwords strongly suggests a brute force attack.";
-
-        bruteForceResult.style.color =
-          "#38bdf8";
-
-        localStorage.setItem(
-          "betterHackerBruteForceInvestigationComplete",
-          "true"
-        );
-
-      } else {
-
-        bruteForceResult.textContent =
-          "❌ Not quite. Focus on the rapid failed login attempts and many password guesses.";
-
-        bruteForceResult.style.color =
-          "#f87171";
-
-      }
-
-    });
-
-  });
-
-}
-/* =========================
-   WEB ATTACK INVESTIGATION LAB
-========================= */
-
-const webAttackSection =
-  document.querySelector("#labs");
-
-if (webAttackSection) {
-
-  const webAttackInvestigation =
-    document.createElement("div");
-
-  webAttackInvestigation.className =
-    "lab-challenge web-attack-investigation-lab";
-
-  webAttackInvestigation.innerHTML = `
-
-    <h3>🌐 Web Attack Investigation</h3>
-
-    <p>
-      You are a security analyst reviewing suspicious
-      requests sent to a company website.
-    </p>
-
-    <div class="command-list">
-
-      <div class="command-item">
-        <code>Target</code>
-        <span>/login.php</span>
-      </div>
-
-      <div class="command-item">
-        <code>Parameter</code>
-        <span>username</span>
-      </div>
-
-      <div class="command-item">
-        <code>Suspicious Input</code>
-        <span>' OR '1'='1</span>
-      </div>
-
-      <div class="command-item">
-        <code>Requests</code>
-        <span>37 attempts in 2 minutes</span>
-      </div>
-
-      <div class="command-item">
-        <code>Source</code>
-        <span>Unknown external IP</span>
-      </div>
-
-    </div>
-
-    <p>
-      <strong>Question:</strong>
-      What type of web attack should the analyst investigate?
-    </p>
-
-    <div class="web-attack-answer-options">
-
-      <button
-        class="secondary-button web-attack-answer"
-        data-answer="xss"
-      >
-        Cross-Site Scripting
-      </button>
-
-      <button
-        class="secondary-button web-attack-answer"
-        data-answer="sqli"
-      >
-        SQL Injection
-      </button>
-
-      <button
-        class="secondary-button web-attack-answer"
-        data-answer="phishing"
-      >
-        Phishing
-      </button>
-
-    </div>
-
-    <p id="web-attack-investigation-result" role="status" aria-live="polite"></p>
-
-  `;
-
-  webAttackSection.appendChild(
-    webAttackInvestigation
-  );
-
-  const webAttackButtons =
-    webAttackInvestigation.querySelectorAll(
-      ".web-attack-answer"
-    );
-
-  const webAttackResult =
-    webAttackInvestigation.querySelector(
-      "#web-attack-investigation-result"
-    );
-
-  webAttackButtons.forEach(function (button) {
-
-    button.addEventListener("click", function () {
-
-      const answer = button.dataset.answer;
-
-      if (answer === "sqli") {
-
-        webAttackResult.textContent =
-          "✅ Correct! The suspicious input attempts to manipulate the SQL query, indicating a SQL injection attack.";
-
-        webAttackResult.style.color =
-          "#38bdf8";
-
-        localStorage.setItem(
-          "betterHackerWebAttackInvestigationComplete",
-          "true"
-        );
-
-      } else {
-
-        webAttackResult.textContent =
-          "❌ Not quite. Examine how the input could affect a database query.";
-
-        webAttackResult.style.color =
-          "#f87171";
-
-      }
-
-    });
-
-  });
-
-}
 /* =========================
    WAITLIST SIGNUP
 ========================= */
@@ -2380,9 +1474,10 @@ function getDashboardState() {
   if (nextLesson) {
     recommendation = { target: nextLesson.target, label: "Continue Learning: " + nextLesson.name };
   } else if (exercisesCompleted < GUIDED_EXERCISE_TOTAL) {
-    recommendation = { target: "#labs", label: "Lessons Complete — Continue Guided Exercises" };
+    recommendation = { target: "#lab-" + GUIDED_LABS[exercisesCompleted].id, label: "Lessons Complete — Continue Guided Exercises: " + GUIDED_LABS[exercisesCompleted].title };
   } else if (investigationsCompleted < INVESTIGATIONS.length) {
-    recommendation = { target: "#labs", label: "Continue Security Investigations" };
+    const nextInvestigation = INVESTIGATION_ACTIVITIES.find(function (activity) { return localStorage.getItem(activity.key) !== "true"; });
+    recommendation = { target: "#investigation-" + nextInvestigation.id, label: "Continue Investigation: " + nextInvestigation.title };
   } else if (!reviewResult) {
     recommendation = { target: "#course-review", label: "Start the Course Review" };
   } else {
@@ -2632,7 +1727,6 @@ if (reviewIntro && reviewForm && reviewResults) {
 /* =========================
    DAILY CHALLENGE & AUTHORED COMPANION
 ========================= */
-const companion = CompanionModule.createCompanion(new CompanionModule.AuthoredProvider());
 const dailyCard = document.querySelector("#daily-challenge-card");
 function renderDailyChallenge() {
   if (!dailyCard) return;

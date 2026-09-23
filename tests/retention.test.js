@@ -91,9 +91,10 @@ test('skill badges require competency evidence, ignore XP/streak, and enforce Co
 
 test('authored companion changes context, withholds answers before submission, and has no external dependency', () => {
   const companion=Companion.createCompanion(new Companion.AuthoredProvider());
-  companion.setContext({type:'daily',topic:'Networking',hint:'Think about name resolution.',explanation:'DNS resolves names.',submitted:false});
+  companion.setContext({type:'daily',topic:'Networking',hint:'Think about name resolution.',lookFor:'the protocol and destination port',explanation:'DNS resolves names.',submitted:false});
   assert.match(companion.respond('hint'),/name resolution/);
   assert.doesNotMatch(companion.respond('explain'),/DNS resolves names/);
+  assert.match(companion.respond('look'),/protocol and destination port/);
   companion.setContext({submitted:true});
   assert.match(companion.respond('explain'),/DNS resolves names/);
   assert.equal(require('node:fs').readFileSync('companion.js','utf8').includes('fetch('),false);

@@ -1168,3 +1168,64 @@ footer p {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+/* Clickable guided lab learning experience */
+.lab-overview { max-width: 1120px; margin: 28px auto 0; text-align: left; }
+.lab-card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.lab-card { display: flex; flex-direction: column; min-width: 0; padding: 24px; background: linear-gradient(145deg, #0d1a2c, #091525); border: 1px solid #1e3a56; border-radius: 14px; }
+.lab-card h3 { margin: 5px 0 10px; color: #7dd3fc; }
+.lab-card p { color: #cbd5e1; }
+.lab-card .lab-card-action { align-self: flex-start; margin-top: auto; }
+.lab-topic { color: #7dd3fc !important; font-weight: 700; letter-spacing: .04em; }
+.lab-time { font-size: .95rem; }
+.lab-status { padding: 8px 10px; border-left: 3px solid #64748b; background: #07111f; }
+.lab-status-completed { border-color: #22c55e; }
+.lab-status-in-progress { border-color: #facc15; }
+.lab-workspace { max-width: 900px; }
+.lab-workspace[hidden] { display: none; }
+.lab-workspace section { margin: 22px 0; }
+.lab-workspace h4 { margin-bottom: 8px; color: #fff; font-size: 1.08rem; }
+.lab-workspace pre { max-width: 100%; overflow-x: auto; padding: 18px; border: 1px solid #1e3a56; border-radius: 9px; background: #030812; color: #bae6fd; white-space: pre-wrap; word-break: break-word; }
+.lab-workspace ol { padding-left: 24px; color: #cbd5e1; }
+.lab-back-link { display: inline-block; margin-bottom: 18px; color: #7dd3fc; font-weight: 700; }
+.lab-actions, #lab-completion-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 15px; }
+#lab-completion-actions .secondary-button { display: inline-block; }
+.lab-why { padding: 16px; border-left: 3px solid #38bdf8; background: #07111f; }
+@media (max-width: 700px) {
+  .lab-card-grid { grid-template-columns: 1fr; }
+  .lab-card, .lab-challenge { padding: 20px; }
+  .lab-actions > *, #lab-completion-actions > * { width: 100%; margin-right: 0; text-align: center; }
+}
+@media (max-width: 375px) {
+  .lab-card, .lab-challenge { padding: 16px; }
+  .lab-workspace pre { padding: 12px; font-size: .82rem; }
+}
+
+/* Defensive investigation overview and activity workspace */
+.investigation-overview { max-width: 1120px; margin: 55px auto 0; padding-top: 24px; text-align: left; border-top: 1px solid #1e3a56; }
+.investigation-overview > h3 { color: #7dd3fc; font-size: clamp(1.5rem, 4vw, 2rem); }
+.investigation-count { font-weight: 700; color: #7dd3fc; }
+.investigation-card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 22px; }
+.investigation-card { display: flex; flex-direction: column; min-width: 0; padding: 24px; border: 1px solid #1e3a56; border-radius: 14px; background: linear-gradient(145deg, #0d1a2c, #091525); }
+.investigation-card h4 { margin: 5px 0 10px; color: #7dd3fc; font-size: 1.2rem; }
+.investigation-card p { color: #cbd5e1; }
+.investigation-card-action { align-self: flex-start; margin-top: auto; }
+.investigation-workspace[hidden] { display: none; }
+.investigation-workspace section { margin: 22px 0; }
+.investigation-workspace h4 { margin-bottom: 8px; color: #fff; }
+.evidence-list { display: grid; gap: 8px; padding: 18px 18px 18px 38px; border: 1px solid #1e3a56; border-radius: 9px; background: #030812; color: #bae6fd; }
+.investigation-options { display: grid; gap: 10px; margin: 14px 0; }
+.investigation-option { display: flex; gap: 10px; align-items: flex-start; padding: 13px; border: 1px solid #334155; border-radius: 8px; background: #0b1728; cursor: pointer; }
+.investigation-option:focus-within { border-color: #38bdf8; box-shadow: 0 0 0 3px rgba(56, 189, 248, .22); }
+#investigation-feedback { min-height: 2rem; margin-top: 18px; }
+#investigation-completion { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 18px; }
+#investigation-completion h4, #investigation-completion p { width: 100%; }
+@media (max-width: 700px) {
+  .investigation-card-grid { grid-template-columns: 1fr; }
+  .investigation-card { padding: 20px; }
+  #investigation-completion > a, #investigation-completion > button { width: 100%; text-align: center; }
+}
+@media (max-width: 375px) {
+  .investigation-card { padding: 16px; }
+  .evidence-list { padding: 14px 14px 14px 32px; }
+}
