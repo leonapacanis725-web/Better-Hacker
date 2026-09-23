@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const DailyChallenges = globalThis.BetterHackerChallenges;
   const Milestones = globalThis.BetterHackerMilestones;
   const CompanionModule = globalThis.BetterHackerCompanion;
+  const companion = CompanionModule.createCompanion(new CompanionModule.AuthoredProvider());
 
   function readCompletedLabs() {
     const raw = localStorage.getItem("betterHackerCompletedLabs");
@@ -37,266 +38,194 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   /* =========================
-     CYBERSECURITY LAB SYSTEM
+     CLICKABLE GUIDED LAB SYSTEM
   ========================= */
 
+  const GUIDED_LABS = Object.freeze([
+    {
+      id: "linux", icon: "💻", title: "Linux File Detective", topic: "Linux", time: "8–10 minutes",
+      description: "Interpret a safe directory listing and choose a command to read a text file.",
+      learn: "Read basic Linux file information and select an appropriate, non-destructive command.",
+      scenario: "You are helping review files in an authorized training workspace. Your goal is to inspect a notes file without changing it.",
+      concept: "The ls -l command lists names, types, permissions, owners, sizes, and dates. A leading d means directory; a leading - means regular file. cat prints a short text file to the terminal.",
+      evidence: "$ pwd\n/home/learner/training\n$ ls -l\ndrwxr-xr-x 2 learner learner 4096 Sep 23 09:00 reports\n-rw-r--r-- 1 learner learner   42 Sep 23 09:02 flag.txt",
+      task: "Identify which entry is the regular text file, then enter the command that safely displays it from the current directory.",
+      question: "Which command displays the contents of flag.txt?", answers: ["cat flag.txt", "cat ./flag.txt"],
+      hint: "The filename appears in the current directory. Use the short command commonly used to print a text file.",
+      feedback: "Correct. The leading - identifies flag.txt as a regular file, and cat flag.txt displays it without modifying it.",
+      importance: "Defenders routinely inspect files and logs. Recognizing file metadata and using read-only commands reduces accidental changes while investigating."
+    },
+    {
+      id: "networking", icon: "🌐", title: "Network Service Triage", topic: "Networking", time: "10–12 minutes",
+      description: "Connect ports, protocols, and services while interpreting simulated network evidence.",
+      learn: "Interpret common ports and connect a port to its likely protocol and service.",
+      scenario: "An approved inventory scan found three listening services on a training web server. You need to identify the service carrying ordinary unencrypted web traffic.",
+      concept: "A port identifies a network service endpoint. Common associations include 22/TCP for SSH, 80/TCP for HTTP, and 443/TCP for HTTPS. A port is evidence, not proof; defenders confirm it with service data.",
+      evidence: "SIMULATED AUTHORIZED SCAN\nPORT    PROTOCOL   STATE   SERVICE\n22      TCP        open    ssh\n80      TCP        open    http\n443     TCP        open    https",
+      task: "Compare the port, protocol, and service columns. Select the port conventionally associated with HTTP.",
+      question: "Which listed port is commonly associated with HTTP?", answers: ["80", "port 80"],
+      hint: "Look at the service column for http, then read the port in the same row.",
+      feedback: "Correct. Port 80/TCP is commonly associated with HTTP; HTTPS commonly uses 443/TCP.",
+      importance: "Knowing expected services helps defenders spot exposed, unexpected, or misconfigured network services during triage."
+    },
+    {
+      id: "cryptography", icon: "🔐", title: "Choose the Right Data Protection", topic: "Cryptography", time: "10–12 minutes",
+      description: "Distinguish encryption, hashing, and encoding by their security purpose.",
+      learn: "Tell encryption, hashing, and encoding apart and choose the right mechanism for a security need.",
+      scenario: "A team must protect a confidential backup so an authorized recipient can recover the original information with a key.",
+      concept: "Encryption is reversible with the proper key and protects confidentiality. Hashing creates a one-way digest useful for integrity checks and password verification. Encoding changes representation for compatibility and is not a security control.",
+      evidence: "REQUIREMENTS\n• Output must be unreadable without authorization\n• An approved recipient must recover the original data\n• A managed key is available",
+      task: "Match the requirements to the mechanism whose output can be reversed only with authorized key material.",
+      question: "Which mechanism best meets these requirements?", answers: ["encryption", "encrypting"],
+      hint: "Hashing is designed to be one-way, and encoding offers no confidentiality. Which option uses a key and is reversible?",
+      feedback: "Correct. Encryption transforms plaintext into ciphertext and permits authorized recovery with the proper key.",
+      importance: "Choosing the wrong mechanism can expose sensitive data. Encoding is not encryption, and hashes should not be treated as recoverable ciphertext."
+    },
+    {
+      id: "web-security", icon: "🛡️", title: "Defend a Database Query", topic: "Web Security", time: "12–15 minutes",
+      description: "Recognize unsafe input handling and learn why parameterized queries reduce SQL injection risk.",
+      learn: "Identify SQL injection risk and explain the defensive value of parameterized queries.",
+      scenario: "During an authorized code review, you see a login value being joined directly into a query string. You are asked to name the risk—not to exploit it.",
+      concept: "When an application treats untrusted input as part of SQL syntax, the input may change the query's meaning. Parameterized queries keep the SQL structure separate from data values, so the database treats input as data.",
+      evidence: "SIMULATED INSECURE PATTERN\nquery = \"SELECT id FROM users WHERE username = '\" + userInput + \"'\"\n\nDEFENSIVE PATTERN\nquery = \"SELECT id FROM users WHERE username = ?\"\ndatabase.execute(query, [userInput])",
+      task: "Compare how the two patterns handle userInput. Name the vulnerability risk created by the first pattern.",
+      question: "What vulnerability can direct insertion of untrusted input into a database query create?", answers: ["sql injection", "sql injection attack", "sqli"],
+      hint: "The risky input becomes part of SQL syntax. Name the injection category involving database queries.",
+      feedback: "Correct. Direct string construction can create SQL injection risk. Parameterized queries separate instructions from values and are a key defense.",
+      importance: "SQL injection can expose or alter data. Defensive input handling and parameterized queries protect confidentiality and integrity."
+    }
+  ]);
+
+  function getLabStatus(index, activeIndex) {
+    const completed = readCompletedLabs();
+    if (index < completed) return "Completed";
+    if (index === activeIndex) return "In Progress";
+    return "Not Started";
+  }
+
+  function getLabAction(status) {
+    return status === "Completed" ? "Review Lab" : status === "In Progress" ? "Continue Lab" : "Start Lab";
+  }
+
+  function completeGuidedLab(index) {
+    const completed = readCompletedLabs();
+    if (index < completed) return false;
+    if (index !== completed) return false;
+    localStorage.setItem("betterHackerCompletedLabs", String(completed + 1));
+    return true;
+  }
+
   const labSection = document.querySelector("#labs");
-
   if (labSection) {
-
-    const labButton = document.createElement("button");
-
-    labButton.textContent = "Start Cybersecurity Labs";
-    labButton.className = "primary-button lab-start-button";
-
-    labSection.appendChild(labButton);
-
-    const progress = document.createElement("p");
-
-    progress.id = "lab-progress";
-    progress.textContent = "Labs Completed: 0 / 4";
-    progress.style.marginTop = "20px";
-    progress.style.color = "#38bdf8";
-
-    labSection.appendChild(progress);
-
-    let completedLabs = readCompletedLabs();
-
-let currentLab = completedLabs;
-
-progress.textContent =
-  `Labs Completed: ${completedLabs} / 4`;
-
-if (completedLabs >= 4) {
-  labButton.textContent = "View Completed Labs";
-} else if (completedLabs > 0) {
-  labButton.textContent = `Continue Lab ${completedLabs + 1}`;
-}
-
-    const labs = [
-
-      {
-        title: "🧪 Lab 1 — Linux Basics",
-
-        question:
-          "Which Linux command displays the contents of a file named flag.txt?",
-
-        answers: ["cat flag.txt", "cat ./flag.txt"],
-        evidence: "The file is named flag.txt and is in the current directory.",
-        clue: "Use the Linux command that displays a file, followed by its path.",
-
-        success:
-          "Correct! The cat command can display the contents of a file.",
-
-        hint:
-          "Think about the Linux command used to read a text file."
-      },
-
-      {
-        title: "🌐 Lab 2 — Network Recon",
-
-        question:
-          "A simulated Nmap scan shows ports 22, 80, and 443 open. Which port is commonly associated with HTTP?",
-
-        answers: ["80", "port 80"],
-        evidence: "The approved scan lists ports 22, 80, and 443.",
-        clue: "Identify the standard port associated with unencrypted HTTP.",
-
-        success:
-          "Correct! Port 80 is commonly associated with HTTP.",
-
-        hint:
-          "HTTP commonly uses a well-known port below 100."
-      },
-
-      {
-        title: "🔐 Lab 3 — Cryptography",
-
-        question:
-          "Which security concept transforms readable data into an unreadable form using encryption?",
-
-        answers: ["encryption", "encrypting"],
-        evidence: "Readable plaintext must become unreadable ciphertext.",
-        clue: "Name the protective transformation, not its output.",
-
-        success:
-          "Correct! Encryption transforms plaintext into ciphertext.",
-
-        hint:
-          "This protects information so unauthorized people cannot easily read it."
-      },
-
-      {
-        title: "🛡️ Lab 4 — Web Security",
-
-        question:
-          "A website accepts user input and places it directly into a database query. What type of vulnerability could this create?",
-
-        answers: ["sql injection", "sql injection attack", "sqli"],
-        evidence: "Untrusted input is inserted directly into a database query.",
-        clue: "Identify the vulnerability involving manipulation of SQL queries.",
-
-        success:
-          "Correct! Unsafe database input can create a SQL injection vulnerability.",
-
-        hint:
-          "Think about attacks involving database queries."
-      }
-
-    ];
-
-    let activeGuidedExercise = null;
-
-    labButton.addEventListener("click", function () {
-
-      if (activeGuidedExercise) {
-        activeGuidedExercise.remove();
-        activeGuidedExercise = null;
-      }
-
-      if (currentLab >= labs.length) {
-
-        const finished = document.createElement("div");
-
-        finished.className = "lab-challenge guided-exercise";
-        activeGuidedExercise = finished;
-
-        finished.innerHTML = `
-          <h3>🎉 All Labs Completed!</h3>
-          <p>
-            You completed all four Better Hacker beginner challenges.
-          </p>
-          <p>
-            Keep learning and continue building your cybersecurity skills.
-          </p>
-        `;
-
-        labSection.appendChild(finished);
-
-        return;
-      }
-
-      const lab = labs[currentLab];
-      if (typeof companion !== "undefined") companion.setContext({ type:"guided", topic:lab.title, hint:lab.hint, explanation:lab.success, submitted:false });
-
-      const challenge = document.createElement("div");
-
-      challenge.className = "lab-challenge guided-exercise";
-      activeGuidedExercise = challenge;
-
-      challenge.innerHTML = `
-        <h3>${lab.title}</h3>
-
-        <div class="guided-step"><strong>1. Review the evidence</strong><p>${lab.evidence}</p></div>
-        <div class="guided-step"><strong>2. Interpret the clue</strong><p>${lab.clue}</p></div>
-        <p><strong>3. Final answer</strong></p>
-        <p>${lab.question}</p>
-
-        <label class="input-label" for="lab-answer">Your final answer</label>
-        <input
-          type="text"
-          id="lab-answer"
-          placeholder="Type your answer..."
-          autocomplete="off"
-        >
-
-        <br>
-
-        <button id="submit-answer" class="primary-button">
-          Submit Answer
-        </button>
-
-        <button id="hint-button" class="secondary-button">
-          Hint
-        </button>
-
-        <p id="lab-result" role="status" aria-live="polite"></p>
-      `;
-
-      labSection.appendChild(challenge);
-
-      const submitButton =
-        document.querySelector("#submit-answer");
-
-      const hintButton =
-        document.querySelector("#hint-button");
-
-      const answerInput =
-        document.querySelector("#lab-answer");
-
-      const result =
-        document.querySelector("#lab-result");
-
-      function submitGuidedAnswer() {
-
-        const answer =
-          answerInput.value.trim().toLowerCase();
-
-        if (lab.answers.includes(answer)) {
-
-          result.textContent = "✅ " + lab.success;
-          result.style.color = "#38bdf8";
-
-completedLabs++;
-currentLab++;
-
-localStorage.setItem(
-  "betterHackerCompletedLabs",
-  completedLabs
-);
-
-progress.textContent =
-  `Labs Completed: ${completedLabs} / ${labs.length}`;
-refreshLearningUI();
-
-          submitButton.disabled = true;
-          answerInput.disabled = true;
-
-          setTimeout(function () {
-
-            challenge.remove();
-            if (activeGuidedExercise === challenge) activeGuidedExercise = null;
-
-            if (currentLab < labs.length) {
-
-              labButton.textContent =
-                `Start Lab ${currentLab + 1}`;
-
-            } else {
-
-              labButton.textContent =
-                "View Completed Labs";
-
-            }
-
-          }, 1200);
-
-        } else {
-
-          result.textContent =
-            "❌ Not quite. Try again.";
-
-          result.style.color = "#f87171";
+    const existingCards = labSection.querySelector(".cards");
+    if (existingCards) existingCards.hidden = true;
+    const oldHelpLink = labSection.querySelector('a[href="#coach"]');
+    if (oldHelpLink) oldHelpLink.hidden = true;
+
+    const overview = document.createElement("div");
+    overview.className = "lab-overview";
+    overview.id = "lab-overview";
+    const workspace = document.createElement("article");
+    workspace.className = "lab-challenge guided-exercise lab-workspace";
+    workspace.id = "lab-workspace";
+    workspace.hidden = true;
+    labSection.appendChild(overview);
+    labSection.appendChild(workspace);
+
+    let activeLabIndex = -1;
+    let answerWasCorrect = false;
+
+    function renderLabCards() {
+      const completed = readCompletedLabs();
+      overview.innerHTML = '<p id="lab-progress" role="status" aria-live="polite">Guided exercises completed: ' + completed + ' / ' + GUIDED_LABS.length + '</p><div class="lab-card-grid">' +
+        GUIDED_LABS.map(function (lab, index) {
+          const status = getLabStatus(index, activeLabIndex);
+          return '<article class="lab-card"><p class="lab-topic">' + lab.topic + ' · Beginner</p><h3>' + lab.icon + ' ' + lab.title + '</h3><p>' + lab.description + '</p><p class="lab-time">Estimated time: ' + lab.time + '</p><p class="lab-status lab-status-' + status.toLowerCase().replace(" ", "-") + '">Status: <strong>' + status + '</strong></p><button type="button" class="primary-button lab-card-action" data-lab-index="' + index + '" aria-label="' + getLabAction(status) + ': ' + lab.title + '">' + getLabAction(status) + '</button></article>';
+        }).join("") + '</div>';
+    }
+
+    function setLabHash(lab) {
+      if (typeof history !== "undefined" && history.pushState) history.pushState(null, "", "#lab-" + lab.id);
+      else if (typeof location !== "undefined") location.hash = "lab-" + lab.id;
+    }
+
+    function openLab(index, updateHash) {
+      const lab = GUIDED_LABS[index];
+      if (!lab) return;
+      activeLabIndex = index;
+      answerWasCorrect = false;
+      renderLabCards();
+      workspace.hidden = false;
+      workspace.setAttribute("data-lab-id", lab.id);
+      workspace.innerHTML = '<a class="lab-back-link" href="#lab-overview">← Back to all labs</a>' +
+        '<p class="lab-topic">' + lab.topic + ' · Beginner · ' + lab.time + '</p><h3 tabindex="-1">' + lab.icon + ' ' + lab.title + '</h3>' +
+        '<section aria-labelledby="lab-learn-heading"><h4 id="lab-learn-heading">1. What You’ll Learn</h4><p>' + lab.learn + '</p></section>' +
+        '<section><h4>2. Scenario</h4><p>' + lab.scenario + '</p></section>' +
+        '<section><h4>3. Concept Explanation</h4><p>' + lab.concept + '</p></section>' +
+        '<section><h4>4. Evidence</h4><pre><code>' + lab.evidence + '</code></pre></section>' +
+        '<section><h4>5. Step-by-Step Task</h4><ol><li>Read the scenario and concept.</li><li>Review each line of evidence.</li><li>' + lab.task + '</li></ol></section>' +
+        '<form id="guided-lab-form"><h4>6. Learner Question / Decision</h4><p>' + lab.question + '</p><label class="input-label" for="lab-answer">Your answer</label><input type="text" id="lab-answer" autocomplete="off" required><div class="lab-actions"><button type="button" id="hint-button" class="secondary-button">7. Show Hint</button><button type="submit" id="submit-answer" class="primary-button">8. Submit Answer</button></div></form>' +
+        '<div id="lab-result" role="status" aria-live="polite"></div><section class="lab-why"><h4>10. Why This Matters in Cybersecurity</h4><p>' + lab.importance + '</p></section><div id="lab-completion-actions"></div>';
+      if (updateHash !== false) setLabHash(lab);
+      if (typeof companion !== "undefined") companion.setContext({ type: "guided-lab", activityId: lab.id, topic: lab.topic + ": " + lab.title, hint: lab.hint, explanation: lab.concept, lookFor: lab.task, submitted: false });
+
+      const form = workspace.querySelector("#guided-lab-form");
+      const input = workspace.querySelector("#lab-answer");
+      const result = workspace.querySelector("#lab-result");
+      const submit = workspace.querySelector("#submit-answer");
+      workspace.querySelector("#hint-button").addEventListener("click", function () {
+        result.className = "feedback-review";
+        result.textContent = "💡 Hint: " + lab.hint;
+      });
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        const answer = input.value.trim().toLowerCase();
+        if (!lab.answers.includes(answer)) {
+          result.className = "feedback-review";
+          result.textContent = "Not quite yet. Recheck the evidence and use the hint; no progress was changed.";
+          return;
         }
-
-      }
-
-      submitButton.addEventListener("click", submitGuidedAnswer);
-      answerInput.addEventListener("keydown", function (event) {
-        if (event.key === "Enter") { event.preventDefault(); submitGuidedAnswer(); }
+        answerWasCorrect = true;
+        result.className = "feedback-success";
+        result.textContent = "9. Educational Feedback — " + lab.feedback;
+        submit.disabled = true;
+        input.disabled = true;
+        if (typeof companion !== "undefined") companion.setContext({ submitted: true, explanation: lab.feedback });
+        const completed = readCompletedLabs();
+        const alreadyComplete = index < completed;
+        const canComplete = index === completed;
+        const actions = workspace.querySelector("#lab-completion-actions");
+        actions.innerHTML = '<h4>11. Complete Lab / Continue Learning</h4>' +
+          (alreadyComplete ? '<p>This lab was already completed. Reviewing it does not award XP again.</p>' : canComplete ? '<button type="button" id="complete-lab" class="primary-button">Complete Lab</button>' : '<p>Practice complete. Finish the earlier lab first so existing sequential progress remains accurate.</p>') +
+          '<a class="secondary-button" href="#lab-overview">Return to Labs</a>';
+        const complete = workspace.querySelector("#complete-lab");
+        if (complete) complete.addEventListener("click", function () {
+          if (!answerWasCorrect || !completeGuidedLab(index)) return;
+          refreshLearningUI();
+          renderLabCards();
+          actions.innerHTML = '<h4>11. Lab Complete</h4><p class="feedback-success">Completed. Progress, XP, achievements, badge evidence, and your dashboard are now updated.</p>' +
+            (index + 1 < GUIDED_LABS.length ? '<button type="button" class="primary-button" id="next-guided-lab">Continue Learning: ' + GUIDED_LABS[index + 1].title + '</button>' : '<a class="primary-button" href="#dashboard">Continue Learning from Dashboard</a>') + '<a class="secondary-button" href="#lab-overview">Return to Labs</a>';
+          const next = workspace.querySelector("#next-guided-lab");
+          if (next) next.addEventListener("click", function () { openLab(index + 1, true); });
+        });
       });
+      const heading = workspace.querySelector("h3");
+      if (heading) heading.focus();
+    }
 
-      hintButton.addEventListener("click", function () {
-
-        result.textContent =
-          "💡 Hint: " + lab.hint;
-
-        result.style.color = "#facc15";
-
-      });
-
+    overview.addEventListener("click", function (event) {
+      const button = event.target.closest && event.target.closest(".lab-card-action");
+      if (button) openLab(Number(button.getAttribute("data-lab-index")), true);
     });
-
+    function openFromHash() {
+      const hash = typeof location !== "undefined" ? location.hash : "";
+      const index = GUIDED_LABS.findIndex(function (lab) { return hash === "#lab-" + lab.id; });
+      if (index >= 0) openLab(index, false);
+      if (hash === "#lab-overview" || hash === "#labs") { workspace.hidden = true; activeLabIndex = -1; renderLabCards(); }
+    }
+    if (typeof window !== "undefined") window.addEventListener("hashchange", openFromHash);
+    renderLabCards();
+    openFromHash();
   }
 
 
@@ -2380,7 +2309,7 @@ function getDashboardState() {
   if (nextLesson) {
     recommendation = { target: nextLesson.target, label: "Continue Learning: " + nextLesson.name };
   } else if (exercisesCompleted < GUIDED_EXERCISE_TOTAL) {
-    recommendation = { target: "#labs", label: "Lessons Complete — Continue Guided Exercises" };
+    recommendation = { target: "#lab-" + GUIDED_LABS[exercisesCompleted].id, label: "Lessons Complete — Continue Guided Exercises: " + GUIDED_LABS[exercisesCompleted].title };
   } else if (investigationsCompleted < INVESTIGATIONS.length) {
     recommendation = { target: "#labs", label: "Continue Security Investigations" };
   } else if (!reviewResult) {
@@ -2632,7 +2561,6 @@ if (reviewIntro && reviewForm && reviewResults) {
 /* =========================
    DAILY CHALLENGE & AUTHORED COMPANION
 ========================= */
-const companion = CompanionModule.createCompanion(new CompanionModule.AuthoredProvider());
 const dailyCard = document.querySelector("#daily-challenge-card");
 function renderDailyChallenge() {
   if (!dailyCard) return;

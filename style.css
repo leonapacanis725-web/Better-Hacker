@@ -1168,3 +1168,35 @@ footer p {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+/* Clickable guided lab learning experience */
+.lab-overview { max-width: 1120px; margin: 28px auto 0; text-align: left; }
+.lab-card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.lab-card { display: flex; flex-direction: column; min-width: 0; padding: 24px; background: linear-gradient(145deg, #0d1a2c, #091525); border: 1px solid #1e3a56; border-radius: 14px; }
+.lab-card h3 { margin: 5px 0 10px; color: #7dd3fc; }
+.lab-card p { color: #cbd5e1; }
+.lab-card .lab-card-action { align-self: flex-start; margin-top: auto; }
+.lab-topic { color: #7dd3fc !important; font-weight: 700; letter-spacing: .04em; }
+.lab-time { font-size: .95rem; }
+.lab-status { padding: 8px 10px; border-left: 3px solid #64748b; background: #07111f; }
+.lab-status-completed { border-color: #22c55e; }
+.lab-status-in-progress { border-color: #facc15; }
+.lab-workspace { max-width: 900px; }
+.lab-workspace[hidden] { display: none; }
+.lab-workspace section { margin: 22px 0; }
+.lab-workspace h4 { margin-bottom: 8px; color: #fff; font-size: 1.08rem; }
+.lab-workspace pre { max-width: 100%; overflow-x: auto; padding: 18px; border: 1px solid #1e3a56; border-radius: 9px; background: #030812; color: #bae6fd; white-space: pre-wrap; word-break: break-word; }
+.lab-workspace ol { padding-left: 24px; color: #cbd5e1; }
+.lab-back-link { display: inline-block; margin-bottom: 18px; color: #7dd3fc; font-weight: 700; }
+.lab-actions, #lab-completion-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 15px; }
+#lab-completion-actions .secondary-button { display: inline-block; }
+.lab-why { padding: 16px; border-left: 3px solid #38bdf8; background: #07111f; }
+@media (max-width: 700px) {
+  .lab-card-grid { grid-template-columns: 1fr; }
+  .lab-card, .lab-challenge { padding: 20px; }
+  .lab-actions > *, #lab-completion-actions > * { width: 100%; margin-right: 0; text-align: center; }
+}
+@media (max-width: 375px) {
+  .lab-card, .lab-challenge { padding: 16px; }
+  .lab-workspace pre { padding: 12px; font-size: .82rem; }
+}
