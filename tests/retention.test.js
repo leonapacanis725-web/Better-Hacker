@@ -97,5 +97,7 @@ test('authored companion changes context, withholds answers before submission, a
   assert.match(companion.respond('look'),/protocol and destination port/);
   companion.setContext({submitted:true});
   assert.match(companion.respond('explain'),/DNS resolves names/);
+  companion.setContext({type:'dashboard',topic:'Learner Dashboard',guidance:'Lessons explain concepts; labs provide guided practice; investigations develop evidence analysis.',submitted:false});
+  assert.match(companion.respond('explain'),/labs provide guided practice/);
   assert.equal(require('node:fs').readFileSync('companion.js','utf8').includes('fetch('),false);
 });

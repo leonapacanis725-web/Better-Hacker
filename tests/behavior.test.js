@@ -60,7 +60,7 @@ function boot({ seed = {}, elements = {}, fetchImpl = async () => ({ ok: true, s
     createTextNode(text) { return { textContent: text }; }
   };
   const localStorage = new MemoryStorage(seed);
-  const exposed = source.replace(/\n\}\);\s*$/, `\n  globalThis.__app = { readCompletedLabs, readReviewResult, getDashboardState, isReviewAnswerCorrect, COURSE_REVIEW_QUESTIONS, GUIDED_LABS, getLabStatus, getLabAction, completeGuidedLab };\n});`);
+  const exposed = source.replace(/\n\}\);\s*$/, `\n  globalThis.__app = { readCompletedLabs, readReviewResult, getDashboardState, buildRetentionSnapshot, deriveLearningSkills, isReviewAnswerCorrect, COURSE_REVIEW_QUESTIONS, GUIDED_LABS, INVESTIGATIONS, getLabStatus, getLabAction, completeGuidedLab };\n});`);
   const context = { document, localStorage, __createdElements: createdElements, fetch: fetchImpl, setTimeout: fn => fn(), clearTimeout() {}, confirm: () => true,
     location: { reload() {} }, console, Date, JSON, Number, Math, Object, String, RegExp, Set,
     BetterHackerState, BetterHackerChallenges, BetterHackerMilestones, BetterHackerCompanion };
@@ -81,17 +81,59 @@ function fundamentalElements() {
   };
 }
 
+function allLessonElements() {
+  const elements = fundamentalElements();
+  elements['#linux-lesson'] = new FakeElement();
+  for (const prefix of ['network', 'linux', 'web', 'crypto', 'ad', 'soc', 'testing']) {
+    elements[`#${prefix}-check-button`] = new FakeElement();
+    elements[`#${prefix}-check-answer`] = new FakeElement();
+    elements[`#${prefix}-check-result`] = new FakeElement();
+  }
+  return elements;
+}
+
+function dashboardElements() {
+  const selectors = ['#dashboard-lessons', '#dashboard-exercises', '#dashboard-investigations', '#dashboard-review-status', '#dashboard-overall', '#dashboard-overall-progress', '#dashboard-overall-fill', '#dashboard-next', '#learning-path-stages', '#dashboard-xp', '#dashboard-level', '#dashboard-daily', '#dashboard-streak', '#dashboard-longest-streak', '#dashboard-achievements', '#dashboard-badges', '#level-progress', '#level-progress-fill', '#level-progress-text', '#today-dashboard-content', '#dashboard-skills-list'];
+  return Object.fromEntries(selectors.map(selector => [selector, new FakeElement()]));
+}
+
 test('Fundamentals completes through click and Enter event paths and updates progress immediately', async () => {
   for (const submission of ['click', 'Enter']) {
     const elements = fundamentalElements();
-    const { localStorage } = boot({ elements });
+    const { context, localStorage } = boot({ elements });
     elements['#fundamentals-check-answer'].value = submission === 'click' ? 'least privilege' : 'The principle of least privilege';
     if (submission === 'click') await elements['#fundamentals-check-button'].dispatch('click');
     else await elements['#fundamentals-check-answer'].dispatch('keydown', { key: 'Enter' });
     assert.equal(localStorage.getItem('betterHackerFundamentalsComplete'), 'true');
     assert.equal(elements['#course-progress-text'].textContent, '1 / 8 Lessons Completed');
     assert.match(elements['#fundamentals-check-result'].textContent, /Correct/);
+    const reward = context.__createdElements.find(element => element.className === 'completion-reward');
+    assert.match(reward.textContent, /Lesson complete — 100 XP/);
   }
+});
+
+test('a new learner completes all eight lessons through knowledge-check interactions', async () => {
+  const elements = allLessonElements();
+  const { context, localStorage } = boot({ elements });
+  const checks = [
+    ['fundamentals', '  The   principle of least privilege  ', 'Fundamentals'],
+    ['network', '443', 'Networking'],
+    ['linux', 'CAT', 'Linux'],
+    ['web', 'SQLi', 'WebSecurity'],
+    ['crypto', 'Encryption', 'Cryptography'],
+    ['ad', 'User Account', 'ActiveDirectory'],
+    ['soc', 'SIEM', 'Soc'],
+    ['testing', 'Written Authorization', 'SecurityTesting']
+  ];
+
+  for (const [index, [prefix, answer, storageName]] of checks.entries()) {
+    elements[`#${prefix}-check-answer`].value = answer;
+    await elements[`#${prefix}-check-button`].dispatch('click');
+    assert.equal(localStorage.getItem(`betterHacker${storageName}Complete`), 'true');
+    assert.equal(context.__app.getDashboardState().lessonsCompleted, index + 1);
+  }
+  assert.equal(elements['#course-progress-text'].textContent, '8 / 8 Lessons Completed');
+  assert.match(context.__app.getDashboardState().recommendation.label, /Guided Exercises/);
 });
 
 test('dashboard recommendation follows all learning phases using existing keys', () => {
@@ -104,6 +146,112 @@ test('dashboard recommendation follows all learning phases using existing keys',
   assert.match(context.__app.getDashboardState().recommendation.label, /Investigations/);
   ['Soc','Network','Phishing','Windows','Malware','BruteForce','WebAttack'].forEach(name => localStorage.setItem(`betterHacker${name}InvestigationComplete`, 'true'));
   assert.match(context.__app.getDashboardState().recommendation.label, /Course Review/);
+});
+
+test('a fully completed learner resumes with one set of rewards and a review recommendation', () => {
+  const lessonKeys = ['Fundamentals','Networking','Linux','WebSecurity','Cryptography','ActiveDirectory','Soc','SecurityTesting']
+    .map(name => `betterHacker${name}Complete`);
+  const investigationKeys = ['Soc','Network','Phishing','Windows','Malware','BruteForce','WebAttack']
+    .map(name => `betterHacker${name}InvestigationComplete`);
+  const topics = {};
+  const initial = boot();
+  initial.context.__app.COURSE_REVIEW_QUESTIONS.forEach(question => {
+    topics[question.topic] ||= { correct: 0, total: 0, lesson: question.lesson };
+    topics[question.topic].correct++;
+    topics[question.topic].total++;
+  });
+  const review = { completed: true, score: 14, total: 14, percentage: 100, completedAt: '2026-09-27T12:00:00.000Z', topics };
+  const seed = { betterHackerCompletedLabs: '4', betterHackerCourseReviewResult: JSON.stringify(review) };
+  [...lessonKeys, ...investigationKeys].forEach(key => { seed[key] = 'true'; });
+
+  for (let reload = 0; reload < 2; reload++) {
+    const { context } = boot({ seed });
+    const dashboard = context.__app.getDashboardState();
+    const snapshot = context.__app.buildRetentionSnapshot();
+    assert.deepEqual([dashboard.lessonsCompleted, dashboard.exercisesCompleted, dashboard.investigationsCompleted], [8, 4, 7]);
+    assert.match(dashboard.recommendation.label, /Core Path Complete/);
+    assert.equal(dashboard.recommendation.type, 'Review and maintenance');
+    assert.equal(dashboard.coreCompleted, 20);
+    assert.deepEqual(Array.from(dashboard.stages, stage => stage.status), ['Complete', 'Complete', 'Complete', 'Complete', 'Complete']);
+    assert.equal(BetterHackerState.deriveXp(snapshot, snapshot.daily), 2175);
+    assert.equal(BetterHackerMilestones.evaluateAchievements(snapshot).filter(item => item.earned).length, 8);
+  }
+});
+
+test('learning path and Continue Learning reflect partial evidence without new progress state', () => {
+  const { context, localStorage } = boot();
+  let dashboard = context.__app.getDashboardState();
+  assert.equal(dashboard.coreCompleted, 0);
+  assert.equal(dashboard.overallPercentage, 0);
+  assert.deepEqual(Array.from(dashboard.stages, stage => stage.status), ['Not Started', 'Not Started', 'Not Started', 'Not Started', 'Not Started']);
+  assert.equal(dashboard.recommendation.target, '#fundamentals-lesson');
+  assert.equal(dashboard.recommendation.xp, 100);
+
+  localStorage.setItem('betterHackerFundamentalsComplete', 'true');
+  localStorage.setItem('betterHackerNetworkingComplete', 'true');
+  dashboard = context.__app.getDashboardState();
+  assert.equal(dashboard.stages[0].status, 'In Progress');
+  assert.equal(dashboard.recommendation.target, '#linux-lesson');
+
+  ['Linux','WebSecurity','Cryptography','ActiveDirectory','Soc','SecurityTesting'].forEach(name => localStorage.setItem(`betterHacker${name}Complete`, 'true'));
+  dashboard = context.__app.getDashboardState();
+  assert.deepEqual(Array.from(dashboard.stages, stage => stage.status), ['Complete', 'Complete', 'In Progress', 'Not Started', 'Not Started']);
+  assert.equal(dashboard.recommendation.target, '#lab-linux');
+  localStorage.setItem('betterHackerCompletedLabs', '2');
+  dashboard = context.__app.getDashboardState();
+  assert.equal(dashboard.recommendation.target, '#lab-cryptography');
+  assert.equal(dashboard.recommendation.xp, 75);
+
+  localStorage.setItem('betterHackerCompletedLabs', '4');
+  localStorage.setItem('betterHackerSocInvestigationComplete', 'true');
+  localStorage.setItem('betterHackerNetworkInvestigationComplete', 'true');
+  dashboard = context.__app.getDashboardState();
+  assert.equal(dashboard.stages[3].status, 'In Progress');
+  assert.equal(dashboard.recommendation.target, '#investigation-phishing');
+  assert.equal(dashboard.recommendation.xp, 125);
+});
+
+test('fresh dashboard renders an accessible summary, path, today plan, and skills', () => {
+  const elements = dashboardElements();
+  boot({ elements });
+  assert.equal(elements['#dashboard-overall'].textContent, '0 / 20 core activities complete (0%)');
+  assert.equal(elements['#dashboard-overall-progress'].getAttribute('aria-valuenow'), '0');
+  assert.equal(elements['#dashboard-xp'].textContent, '0 XP');
+  assert.equal(elements['#dashboard-level'].textContent, 'Level 1 — New Recruit');
+  assert.match(elements['#dashboard-next'].innerHTML, /Start First Lesson: Cybersecurity Fundamentals/);
+  assert.equal((elements['#learning-path-stages'].innerHTML.match(/Not Started/g) || []).length, 5);
+  assert.match(elements['#today-dashboard-content'].innerHTML, /Daily Challenge ready/);
+  assert.match(elements['#today-dashboard-content'].innerHTML, /available tomorrow/);
+  assert.equal((elements['#dashboard-skills-list'].innerHTML.match(/Upcoming in your learning path/g) || []).length, 10);
+});
+
+test('skill visibility and resumed daily state are reconstructed from validated evidence', () => {
+  const today = BetterHackerState.localDateKey(new Date());
+  const seed = {
+    betterHackerFundamentalsComplete: 'true',
+    betterHackerNetworkingComplete: 'true',
+    betterHackerCompletedLabs: '1',
+    betterHackerSocInvestigationComplete: 'true',
+    betterHackerDailyChallengeState: JSON.stringify({ version: 1, lastCompletedDate: today, currentStreak: 3, longestStreak: 5, records: [{ date: today, challengeId: 'daily-least-privilege', xp: 50 }] })
+  };
+  for (let reload = 0; reload < 2; reload++) {
+    const { context } = boot({ seed });
+    const snapshot = context.__app.buildRetentionSnapshot();
+    const skills = context.__app.deriveLearningSkills(snapshot);
+    assert.deepEqual(Array.from(skills.filter(skill => skill.building), skill => skill.name), ['Cybersecurity Foundations', 'Networking Fundamentals', 'Evidence Analysis', 'Defensive Investigation']);
+    assert.equal(snapshot.daily.currentStreak, 3);
+    assert.equal(snapshot.daily.longestStreak, 5);
+    assert.equal(BetterHackerState.deriveXp(snapshot, snapshot.daily), 450);
+    assert.equal(BetterHackerState.getLevel(450).name, 'Cyber Explorer');
+  }
+});
+
+test('merged script has one bootstrap and one declaration for integration-sensitive systems', () => {
+  assert.equal((source.match(/document\.addEventListener\("DOMContentLoaded"/g) || []).length, 1);
+  for (const name of ['getDashboardState', 'renderDashboard', 'completeGuidedLab', 'renderDailyChallenge', 'openCompanion']) {
+    assert.equal((source.match(new RegExp(`function ${name}\\(`, 'g')) || []).length, 1, `${name} must have one declaration`);
+  }
+  assert.equal((source.match(/const waitlistForm\s*=/g) || []).length, 1);
 });
 
 test('malformed guided exercise and review storage are rejected safely', () => {
@@ -156,6 +304,22 @@ test('guided exercise definitions accept documented equivalents without using th
   expected.forEach(answer => assert.ok(source.includes(`"${answer}"`), `missing guided equivalent ${answer}`));
   assert.equal((source.match(/InvestigationComplete", name:/g) || []).length, 7);
   assert.match(source, /className = "lab-challenge guided-exercise lab-workspace"/);
+});
+
+test('all investigations expose unique anchors, authored hints, and persisted completion keys', () => {
+  const { context } = boot();
+  const investigations = Array.from(context.__app.INVESTIGATIONS);
+  assert.equal(investigations.length, 7);
+  assert.equal(new Set(investigations.map(item => item.anchor)).size, 7);
+  assert.equal(new Set(investigations.map(item => item.key)).size, 7);
+  for (const investigation of investigations) {
+    assert.match(investigation.anchor, /^investigation-/);
+    assert.match(investigation.key, /^betterHacker.+InvestigationComplete$/);
+    assert.ok(investigation.hint.length > 30);
+  }
+  assert.match(source, /href=\"#' \+ investigation\.anchor/);
+  assert.match(source, /className = "secondary-button investigation-hint"/);
+  assert.match(source, /window\.addEventListener\("hashchange", focusInvestigationFromHash\)/);
 });
 
 

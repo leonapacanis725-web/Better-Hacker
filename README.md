@@ -18,7 +18,20 @@ Progress remains local to the learner's browser; there are no accounts or cloud 
 
 - `betterHackerCourseReviewResult`: JSON containing the most recent completed review's score, total, percentage, completion timestamp, and per-topic result summary.
 
+The complete storage inventory is:
+
+- Lessons: `betterHackerFundamentalsComplete`, `betterHackerNetworkingComplete`, `betterHackerLinuxComplete`, `betterHackerWebSecurityComplete`, `betterHackerCryptographyComplete`, `betterHackerActiveDirectoryComplete`, `betterHackerSocComplete`, and `betterHackerSecurityTestingComplete`.
+- Guided labs: `betterHackerCompletedLabs`, the original sequential integer from `0` through `4`.
+- Investigations: `betterHackerSocInvestigationComplete`, `betterHackerNetworkInvestigationComplete`, `betterHackerPhishingInvestigationComplete`, `betterHackerWindowsInvestigationComplete`, `betterHackerMalwareInvestigationComplete`, `betterHackerBruteForceInvestigationComplete`, and `betterHackerWebAttackInvestigationComplete`.
+- Course Review: `betterHackerCourseReviewResult`.
+- Daily Challenge: `betterHackerDailyChallengeState`.
+- Confirmed waitlist email: `betterHackerWaitlistEmail`.
+
+XP, levels, achievements, and badges are derived from this validated evidence instead of being stored in separate counters. This prevents reloads and reviews from awarding them repeatedly.
+
 The review is an additional activity—not a ninth lesson—so core lesson progress remains **0–8 / 8**. The dashboard separately reports lessons, **4** guided exercises, **7** investigations, and Course Review status. Its recommendation advances from incomplete lessons, to exercises, to investigations, to the Course Review. Once everything is complete it offers a course review action.
+
+The Learner Dashboard reconstructs an overall 20-activity view, current level, derived XP, Daily Challenge streaks, milestones, skills, and a five-stage Learning Path from the same validated evidence. Continue Learning points to the first incomplete lesson, guided lab, or investigation before Course Review; after all core activities are complete it switches to optional daily review and maintenance. No dashboard-only progress key is used.
 
 Completing the review unlocks the progress-derived **Knowledge Checkpoint** achievement. It is based on completion, not a score threshold.
 

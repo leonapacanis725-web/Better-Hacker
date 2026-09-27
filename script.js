@@ -14,13 +14,13 @@ document.addEventListener("DOMContentLoaded", function () {
   ]);
 
   const INVESTIGATIONS = Object.freeze([
-    { key: "betterHackerSocInvestigationComplete", name: "SOC Alert Investigation", selector: ".soc-investigation-lab" },
-    { key: "betterHackerNetworkInvestigationComplete", name: "Network Traffic Investigation", selector: ".network-investigation-lab" },
-    { key: "betterHackerPhishingInvestigationComplete", name: "Phishing Email Investigation", selector: ".phishing-investigation-lab" },
-    { key: "betterHackerWindowsInvestigationComplete", name: "Windows / Active Directory Investigation", selector: ".windows-investigation-lab" },
-    { key: "betterHackerMalwareInvestigationComplete", name: "Malware Investigation", selector: ".malware-investigation-lab" },
-    { key: "betterHackerBruteForceInvestigationComplete", name: "Brute Force Investigation", selector: ".brute-force-investigation-lab" },
-    { key: "betterHackerWebAttackInvestigationComplete", name: "Web Attack Investigation", selector: ".web-attack-investigation-lab" }
+    { key: "betterHackerSocInvestigationComplete", name: "SOC Alert Investigation", selector: ".soc-investigation-lab", anchor: "investigation-soc", hint: "Compare the failed attempts, successful login, time, and device before choosing a response." },
+    { key: "betterHackerNetworkInvestigationComplete", name: "Network Traffic Investigation", selector: ".network-investigation-lab", anchor: "investigation-network", hint: "Look for an unusual service and a connection count that differs sharply from normal traffic." },
+    { key: "betterHackerPhishingInvestigationComplete", name: "Phishing Email Investigation", selector: ".phishing-investigation-lab", anchor: "investigation-phishing", hint: "Check the sender domain, urgency, link destination, and attachment together." },
+    { key: "betterHackerWindowsInvestigationComplete", name: "Windows / Active Directory Investigation", selector: ".windows-investigation-lab", anchor: "investigation-windows", hint: "Focus on the unexpected privilege change, its time, and the originating workstation." },
+    { key: "betterHackerMalwareInvestigationComplete", name: "Malware Investigation", selector: ".malware-investigation-lab", anchor: "investigation-malware", hint: "Prioritize the evidence showing persistence or communication with suspicious infrastructure." },
+    { key: "betterHackerBruteForceInvestigationComplete", name: "Brute Force Investigation", selector: ".brute-force-investigation-lab", anchor: "investigation-brute-force", hint: "Consider the number and timing of failed logins from the same source." },
+    { key: "betterHackerWebAttackInvestigationComplete", name: "Web Attack Investigation", selector: ".web-attack-investigation-lab", anchor: "investigation-web-attack", hint: "Ask which interpreter could treat the submitted characters as instructions instead of data." }
   ]);
 
   const GUIDED_EXERCISE_TOTAL = 4;
@@ -203,7 +203,9 @@ document.addEventListener("DOMContentLoaded", function () {
           if (!answerWasCorrect || !completeGuidedLab(index)) return;
           refreshLearningUI();
           renderLabCards();
-          actions.innerHTML = '<h4>11. Lab Complete</h4><p class="feedback-success">Completed. Progress, XP, achievements, badge evidence, and your dashboard are now updated.</p>' +
+          const labSnapshot = buildRetentionSnapshot();
+          const labLevel = RetentionState.getLevel(RetentionState.deriveXp(labSnapshot, labSnapshot.daily));
+          actions.innerHTML = '<h4>11. Lab Complete</h4><p class="feedback-success">Activity complete — 75 XP is included in your derived total. ' + (labLevel.next ? labLevel.xpToNext + ' XP to ' + labLevel.next.name + '.' : 'You are at the top current level.') + ' Progress, achievements, badge evidence, and your dashboard are updated.</p>' +
             (index + 1 < GUIDED_LABS.length ? '<button type="button" class="primary-button" id="next-guided-lab">Continue Learning: ' + GUIDED_LABS[index + 1].title + '</button>' : '<a class="primary-button" href="#dashboard">Continue Learning from Dashboard</a>') + '<a class="secondary-button" href="#lab-overview">Return to Labs</a>';
           const next = workspace.querySelector("#next-guided-lab");
           if (next) next.addEventListener("click", function () { openLab(index + 1, true); });
@@ -541,6 +543,15 @@ function showNextLessonButton(resultElement, target, name) {
   if (oldButton) {
     oldButton.remove();
   }
+
+  const oldReward = resultElement.parentElement.querySelector(".completion-reward");
+  if (oldReward) oldReward.remove();
+  const snapshot = buildRetentionSnapshot();
+  const level = RetentionState.getLevel(RetentionState.deriveXp(snapshot, snapshot.daily));
+  const reward = document.createElement("p");
+  reward.className = "completion-reward";
+  reward.textContent = "Lesson complete — 100 XP is included in your derived total. " + (level.next ? level.xpToNext + " XP to " + level.next.name + "." : "You are at the top current level.");
+  resultElement.insertAdjacentElement("afterend", reward);
 
   const nextButton =
     document.createElement("a");
@@ -1447,6 +1458,20 @@ if (investigationSection) {
           updateInvestigationProgress();
           renderInvestigationCompletionStates();
           renderDashboard();
+          const card = event.target.closest && event.target.closest(".lab-challenge");
+          const investigation = INVESTIGATIONS.find(function (item) { return card && card.matches(item.selector); });
+          const feedback = card && card.querySelector('[role="status"]');
+          if (investigation && feedback) {
+            const investigationComplete = localStorage.getItem(investigation.key) === "true";
+            if (investigationComplete && !feedback.textContent.includes("125 XP")) feedback.textContent += " Activity complete — 125 XP is included in your derived total; reviewing it does not add more XP.";
+            companion.setContext({
+              type: "investigation",
+              topic: investigation.name,
+              hint: investigation.hint,
+              explanation: feedback.textContent.replace(/^[✅❌]\s*/, ""),
+              submitted: true
+            });
+          }
         }, 0);
 
       }
@@ -2126,6 +2151,61 @@ if (webAttackSection) {
   });
 
 }
+
+/* =========================
+   INVESTIGATION NAVIGATION & HINTS
+========================= */
+
+if (investigationSection) {
+  const investigationCards = [];
+  const investigationOverview = document.createElement("nav");
+  investigationOverview.className = "investigation-overview";
+  investigationOverview.setAttribute("aria-labelledby", "investigation-overview-title");
+  investigationOverview.innerHTML = '<h3 id="investigation-overview-title">Defensive Investigations</h3>' +
+    '<p>Open an investigation, interpret the simulated evidence, and choose the safest defensive conclusion.</p><ul>' +
+    INVESTIGATIONS.map(function (investigation) {
+      return '<li><a href="#' + investigation.anchor + '">' + investigation.name + '</a></li>';
+    }).join("") + '</ul>';
+
+  INVESTIGATIONS.forEach(function (investigation) {
+    const card = document.querySelector(investigation.selector);
+    if (!card) return;
+    investigationCards.push(card);
+    card.id = investigation.anchor;
+    const heading = card.querySelector("h3");
+    if (heading) heading.tabIndex = -1;
+    const result = card.querySelector('[role="status"]');
+    if (result) {
+      const hintButton = document.createElement("button");
+      hintButton.type = "button";
+      hintButton.className = "secondary-button investigation-hint";
+      hintButton.textContent = "Show Hint";
+      hintButton.addEventListener("click", function () {
+        result.className = "feedback-review";
+        result.textContent = "Hint: " + investigation.hint;
+        companion.setContext({ type: "investigation", topic: investigation.name, hint: investigation.hint, submitted: false });
+      });
+      result.parentElement.insertBefore(hintButton, result);
+    }
+  });
+
+  if (investigationCards.length) {
+    investigationSection.insertBefore(investigationOverview, investigationCards[0]);
+    if (investigationProgress) investigationSection.insertBefore(investigationProgress, investigationCards[0]);
+  }
+
+  function focusInvestigationFromHash() {
+    const investigation = INVESTIGATIONS.find(function (item) { return location.hash === "#" + item.anchor; });
+    if (!investigation) return;
+    const card = document.querySelector(investigation.selector);
+    const heading = card && card.querySelector("h3");
+    companion.setContext({ type: "investigation", topic: investigation.name, hint: investigation.hint, submitted: false });
+    if (heading) heading.focus();
+  }
+
+  if (typeof window !== "undefined") window.addEventListener("hashchange", focusInvestigationFromHash);
+  focusInvestigationFromHash();
+}
 /* =========================
    WAITLIST SIGNUP
 ========================= */
@@ -2271,6 +2351,10 @@ function countCompleted(keys) {
   return keys.filter(function (key) { return localStorage.getItem(key) === "true"; }).length;
 }
 
+function progressStatus(completed, total) {
+  return completed === 0 ? "Not Started" : completed >= total ? "Complete" : "In Progress";
+}
+
 function readReviewResult() {
   try {
     const result = JSON.parse(localStorage.getItem(COURSE_REVIEW_STORAGE_KEY));
@@ -2305,20 +2389,44 @@ function getDashboardState() {
   const reviewResult = readReviewResult();
   let recommendation;
   const nextLesson = LESSON_PROGRESS.find(function (lesson) { return localStorage.getItem(lesson.key) !== "true"; });
+  const nextInvestigation = INVESTIGATIONS.find(function (investigation) { return localStorage.getItem(investigation.key) !== "true"; });
 
   if (nextLesson) {
-    recommendation = { target: nextLesson.target, label: "Continue Learning: " + nextLesson.name };
+    recommendation = { target: nextLesson.target, name: nextLesson.name, type: "Core lesson", reason: "Build the next foundation in the eight-lesson curriculum.", purpose: "Learn a beginner concept, practice it safely, and complete its knowledge check.", xp: RetentionState.XP_RULES.lesson, action: lessonsCompleted ? "Continue Lesson" : "Start First Lesson", label: "Continue Learning: " + nextLesson.name };
   } else if (exercisesCompleted < GUIDED_EXERCISE_TOTAL) {
-    recommendation = { target: "#lab-" + GUIDED_LABS[exercisesCompleted].id, label: "Lessons Complete — Continue Guided Exercises: " + GUIDED_LABS[exercisesCompleted].title };
+    recommendation = { target: "#lab-" + GUIDED_LABS[exercisesCompleted].id, name: GUIDED_LABS[exercisesCompleted].title, type: "Guided lab", reason: "Apply lesson knowledge in a safe, guided workspace.", purpose: "Interpret simulated evidence and practice a defensive decision.", xp: RetentionState.XP_RULES.guidedExercise, action: exercisesCompleted ? "Continue Guided Labs" : "Start Guided Labs", label: "Lessons Complete — Continue Guided Exercises: " + GUIDED_LABS[exercisesCompleted].title };
   } else if (investigationsCompleted < INVESTIGATIONS.length) {
-    recommendation = { target: "#labs", label: "Continue Security Investigations" };
+    recommendation = { target: "#" + nextInvestigation.anchor, name: nextInvestigation.name, type: "Defensive investigation", reason: "Practice connecting multiple clues before choosing a response.", purpose: "Strengthen evidence analysis and beginner SOC judgment.", xp: RetentionState.XP_RULES.investigation, action: investigationsCompleted ? "Continue Investigations" : "Start Investigations", label: "Continue Security Investigations: " + nextInvestigation.name };
   } else if (!reviewResult) {
-    recommendation = { target: "#course-review", label: "Start the Course Review" };
+    recommendation = { target: "#course-review", name: "Beginner Cybersecurity Assessment", type: "Course Review", reason: "Connect ideas from lessons, labs, and investigations.", purpose: "Identify strong topics and useful areas to revisit without a pass/fail label.", xp: RetentionState.XP_RULES.courseReview, action: "Start Course Review", label: "Start the Course Review" };
   } else {
-    recommendation = { target: "#course-review", label: "Course Complete — Review Course Again" };
+    recommendation = { target: "#daily-challenge", name: "Daily Cyber Challenge", type: "Review and maintenance", reason: "All core activities are complete; keep concepts fresh with optional practice.", purpose: "Reinforce one safe defensive decision today or review any completed activity.", xp: 50, action: "Practice Today", label: "Core Path Complete — Practice Today" };
   }
 
-  return { lessonsCompleted: lessonsCompleted, exercisesCompleted: exercisesCompleted, investigationsCompleted: investigationsCompleted, reviewResult: reviewResult, recommendation: recommendation };
+  const stageCounts = [
+    countCompleted(LESSON_PROGRESS.slice(0, 3).map(function (lesson) { return lesson.key; })),
+    countCompleted(LESSON_PROGRESS.slice(3, 6).map(function (lesson) { return lesson.key; })),
+    countCompleted(LESSON_PROGRESS.slice(6, 8).map(function (lesson) { return lesson.key; })) + exercisesCompleted,
+    investigationsCompleted,
+    reviewResult ? 1 : 0
+  ];
+  const stageTotals = [3, 3, 6, 7, 1];
+  const firstIncompleteTarget = function (lessons, fallback) {
+    const lesson = lessons.find(function (item) { return localStorage.getItem(item.key) !== "true"; });
+    return lesson ? lesson.target : fallback;
+  };
+  const stageData = [
+    ["Stage 1 — Foundations", "Cybersecurity Fundamentals, Networking, Linux", firstIncompleteTarget(LESSON_PROGRESS.slice(0, 3), "#fundamentals-lesson")],
+    ["Stage 2 — Security Fundamentals", "Web Security, Cryptography, Active Directory", firstIncompleteTarget(LESSON_PROGRESS.slice(3, 6), "#web-security-lesson")],
+    ["Stage 3 — Defensive Operations", "SOC & SIEM, Security Testing, Guided Labs", firstIncompleteTarget(LESSON_PROGRESS.slice(6, 8), exercisesCompleted < GUIDED_EXERCISE_TOTAL ? "#lab-" + GUIDED_LABS[exercisesCompleted].id : "#soc-siem-lesson")],
+    ["Stage 4 — Investigation Skills", "Defensive Investigations", nextInvestigation ? "#" + nextInvestigation.anchor : "#investigation-soc"],
+    ["Stage 5 — Knowledge Checkpoint", "Course Review", "#course-review"]
+  ];
+  const stages = stageData.map(function (stage, index) {
+    return { name: stage[0], activities: stage[1], target: stage[2], completed: stageCounts[index], total: stageTotals[index], status: progressStatus(stageCounts[index], stageTotals[index]) };
+  });
+  const coreCompleted = lessonsCompleted + exercisesCompleted + investigationsCompleted + (reviewResult ? 1 : 0);
+  return { lessonsCompleted: lessonsCompleted, exercisesCompleted: exercisesCompleted, investigationsCompleted: investigationsCompleted, reviewResult: reviewResult, recommendation: recommendation, stages: stages, coreCompleted: coreCompleted, coreTotal: 20, overallPercentage: Math.round((coreCompleted / 20) * 100) };
 }
 
 function buildRetentionSnapshot() {
@@ -2327,6 +2435,22 @@ function buildRetentionSnapshot() {
   LESSON_PROGRESS.forEach(function (item) { if (localStorage.getItem(item.key) === "true") completedKeys.add(item.key); });
   INVESTIGATIONS.forEach(function (item) { if (localStorage.getItem(item.key) === "true") completedKeys.add(item.key); });
   return Object.assign({}, dashboard, { completedKeys: completedKeys, daily: RetentionState.readDailyState(localStorage) });
+}
+
+function deriveLearningSkills(snapshot) {
+  return [
+    ["Cybersecurity Foundations", "betterHackerFundamentalsComplete"],
+    ["Networking Fundamentals", "betterHackerNetworkingComplete"],
+    ["Linux Fundamentals", "betterHackerLinuxComplete"],
+    ["Web Security", "betterHackerWebSecurityComplete"],
+    ["Cryptography", "betterHackerCryptographyComplete"],
+    ["Identity & Active Directory", "betterHackerActiveDirectoryComplete"],
+    ["SOC & SIEM", "betterHackerSocComplete"],
+    ["Security Testing", "betterHackerSecurityTestingComplete"]
+  ].map(function (skill) { return { name: skill[0], building: snapshot.completedKeys.has(skill[1]) }; }).concat([
+    { name: "Evidence Analysis", building: snapshot.exercisesCompleted > 0 },
+    { name: "Defensive Investigation", building: snapshot.investigationsCompleted > 0 }
+  ]);
 }
 
 function renderRetentionSummary() {
@@ -2369,9 +2493,19 @@ function renderDashboard() {
   setText("#dashboard-exercises", state.exercisesCompleted + " / " + GUIDED_EXERCISE_TOTAL + " completed");
   setText("#dashboard-investigations", state.investigationsCompleted + " / " + INVESTIGATIONS.length + " completed");
   setText("#dashboard-review-status", state.reviewResult ? "Completed — " + state.reviewResult.score + " / " + state.reviewResult.total + " (" + state.reviewResult.percentage + "%)" : "Not Started");
+  setText("#dashboard-overall", state.coreCompleted + " / " + state.coreTotal + " core activities complete (" + state.overallPercentage + "%)");
+  const overallProgress = document.querySelector("#dashboard-overall-progress");
+  const overallFill = document.querySelector("#dashboard-overall-fill");
+  if (overallProgress) overallProgress.setAttribute("aria-valuenow", String(state.coreCompleted));
+  if (overallFill) overallFill.style.width = state.overallPercentage + "%";
 
   const next = document.querySelector("#dashboard-next");
-  if (next) next.innerHTML = '<strong>Recommended next action</strong><a class="primary-button" href="' + state.recommendation.target + '">' + state.recommendation.label + '</a>';
+  if (next) next.innerHTML = '<p class="recommendation-type">' + state.recommendation.type + '</p><h4>' + state.recommendation.name + '</h4><p>' + state.recommendation.reason + '</p><p><strong>Learning purpose:</strong> ' + state.recommendation.purpose + '</p><p><strong>Completion value:</strong> ' + state.recommendation.xp + ' derived XP</p><a class="primary-button" href="' + state.recommendation.target + '">' + state.recommendation.action + ': ' + state.recommendation.name + '</a>';
+
+  const path = document.querySelector("#learning-path-stages");
+  if (path) path.innerHTML = state.stages.map(function (stage) {
+    return '<li class="learning-path-stage stage-' + stage.status.toLowerCase().replace(" ", "-") + '"><a href="' + stage.target + '"><span class="stage-status">' + stage.status + '</span><strong>' + stage.name + '</strong><span>' + stage.activities + '</span><span>' + stage.completed + ' / ' + stage.total + ' activities</span></a></li>';
+  }).join("");
 
   const achievement = document.querySelector("#knowledge-checkpoint");
   if (achievement && state.reviewResult) {
@@ -2384,7 +2518,16 @@ function renderDashboard() {
     existingContinueButton.href = state.recommendation.target;
     existingContinueButton.textContent = "▶ " + state.recommendation.label;
   }
-  renderRetentionSummary();
+  const retention = renderRetentionSummary();
+  const today = RetentionState.localDateKey(new Date());
+  const dailyComplete = retention.snapshot.daily.records.some(function (record) { return record.date === today; });
+  const todayContent = document.querySelector("#today-dashboard-content");
+  if (todayContent) todayContent.innerHTML = '<div><strong>' + (dailyComplete ? 'Daily Challenge complete' : 'Daily Challenge ready') + '</strong><span>' + (dailyComplete ? 'Today’s 50 XP is already included. Review is optional; return tomorrow for the next local-date challenge.' : 'Practice one authored defensive scenario for 50 XP. A new local-date challenge will be available tomorrow.') + '</span><a href="#daily-challenge">' + (dailyComplete ? 'Review today’s challenge' : 'Open today’s challenge') + '</a></div>' +
+    '<div><strong>Current streak: ' + retention.snapshot.daily.currentStreak + ' days</strong><span>Longest streak: ' + retention.snapshot.daily.longestStreak + ' days</span><span>No countdowns—return when practice is useful.</span></div>' +
+    '<div><strong>Next curriculum step</strong><span>' + state.recommendation.name + '</span><a href="' + state.recommendation.target + '">' + state.recommendation.action + '</a></div>';
+  const skills = deriveLearningSkills(retention.snapshot);
+  const skillsList = document.querySelector("#dashboard-skills-list");
+  if (skillsList) skillsList.innerHTML = skills.map(function (skill) { return '<li class="' + (skill.building ? 'skill-building' : 'skill-upcoming') + '"><span aria-hidden="true">' + (skill.building ? '✓' : '○') + '</span><strong>' + skill.name + '</strong><span>' + (skill.building ? 'Building from completed evidence' : 'Upcoming in your learning path') + '</span></li>'; }).join("");
   return state;
 }
 
@@ -2535,7 +2678,9 @@ function finishCourseReview() {
     (value.correct / value.total >= 0.5 ? strong : review).push({ topic: topic, lesson: value.lesson });
   });
   const links = function (items) { return items.length ? '<ul>' + items.map(function (item) { return '<li><a href="' + item.lesson + '">' + item.topic + '</a></li>'; }).join("") + '</ul>' : '<p>Keep using the lesson links below to reinforce every topic.</p>'; };
-  reviewResults.innerHTML = '<h3>Course Review Complete</h3><p class="review-score"><strong>' + reviewScore + ' / ' + total + '</strong><span>' + percentage + '%</span></p>' +
+  const reviewSnapshot = buildRetentionSnapshot();
+  const reviewLevel = RetentionState.getLevel(RetentionState.deriveXp(reviewSnapshot, reviewSnapshot.daily));
+  reviewResults.innerHTML = '<h3>Course Review Complete</h3><p class="review-score"><strong>' + reviewScore + ' / ' + total + '</strong><span>' + percentage + '%</span></p><p class="completion-reward">Course Review complete — 200 XP is included in your derived total. ' + (reviewLevel.next ? reviewLevel.xpToNext + ' XP to ' + reviewLevel.next.name + '.' : 'You are at the top current level.') + '</p>' +
     '<div class="review-topic-columns"><div><h4>Answered correctly</h4>' + links(strong) + '</div><div><h4>Worth revisiting</h4>' + links(review) + '</div></div>' +
     '<p>Your result is a study guide, not a label. Revisit any lesson and try again whenever you are ready.</p><button id="review-again" class="primary-button" type="button">Review Again</button>';
   document.querySelector("#review-again").addEventListener("click", startCourseReview);
@@ -2589,6 +2734,24 @@ function renderDailyChallenge() {
 renderDailyChallenge();
 
 document.querySelectorAll(".lesson-card").forEach(function(card){card.addEventListener("click",function(){companion.setContext({type:"lesson",topic:card.querySelector("h3").textContent,submitted:false});});});
+function updateCompanionForLessonHash() {
+  const lesson = LESSON_PROGRESS.find(function (item) { return location.hash === item.target; });
+  if (lesson) {
+    companion.setContext({ type: "lesson", topic: lesson.name, submitted: false });
+  } else if (location.hash === "#dashboard") {
+    const dashboard = getDashboardState();
+    companion.setContext({
+      type: "dashboard",
+      topic: "your Learner Dashboard",
+      hint: "Your recommended next step is " + dashboard.recommendation.name + ". The Learning Path shows why it comes next.",
+      lookFor: "your next incomplete activity, today’s challenge status, and the evidence behind skills and rewards",
+      guidance: "Lessons introduce concepts, guided labs provide structured practice, and investigations ask you to interpret several clues. Course Review connects all eight topics. XP and levels summarize validated activity evidence; achievements and badges describe milestones and are not certifications. Daily Challenges are optional local-date practice and award XP once per completed date.",
+      submitted: false
+    });
+  }
+}
+if (typeof window !== "undefined") window.addEventListener("hashchange", updateCompanionForLessonHash);
+updateCompanionForLessonHash();
 const labsForCompanion=document.querySelector("#labs");
 if(labsForCompanion)labsForCompanion.addEventListener("click",function(event){const card=event.target.closest&&event.target.closest(".lab-challenge");if(card){const heading=card.querySelector("h3");companion.setContext({type:"activity",topic:heading?heading.textContent:"Cybersecurity practice",submitted:false});}});
 

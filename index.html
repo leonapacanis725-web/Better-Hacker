@@ -175,6 +175,11 @@
     <h2>Learner Dashboard</h2>
     <p class="section-intro">See what you have completed and choose a useful next step.</p>
     <div class="dashboard-grid" aria-label="Learning progress summary">
+      <article class="dashboard-card dashboard-overall-card">
+        <h3>Overall Learning Path</h3>
+        <p id="dashboard-overall">0 / 20 core activities complete</p>
+        <div class="dashboard-overall-progress" id="dashboard-overall-progress" role="progressbar" aria-label="Overall core learning progress" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0"><span id="dashboard-overall-fill"></span></div>
+      </article>
       <article class="dashboard-card">
         <h3>Core Lessons</h3>
         <p id="dashboard-lessons">0 / 8 completed</p>
@@ -193,7 +198,10 @@
         <a href="#course-review" class="dashboard-review-link">Go to Course Review →</a>
       </article>
     </div>
-    <div class="dashboard-next" id="dashboard-next" aria-live="polite"></div>
+    <section class="dashboard-next" aria-labelledby="continue-learning-title">
+      <h3 id="continue-learning-title">Continue Learning</h3>
+      <div id="dashboard-next" aria-live="polite"></div>
+    </section>
     <div class="retention-summary" aria-label="Learner level and daily activity summary">
       <div><strong id="dashboard-xp">0 XP</strong><span id="dashboard-level">Level 1 — New Recruit</span></div>
       <div><strong id="dashboard-daily">Daily challenge available</strong><span id="dashboard-streak">Current streak: 0 days</span><span id="dashboard-longest-streak">Longest streak: 0 days</span></div>
@@ -207,6 +215,20 @@
       <a href="#daily-challenge" class="primary-button">Today’s Cyber Challenge</a>
       <a href="#skills-achievements" class="secondary-button">Skills &amp; Achievements</a>
     </div>
+    <section class="learning-path" aria-labelledby="learning-path-title">
+      <h3 id="learning-path-title">Your Learning Path</h3>
+      <p>Follow the stages in order, or revisit completed material whenever you want a refresher.</p>
+      <ol id="learning-path-stages" class="learning-path-stages"></ol>
+    </section>
+    <section class="today-dashboard" aria-labelledby="today-dashboard-title">
+      <h3 id="today-dashboard-title">Today at Better Hacker</h3>
+      <div id="today-dashboard-content"></div>
+    </section>
+    <section class="dashboard-skills" aria-labelledby="dashboard-skills-title">
+      <h3 id="dashboard-skills-title">Skills You’re Building</h3>
+      <p>These are educational progress indicators, not professional certifications.</p>
+      <ul id="dashboard-skills-list"></ul>
+    </section>
   </section>
 
   <section id="daily-challenge" class="section">
