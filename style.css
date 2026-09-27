@@ -290,7 +290,6 @@ input:disabled {
   background: #050b14;
   color: #ffffff;
   font-size: 16px;
-  outline: none;
 }
 
 #lab-answer:focus {
@@ -1172,6 +1171,10 @@ footer p {
 /* Clickable guided lab learning experience */
 .lab-overview { max-width: 1120px; margin: 28px auto 0; text-align: left; }
 .lab-card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.investigation-overview { max-width: 1000px; margin: 36px auto 20px; padding: 24px; text-align: left; background: #07111f; border: 1px solid #1e3a56; border-radius: 14px; }
+.investigation-overview ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 28px; margin: 18px 0 0; padding-left: 22px; }
+.investigation-overview a { overflow-wrap: anywhere; }
+.investigation-hint { margin: 12px 8px 12px 0; }
 .lab-card { display: flex; flex-direction: column; min-width: 0; padding: 24px; background: linear-gradient(145deg, #0d1a2c, #091525); border: 1px solid #1e3a56; border-radius: 14px; }
 .lab-card h3 { margin: 5px 0 10px; color: #7dd3fc; }
 .lab-card p { color: #cbd5e1; }
@@ -1192,7 +1195,7 @@ footer p {
 #lab-completion-actions .secondary-button { display: inline-block; }
 .lab-why { padding: 16px; border-left: 3px solid #38bdf8; background: #07111f; }
 @media (max-width: 700px) {
-  .lab-card-grid { grid-template-columns: 1fr; }
+  .lab-card-grid, .investigation-overview ul { grid-template-columns: 1fr; }
   .lab-card, .lab-challenge { padding: 20px; }
   .lab-actions > *, #lab-completion-actions > * { width: 100%; margin-right: 0; text-align: center; }
 }

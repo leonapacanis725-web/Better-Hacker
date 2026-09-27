@@ -14,13 +14,13 @@ document.addEventListener("DOMContentLoaded", function () {
   ]);
 
   const INVESTIGATIONS = Object.freeze([
-    { key: "betterHackerSocInvestigationComplete", name: "SOC Alert Investigation", selector: ".soc-investigation-lab" },
-    { key: "betterHackerNetworkInvestigationComplete", name: "Network Traffic Investigation", selector: ".network-investigation-lab" },
-    { key: "betterHackerPhishingInvestigationComplete", name: "Phishing Email Investigation", selector: ".phishing-investigation-lab" },
-    { key: "betterHackerWindowsInvestigationComplete", name: "Windows / Active Directory Investigation", selector: ".windows-investigation-lab" },
-    { key: "betterHackerMalwareInvestigationComplete", name: "Malware Investigation", selector: ".malware-investigation-lab" },
-    { key: "betterHackerBruteForceInvestigationComplete", name: "Brute Force Investigation", selector: ".brute-force-investigation-lab" },
-    { key: "betterHackerWebAttackInvestigationComplete", name: "Web Attack Investigation", selector: ".web-attack-investigation-lab" }
+    { key: "betterHackerSocInvestigationComplete", name: "SOC Alert Investigation", selector: ".soc-investigation-lab", anchor: "investigation-soc", hint: "Compare the failed attempts, successful login, time, and device before choosing a response." },
+    { key: "betterHackerNetworkInvestigationComplete", name: "Network Traffic Investigation", selector: ".network-investigation-lab", anchor: "investigation-network", hint: "Look for an unusual service and a connection count that differs sharply from normal traffic." },
+    { key: "betterHackerPhishingInvestigationComplete", name: "Phishing Email Investigation", selector: ".phishing-investigation-lab", anchor: "investigation-phishing", hint: "Check the sender domain, urgency, link destination, and attachment together." },
+    { key: "betterHackerWindowsInvestigationComplete", name: "Windows / Active Directory Investigation", selector: ".windows-investigation-lab", anchor: "investigation-windows", hint: "Focus on the unexpected privilege change, its time, and the originating workstation." },
+    { key: "betterHackerMalwareInvestigationComplete", name: "Malware Investigation", selector: ".malware-investigation-lab", anchor: "investigation-malware", hint: "Prioritize the evidence showing persistence or communication with suspicious infrastructure." },
+    { key: "betterHackerBruteForceInvestigationComplete", name: "Brute Force Investigation", selector: ".brute-force-investigation-lab", anchor: "investigation-brute-force", hint: "Consider the number and timing of failed logins from the same source." },
+    { key: "betterHackerWebAttackInvestigationComplete", name: "Web Attack Investigation", selector: ".web-attack-investigation-lab", anchor: "investigation-web-attack", hint: "Ask which interpreter could treat the submitted characters as instructions instead of data." }
   ]);
 
   const GUIDED_EXERCISE_TOTAL = 4;
@@ -1447,6 +1447,18 @@ if (investigationSection) {
           updateInvestigationProgress();
           renderInvestigationCompletionStates();
           renderDashboard();
+          const card = event.target.closest && event.target.closest(".lab-challenge");
+          const investigation = INVESTIGATIONS.find(function (item) { return card && card.matches(item.selector); });
+          const feedback = card && card.querySelector('[role="status"]');
+          if (investigation && feedback) {
+            companion.setContext({
+              type: "investigation",
+              topic: investigation.name,
+              hint: investigation.hint,
+              explanation: feedback.textContent.replace(/^[✅❌]\s*/, ""),
+              submitted: true
+            });
+          }
         }, 0);
 
       }
@@ -2126,6 +2138,61 @@ if (webAttackSection) {
   });
 
 }
+
+/* =========================
+   INVESTIGATION NAVIGATION & HINTS
+========================= */
+
+if (investigationSection) {
+  const investigationCards = [];
+  const investigationOverview = document.createElement("nav");
+  investigationOverview.className = "investigation-overview";
+  investigationOverview.setAttribute("aria-labelledby", "investigation-overview-title");
+  investigationOverview.innerHTML = '<h3 id="investigation-overview-title">Defensive Investigations</h3>' +
+    '<p>Open an investigation, interpret the simulated evidence, and choose the safest defensive conclusion.</p><ul>' +
+    INVESTIGATIONS.map(function (investigation) {
+      return '<li><a href="#' + investigation.anchor + '">' + investigation.name + '</a></li>';
+    }).join("") + '</ul>';
+
+  INVESTIGATIONS.forEach(function (investigation) {
+    const card = document.querySelector(investigation.selector);
+    if (!card) return;
+    investigationCards.push(card);
+    card.id = investigation.anchor;
+    const heading = card.querySelector("h3");
+    if (heading) heading.tabIndex = -1;
+    const result = card.querySelector('[role="status"]');
+    if (result) {
+      const hintButton = document.createElement("button");
+      hintButton.type = "button";
+      hintButton.className = "secondary-button investigation-hint";
+      hintButton.textContent = "Show Hint";
+      hintButton.addEventListener("click", function () {
+        result.className = "feedback-review";
+        result.textContent = "Hint: " + investigation.hint;
+        companion.setContext({ type: "investigation", topic: investigation.name, hint: investigation.hint, submitted: false });
+      });
+      result.parentElement.insertBefore(hintButton, result);
+    }
+  });
+
+  if (investigationCards.length) {
+    investigationSection.insertBefore(investigationOverview, investigationCards[0]);
+    if (investigationProgress) investigationSection.insertBefore(investigationProgress, investigationCards[0]);
+  }
+
+  function focusInvestigationFromHash() {
+    const investigation = INVESTIGATIONS.find(function (item) { return location.hash === "#" + item.anchor; });
+    if (!investigation) return;
+    const card = document.querySelector(investigation.selector);
+    const heading = card && card.querySelector("h3");
+    companion.setContext({ type: "investigation", topic: investigation.name, hint: investigation.hint, submitted: false });
+    if (heading) heading.focus();
+  }
+
+  if (typeof window !== "undefined") window.addEventListener("hashchange", focusInvestigationFromHash);
+  focusInvestigationFromHash();
+}
 /* =========================
    WAITLIST SIGNUP
 ========================= */
@@ -2589,6 +2656,12 @@ function renderDailyChallenge() {
 renderDailyChallenge();
 
 document.querySelectorAll(".lesson-card").forEach(function(card){card.addEventListener("click",function(){companion.setContext({type:"lesson",topic:card.querySelector("h3").textContent,submitted:false});});});
+function updateCompanionForLessonHash() {
+  const lesson = LESSON_PROGRESS.find(function (item) { return location.hash === item.target; });
+  if (lesson) companion.setContext({ type: "lesson", topic: lesson.name, submitted: false });
+}
+if (typeof window !== "undefined") window.addEventListener("hashchange", updateCompanionForLessonHash);
+updateCompanionForLessonHash();
 const labsForCompanion=document.querySelector("#labs");
 if(labsForCompanion)labsForCompanion.addEventListener("click",function(event){const card=event.target.closest&&event.target.closest(".lab-challenge");if(card){const heading=card.querySelector("h3");companion.setContext({type:"activity",topic:heading?heading.textContent:"Cybersecurity practice",submitted:false});}});
 

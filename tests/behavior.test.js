@@ -60,7 +60,7 @@ function boot({ seed = {}, elements = {}, fetchImpl = async () => ({ ok: true, s
     createTextNode(text) { return { textContent: text }; }
   };
   const localStorage = new MemoryStorage(seed);
-  const exposed = source.replace(/\n\}\);\s*$/, `\n  globalThis.__app = { readCompletedLabs, readReviewResult, getDashboardState, isReviewAnswerCorrect, COURSE_REVIEW_QUESTIONS, GUIDED_LABS, getLabStatus, getLabAction, completeGuidedLab };\n});`);
+  const exposed = source.replace(/\n\}\);\s*$/, `\n  globalThis.__app = { readCompletedLabs, readReviewResult, getDashboardState, buildRetentionSnapshot, isReviewAnswerCorrect, COURSE_REVIEW_QUESTIONS, GUIDED_LABS, INVESTIGATIONS, getLabStatus, getLabAction, completeGuidedLab };\n});`);
   const context = { document, localStorage, __createdElements: createdElements, fetch: fetchImpl, setTimeout: fn => fn(), clearTimeout() {}, confirm: () => true,
     location: { reload() {} }, console, Date, JSON, Number, Math, Object, String, RegExp, Set,
     BetterHackerState, BetterHackerChallenges, BetterHackerMilestones, BetterHackerCompanion };
@@ -81,6 +81,17 @@ function fundamentalElements() {
   };
 }
 
+function allLessonElements() {
+  const elements = fundamentalElements();
+  elements['#linux-lesson'] = new FakeElement();
+  for (const prefix of ['network', 'linux', 'web', 'crypto', 'ad', 'soc', 'testing']) {
+    elements[`#${prefix}-check-button`] = new FakeElement();
+    elements[`#${prefix}-check-answer`] = new FakeElement();
+    elements[`#${prefix}-check-result`] = new FakeElement();
+  }
+  return elements;
+}
+
 test('Fundamentals completes through click and Enter event paths and updates progress immediately', async () => {
   for (const submission of ['click', 'Enter']) {
     const elements = fundamentalElements();
@@ -94,6 +105,30 @@ test('Fundamentals completes through click and Enter event paths and updates pro
   }
 });
 
+test('a new learner completes all eight lessons through knowledge-check interactions', async () => {
+  const elements = allLessonElements();
+  const { context, localStorage } = boot({ elements });
+  const checks = [
+    ['fundamentals', '  The   principle of least privilege  ', 'Fundamentals'],
+    ['network', '443', 'Networking'],
+    ['linux', 'CAT', 'Linux'],
+    ['web', 'SQLi', 'WebSecurity'],
+    ['crypto', 'Encryption', 'Cryptography'],
+    ['ad', 'User Account', 'ActiveDirectory'],
+    ['soc', 'SIEM', 'Soc'],
+    ['testing', 'Written Authorization', 'SecurityTesting']
+  ];
+
+  for (const [index, [prefix, answer, storageName]] of checks.entries()) {
+    elements[`#${prefix}-check-answer`].value = answer;
+    await elements[`#${prefix}-check-button`].dispatch('click');
+    assert.equal(localStorage.getItem(`betterHacker${storageName}Complete`), 'true');
+    assert.equal(context.__app.getDashboardState().lessonsCompleted, index + 1);
+  }
+  assert.equal(elements['#course-progress-text'].textContent, '8 / 8 Lessons Completed');
+  assert.match(context.__app.getDashboardState().recommendation.label, /Guided Exercises/);
+});
+
 test('dashboard recommendation follows all learning phases using existing keys', () => {
   const { context, localStorage } = boot();
   assert.match(context.__app.getDashboardState().recommendation.label, /Cybersecurity Fundamentals/);
@@ -104,6 +139,41 @@ test('dashboard recommendation follows all learning phases using existing keys',
   assert.match(context.__app.getDashboardState().recommendation.label, /Investigations/);
   ['Soc','Network','Phishing','Windows','Malware','BruteForce','WebAttack'].forEach(name => localStorage.setItem(`betterHacker${name}InvestigationComplete`, 'true'));
   assert.match(context.__app.getDashboardState().recommendation.label, /Course Review/);
+});
+
+test('a fully completed learner resumes with one set of rewards and a review recommendation', () => {
+  const lessonKeys = ['Fundamentals','Networking','Linux','WebSecurity','Cryptography','ActiveDirectory','Soc','SecurityTesting']
+    .map(name => `betterHacker${name}Complete`);
+  const investigationKeys = ['Soc','Network','Phishing','Windows','Malware','BruteForce','WebAttack']
+    .map(name => `betterHacker${name}InvestigationComplete`);
+  const topics = {};
+  const initial = boot();
+  initial.context.__app.COURSE_REVIEW_QUESTIONS.forEach(question => {
+    topics[question.topic] ||= { correct: 0, total: 0, lesson: question.lesson };
+    topics[question.topic].correct++;
+    topics[question.topic].total++;
+  });
+  const review = { completed: true, score: 14, total: 14, percentage: 100, completedAt: '2026-09-27T12:00:00.000Z', topics };
+  const seed = { betterHackerCompletedLabs: '4', betterHackerCourseReviewResult: JSON.stringify(review) };
+  [...lessonKeys, ...investigationKeys].forEach(key => { seed[key] = 'true'; });
+
+  for (let reload = 0; reload < 2; reload++) {
+    const { context } = boot({ seed });
+    const dashboard = context.__app.getDashboardState();
+    const snapshot = context.__app.buildRetentionSnapshot();
+    assert.deepEqual([dashboard.lessonsCompleted, dashboard.exercisesCompleted, dashboard.investigationsCompleted], [8, 4, 7]);
+    assert.match(dashboard.recommendation.label, /Review Course Again/);
+    assert.equal(BetterHackerState.deriveXp(snapshot, snapshot.daily), 2175);
+    assert.equal(BetterHackerMilestones.evaluateAchievements(snapshot).filter(item => item.earned).length, 8);
+  }
+});
+
+test('merged script has one bootstrap and one declaration for integration-sensitive systems', () => {
+  assert.equal((source.match(/document\.addEventListener\("DOMContentLoaded"/g) || []).length, 1);
+  for (const name of ['getDashboardState', 'renderDashboard', 'completeGuidedLab', 'renderDailyChallenge', 'openCompanion']) {
+    assert.equal((source.match(new RegExp(`function ${name}\\(`, 'g')) || []).length, 1, `${name} must have one declaration`);
+  }
+  assert.equal((source.match(/const waitlistForm\s*=/g) || []).length, 1);
 });
 
 test('malformed guided exercise and review storage are rejected safely', () => {
@@ -156,6 +226,22 @@ test('guided exercise definitions accept documented equivalents without using th
   expected.forEach(answer => assert.ok(source.includes(`"${answer}"`), `missing guided equivalent ${answer}`));
   assert.equal((source.match(/InvestigationComplete", name:/g) || []).length, 7);
   assert.match(source, /className = "lab-challenge guided-exercise lab-workspace"/);
+});
+
+test('all investigations expose unique anchors, authored hints, and persisted completion keys', () => {
+  const { context } = boot();
+  const investigations = Array.from(context.__app.INVESTIGATIONS);
+  assert.equal(investigations.length, 7);
+  assert.equal(new Set(investigations.map(item => item.anchor)).size, 7);
+  assert.equal(new Set(investigations.map(item => item.key)).size, 7);
+  for (const investigation of investigations) {
+    assert.match(investigation.anchor, /^investigation-/);
+    assert.match(investigation.key, /^betterHacker.+InvestigationComplete$/);
+    assert.ok(investigation.hint.length > 30);
+  }
+  assert.match(source, /href=\"#' \+ investigation\.anchor/);
+  assert.match(source, /className = "secondary-button investigation-hint"/);
+  assert.match(source, /window\.addEventListener\("hashchange", focusInvestigationFromHash\)/);
 });
 
 
