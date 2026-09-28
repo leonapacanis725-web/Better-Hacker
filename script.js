@@ -30,6 +30,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const Milestones = globalThis.BetterHackerMilestones;
   const CompanionModule = globalThis.BetterHackerCompanion;
   const companion = CompanionModule.createCompanion(new CompanionModule.AuthoredProvider());
+  const NAVIGATION_HANDLERS = [];
+  const CORE_ACTIVITY_TOTAL = 20;
 
   function readCompletedLabs() {
     const raw = localStorage.getItem("betterHackerCompletedLabs");
@@ -223,7 +225,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (index >= 0) openLab(index, false);
       if (hash === "#lab-overview" || hash === "#labs") { workspace.hidden = true; activeLabIndex = -1; renderLabCards(); }
     }
-    if (typeof window !== "undefined") window.addEventListener("hashchange", openFromHash);
+    NAVIGATION_HANDLERS.push(openFromHash);
     renderLabCards();
     openFromHash();
   }
@@ -1356,10 +1358,11 @@ if (networkTrafficSection) {
 
 const investigationSection =
   document.querySelector("#labs");
+let investigationProgress = null;
 
 if (investigationSection) {
 
-  const investigationProgress =
+  investigationProgress =
     document.createElement("div");
 
   investigationProgress.className =
@@ -2190,7 +2193,7 @@ if (investigationSection) {
     if (heading) heading.focus();
   }
 
-  if (typeof window !== "undefined") window.addEventListener("hashchange", focusInvestigationFromHash);
+  NAVIGATION_HANDLERS.push(focusInvestigationFromHash);
   focusInvestigationFromHash();
 }
 /* =========================
@@ -2370,22 +2373,55 @@ function getDashboardState() {
   const exercisesCompleted = readCompletedLabs();
   const investigationsCompleted = countCompleted(INVESTIGATIONS.map(function (investigation) { return investigation.key; }));
   const reviewResult = readReviewResult();
+  const completedActivities = lessonsCompleted + exercisesCompleted + investigationsCompleted + (reviewResult ? 1 : 0);
+  const percentage = Math.round((completedActivities / CORE_ACTIVITY_TOTAL) * 100);
   let recommendation;
   const nextLesson = LESSON_PROGRESS.find(function (lesson) { return localStorage.getItem(lesson.key) !== "true"; });
 
   if (nextLesson) {
-    recommendation = { target: nextLesson.target, label: "Continue Learning: " + nextLesson.name };
+    recommendation = { target: nextLesson.target, name: nextLesson.name, type: "Lesson", xp: 100,
+      why: "Lessons establish the concepts used in every later hands-on activity.", practice: "Build the next cybersecurity foundation in the lesson sequence.", action: "Continue lesson" };
   } else if (exercisesCompleted < GUIDED_EXERCISE_TOTAL) {
-    recommendation = { target: "#lab-" + GUIDED_LABS[exercisesCompleted].id, label: "Lessons Complete — Continue Guided Exercises: " + GUIDED_LABS[exercisesCompleted].title };
+    const lab = GUIDED_LABS[exercisesCompleted];
+    recommendation = { target: "#lab-" + lab.id, name: lab.title, type: "Guided Lab", xp: 75,
+      why: "The lessons are complete, so the next step is structured hands-on practice.", practice: lab.learn, action: "Open guided lab" };
   } else if (investigationsCompleted < INVESTIGATIONS.length) {
-    recommendation = { target: "#labs", label: "Continue Security Investigations" };
+    const investigation = INVESTIGATIONS.find(function (item) { return localStorage.getItem(item.key) !== "true"; });
+    recommendation = { target: "#" + investigation.anchor, name: investigation.name, type: "Defensive Investigation", xp: 125,
+      why: "Guided labs are complete; now apply those skills to simulated defensive evidence.", practice: investigation.hint, action: "Open investigation" };
   } else if (!reviewResult) {
-    recommendation = { target: "#course-review", label: "Start the Course Review" };
+    recommendation = { target: "#course-review", name: "Course Review", type: "Knowledge Checkpoint", xp: 200,
+      why: "All lessons, labs, and investigations are complete; consolidate them in the final review.", practice: "Apply concepts from all eight lessons to 14 defensive decisions.", action: "Start Course Review" };
   } else {
-    recommendation = { target: "#course-review", label: "Course Complete — Review Course Again" };
+    recommendation = { target: "#daily-challenge", name: "Daily Cyber Challenge", type: "Optional maintenance", xp: 50,
+      why: "Core Path Complete. Daily practice can maintain recall without adding a 21st core activity.", practice: "Practice one safe defensive decision and maintain your streak.", action: "Try today’s challenge", secondaryTarget: "#course-review", secondaryAction: "Repeat Course Review" };
   }
+  recommendation.label = completedActivities === CORE_ACTIVITY_TOTAL ? "Core Path Complete — " + recommendation.name : "Continue Learning: " + recommendation.name;
 
-  return { lessonsCompleted: lessonsCompleted, exercisesCompleted: exercisesCompleted, investigationsCompleted: investigationsCompleted, reviewResult: reviewResult, recommendation: recommendation };
+  const stageDefinitions = [
+    { name: "Foundations", completed: countCompleted(LESSON_PROGRESS.slice(0, 3).map(function (item) { return item.key; })), total: 3, target: (LESSON_PROGRESS.slice(0, 3).find(function (item) { return localStorage.getItem(item.key) !== "true"; }) || LESSON_PROGRESS[0]).target },
+    { name: "Security Fundamentals", completed: countCompleted(LESSON_PROGRESS.slice(3).map(function (item) { return item.key; })), total: 5, target: (LESSON_PROGRESS.slice(3).find(function (item) { return localStorage.getItem(item.key) !== "true"; }) || LESSON_PROGRESS[3]).target },
+    { name: "Defensive Operations", completed: exercisesCompleted, total: 4, target: exercisesCompleted < 4 ? "#lab-" + GUIDED_LABS[exercisesCompleted].id : "#lab-overview" },
+    { name: "Investigation Skills", completed: investigationsCompleted, total: 7, target: investigationsCompleted < 7 ? "#" + INVESTIGATIONS.find(function (item) { return localStorage.getItem(item.key) !== "true"; }).anchor : "#investigation-soc" },
+    { name: "Knowledge Checkpoint", completed: reviewResult ? 1 : 0, total: 1, target: "#course-review" }
+  ];
+  const stages = stageDefinitions.map(function (stage) {
+    return Object.assign({}, stage, { status: stage.completed === 0 ? "Not Started" : stage.completed === stage.total ? "Complete" : "In Progress" });
+  });
+  const skillDefinitions = [
+    ["Cybersecurity Foundations", [LESSON_PROGRESS[0].key]], ["Networking Fundamentals", [LESSON_PROGRESS[1].key, INVESTIGATIONS[1].key]],
+    ["Linux Fundamentals", [LESSON_PROGRESS[2].key]], ["Web Security", [LESSON_PROGRESS[3].key, INVESTIGATIONS[6].key]],
+    ["Cryptography", [LESSON_PROGRESS[4].key]], ["Active Directory", [LESSON_PROGRESS[5].key, INVESTIGATIONS[3].key]],
+    ["SOC & SIEM", [LESSON_PROGRESS[6].key, INVESTIGATIONS[0].key]], ["Security Testing", [LESSON_PROGRESS[7].key]],
+    ["Evidence Analysis", INVESTIGATIONS.map(function (item) { return item.key; })], ["Defensive Investigation", INVESTIGATIONS.map(function (item) { return item.key; })]
+  ];
+  const skills = skillDefinitions.map(function (definition) {
+    const evidenceCount = countCompleted(definition[1]);
+    return { name: definition[0], evidenceCount: evidenceCount, status: evidenceCount ? "Supported by completed learning" : "Upcoming learning" };
+  });
+  return { lessonsCompleted: lessonsCompleted, exercisesCompleted: exercisesCompleted, investigationsCompleted: investigationsCompleted,
+    reviewResult: reviewResult, completedActivities: completedActivities, totalActivities: CORE_ACTIVITY_TOTAL, percentage: percentage,
+    coreComplete: completedActivities === CORE_ACTIVITY_TOTAL, recommendation: recommendation, stages: stages, skills: skills };
 }
 
 function buildRetentionSnapshot() {
@@ -2426,6 +2462,21 @@ function renderRetentionSummary() {
   return { snapshot:snapshot, xp:xp, level:level, achievements:achievements, badges:badges };
 }
 
+function setDashboardCompanionContext(state) {
+  const snapshot = buildRetentionSnapshot();
+  const xp = RetentionState.deriveXp(snapshot, snapshot.daily);
+  const level = RetentionState.getLevel(xp);
+  const earnedAchievements = Milestones.evaluateAchievements(snapshot).filter(function (item) { return item.earned; }).map(function (item) { return item.name; });
+  const earnedBadges = Milestones.evaluateBadges(snapshot).filter(function (item) { return item.earned; }).map(function (item) { return item.name; });
+  const stageSummary = state.stages.map(function (stage) { return stage.name + ": " + stage.status; }).join("; ");
+  companion.setContext({ type: "dashboard", topic: "Learner Dashboard", submitted: true,
+    recommendation: state.recommendation.name + " (" + state.recommendation.type + ") because " + state.recommendation.why,
+    stages: stageSummary, coreProgress: state.completedActivities + "/" + state.totalActivities + " (" + state.percentage + "%)",
+    xpSummary: xp + " XP, Level " + level.level + " — " + level.name,
+    rewards: (earnedAchievements.length ? earnedAchievements.join(", ") : "No achievements earned yet") + "; " + (earnedBadges.length ? earnedBadges.join(", ") : "no skill badges earned yet"),
+    dailyRule: "A valid Daily Cyber Challenge completion awards 50 XP once per local date; repeats do not award duplicate XP." });
+}
+
 function renderDashboard() {
   const state = getDashboardState();
   const setText = function (selector, value) {
@@ -2436,9 +2487,38 @@ function renderDashboard() {
   setText("#dashboard-exercises", state.exercisesCompleted + " / " + GUIDED_EXERCISE_TOTAL + " completed");
   setText("#dashboard-investigations", state.investigationsCompleted + " / " + INVESTIGATIONS.length + " completed");
   setText("#dashboard-review-status", state.reviewResult ? "Completed — " + state.reviewResult.score + " / " + state.reviewResult.total + " (" + state.reviewResult.percentage + "%)" : "Not Started");
+  setText("#core-path-count", state.completedActivities + " / " + state.totalActivities + " activities completed");
+  setText("#core-path-percent", state.percentage + "% complete");
+  const coreProgress = document.querySelector("#core-path-progress");
+  const coreFill = document.querySelector("#core-path-progress-fill");
+  if (coreProgress) {
+    coreProgress.setAttribute("aria-valuenow", String(state.percentage));
+    coreProgress.setAttribute("aria-valuetext", state.completedActivities + " of " + state.totalActivities + " Core Path activities completed");
+  }
+  if (coreFill) coreFill.style.width = state.percentage + "%";
+
+  const path = document.querySelector("#learning-path-stages");
+  if (path) path.innerHTML = state.stages.map(function (stage, index) {
+    return '<li><a href="' + stage.target + '"><span>Stage ' + (index + 1) + '</span><strong>' + stage.name + '</strong><em>' + stage.status + ' · ' + stage.completed + '/' + stage.total + '</em></a></li>';
+  }).join("");
 
   const next = document.querySelector("#dashboard-next");
-  if (next) next.innerHTML = '<strong>Recommended next action</strong><a class="primary-button" href="' + state.recommendation.target + '">' + state.recommendation.label + '</a>';
+  if (next) next.innerHTML = '<strong>' + (state.coreComplete ? 'Core Path Complete' : 'Recommended next activity') + '</strong><h3>' + state.recommendation.name + ' <span>(' + state.recommendation.type + ')</span></h3>' +
+    '<p><b>Why next:</b> ' + state.recommendation.why + '</p><p><b>You will practice:</b> ' + state.recommendation.practice + '</p><p><b>XP contribution:</b> ' + state.recommendation.xp + ' XP' + (state.coreComplete ? ' optional Daily Challenge XP' : '') + '</p>' +
+    '<a class="primary-button" href="' + state.recommendation.target + '">' + state.recommendation.action + '</a>' + (state.recommendation.secondaryTarget ? ' <a class="secondary-button" href="' + state.recommendation.secondaryTarget + '">' + state.recommendation.secondaryAction + '</a>' : '');
+
+  const daily = RetentionState.readDailyState(localStorage);
+  const dailyComplete = daily.records.some(function (record) { return record.date === RetentionState.localDateKey(new Date()); });
+  setText("#today-daily", dailyComplete ? "Today’s Daily Challenge is completed." : "Today’s Daily Challenge is available.");
+  setText("#today-streaks", "Current streak: " + daily.currentStreak + " days · Longest streak: " + daily.longestStreak + " days");
+  setText("#today-next", state.coreComplete ? "Core Path Complete — optional maintenance is next." : "Next core activity: " + state.recommendation.name + " (" + state.recommendation.type + ").");
+  const todayAction = document.querySelector("#today-action");
+  if (todayAction) { todayAction.href = state.recommendation.target; todayAction.textContent = state.recommendation.action; }
+
+  const skillList = document.querySelector("#learning-indicators");
+  if (skillList) skillList.innerHTML = state.skills.map(function (skill) {
+    return '<li class="' + (skill.evidenceCount ? 'supported' : 'upcoming') + '"><strong>' + skill.name + '</strong><span>' + skill.status + '</span></li>';
+  }).join("");
 
   const achievement = document.querySelector("#knowledge-checkpoint");
   if (achievement && state.reviewResult) {
@@ -2452,6 +2532,7 @@ function renderDashboard() {
     existingContinueButton.textContent = "▶ " + state.recommendation.label;
   }
   renderRetentionSummary();
+  setDashboardCompanionContext(state);
   return state;
 }
 
@@ -2660,8 +2741,13 @@ function updateCompanionForLessonHash() {
   const lesson = LESSON_PROGRESS.find(function (item) { return location.hash === item.target; });
   if (lesson) companion.setContext({ type: "lesson", topic: lesson.name, submitted: false });
 }
-if (typeof window !== "undefined") window.addEventListener("hashchange", updateCompanionForLessonHash);
-updateCompanionForLessonHash();
+function handleNavigation() {
+  NAVIGATION_HANDLERS.forEach(function (handler) { handler(); });
+  updateCompanionForLessonHash();
+  if (typeof location !== "undefined" && location.hash === "#dashboard") setDashboardCompanionContext(getDashboardState());
+}
+if (typeof window !== "undefined") window.addEventListener("hashchange", handleNavigation);
+handleNavigation();
 const labsForCompanion=document.querySelector("#labs");
 if(labsForCompanion)labsForCompanion.addEventListener("click",function(event){const card=event.target.closest&&event.target.closest(".lab-challenge");if(card){const heading=card.querySelector("h3");companion.setContext({type:"activity",topic:heading?heading.textContent:"Cybersecurity practice",submitted:false});}});
 
