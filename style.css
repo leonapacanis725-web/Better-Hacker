@@ -397,7 +397,7 @@ footer {
 
 footer p {
   margin-top: 10px;
-  color: #64748b;
+  color: #94a3b8;
 }
 
 /* Selection */
@@ -1090,6 +1090,28 @@ footer p {
 @media (max-width: 850px) {
   .dashboard-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .learning-path ol,
+  .learning-indicators ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 701px) and (max-width: 850px) {
+  html {
+    scroll-padding-top: 170px;
+  }
+
+  .navbar {
+    flex-direction: column;
+    gap: 14px;
+    padding: 16px 5%;
+  }
+
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
   }
 }
 
