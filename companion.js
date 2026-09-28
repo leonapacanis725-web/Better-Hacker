@@ -8,6 +8,11 @@
     respond(action, context) {
       context = context || { type:"general", topic:"Cybersecurity" };
       const topic = context.topic || "Cybersecurity";
+      if (context.type === "dashboard") {
+        if (action === "hint") return `Next: ${context.recommendation} It contributes to ${context.coreProgress} Core Path progress.`;
+        if (action === "look") return `Learning Path — ${context.stages}. Current rewards: ${context.rewards}.`;
+        return `${context.coreProgress} Core Path complete. ${context.xpSummary}. ${context.dailyRule}`;
+      }
       if (action === "hint") return context.hint || `Identify the evidence that matters most in this ${topic} scenario. Eliminate choices that add risk or skip verification.`;
       if (action === "look") return context.lookFor ? `For ${topic}, look for: ${context.lookFor}` : `For ${topic}, look for the affected asset, unusual behavior, relevant evidence, and the safest authorized next step.`;
       if (context.submitted && context.explanation) return context.explanation;

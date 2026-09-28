@@ -174,6 +174,17 @@
     <p class="section-label">YOUR PROGRESS</p>
     <h2>Learner Dashboard</h2>
     <p class="section-intro">See what you have completed and choose a useful next step.</p>
+    <div class="core-path-summary">
+      <div><strong id="core-path-count">0 / 20 activities completed</strong><span id="core-path-percent">0% complete</span></div>
+      <div id="core-path-progress" class="core-path-progress" role="progressbar" aria-label="Core Path progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 of 20 Core Path activities completed">
+        <div id="core-path-progress-fill"></div>
+      </div>
+      <p>Core Path: 8 lessons, 4 guided labs, 7 defensive investigations, and 1 Course Review.</p>
+    </div>
+    <nav class="learning-path" aria-labelledby="learning-path-title">
+      <h3 id="learning-path-title">Five-stage Learning Path</h3>
+      <ol id="learning-path-stages"></ol>
+    </nav>
     <div class="dashboard-grid" aria-label="Learning progress summary">
       <article class="dashboard-card">
         <h3>Core Lessons</h3>
@@ -194,6 +205,13 @@
       </article>
     </div>
     <div class="dashboard-next" id="dashboard-next" aria-live="polite"></div>
+    <section class="today-panel" aria-labelledby="today-title">
+      <h3 id="today-title">Today at Better Hacker</h3>
+      <p id="today-daily">Today’s Daily Challenge is available.</p>
+      <p id="today-streaks">Current streak: 0 days · Longest streak: 0 days</p>
+      <p id="today-next">Next core activity: Cybersecurity Fundamentals (Lesson).</p>
+      <a id="today-action" class="primary-button" href="#fundamentals-lesson">Continue lesson</a>
+    </section>
     <div class="retention-summary" aria-label="Learner level and daily activity summary">
       <div><strong id="dashboard-xp">0 XP</strong><span id="dashboard-level">Level 1 — New Recruit</span></div>
       <div><strong id="dashboard-daily">Daily challenge available</strong><span id="dashboard-streak">Current streak: 0 days</span><span id="dashboard-longest-streak">Longest streak: 0 days</span></div>
@@ -220,6 +238,11 @@
     <p class="section-label">YOUR LEARNING EVIDENCE</p>
     <h2>Skills &amp; Achievements</h2>
     <p class="section-intro">Achievements recognize milestones. Skill badges reflect demonstrated curriculum evidence and are Better Hacker educational badges—not certifications.</p>
+    <section class="learning-indicators" aria-labelledby="learning-indicators-title">
+      <h3 id="learning-indicators-title">Skills You’re Building</h3>
+      <p>These evidence-derived learning indicators show completed or upcoming curriculum. They are not certifications or professional credentials.</p>
+      <ul id="learning-indicators"></ul>
+    </section>
     <div class="skills-summary" id="skills-summary" aria-live="polite"></div>
     <div class="milestone-columns">
       <details open><summary>Achievements</summary><div id="achievements-list" class="milestone-list"></div></details>
