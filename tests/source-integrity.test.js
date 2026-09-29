@@ -6,6 +6,17 @@ const vm = require('node:vm');
 const script = fs.readFileSync('script.js', 'utf8');
 const html = fs.readFileSync('index.html', 'utf8');
 const achievements = fs.readFileSync('achievements.js', 'utf8');
+const css = fs.readFileSync('style.css', 'utf8');
+
+function contrastRatio(first, second) {
+  const luminance = hex => {
+    const channels = hex.match(/[\da-f]{2}/gi).map(value => parseInt(value, 16) / 255)
+      .map(value => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4);
+    return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
+  };
+  const values = [luminance(first), luminance(second)].sort((a, b) => b - a);
+  return (values[0] + 0.05) / (values[1] + 0.05);
+}
 
 function reviewQuestions() {
   const start = script.indexOf('const COURSE_REVIEW_QUESTIONS = ');
@@ -58,7 +69,10 @@ test('existing curriculum totals and waitlist endpoint remain intact', () => {
   assert.equal((script.match(/InvestigationComplete"/g) || []).length >= 7, true);
   assert.match(script, /https:\/\/formspree\.io\/f\/xdeobdjl/);
   assert.doesNotMatch(script, /querySelector\("\.lab-challenge"\)/);
-  assert.match(html, /<main id="main-content">/);
+  assert.match(html, /<main id="main-content" tabindex="-1">/);
+  for (const page of ['privacy.html', 'terms.html']) {
+    assert.match(fs.readFileSync(page, 'utf8'), /<main id="main-content"[^>]*tabindex="-1">/);
+  }
   assert.ok(fs.existsSync('privacy.html'));
   assert.ok(fs.existsSync('terms.html'));
 });
@@ -71,4 +85,11 @@ test('representative answers calculate the expected score', () => {
     : q.answers.includes(String(attempts[i]).trim().toLowerCase())) , 0);
   assert.equal(score, questions.length);
   assert.equal(Math.round(score / questions.length * 100), 100);
+});
+
+test('footer copy meets WCAG AA contrast against its background', () => {
+  const footerColor = css.match(/footer p\s*{[^}]*color:\s*(#[\da-f]{6})/i)?.[1];
+  const footerBackground = css.match(/footer\s*{[^}]*background:\s*(#[\da-f]{6})/i)?.[1];
+  assert.ok(footerColor && footerBackground);
+  assert.ok(contrastRatio(footerColor, footerBackground) >= 4.5);
 });

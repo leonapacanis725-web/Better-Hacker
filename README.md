@@ -29,7 +29,7 @@ The complete storage inventory is:
 
 XP, levels, achievements, and badges are derived from this validated evidence instead of being stored in separate counters. This prevents reloads and reviews from awarding them repeatedly.
 
-The review is an additional activity—not a ninth lesson—so core lesson progress remains **0–8 / 8**. The dashboard separately reports lessons, **4** guided exercises, **7** investigations, and Course Review status. Its recommendation advances from incomplete lessons, to exercises, to investigations, to the Course Review. Once everything is complete it offers a course review action.
+The review is an additional activity—not a ninth lesson—so lesson progress remains **0–8 / 8**. The dashboard derives a **20-activity Core Path** from the existing evidence: 8 lessons, 4 guided labs, 7 investigations, and 1 Course Review. Its recommendation advances from incomplete lessons, to labs, to investigations, to the Course Review. Once all 20 activities are complete, it identifies the Core Path as complete, offers the Daily Challenge as optional maintenance, and keeps the Course Review available to repeat.
 
 Completing the review unlocks the progress-derived **Knowledge Checkpoint** achievement. It is based on completion, not a score threshold.
 
@@ -43,6 +43,10 @@ The site has no build step. Open `index.html` in a browser, or serve the directo
 
 ```sh
 node --check script.js
+node --check companion.js
+node --check learner-state.js
+node --check achievements.js
+node --check challenges.js
 node --test tests/*.test.js
 python3 tests/source_integrity.py
 ```
