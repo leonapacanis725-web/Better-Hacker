@@ -17,6 +17,8 @@ Guided labs are clickable, hash-addressable simulations with an objective, scena
 
 Investigations use static simulated evidence and defensive decisions. Their overview reports **Start** or **Review**, and each provides evidence-analysis guidance, a hint, feedback, completion status, and a direct anchor. No activity scans, exploits, or connects to a real target.
 
+Two optional supplemental lessons—Computer Fundamentals & Security Tools and Incident Response—expand roadmap topics after the Core Path. They have their own persisted completion state, remain reviewable, award no Core XP, and do not change the established 8/8 lesson or 20-activity counters.
+
 ## Learner Dashboard and Continue Learning
 
 The Learner Dashboard is the home base for:
@@ -61,6 +63,7 @@ Progress is stored only in browser `localStorage`. Existing keys remain the sour
 - Course Review: `betterHackerCourseReviewResult`.
 - Daily Challenge: `betterHackerDailyChallengeState`.
 - Confirmed waitlist email: `betterHackerWaitlistEmail`.
+- Supplemental lessons: `betterHackerComputerToolsLessonComplete` and `betterHackerIncidentResponseLessonComplete`.
 
 XP, levels, achievements, and badges are calculated from validated evidence, so reloads and reviews cannot repeatedly award them. Reset Learning Progress removes Better Hacker learning and Daily Challenge state while deliberately preserving a confirmed waitlist email and unrelated local storage.
 

@@ -13,6 +13,11 @@ document.addEventListener("DOMContentLoaded", function () {
     { key: "betterHackerSecurityTestingComplete", target: "#security-testing-lesson", name: "Security Testing", check: "#testing-check-result", next: "#labs", nextName: "Guided Exercises" }
   ]);
 
+  const EXTENSION_LESSONS = Object.freeze([
+    { id: "computer-tools", key: "betterHackerComputerToolsLessonComplete", target: "#computer-tools-lesson", name: "Computer Fundamentals & Security Tools", answer: "observe", hint: "Start by observing rather than changing the system.", lookFor: "the process identity, parent, user, time, and connections" },
+    { id: "incident-response", key: "betterHackerIncidentResponseLessonComplete", target: "#incident-response-lesson", name: "Incident Response", answer: "approved-containment", hint: "Use the authorized plan to limit harm while preserving evidence.", lookFor: "validation, evidence preservation, and proportionate containment" }
+  ]);
+
   const INVESTIGATIONS = Object.freeze([
     { key: "betterHackerSocInvestigationComplete", name: "SOC Alert Investigation", selector: ".soc-investigation-lab", anchor: "investigation-soc", hint: "Compare the failed attempts, successful login, time, and device before choosing a response." },
     { key: "betterHackerNetworkInvestigationComplete", name: "Network Traffic Investigation", selector: ".network-investigation-lab", anchor: "investigation-network", hint: "Look for an unusual service and a connection count that differs sharply from normal traffic." },
@@ -2355,6 +2360,18 @@ function isReviewAnswerCorrect(question, value) {
   return question.answers.includes(normalized);
 }
 
+function countCompletedExtensionLessons() {
+  return countCompleted(EXTENSION_LESSONS.map(function (lesson) { return lesson.key; }));
+}
+
+function completeExtensionLesson(id, answer) {
+  const lesson = EXTENSION_LESSONS.find(function (item) { return item.id === id; });
+  if (!lesson || answer !== lesson.answer) return { correct: false, newlyCompleted: false };
+  const newlyCompleted = localStorage.getItem(lesson.key) !== "true";
+  if (newlyCompleted) localStorage.setItem(lesson.key, "true");
+  return { correct: true, newlyCompleted: newlyCompleted };
+}
+
 function countCompleted(keys) {
   return keys.filter(function (key) { return localStorage.getItem(key) === "true"; }).length;
 }
@@ -2391,6 +2408,7 @@ function getDashboardState() {
   const exercisesCompleted = readCompletedLabs();
   const investigationsCompleted = countCompleted(INVESTIGATIONS.map(function (investigation) { return investigation.key; }));
   const reviewResult = readReviewResult();
+  const extensionLessonsCompleted = countCompletedExtensionLessons();
   const completedActivities = lessonsCompleted + exercisesCompleted + investigationsCompleted + (reviewResult ? 1 : 0);
   const percentage = Math.round((completedActivities / CORE_ACTIVITY_TOTAL) * 100);
   let recommendation;
@@ -2410,6 +2428,10 @@ function getDashboardState() {
   } else if (!reviewResult) {
     recommendation = { target: "#course-review", name: "Course Review", type: "Knowledge Checkpoint", xp: 200,
       why: "All lessons, labs, and investigations are complete; consolidate them in the final review.", practice: "Apply concepts from all eight lessons to 14 defensive decisions.", action: "Start Course Review" };
+  } else if (extensionLessonsCompleted < EXTENSION_LESSONS.length) {
+    const extension = EXTENSION_LESSONS.find(function (item) { return localStorage.getItem(item.key) !== "true"; });
+    recommendation = { target: extension.target, name: extension.name, type: "Supplemental Lesson", xp: 0,
+      why: "The Core Path is complete; this optional lesson expands a roadmap topic without changing 8/8 progress.", practice: "Extend your defensive foundations with a lesson and knowledge check.", action: "Open supplemental lesson" };
   } else {
     recommendation = { target: "#daily-challenge", name: "Daily Cyber Challenge", type: "Optional maintenance", xp: 50,
       why: "Core Path Complete. Daily practice can maintain recall without adding a 21st core activity.", practice: "Practice one safe defensive decision and maintain your streak.", action: "Try today’s challenge", secondaryTarget: "#course-review", secondaryAction: "Repeat Course Review" };
@@ -2439,7 +2461,8 @@ function getDashboardState() {
   });
   return { lessonsCompleted: lessonsCompleted, exercisesCompleted: exercisesCompleted, investigationsCompleted: investigationsCompleted,
     reviewResult: reviewResult, completedActivities: completedActivities, totalActivities: CORE_ACTIVITY_TOTAL, percentage: percentage,
-    coreComplete: completedActivities === CORE_ACTIVITY_TOTAL, recommendation: recommendation, stages: stages, skills: skills };
+    coreComplete: completedActivities === CORE_ACTIVITY_TOTAL, extensionLessonsCompleted: extensionLessonsCompleted,
+    recommendation: recommendation, stages: stages, skills: skills };
 }
 
 function buildRetentionSnapshot() {
@@ -2502,6 +2525,7 @@ function renderDashboard() {
     if (element) element.textContent = value;
   };
   setText("#dashboard-lessons", state.lessonsCompleted + " / " + LESSON_PROGRESS.length + " completed");
+  setText("#dashboard-extension-lessons", state.extensionLessonsCompleted + " / " + EXTENSION_LESSONS.length + " completed");
   setText("#dashboard-exercises", state.exercisesCompleted + " / " + GUIDED_EXERCISE_TOTAL + " completed");
   setText("#dashboard-investigations", state.investigationsCompleted + " / " + INVESTIGATIONS.length + " completed");
   setText("#dashboard-review-status", state.reviewResult ? "Completed — " + state.reviewResult.score + " / " + state.reviewResult.total + " (" + state.reviewResult.percentage + "%)" : "Not Started");
@@ -2529,7 +2553,7 @@ function renderDashboard() {
   const dailyComplete = daily.records.some(function (record) { return record.date === RetentionState.localDateKey(new Date()); });
   setText("#today-daily", dailyComplete ? "Today’s Daily Challenge is completed." : "Today’s Daily Challenge is available.");
   setText("#today-streaks", "Current streak: " + daily.currentStreak + " days · Longest streak: " + daily.longestStreak + " days");
-  setText("#today-next", state.coreComplete ? "Core Path Complete — optional maintenance is next." : "Next core activity: " + state.recommendation.name + " (" + state.recommendation.type + ").");
+  setText("#today-next", state.coreComplete ? "Core Path Complete — next optional activity: " + state.recommendation.name + "." : "Next core activity: " + state.recommendation.name + " (" + state.recommendation.type + ").");
   const todayAction = document.querySelector("#today-action");
   if (todayAction) { todayAction.href = state.recommendation.target; todayAction.textContent = state.recommendation.action; }
 
@@ -2754,6 +2778,42 @@ function renderDailyChallenge() {
 }
 renderDailyChallenge();
 
+function renderExtensionLessonProgress() {
+  EXTENSION_LESSONS.forEach(function (lesson) {
+    const complete = localStorage.getItem(lesson.key) === "true";
+    const card = document.querySelector('.extension-lesson-card[data-extension-id="' + lesson.id + '"]');
+    if (card) card.classList.toggle("activity-complete", complete);
+  });
+}
+
+document.querySelectorAll(".extension-check").forEach(function (form) {
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    const extensionLesson = EXTENSION_LESSONS.find(function (item) { return item.id === form.dataset.extensionId; });
+    const selected = form.querySelector('input[type="radio"]:checked');
+    const feedback = form.querySelector(".extension-feedback");
+    if (!extensionLesson || !feedback) return;
+    if (!selected) {
+      feedback.className = "extension-feedback feedback-review";
+      feedback.textContent = "Choose an answer first. Review the lesson or ask Byte for a conceptual hint.";
+      return;
+    }
+    const result = completeExtensionLesson(extensionLesson.id, selected.value);
+    if (!result.correct) {
+      feedback.className = "extension-feedback feedback-review";
+      feedback.textContent = "Not quite. Choose the authorized response that observes or contains safely and preserves evidence.";
+      companion.setContext({ type: "lesson", activityId: extensionLesson.id, topic: extensionLesson.name, hint: extensionLesson.hint, lookFor: extensionLesson.lookFor, submitted: true, explanation: feedback.textContent });
+      return;
+    }
+    feedback.className = "extension-feedback feedback-success";
+    feedback.textContent = result.newlyCompleted ? "Correct — lesson complete. Your supplemental progress has been saved." : "Correct. You already completed this lesson; review does not award duplicate completion or XP.";
+    companion.setContext({ type: "lesson", activityId: extensionLesson.id, topic: extensionLesson.name, hint: extensionLesson.hint, lookFor: extensionLesson.lookFor, submitted: true, explanation: feedback.textContent });
+    renderExtensionLessonProgress();
+    renderDashboard();
+  });
+});
+renderExtensionLessonProgress();
+
 document.querySelectorAll(".lesson-card").forEach(function(card){card.addEventListener("click",function(){companion.setContext({type:"lesson",topic:card.querySelector("h3").textContent,submitted:false});});});
 function updateCompanionForLessonHash() {
   const lesson = LESSON_PROGRESS.find(function (item) { return location.hash === item.target; });
@@ -2762,6 +2822,13 @@ function updateCompanionForLessonHash() {
     const section = document.querySelector(lesson.target);
     const heading = section && section.querySelector("h2");
     if (heading) heading.focus();
+  }
+  const extensionLesson = EXTENSION_LESSONS.find(function (item) { return location.hash === item.target; });
+  if (extensionLesson) {
+    companion.setContext({ type: "lesson", activityId: extensionLesson.id, topic: extensionLesson.name, hint: extensionLesson.hint, lookFor: extensionLesson.lookFor, submitted: false });
+    const extensionSection = document.querySelector(extensionLesson.target);
+    const extensionHeading = extensionSection && extensionSection.querySelector("h2");
+    if (extensionHeading) extensionHeading.focus();
   }
 }
 function handleNavigation() {

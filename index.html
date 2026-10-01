@@ -159,6 +159,16 @@
 </a>
     </div>
 
+    <aside class="extension-learning" aria-labelledby="extension-learning-title">
+      <p class="section-label">EXPLORE NEXT</p>
+      <h3 id="extension-learning-title">Supplemental Lessons</h3>
+      <p>These optional lessons expand roadmap topics without changing the established 8/8 Core Lessons counter.</p>
+      <div class="cards">
+        <a href="#computer-tools-lesson" class="card extension-lesson-card" data-extension-id="computer-tools"><h3>Computer Fundamentals &amp; Security Tools</h3><p>Understand operating systems, processes, files, logs, and safe defensive observation tools.</p><span class="lesson-link">Start supplemental lesson →</span></a>
+        <a href="#incident-response-lesson" class="card extension-lesson-card" data-extension-id="incident-response"><h3>Incident Response</h3><p>Learn the incident lifecycle and choose a calm, evidence-preserving first response.</p><span class="lesson-link">Start supplemental lesson →</span></a>
+      </div>
+    </aside>
+
     <div class="course-review-callout" id="course-review-link">
       <div>
         <h3>Ready to connect the concepts?</h3>
@@ -197,6 +207,10 @@
       <article class="dashboard-card">
         <h3>Investigations</h3>
         <p id="dashboard-investigations">0 / 7 completed</p>
+      </article>
+      <article class="dashboard-card">
+        <h3>Supplemental Lessons</h3><p id="dashboard-extension-lessons">0 / 2 completed</p>
+        <a href="#extension-learning-title" class="dashboard-review-link">Explore supplemental lessons →</a>
       </article>
       <article class="dashboard-card">
         <h3>Course Review</h3>
@@ -1577,6 +1591,36 @@
   </div>
 
 </section>
+  <section id="computer-tools-lesson" class="section extension-lesson" aria-labelledby="computer-tools-title">
+    <p class="section-label">SUPPLEMENTAL LESSON</p><h2 id="computer-tools-title" tabindex="-1">Computer Fundamentals &amp; Security Tools</h2>
+    <p class="section-intro">Defenders learn what normal computer activity looks like before deciding that an event is suspicious.</p>
+    <div class="lesson-container">
+      <div class="lesson-block"><h3>Learning objectives</h3><ul><li>Distinguish hardware, operating systems, applications, and processes.</li><li>Explain why files, connections, and logs are useful evidence.</li><li>Select safe, read-only tools for initial observation.</li></ul></div>
+      <div class="lesson-block"><h3>Why this matters in cybersecurity</h3><p>Alerts refer to processes, accounts, files, and connections. Understanding those building blocks helps you verify an alert without changing evidence.</p></div>
+      <div class="lesson-block"><h3>Important terminology</h3><dl><dt>Operating system</dt><dd>Software that manages hardware and applications.</dd><dt>Process</dt><dd>A running instance of a program.</dd><dt>Log</dt><dd>A time-ordered record of events.</dd><dt>Telemetry</dt><dd>Measurements collected for monitoring and analysis.</dd></dl></div>
+      <div class="lesson-block"><h3>From components to evidence</h3><p>Hardware provides CPU, memory, storage, and interfaces. The OS schedules processes and enforces permissions. Defenders correlate process name, path, parent, user, time, and network activity instead of trusting one clue.</p><h3>Safe first-look tools</h3><p>On an authorized training system, read-only commands such as <code>ps</code>, <code>whoami</code>, and <code>ss -tuln</code> help observe state. Do not terminate processes or delete files during initial triage.</p><pre aria-label="Simulated process output">SIMULATED OUTPUT
+PID   USER      COMMAND
+2410  learner   browser</pre></div>
+      <div class="lesson-block"><h3>Try It — safe analysis</h3><p>A simulated alert only says “PID 2410 is suspicious.” Identify two context fields you would collect before deciding, such as its path, parent, user, start time, or connections.</p></div>
+      <form class="lesson-block knowledge-check extension-check" data-extension-id="computer-tools"><fieldset><legend><strong>Knowledge check:</strong> What is the safest first response to an unfamiliar process?</legend><label><input type="radio" name="computer-tools-answer" value="stop"> Stop and delete it immediately</label><label><input type="radio" name="computer-tools-answer" value="observe"> Record details and correlate read-only evidence</label><label><input type="radio" name="computer-tools-answer" value="ignore"> Ignore every unfamiliar process</label></fieldset><button type="submit" class="primary-button">Check answer</button><p class="extension-feedback" role="status" aria-live="polite"></p></form>
+      <div class="lesson-block"><h3>Lesson recap</h3><p>Processes are running programs; logs and telemetry preserve context; careful observation comes before disruptive action.</p><p><strong>Recommended next activity:</strong> <a href="#labs">Linux File Detective</a>.</p></div>
+    </div>
+  </section>
+
+  <section id="incident-response-lesson" class="section dark-section extension-lesson" aria-labelledby="incident-response-title">
+    <p class="section-label">SUPPLEMENTAL LESSON</p><h2 id="incident-response-title" tabindex="-1">Incident Response</h2>
+    <p class="section-intro">Incident response is a coordinated process for preparing, detecting, containing, removing, and learning from security incidents.</p>
+    <div class="lesson-container">
+      <div class="lesson-block"><h3>Learning objectives</h3><ul><li>Describe the incident-response lifecycle.</li><li>Separate validation, containment, eradication, and recovery.</li><li>Choose a safe, evidence-preserving response.</li></ul></div>
+      <div class="lesson-block"><h3>Why this matters in cybersecurity</h3><p>Rushed changes can destroy evidence or increase downtime. A shared process helps teams limit harm and document decisions.</p></div>
+      <div class="lesson-block"><h3>Important terminology</h3><dl><dt>Incident</dt><dd>A security event requiring response.</dd><dt>Containment</dt><dd>Limiting spread or impact.</dd><dt>Eradication</dt><dd>Removing the confirmed cause after evidence collection.</dd><dt>Recovery</dt><dd>Safely restoring and monitoring service.</dd></dl></div>
+      <div class="lesson-block"><h3>The response lifecycle</h3><ol><li>Prepare roles, contacts, tools, and playbooks.</li><li>Detect, validate, scope, and prioritize.</li><li>Contain through an approved control.</li><li>Eradicate, recover, and monitor.</li><li>Document lessons and improve controls.</li></ol><h3>Practical example</h3><p><strong>Simulation:</strong> monitoring confirms one workstation contacts known malicious infrastructure. The responder records time and asset details, escalates through the playbook, and uses approved isolation. They do not wipe the device or publish unverified claims.</p></div>
+      <div class="lesson-block"><h3>Try It — safe analysis</h3><p>Order these actions: restore a clean service, validate an alert, isolate through an approved control. The safe order is validate, contain, then recover.</p></div>
+      <form class="lesson-block knowledge-check extension-check" data-extension-id="incident-response"><fieldset><legend><strong>Knowledge check:</strong> What is the best next step for a confirmed affected workstation?</legend><label><input type="radio" name="incident-response-answer" value="approved-containment"> Preserve details and contain it through the approved incident plan</label><label><input type="radio" name="incident-response-answer" value="wipe"> Wipe every system immediately</label><label><input type="radio" name="incident-response-answer" value="announce"> Publicly announce an unverified breach</label></fieldset><button type="submit" class="primary-button">Check answer</button><p class="extension-feedback" role="status" aria-live="polite"></p></form>
+      <div class="lesson-block"><h3>Lesson recap</h3><p>Responders validate, scope, contain, eradicate, recover, and learn while preserving evidence and following authorization.</p><p><strong>Recommended next activity:</strong> <a href="#soc-siem-lesson">SOC Alert Investigation</a>.</p></div>
+    </div>
+  </section>
+
   <!-- Roadmap Section -->
   <section id="roadmap" class="section dark-section">
 

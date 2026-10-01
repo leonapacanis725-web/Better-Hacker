@@ -116,3 +116,18 @@ test('investigations expose idempotent completion, evidence guidance, and Start 
   assert.match(script, /complete \? 'Review' : 'Start'/);
   assert.match(script, /review without duplicate XP/);
 });
+
+
+test('supplemental lessons remain complete, clickable, and dashboard-integrated', () => {
+  for (const id of ['computer-tools', 'incident-response']) {
+    assert.match(html, new RegExp('class="card extension-lesson-card" data-extension-id="' + id + '"'));
+    assert.match(html, new RegExp('class="lesson-block knowledge-check extension-check" data-extension-id="' + id + '"'));
+  }
+  assert.match(html, /id="dashboard-extension-lessons"/);
+  assert.match(script, /const EXTENSION_LESSONS = Object\.freeze/);
+  assert.match(script, /betterHackerComputerToolsLessonComplete/);
+  assert.match(script, /betterHackerIncidentResponseLessonComplete/);
+  assert.match(script, /extensionLessonsCompleted/);
+  assert.match(script, /const extensionLesson = EXTENSION_LESSONS\.find/);
+  assert.equal((script.match(/const lesson = LESSON_PROGRESS\.find/g) || []).length, 1);
+});
