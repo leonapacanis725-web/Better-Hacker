@@ -285,7 +285,7 @@
 
   <p class="section-label">LESSON 01</p>
 
-  <h2>Cybersecurity Fundamentals</h2>
+  <h2 tabindex="-1">Cybersecurity Fundamentals</h2>
 
   <p class="section-intro">
     Start with the core ideas every cybersecurity learner should understand:
@@ -294,6 +294,14 @@
   </p>
 
   <div class="lesson-container">
+
+    <div class="lesson-block lesson-orientation">
+      <h3>Lesson guide</h3>
+      <p><strong>Prerequisites:</strong> No prerequisites—this is the starting point.</p>
+      <h4>Learning objectives</h4><p>Explain the CIA triad; distinguish threats, vulnerabilities, and risk; apply authentication, authorization, least privilege, and defense in depth.</p>
+      <h4>Why this matters in cybersecurity</h4><p>These ideas give defenders a shared language for describing what must be protected and how controls reduce risk.</p>
+      <a class="lesson-dashboard-link" href="#dashboard">View your Learner Dashboard</a>
+    </div>
 
     <div class="lesson-block">
       <h3>1. The CIA Triad</h3>
@@ -383,7 +391,11 @@
     </div>
 
 
-    <div class="lesson-block knowledge-check">
+        <div class="lesson-block lesson-try-it">
+      <h3>Try It — safe analysis</h3><p>A teammate needs one report. Compare granting access to that report with granting administrator access. Which choice follows least privilege, and why?</p>
+    </div>
+
+<div class="lesson-block knowledge-check">
 
       <h3>🧠 Knowledge Check</h3>
 
@@ -403,6 +415,7 @@
 
       <button
         id="fundamentals-check-button"
+        type="button"
         class="primary-button"
       >
         Check Answer
@@ -413,7 +426,12 @@
     </div>
 
 
-    <div class="lesson-next">
+        <div class="lesson-block lesson-recap">
+      <h3>Lesson recap</h3><p>Security protects confidentiality, integrity, and availability. Risk connects threats, weaknesses, and impact. Authentication proves identity; authorization controls access.</p>
+      <p><strong>Recommended next activity:</strong> <a href="#networking-lesson">Continue to Networking</a></p>
+    </div>
+
+<div class="lesson-next">
 
       <h3>🎯 Next Step</h3>
 
@@ -436,7 +454,7 @@
 
   <p class="section-label">BEGINNER LESSON</p>
 
-  <h2>Networking Fundamentals</h2>
+  <h2 tabindex="-1">Networking Fundamentals</h2>
 
   <p class="section-intro">
     Networking is one of the foundations of cybersecurity.
@@ -445,6 +463,14 @@
   </p>
 
   <div class="lesson-container">
+
+    <div class="lesson-block lesson-orientation">
+      <h3>Lesson guide</h3>
+      <p><strong>Prerequisites:</strong> Recommended first: Cybersecurity Fundamentals.</p>
+      <h4>Learning objectives</h4><p>Describe devices, IP addresses, ports, DNS, TCP, and UDP; connect common ports to services; interpret simple network evidence.</p>
+      <h4>Why this matters in cybersecurity</h4><p>Defenders use network context to recognize expected services, investigate unusual connections, and configure controls.</p>
+      <a class="lesson-dashboard-link" href="#dashboard">View your Learner Dashboard</a>
+    </div>
 
     <div class="lesson-block">
       <h3>1. What is a Computer Network?</h3>
@@ -523,7 +549,11 @@
     </div>
 
 
-    <div class="lesson-block">
+        <div class="lesson-block lesson-try-it">
+      <h3>Try It — safe analysis</h3><p>A simulated server lists 22/TCP, 53/UDP, and 443/TCP. Identify the likely service for each, then note that a port is a clue—not proof of the application.</p>
+    </div>
+
+<div class="lesson-block">
       <h3>5. Knowledge Check</h3>
 
       <p>
@@ -541,6 +571,7 @@
 
       <button
         id="network-check-button"
+        type="button"
         class="primary-button"
       >
         Check Answer
@@ -551,7 +582,12 @@
     </div>
 
 
-    <div class="lesson-block lesson-finish">
+        <div class="lesson-block lesson-recap">
+      <h3>Lesson recap</h3><p>IP addresses locate devices; ports identify service endpoints; protocols define communication rules. TCP emphasizes reliable delivery, while UDP has less overhead.</p>
+      <p><strong>Recommended next activity:</strong> <a href="#linux-lesson">Continue to Linux</a></p>
+    </div>
+
+<div class="lesson-block lesson-finish">
 
       <h3>Keep Building Your Skills</h3>
 
@@ -560,8 +596,8 @@
         Wireshark, firewalls, and SIEM platforms much easier to learn.
       </p>
 
-      <a href="#labs" class="primary-button">
-        Go to Networking Labs
+      <a href="#linux-lesson" class="primary-button">
+        Continue to Linux
       </a>
 
     </div>
@@ -574,7 +610,7 @@
 
   <p class="section-label">BEGINNER LESSON</p>
 
-  <h2>Linux Fundamentals</h2>
+  <h2 tabindex="-1">Linux Fundamentals</h2>
 
   <p class="section-intro">
     Linux is widely used in cybersecurity, servers, cloud systems,
@@ -583,6 +619,14 @@
   </p>
 
   <div class="lesson-container">
+
+    <div class="lesson-block lesson-orientation">
+      <h3>Lesson guide</h3>
+      <p><strong>Prerequisites:</strong> Recommended first: Cybersecurity Fundamentals and Networking.</p>
+      <h4>Learning objectives</h4><p>Navigate directories; identify read-only inspection commands; explain why permissions and careful command selection matter to defenders.</p>
+      <h4>Why this matters in cybersecurity</h4><p>Linux runs many servers and security tools. Safe command-line inspection lets defenders gather evidence without changing it.</p>
+      <a class="lesson-dashboard-link" href="#dashboard">View your Learner Dashboard</a>
+    </div>
 
     <div class="lesson-block">
       <h3>1. What is Linux?</h3>
@@ -645,7 +689,11 @@
       <pre><code>cat flag.txt</code></pre>
     </div>
 
-    <div class="lesson-block">
+        <div class="lesson-block lesson-try-it">
+      <h3>Try It — safe analysis</h3><p>In a safe local training directory, read this simulated listing: <code>-rw-r--r-- 1 learner learner 42 notes.txt</code>. The leading dash means a regular file. Which read-only command would display it?</p>
+    </div>
+
+<div class="lesson-block">
       <h3>4. Knowledge Check</h3>
 
       <p>
@@ -663,6 +711,7 @@
 
       <button
         id="linux-check-button"
+        type="button"
         class="primary-button"
       >
         Check Answer
@@ -671,7 +720,12 @@
       <p id="linux-check-result" role="status" aria-live="polite"></p>
     </div>
 
-    <div class="lesson-block lesson-finish">
+        <div class="lesson-block lesson-recap">
+      <h3>Lesson recap</h3><p>Use <code>pwd</code>, <code>ls</code>, <code>cat</code>, and <code>grep</code> to orient and inspect. Confirm paths before running commands and avoid destructive changes during triage.</p>
+      <p><strong>Recommended next activity:</strong> <a href="#web-security-lesson">Continue to Web Security</a></p>
+    </div>
+
+<div class="lesson-block lesson-finish">
       <h3>Ready to Practice?</h3>
 
       <p>
@@ -679,8 +733,8 @@
         in the Better Hacker labs.
       </p>
 
-      <a href="#labs" class="primary-button">
-        Go to Linux Lab
+      <a href="#web-security-lesson" class="primary-button">
+        Continue to Web Security
       </a>
     </div>
 
@@ -693,7 +747,7 @@
 
   <p class="section-label">BEGINNER LESSON</p>
 
-  <h2>Web Security Fundamentals</h2>
+  <h2 tabindex="-1">Web Security Fundamentals</h2>
 
   <p class="section-intro">
     Websites and web applications are common targets for attackers.
@@ -702,6 +756,14 @@
   </p>
 
   <div class="lesson-container">
+
+    <div class="lesson-block lesson-orientation">
+      <h3>Lesson guide</h3>
+      <p><strong>Prerequisites:</strong> Recommended first: Networking fundamentals.</p>
+      <h4>Learning objectives</h4><p>Describe browser-server requests; distinguish HTTP and HTTPS; recognize SQL injection, XSS, and broken access control; name defensive input-handling practices.</p>
+      <h4>Why this matters in cybersecurity</h4><p>Web applications often handle identities and sensitive data. Separating untrusted data from instructions reduces preventable compromise.</p>
+      <a class="lesson-dashboard-link" href="#dashboard">View your Learner Dashboard</a>
+    </div>
 
     <div class="lesson-block">
       <h3>1. What is Web Security?</h3>
@@ -807,7 +869,11 @@
     </div>
 
 
-    <div class="lesson-block">
+        <div class="lesson-block lesson-try-it">
+      <h3>Try It — safe analysis</h3><p>Compare <code>query + userInput</code> with a parameterized query using a placeholder. Which design keeps the value separate from SQL instructions? This is analysis only—do not test real sites.</p>
+    </div>
+
+<div class="lesson-block">
       <h3>5. Knowledge Check</h3>
 
       <p>
@@ -826,6 +892,7 @@
 
       <button
         id="web-check-button"
+        type="button"
         class="primary-button"
       >
         Check Answer
@@ -836,7 +903,12 @@
     </div>
 
 
-    <div class="lesson-block lesson-finish">
+        <div class="lesson-block lesson-recap">
+      <h3>Lesson recap</h3><p>Browsers exchange requests and responses with servers. Validate input, encode output for its context, parameterize database queries, and enforce authorization on the server.</p>
+      <p><strong>Recommended next activity:</strong> <a href="#cryptography-lesson">Continue to Cryptography</a></p>
+    </div>
+
+<div class="lesson-block lesson-finish">
 
       <h3>Ready to Practice?</h3>
 
@@ -846,8 +918,8 @@
         common vulnerabilities.
       </p>
 
-      <a href="#labs" class="primary-button">
-        Go to Web Security Lab
+      <a href="#cryptography-lesson" class="primary-button">
+        Continue to Cryptography
       </a>
 
     </div>
@@ -860,7 +932,7 @@
 
   <p class="section-label">BEGINNER LESSON</p>
 
-  <h2>Cryptography Fundamentals</h2>
+  <h2 tabindex="-1">Cryptography Fundamentals</h2>
 
   <p class="section-intro">
     Cryptography helps protect information from unauthorized access.
@@ -869,6 +941,14 @@
   </p>
 
   <div class="lesson-container">
+
+    <div class="lesson-block lesson-orientation">
+      <h3>Lesson guide</h3>
+      <p><strong>Prerequisites:</strong> Recommended first: Cybersecurity Fundamentals.</p>
+      <h4>Learning objectives</h4><p>Distinguish encryption, hashing, and encoding; explain plaintext, ciphertext, keys, and integrity checks; choose a control for a stated goal.</p>
+      <h4>Why this matters in cybersecurity</h4><p>Choosing the wrong mechanism can expose data: encoding provides no secrecy, and a hash is not recoverable encrypted data.</p>
+      <a class="lesson-dashboard-link" href="#dashboard">View your Learner Dashboard</a>
+    </div>
 
     <div class="lesson-block">
       <h3>1. What is Cryptography?</h3>
@@ -948,7 +1028,11 @@
     </div>
 
 
-    <div class="lesson-block">
+        <div class="lesson-block lesson-try-it">
+      <h3>Try It — safe analysis</h3><p>A recipient must recover a protected backup with an approved key. Choose encryption, hashing, or encoding and explain why the other two do not meet the goal.</p>
+    </div>
+
+<div class="lesson-block">
       <h3>5. Knowledge Check</h3>
 
       <p>
@@ -967,6 +1051,7 @@
 
       <button
         id="crypto-check-button"
+        type="button"
         class="primary-button"
       >
         Check Answer
@@ -977,7 +1062,12 @@
     </div>
 
 
-    <div class="lesson-block lesson-finish">
+        <div class="lesson-block lesson-recap">
+      <h3>Lesson recap</h3><p>Encryption protects confidentiality and is reversible with authorized key material. Hashing supports integrity and verification. Encoding only changes representation.</p>
+      <p><strong>Recommended next activity:</strong> <a href="#active-directory-lesson">Continue to Active Directory</a></p>
+    </div>
+
+<div class="lesson-block lesson-finish">
 
       <h3>Ready to Practice?</h3>
 
@@ -987,8 +1077,8 @@
         cryptography concepts.
       </p>
 
-      <a href="#labs" class="primary-button">
-        Go to Cryptography Lab
+      <a href="#active-directory-lesson" class="primary-button">
+        Continue to Active Directory
       </a>
 
     </div>
@@ -1001,7 +1091,7 @@
 
   <div class="section-header">
     <span class="section-label">LESSON 06</span>
-    <h2>Active Directory Fundamentals</h2>
+    <h2 tabindex="-1">Active Directory Fundamentals</h2>
     <p>
       Learn how organizations manage users, computers,
       authentication, and permissions with Active Directory.
@@ -1009,6 +1099,14 @@
   </div>
 
   <div class="lesson-content">
+
+    <div class="lesson-block lesson-orientation">
+      <h3>Lesson guide</h3>
+      <p><strong>Prerequisites:</strong> Recommended first: Cybersecurity Fundamentals and Windows account concepts.</p>
+      <h4>Learning objectives</h4><p>Describe domains, domain controllers, users, groups, authentication, and permissions; apply least privilege to account administration.</p>
+      <h4>Why this matters in cybersecurity</h4><p>Active Directory can govern access across an organization, so unusual sign-ins, group changes, and excessive privileges deserve careful review.</p>
+      <a class="lesson-dashboard-link" href="#dashboard">View your Learner Dashboard</a>
+    </div>
 
     <div class="lesson-block">
       <h3>1. What is Active Directory?</h3>
@@ -1091,7 +1189,11 @@
     </div>
 
 
-    <div class="lesson-block knowledge-check">
+        <div class="lesson-block lesson-try-it">
+      <h3>Try It — safe analysis</h3><p>A person changes departments. List two items to review: their group memberships and the resources those groups can access. Remove only access no longer required through an approved process.</p>
+    </div>
+
+<div class="lesson-block knowledge-check">
 
       <h3>🧠 Knowledge Check</h3>
 
@@ -1111,6 +1213,7 @@
 
       <button
         id="ad-check-button"
+        type="button"
         class="primary-button"
       >
         Check Answer
@@ -1121,7 +1224,12 @@
     </div>
 
 
-    <div class="lesson-next">
+        <div class="lesson-block lesson-recap">
+      <h3>Lesson recap</h3><p>Domains organize managed resources; domain controllers provide directory services; users represent identities; groups simplify permission assignment.</p>
+      <p><strong>Recommended next activity:</strong> <a href="#soc-siem-lesson">Continue to SOC & SIEM</a></p>
+    </div>
+
+<div class="lesson-next">
 
       <h3>🎯 Next Step</h3>
 
@@ -1130,8 +1238,8 @@
         Better Hacker hands-on labs.
       </p>
 
-      <a href="#labs" class="primary-button">
-        Continue to Security Labs
+      <a href="#soc-siem-lesson" class="primary-button">
+        Continue to SOC & SIEM
       </a>
 
     </div>
@@ -1144,7 +1252,7 @@
 
   <div class="section-header">
     <span class="section-label">LESSON 07</span>
-    <h2>SOC & SIEM Fundamentals</h2>
+    <h2 tabindex="-1">SOC & SIEM Fundamentals</h2>
     <p>
       Learn how security teams monitor systems, investigate alerts,
       analyze logs, and detect suspicious activity.
@@ -1152,6 +1260,14 @@
   </div>
 
   <div class="lesson-content">
+
+    <div class="lesson-block lesson-orientation">
+      <h3>Lesson guide</h3>
+      <p><strong>Prerequisites:</strong> Recommended first: Networking, Linux, and Active Directory.</p>
+      <h4>Learning objectives</h4><p>Explain SOC and SIEM roles; identify useful log fields; distinguish an alert from a confirmed incident; outline safe investigation and response.</p>
+      <h4>Why this matters in cybersecurity</h4><p>Centralized evidence helps analysts correlate events, validate alerts, preserve context, and choose proportionate responses.</p>
+      <a class="lesson-dashboard-link" href="#dashboard">View your Learner Dashboard</a>
+    </div>
 
     <div class="lesson-block">
       <h3>1. What is a SOC?</h3>
@@ -1240,7 +1356,11 @@
     </div>
 
 
-    <div class="lesson-block knowledge-check">
+        <div class="lesson-block lesson-try-it">
+      <h3>Try It — safe analysis</h3><p>A simulated alert shows 14 failed logins followed by a success from an unknown device. Identify the user, time, device, outcome, and one related log source you would check.</p>
+    </div>
+
+<div class="lesson-block knowledge-check">
 
       <h3>🧠 Knowledge Check</h3>
 
@@ -1260,6 +1380,7 @@
 
       <button
         id="soc-check-button"
+        type="button"
         class="primary-button"
       >
         Check Answer
@@ -1270,7 +1391,12 @@
     </div>
 
 
-    <div class="lesson-next">
+        <div class="lesson-block lesson-recap">
+      <h3>Lesson recap</h3><p>A SOC monitors and responds; a SIEM centralizes and correlates events. Alerts require validation. Preserve evidence, scope impact, and follow an authorized response plan.</p>
+      <p><strong>Recommended next activity:</strong> <a href="#security-testing-lesson">Continue to Security Testing</a></p>
+    </div>
+
+<div class="lesson-next">
 
       <h3>🎯 Next Step</h3>
 
@@ -1279,8 +1405,8 @@
         practicing log analysis and alert investigation.
       </p>
 
-      <a href="#labs" class="primary-button">
-        Continue to Security Labs
+      <a href="#security-testing-lesson" class="primary-button">
+        Continue to Security Testing
       </a>
 
     </div>
@@ -1293,7 +1419,7 @@
 
   <div class="section-header">
     <span class="section-label">LESSON 08</span>
-    <h2>Security Testing Fundamentals</h2>
+    <h2 tabindex="-1">Security Testing Fundamentals</h2>
     <p>
       Learn the basics of authorized security testing, reconnaissance,
       vulnerability assessment, and responsible reporting.
@@ -1301,6 +1427,14 @@
   </div>
 
   <div class="lesson-content">
+
+    <div class="lesson-block lesson-orientation">
+      <h3>Lesson guide</h3>
+      <p><strong>Prerequisites:</strong> Recommended first: the preceding seven core lessons.</p>
+      <h4>Learning objectives</h4><p>Explain authorization and scope; distinguish reconnaissance from vulnerability assessment; describe responsible evidence collection, reporting, and remediation.</p>
+      <h4>Why this matters in cybersecurity</h4><p>Testing without permission can be harmful and unlawful. A written scope protects systems, learners, and organizations while keeping work focused.</p>
+      <a class="lesson-dashboard-link" href="#dashboard">View your Learner Dashboard</a>
+    </div>
 
     <div class="lesson-block">
       <h3>1. What is Security Testing?</h3>
@@ -1385,7 +1519,11 @@
     </div>
 
 
-    <div class="lesson-block knowledge-check">
+        <div class="lesson-block lesson-try-it">
+      <h3>Try It — safe analysis</h3><p>Review this simulated scope: “Training host 192.0.2.10; inventory scan only; 09:00–10:00 UTC.” Identify the allowed asset, technique, and time window. Do not scan any real system.</p>
+    </div>
+
+<div class="lesson-block knowledge-check">
 
       <h3>🧠 Knowledge Check</h3>
 
@@ -1405,6 +1543,7 @@
 
       <button
         id="testing-check-button"
+        type="button"
         class="primary-button"
       >
         Check Answer
@@ -1415,7 +1554,12 @@
     </div>
 
 
-    <div class="lesson-next">
+        <div class="lesson-block lesson-recap">
+      <h3>Lesson recap</h3><p>Authorization comes first. Stay inside scope, minimize impact, document evidence, communicate risk clearly, and verify remediation safely.</p>
+      <p><strong>Recommended next activity:</strong> <a href="#labs">Continue to Guided Exercises</a></p>
+    </div>
+
+<div class="lesson-next">
 
       <h3>🎯 Next Step</h3>
 
@@ -1907,11 +2051,11 @@
 <button id="companion-toggle" class="companion-toggle" type="button" aria-haspopup="dialog" aria-controls="companion-panel" aria-expanded="false">Open Byte Guide</button>
 <section id="companion-panel" class="companion-panel" role="dialog" aria-modal="false" aria-labelledby="companion-title" hidden>
   <div class="companion-header"><h2 id="companion-title">Byte Learning Guide</h2><button id="companion-close" type="button" aria-label="Close Byte Learning Guide">×</button></div>
-  <p>Authored cybersecurity guidance based on the activity you are viewing. Byte does not use live AI.</p>
+  <p>Byte is an authored, rule-based guide—not live AI. Help progresses from a concept to a stronger clue; full activity explanations unlock after you submit.</p>
   <div class="companion-actions">
-    <button type="button" data-companion-action="hint">Give Me a Hint</button>
-    <button type="button" data-companion-action="explain">Explain This Concept</button>
-    <button type="button" data-companion-action="look">What Should I Look For?</button>
+    <button type="button" data-companion-action="hint">1. Conceptual Hint</button>
+    <button type="button" data-companion-action="look">2. Stronger Clue</button>
+    <button type="button" data-companion-action="explain">3. Explain After Submission</button>
   </div>
   <div id="companion-response" role="status" aria-live="polite"></div>
 </section>

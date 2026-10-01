@@ -99,3 +99,15 @@ test('authored companion changes context, withholds answers before submission, a
   assert.match(companion.respond('explain'),/DNS resolves names/);
   assert.equal(require('node:fs').readFileSync('companion.js','utf8').includes('fetch('),false);
 });
+
+
+test('Byte resets stale activity details and provides progressive contextual help', () => {
+  const companion=Companion.createCompanion(new Companion.AuthoredProvider());
+  companion.setContext({type:'guided-lab',activityId:'one',topic:'Linux',hint:'Think read-only.',lookFor:'the file type',explanation:'Use cat.',submitted:true});
+  assert.match(companion.respond('explain'),/Use cat/);
+  companion.setContext({type:'investigation',activityId:'two',topic:'Phishing',hint:'Inspect the sender.',lookFor:'domain, urgency, and link',submitted:false});
+  assert.match(companion.respond('hint'),/Conceptual hint/);
+  assert.match(companion.respond('look'),/Stronger clue/);
+  assert.match(companion.respond('explain'),/Explanation locked/);
+  assert.doesNotMatch(companion.respond('explain'),/Use cat/);
+});

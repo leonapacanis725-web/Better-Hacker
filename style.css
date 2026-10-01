@@ -163,7 +163,10 @@ a {
 
 a:focus-visible,
 button:focus-visible,
-input:focus-visible {
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible {
   outline: 3px solid #facc15;
   outline-offset: 3px;
 }
@@ -218,7 +221,8 @@ input:disabled {
   transition: 0.25s ease;
 }
 
-.card:hover {
+a.card:hover,
+button.card:hover {
   transform: translateY(-6px);
   border-color: #38bdf8;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
@@ -1244,4 +1248,31 @@ footer p {
 @media (max-width: 375px) {
   .lab-card, .lab-challenge { padding: 16px; }
   .lab-workspace pre { padding: 12px; font-size: .82rem; }
+}
+
+/* Connected lesson guides and audit-driven responsive safeguards */
+.lesson-orientation h4 { margin: 18px 0 6px; color: #7dd3fc; font-size: 1.05rem; }
+.lesson-dashboard-link, .lesson-recap a { display: inline-block; margin-top: 10px; color: #7dd3fc; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.lesson-try-it { border-left: 4px solid #facc15; }
+.lesson-recap { border-left: 4px solid #22c55e; }
+.evidence-guide { padding: 12px; border-left: 3px solid #facc15; background: #07111f; }
+.investigation-overview li a { display: block; min-height: 44px; padding: 8px; border-radius: 6px; }
+.investigation-overview li a:hover { background: rgba(56, 189, 248, .08); }
+.investigation-overview li span { display: block; color: #cbd5e1; font-size: .9rem; }
+.lesson-block pre, .lab-challenge pre { max-width: 100%; overflow-x: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+.lesson-block input, #waitlist-email { max-width: 100%; }
+@media (pointer: coarse) {
+  .nav-links a, .footer-links a { display: inline-flex; align-items: center; min-height: 44px; }
+  .companion-actions button, .soc-answer-options button, .network-answer-options button, .phishing-answer-options button,
+  .windows-answer-options button, .malware-answer-options button, .brute-force-answer-options button, .web-attack-answer-options button { min-height: 44px; }
+}
+@media (max-width: 480px) {
+  html { scroll-padding-top: 220px; }
+  .navbar { padding-inline: 12px; }
+  .nav-links { width: 100%; gap: 4px 10px; }
+  .nav-links a { padding: 4px; }
+  .section { padding: 58px 14px; }
+  .hero h1 { font-size: clamp(2.35rem, 13vw, 3rem); }
+  .lesson-block, .lab-challenge, .review-panel, .dashboard-card { padding: 18px 14px; }
+  .primary-button, .secondary-button { max-width: 100%; white-space: normal; }
 }

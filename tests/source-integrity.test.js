@@ -93,3 +93,26 @@ test('footer copy meets WCAG AA contrast against its background', () => {
   assert.ok(footerColor && footerBackground);
   assert.ok(contrastRatio(footerColor, footerBackground) >= 4.5);
 });
+
+
+test('every core lesson exposes a connected, accessible learning sequence', () => {
+  const lessonIds = ['fundamentals','networking','linux','web-security','cryptography','active-directory','soc-siem','security-testing'];
+  for (const id of lessonIds) {
+    const start = html.indexOf(`<section id="${id}-lesson"`);
+    assert.ok(start >= 0, `missing ${id}`);
+    const end = html.indexOf('</section>', start);
+    const lesson = html.slice(start, end);
+    for (const part of ['Prerequisites:', 'Learning objectives', 'Why this matters in cybersecurity', 'Try It — safe analysis', 'Knowledge Check', 'Lesson recap', 'Recommended next activity:', 'View your Learner Dashboard']) {
+      assert.ok(lesson.includes(part), `${id} missing ${part}`);
+    }
+    assert.match(lesson, /role="status" aria-live="polite"/);
+  }
+  assert.equal((html.match(/type="button"\s+class="primary-button"/g) || []).length >= 8, true);
+});
+
+test('investigations expose idempotent completion, evidence guidance, and Start or Review navigation', () => {
+  assert.match(script, /function completeInvestigation\(key\)/);
+  assert.match(script, /Evidence analysis:/);
+  assert.match(script, /complete \? 'Review' : 'Start'/);
+  assert.match(script, /review without duplicate XP/);
+});

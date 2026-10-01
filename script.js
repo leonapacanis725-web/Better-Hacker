@@ -3,14 +3,14 @@
 document.addEventListener("DOMContentLoaded", function () {
 
   const LESSON_PROGRESS = Object.freeze([
-    { key: "betterHackerFundamentalsComplete", target: "#fundamentals-lesson", name: "Cybersecurity Fundamentals" },
-    { key: "betterHackerNetworkingComplete", target: "#networking-lesson", name: "Networking" },
-    { key: "betterHackerLinuxComplete", target: "#linux-lesson", name: "Linux" },
-    { key: "betterHackerWebSecurityComplete", target: "#web-security-lesson", name: "Web Security" },
-    { key: "betterHackerCryptographyComplete", target: "#cryptography-lesson", name: "Cryptography" },
-    { key: "betterHackerActiveDirectoryComplete", target: "#active-directory-lesson", name: "Active Directory" },
-    { key: "betterHackerSocComplete", target: "#soc-siem-lesson", name: "SOC & SIEM" },
-    { key: "betterHackerSecurityTestingComplete", target: "#security-testing-lesson", name: "Security Testing" }
+    { key: "betterHackerFundamentalsComplete", target: "#fundamentals-lesson", name: "Cybersecurity Fundamentals", check: "#fundamentals-check-result", next: "#networking-lesson", nextName: "Networking" },
+    { key: "betterHackerNetworkingComplete", target: "#networking-lesson", name: "Networking", check: "#network-check-result", next: "#linux-lesson", nextName: "Linux" },
+    { key: "betterHackerLinuxComplete", target: "#linux-lesson", name: "Linux", check: "#linux-check-result", next: "#web-security-lesson", nextName: "Web Security" },
+    { key: "betterHackerWebSecurityComplete", target: "#web-security-lesson", name: "Web Security", check: "#web-check-result", next: "#cryptography-lesson", nextName: "Cryptography" },
+    { key: "betterHackerCryptographyComplete", target: "#cryptography-lesson", name: "Cryptography", check: "#crypto-check-result", next: "#active-directory-lesson", nextName: "Active Directory" },
+    { key: "betterHackerActiveDirectoryComplete", target: "#active-directory-lesson", name: "Active Directory", check: "#ad-check-result", next: "#soc-siem-lesson", nextName: "SOC & SIEM" },
+    { key: "betterHackerSocComplete", target: "#soc-siem-lesson", name: "SOC & SIEM", check: "#soc-check-result", next: "#security-testing-lesson", nextName: "Security Testing" },
+    { key: "betterHackerSecurityTestingComplete", target: "#security-testing-lesson", name: "Security Testing", check: "#testing-check-result", next: "#labs", nextName: "Guided Exercises" }
   ]);
 
   const INVESTIGATIONS = Object.freeze([
@@ -32,6 +32,13 @@ document.addEventListener("DOMContentLoaded", function () {
   const companion = CompanionModule.createCompanion(new CompanionModule.AuthoredProvider());
   const NAVIGATION_HANDLERS = [];
   const CORE_ACTIVITY_TOTAL = 20;
+
+  function completeInvestigation(key) {
+    if (!INVESTIGATIONS.some(function (item) { return item.key === key; })) return false;
+    if (localStorage.getItem(key) === "true") return false;
+    localStorage.setItem(key, "true");
+    return true;
+  }
 
   function readCompletedLabs() {
     const raw = localStorage.getItem("betterHackerCompletedLabs");
@@ -513,6 +520,12 @@ function renderLessonCompletionStates() {
       } else if (!complete && badge) badge.remove();
     }
     if (lessonSection) lessonSection.classList.toggle("activity-complete", complete);
+    const result = document.querySelector(lesson.check);
+    if (complete && result && !result.textContent) {
+      result.textContent = "✓ Completed previously. Review this lesson and knowledge check whenever you like; progress and XP are not awarded twice.";
+      result.className = "feedback-success";
+      showNextLessonButton(result, lesson.next, lesson.nextName);
+    }
   });
 }
 
@@ -615,7 +628,7 @@ if (
     const answer =
       linuxCheckAnswer.value.trim().toLowerCase();
 
-    if (answer === "cat") {
+    if (answer === "cat" || answer === "cat filename" || answer === "cat file") {
 
       linuxCheckResult.textContent =
         "✅ Correct! The cat command displays the contents of a file.";
@@ -637,7 +650,7 @@ if (
     } else {
 
       linuxCheckResult.textContent =
-        "❌ Not quite. Try again.";
+        "Not quite. Use the read-only command shown in the example that prints a file's contents; avoid commands that modify or remove the file.";
 
       linuxCheckResult.style.color = "#f87171";
     }
@@ -653,6 +666,7 @@ if (
     function (event) {
 
       if (event.key === "Enter") {
+        event.preventDefault();
         checkLinuxAnswer();
       }
 
@@ -685,7 +699,7 @@ if (
     const answer =
       networkCheckAnswer.value.trim();
 
-    if (answer === "443") {
+    if (answer === "443" || answer.toLowerCase() === "port 443" || answer.toLowerCase() === "tcp 443" || answer.toLowerCase() === "443/tcp") {
 
       networkCheckResult.textContent =
         "✅ Correct! Port 443 is commonly used for HTTPS.";
@@ -706,7 +720,7 @@ if (
     } else {
 
       networkCheckResult.textContent =
-        "❌ Not quite. Try again.";
+        "Not quite. HTTPS commonly uses the encrypted web-service port listed beside HTTP in the lesson. Review the ports table and try again.";
 
       networkCheckResult.style.color = "#f87171";
     }
@@ -722,6 +736,7 @@ if (
     function (event) {
 
       if (event.key === "Enter") {
+        event.preventDefault();
         checkNetworkAnswer();
       }
 
@@ -796,6 +811,7 @@ showNextLessonButton(
     function (event) {
 
       if (event.key === "Enter") {
+        event.preventDefault();
         checkWebAnswer();
       }
 
@@ -827,7 +843,7 @@ if (
     const answer =
       cryptoCheckAnswer.value.trim().toLowerCase();
 
-    if (answer === "encryption") {
+    if (answer === "encryption" || answer === "encrypting" || answer === "data encryption") {
 
       cryptoCheckResult.textContent =
         "✅ Correct! Encryption transforms readable plaintext into unreadable ciphertext.";
@@ -866,6 +882,7 @@ showNextLessonButton(
     function (event) {
 
       if (event.key === "Enter") {
+        event.preventDefault();
         checkCryptoAnswer();
       }
 
@@ -899,7 +916,9 @@ if (
 
     if (
       answer === "user" ||
-      answer === "user account"
+      answer === "user account" ||
+      answer === "ad user" ||
+      answer === "active directory user"
     ) {
 
       adCheckResult.textContent =
@@ -939,6 +958,7 @@ if (
     function (event) {
 
       if (event.key === "Enter") {
+        event.preventDefault();
         checkAdAnswer();
       }
 
@@ -970,7 +990,7 @@ if (
     const answer =
       socCheckAnswer.value.trim().toLowerCase();
 
-    if (answer === "siem") {
+    if (answer === "siem" || answer === "siem platform" || answer === "security information and event management") {
 
       socCheckResult.textContent =
         "✅ Correct! A SIEM collects and analyzes security logs from many systems.";
@@ -1009,6 +1029,7 @@ if (
     function (event) {
 
       if (event.key === "Enter") {
+        event.preventDefault();
         checkSocAnswer();
       }
 
@@ -1044,7 +1065,9 @@ if (
       answer === "permission" ||
       answer === "authorization" ||
       answer === "written permission" ||
-      answer === "written authorization"
+      answer === "written authorization" ||
+      answer === "explicit permission" ||
+      answer === "explicit authorization"
     ) {
 
       testingCheckResult.textContent =
@@ -1084,6 +1107,7 @@ if (
     function (event) {
 
       if (event.key === "Enter") {
+        event.preventDefault();
         checkTestingAnswer();
       }
 
@@ -1153,21 +1177,21 @@ if (socLabSection) {
 
     <div class="soc-answer-options">
 
-      <button
+      <button type="button"
         class="secondary-button soc-answer"
         data-answer="ignore"
       >
         Ignore the alert
       </button>
 
-      <button
+      <button type="button"
         class="secondary-button soc-answer"
         data-answer="investigate"
       >
         Investigate the login activity
       </button>
 
-      <button
+      <button type="button"
         class="secondary-button soc-answer"
         data-answer="delete"
       >
@@ -1201,10 +1225,7 @@ if (socLabSection) {
 
         socLabResult.style.color = "#38bdf8";
 
-        localStorage.setItem(
-          "betterHackerSocInvestigationComplete",
-          "true"
-        );
+        completeInvestigation("betterHackerSocInvestigationComplete");
 
       } else {
 
@@ -1273,28 +1294,28 @@ if (networkTrafficSection) {
 
     <div class="network-answer-options">
 
-      <button
+      <button type="button"
         class="secondary-button network-answer"
         data-answer="443"
       >
         Port 443
       </button>
 
-      <button
+      <button type="button"
         class="secondary-button network-answer"
         data-answer="53"
       >
         Port 53
       </button>
 
-      <button
+      <button type="button"
         class="secondary-button network-answer"
         data-answer="22"
       >
         Port 22
       </button>
 
-      <button
+      <button type="button"
         class="secondary-button network-answer"
         data-answer="4444"
       >
@@ -1331,10 +1352,7 @@ if (networkTrafficSection) {
         networkInvestigationResult.style.color =
           "#38bdf8";
 
-        localStorage.setItem(
-          "betterHackerNetworkInvestigationComplete",
-          "true"
-        );
+        completeInvestigation("betterHackerNetworkInvestigationComplete");
 
       } else {
 
@@ -1359,6 +1377,7 @@ if (networkTrafficSection) {
 const investigationSection =
   document.querySelector("#labs");
 let investigationProgress = null;
+let renderInvestigationOverview = function () {};
 
 if (investigationSection) {
 
@@ -1449,6 +1468,7 @@ if (investigationSection) {
         setTimeout(function () {
           updateInvestigationProgress();
           renderInvestigationCompletionStates();
+          if (typeof renderInvestigationOverview === "function") renderInvestigationOverview();
           renderDashboard();
           const card = event.target.closest && event.target.closest(".lab-challenge");
           const investigation = INVESTIGATIONS.find(function (item) { return card && card.matches(item.selector); });
@@ -1531,21 +1551,21 @@ if (phishingSection) {
 
     <div class="phishing-answer-options">
 
-      <button
+      <button type="button"
         class="secondary-button phishing-answer"
         data-answer="safe"
       >
         Safe email
       </button>
 
-      <button
+      <button type="button"
         class="secondary-button phishing-answer"
         data-answer="phishing"
       >
         Likely phishing
       </button>
 
-      <button
+      <button type="button"
         class="secondary-button phishing-answer"
         data-answer="ignore"
       >
@@ -1580,10 +1600,7 @@ if (phishingSection) {
         phishingResult.style.color =
           "#38bdf8";
 
-        localStorage.setItem(
-          "betterHackerPhishingInvestigationComplete",
-          "true"
-        );
+        completeInvestigation("betterHackerPhishingInvestigationComplete");
 
       } else {
 
@@ -1665,21 +1682,21 @@ if (windowsInvestigationSection) {
 
     <div class="windows-answer-options">
 
-      <button
+      <button type="button"
         class="secondary-button windows-answer"
         data-answer="ignore"
       >
         Ignore the activity
       </button>
 
-      <button
+      <button type="button"
         class="secondary-button windows-answer"
         data-answer="investigate"
       >
         Investigate and verify the account activity
       </button>
 
-      <button
+      <button type="button"
         class="secondary-button windows-answer"
         data-answer="delete"
       >
@@ -1719,10 +1736,7 @@ if (windowsInvestigationSection) {
 
         windowsResult.style.color = "#38bdf8";
 
-        localStorage.setItem(
-          "betterHackerWindowsInvestigationComplete",
-          "true"
-        );
+        completeInvestigation("betterHackerWindowsInvestigationComplete");
 
       } else {
 
@@ -1798,21 +1812,21 @@ if (malwareInvestigationSection) {
 
     <div class="malware-answer-options">
 
-      <button
+      <button type="button"
         class="secondary-button malware-answer"
         data-answer="ignore"
       >
         Ignore the process
       </button>
 
-      <button
+      <button type="button"
         class="secondary-button malware-answer"
         data-answer="investigate"
       >
         Isolate and investigate the workstation
       </button>
 
-      <button
+      <button type="button"
         class="secondary-button malware-answer"
         data-answer="allow"
       >
@@ -1852,10 +1866,7 @@ if (malwareInvestigationSection) {
 
         malwareResult.style.color = "#38bdf8";
 
-        localStorage.setItem(
-          "betterHackerMalwareInvestigationComplete",
-          "true"
-        );
+        completeInvestigation("betterHackerMalwareInvestigationComplete");
 
       } else {
 
@@ -1931,21 +1942,21 @@ if (bruteForceInvestigationSection) {
 
     <div class="brute-force-answer-options">
 
-      <button
+      <button type="button"
         class="secondary-button brute-force-answer"
         data-answer="phishing"
       >
         Phishing
       </button>
 
-      <button
+      <button type="button"
         class="secondary-button brute-force-answer"
         data-answer="bruteforce"
       >
         Brute Force Attack
       </button>
 
-      <button
+      <button type="button"
         class="secondary-button brute-force-answer"
         data-answer="malware"
       >
@@ -1986,10 +1997,7 @@ if (bruteForceInvestigationSection) {
         bruteForceResult.style.color =
           "#38bdf8";
 
-        localStorage.setItem(
-          "betterHackerBruteForceInvestigationComplete",
-          "true"
-        );
+        completeInvestigation("betterHackerBruteForceInvestigationComplete");
 
       } else {
 
@@ -2066,21 +2074,21 @@ if (webAttackSection) {
 
     <div class="web-attack-answer-options">
 
-      <button
+      <button type="button"
         class="secondary-button web-attack-answer"
         data-answer="xss"
       >
         Cross-Site Scripting
       </button>
 
-      <button
+      <button type="button"
         class="secondary-button web-attack-answer"
         data-answer="sqli"
       >
         SQL Injection
       </button>
 
-      <button
+      <button type="button"
         class="secondary-button web-attack-answer"
         data-answer="phishing"
       >
@@ -2121,10 +2129,7 @@ if (webAttackSection) {
         webAttackResult.style.color =
           "#38bdf8";
 
-        localStorage.setItem(
-          "betterHackerWebAttackInvestigationComplete",
-          "true"
-        );
+        completeInvestigation("betterHackerWebAttackInvestigationComplete");
 
       } else {
 
@@ -2151,11 +2156,16 @@ if (investigationSection) {
   const investigationOverview = document.createElement("nav");
   investigationOverview.className = "investigation-overview";
   investigationOverview.setAttribute("aria-labelledby", "investigation-overview-title");
-  investigationOverview.innerHTML = '<h3 id="investigation-overview-title">Defensive Investigations</h3>' +
-    '<p>Open an investigation, interpret the simulated evidence, and choose the safest defensive conclusion.</p><ul>' +
-    INVESTIGATIONS.map(function (investigation) {
-      return '<li><a href="#' + investigation.anchor + '">' + investigation.name + '</a></li>';
-    }).join("") + '</ul>';
+  renderInvestigationOverview = function () {
+    investigationOverview.innerHTML = '<h3 id="investigation-overview-title">Defensive Investigations</h3>' +
+      '<p>Open an investigation, separate relevant evidence from background details, and choose the safest defensive conclusion. Content remains available for review.</p><ul>' +
+      INVESTIGATIONS.map(function (investigation) {
+        const complete = localStorage.getItem(investigation.key) === "true";
+        return '<li><a href="#' + investigation.anchor + '"><strong>' + (complete ? 'Review' : 'Start') + ':</strong> ' + investigation.name +
+          '<span>' + (complete ? 'Completed · review without duplicate XP' : 'Not started') + '</span></a></li>';
+      }).join("") + '</ul>';
+  };
+  renderInvestigationOverview();
 
   INVESTIGATIONS.forEach(function (investigation) {
     const card = document.querySelector(investigation.selector);
@@ -2164,6 +2174,14 @@ if (investigationSection) {
     card.id = investigation.anchor;
     const heading = card.querySelector("h3");
     if (heading) heading.tabIndex = -1;
+    const evidence = card.querySelector(".command-list");
+    if (evidence) {
+      evidence.setAttribute("aria-label", "Simulated evidence to analyze");
+      const guide = document.createElement("p");
+      guide.className = "evidence-guide";
+      guide.innerHTML = "<strong>Evidence analysis:</strong> identify the clue that changes risk, note supporting clues, and do not over-weight ordinary or non-diagnostic details.";
+      evidence.parentElement.insertBefore(guide, evidence);
+    }
     const result = card.querySelector('[role="status"]');
     if (result) {
       const hintButton = document.createElement("button");
@@ -2739,7 +2757,12 @@ renderDailyChallenge();
 document.querySelectorAll(".lesson-card").forEach(function(card){card.addEventListener("click",function(){companion.setContext({type:"lesson",topic:card.querySelector("h3").textContent,submitted:false});});});
 function updateCompanionForLessonHash() {
   const lesson = LESSON_PROGRESS.find(function (item) { return location.hash === item.target; });
-  if (lesson) companion.setContext({ type: "lesson", topic: lesson.name, submitted: false });
+  if (lesson) {
+    companion.setContext({ type: "lesson", topic: lesson.name, hint: "Review the learning objectives, then connect the Try It evidence to the principle asked about in the knowledge check.", lookFor: "the key term and the security goal it supports", submitted: false });
+    const section = document.querySelector(lesson.target);
+    const heading = section && section.querySelector("h2");
+    if (heading) heading.focus();
+  }
 }
 function handleNavigation() {
   NAVIGATION_HANDLERS.forEach(function (handler) { handler(); });

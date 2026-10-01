@@ -60,7 +60,7 @@ function boot({ seed = {}, elements = {}, fetchImpl = async () => ({ ok: true, s
     createTextNode(text) { return { textContent: text }; }
   };
   const localStorage = new MemoryStorage(seed);
-  const exposed = source.replace(/\n\}\);\s*$/, `\n  globalThis.__app = { readCompletedLabs, readReviewResult, getDashboardState, buildRetentionSnapshot, isReviewAnswerCorrect, COURSE_REVIEW_QUESTIONS, GUIDED_LABS, INVESTIGATIONS, LESSON_PROGRESS, getLabStatus, getLabAction, completeGuidedLab, renderDashboard, setDashboardCompanionContext, companion };\n});`);
+  const exposed = source.replace(/\n\}\);\s*$/, `\n  globalThis.__app = { readCompletedLabs, readReviewResult, getDashboardState, buildRetentionSnapshot, isReviewAnswerCorrect, COURSE_REVIEW_QUESTIONS, GUIDED_LABS, INVESTIGATIONS, LESSON_PROGRESS, getLabStatus, getLabAction, completeGuidedLab, completeInvestigation, renderDashboard, setDashboardCompanionContext, companion };\n});`);
   const context = { document, localStorage, __createdElements: createdElements, fetch: fetchImpl, setTimeout: fn => fn(), clearTimeout() {}, confirm: () => true,
     location: { reload() {} }, console, Date, JSON, Number, Math, Object, String, RegExp, Set,
     BetterHackerState, BetterHackerChallenges, BetterHackerMilestones, BetterHackerCompanion };
@@ -404,4 +404,48 @@ test('companion control opens, closes, and returns focus without trapping the ke
   await close.dispatch('click');
   assert.equal(elements['#companion-panel'].hidden,true);
   assert.equal(toggle.getAttribute('aria-expanded'),'false');
+});
+
+
+test('all lesson checks teach on incorrect answers, accept documented equivalents, and restore review state', async () => {
+  const elements = allLessonElements();
+  let app = boot({ elements });
+  const cases = [
+    ['fundamentals', 'administrator', 'least privilege', 'Fundamentals'],
+    ['network', '80', 'port 443', 'Networking'],
+    ['linux', 'rm', 'cat file', 'Linux'],
+    ['web', 'xss', 'sql injection attack', 'WebSecurity'],
+    ['crypto', 'encoding', 'data encryption', 'Cryptography'],
+    ['ad', 'group', 'active directory user', 'ActiveDirectory'],
+    ['soc', 'firewall', 'security information and event management', 'Soc'],
+    ['testing', 'quiet hours', 'explicit authorization', 'SecurityTesting']
+  ];
+  for (const [prefix, wrong, right, storageName] of cases) {
+    elements[`#${prefix}-check-answer`].value = wrong;
+    await elements[`#${prefix}-check-button`].dispatch('click');
+    assert.equal(app.localStorage.getItem(`betterHacker${storageName}Complete`), null);
+    assert.ok(elements[`#${prefix}-check-result`].textContent.length > 25);
+    elements[`#${prefix}-check-answer`].value = right;
+    await elements[`#${prefix}-check-answer`].dispatch('keydown', { key: 'Enter' });
+    assert.equal(app.localStorage.getItem(`betterHacker${storageName}Complete`), 'true');
+  }
+  assert.equal(app.context.__app.getDashboardState().lessonsCompleted, 8);
+  const seed = Object.fromEntries(Object.keys(app.localStorage).map(key => [key, app.localStorage.getItem(key)]));
+  const restoredElements = allLessonElements();
+  const restored = boot({ seed, elements: restoredElements });
+  assert.equal(restored.context.__app.getDashboardState().lessonsCompleted, 8);
+  assert.match(restoredElements['#fundamentals-check-result'].textContent, /Completed previously/);
+  assert.equal(BetterHackerState.deriveXp(restored.context.__app.buildRetentionSnapshot(), BetterHackerState.emptyDailyState()), 800);
+});
+
+test('investigation completion API validates keys and is idempotent for XP evidence', () => {
+  const { context, localStorage } = boot();
+  const key = context.__app.INVESTIGATIONS[0].key;
+  assert.equal(context.__app.completeInvestigation('unrelated'), false);
+  assert.equal(context.__app.completeInvestigation(key), true);
+  assert.equal(context.__app.completeInvestigation(key), false);
+  assert.equal(localStorage.getItem(key), 'true');
+  const state = context.__app.getDashboardState();
+  assert.equal(state.investigationsCompleted, 1);
+  assert.equal(BetterHackerState.deriveXp(context.__app.buildRetentionSnapshot(), BetterHackerState.emptyDailyState()), 125);
 });
