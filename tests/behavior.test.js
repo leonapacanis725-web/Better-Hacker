@@ -60,7 +60,7 @@ function boot({ seed = {}, elements = {}, fetchImpl = async () => ({ ok: true, s
     createTextNode(text) { return { textContent: text }; }
   };
   const localStorage = new MemoryStorage(seed);
-  const exposed = source.replace(/\n\}\);\s*$/, `\n  globalThis.__app = { readCompletedLabs, readReviewResult, getDashboardState, buildRetentionSnapshot, isReviewAnswerCorrect, COURSE_REVIEW_QUESTIONS, GUIDED_LABS, INVESTIGATIONS, LESSON_PROGRESS, getLabStatus, getLabAction, completeGuidedLab, renderDashboard, setDashboardCompanionContext, companion };\n});`);
+  const exposed = source.replace(/\n\}\);\s*$/, `\n  globalThis.__app = { readCompletedLabs, readReviewResult, getDashboardState, buildRetentionSnapshot, isReviewAnswerCorrect, COURSE_REVIEW_QUESTIONS, GUIDED_LABS, INVESTIGATIONS, LESSON_PROGRESS, EXTENSION_LESSONS, countCompletedExtensionLessons, completeExtensionLesson, getLabStatus, getLabAction, completeGuidedLab, renderDashboard, setDashboardCompanionContext, companion };\n});`);
   const context = { document, localStorage, __createdElements: createdElements, fetch: fetchImpl, setTimeout: fn => fn(), clearTimeout() {}, confirm: () => true,
     location: { reload() {} }, console, Date, JSON, Number, Math, Object, String, RegExp, Set,
     BetterHackerState, BetterHackerChallenges, BetterHackerMilestones, BetterHackerCompanion };
@@ -404,4 +404,32 @@ test('companion control opens, closes, and returns focus without trapping the ke
   await close.dispatch('click');
   assert.equal(elements['#companion-panel'].hidden,true);
   assert.equal(toggle.getAttribute('aria-expanded'),'false');
+});
+
+
+test('supplemental lessons persist once, do not alter 8/8 core progress, and drive optional recommendations', () => {
+  const { context, localStorage } = boot();
+  assert.equal(context.__app.EXTENSION_LESSONS.length, 2);
+  assert.deepEqual(JSON.parse(JSON.stringify(context.__app.completeExtensionLesson('computer-tools', 'stop'))), { correct: false, newlyCompleted: false });
+  assert.equal(context.__app.countCompletedExtensionLessons(), 0);
+  assert.deepEqual(JSON.parse(JSON.stringify(context.__app.completeExtensionLesson('computer-tools', 'observe'))), { correct: true, newlyCompleted: true });
+  assert.deepEqual(JSON.parse(JSON.stringify(context.__app.completeExtensionLesson('computer-tools', 'observe'))), { correct: true, newlyCompleted: false });
+  assert.equal(localStorage.getItem('betterHackerComputerToolsLessonComplete'), 'true');
+  assert.equal(context.__app.countCompletedExtensionLessons(), 1);
+  assert.equal(context.__app.getDashboardState().lessonsCompleted, 0);
+
+  context.__app.LESSON_PROGRESS.forEach(item => localStorage.setItem(item.key, 'true'));
+  localStorage.setItem('betterHackerCompletedLabs', '4');
+  context.__app.INVESTIGATIONS.forEach(item => localStorage.setItem(item.key, 'true'));
+  const topics = {};
+  context.__app.COURSE_REVIEW_QUESTIONS.forEach(question => {
+    topics[question.topic] ||= { correct: 0, total: 0, lesson: question.lesson };
+    topics[question.topic].total++;
+  });
+  localStorage.setItem('betterHackerCourseReviewResult', JSON.stringify({ completed:true, score:0, total:14, percentage:0, completedAt:'2026-10-01T00:00:00.000Z', topics }));
+  const state = context.__app.getDashboardState();
+  assert.equal(state.coreComplete, true);
+  assert.equal(state.lessonsCompleted, 8);
+  assert.equal(state.recommendation.type, 'Supplemental Lesson');
+  assert.equal(state.recommendation.name, 'Incident Response');
 });
