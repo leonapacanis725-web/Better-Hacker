@@ -123,11 +123,16 @@ test('supplemental lessons remain complete, clickable, and dashboard-integrated'
     assert.match(html, new RegExp('class="card extension-lesson-card" data-extension-id="' + id + '"'));
     assert.match(html, new RegExp('class="lesson-block knowledge-check extension-check" data-extension-id="' + id + '"'));
   }
+  for (const heading of ['Learning objectives', 'Why this matters in cybersecurity', 'Important terminology', 'Try It:', 'Knowledge check:', 'Recap', 'Recommended next activity:']) {
+    assert.ok(html.includes(heading), `missing supplemental lesson element: ${heading}`);
+  }
   assert.match(html, /id="dashboard-extension-lessons"/);
   assert.match(script, /const EXTENSION_LESSONS = Object\.freeze/);
   assert.match(script, /betterHackerComputerToolsLessonComplete/);
   assert.match(script, /betterHackerIncidentResponseLessonComplete/);
   assert.match(script, /extensionLessonsCompleted/);
   assert.match(script, /const extensionLesson = EXTENSION_LESSONS\.find/);
+  assert.match(script, /reviewing it does not award duplicate completion/);
+  assert.equal((html.match(/class="card topic-link-card"/g) || []).length, 10);
   assert.equal((script.match(/const lesson = LESSON_PROGRESS\.find/g) || []).length, 1);
 });

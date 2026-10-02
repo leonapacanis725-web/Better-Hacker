@@ -14,8 +14,8 @@ document.addEventListener("DOMContentLoaded", function () {
   ]);
 
   const EXTENSION_LESSONS = Object.freeze([
-    { id: "computer-tools", key: "betterHackerComputerToolsLessonComplete", target: "#computer-tools-lesson", name: "Computer Fundamentals & Security Tools", answer: "observe", hint: "Start by observing rather than changing the system.", lookFor: "the process identity, parent, user, time, and connections" },
-    { id: "incident-response", key: "betterHackerIncidentResponseLessonComplete", target: "#incident-response-lesson", name: "Incident Response", answer: "approved-containment", hint: "Use the authorized plan to limit harm while preserving evidence.", lookFor: "validation, evidence preservation, and proportionate containment" }
+    { id: "computer-tools", key: "betterHackerComputerToolsLessonComplete", target: "#computer-tools-lesson", name: "Computer Fundamentals & Security Tools", answer: "observe", next: "#labs", hint: "Start by observing rather than changing the system.", lookFor: "the process identity, parent, user, time, and connections" },
+    { id: "incident-response", key: "betterHackerIncidentResponseLessonComplete", target: "#incident-response-lesson", name: "Incident Response", answer: "approved-containment", next: "#soc-siem-lesson", hint: "Use the authorized plan to limit harm while preserving evidence.", lookFor: "validation, evidence preservation, and proportionate containment" }
   ]);
 
   const INVESTIGATIONS = Object.freeze([
@@ -2806,7 +2806,7 @@ document.querySelectorAll(".extension-check").forEach(function (form) {
       return;
     }
     feedback.className = "extension-feedback feedback-success";
-    feedback.textContent = result.newlyCompleted ? "Correct — lesson complete. Your supplemental progress has been saved." : "Correct. You already completed this lesson; review does not award duplicate completion or XP.";
+    feedback.textContent = result.newlyCompleted ? "Correct — lesson complete. Your supplemental progress has been saved." : "Correct. You already completed this lesson, so reviewing it does not award duplicate completion or XP.";
     companion.setContext({ type: "lesson", activityId: extensionLesson.id, topic: extensionLesson.name, hint: extensionLesson.hint, lookFor: extensionLesson.lookFor, submitted: true, explanation: feedback.textContent });
     renderExtensionLessonProgress();
     renderDashboard();

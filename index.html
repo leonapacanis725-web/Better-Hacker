@@ -162,10 +162,18 @@
     <aside class="extension-learning" aria-labelledby="extension-learning-title">
       <p class="section-label">EXPLORE NEXT</p>
       <h3 id="extension-learning-title">Supplemental Lessons</h3>
-      <p>These optional lessons expand roadmap topics without changing the established 8/8 Core Lessons counter.</p>
+      <p>These lessons complete topics named elsewhere in the roadmap. They are tracked separately, so the established 8/8 Core Lessons counter remains unchanged.</p>
       <div class="cards">
-        <a href="#computer-tools-lesson" class="card extension-lesson-card" data-extension-id="computer-tools"><h3>Computer Fundamentals &amp; Security Tools</h3><p>Understand operating systems, processes, files, logs, and safe defensive observation tools.</p><span class="lesson-link">Start supplemental lesson →</span></a>
-        <a href="#incident-response-lesson" class="card extension-lesson-card" data-extension-id="incident-response"><h3>Incident Response</h3><p>Learn the incident lifecycle and choose a calm, evidence-preserving first response.</p><span class="lesson-link">Start supplemental lesson →</span></a>
+        <a href="#computer-tools-lesson" class="card extension-lesson-card" data-extension-id="computer-tools">
+          <h3>Computer Fundamentals &amp; Security Tools</h3>
+          <p>Understand operating systems, processes, files, logs, and the safe tools defenders use to observe them.</p>
+          <span class="lesson-link">Start supplemental lesson →</span>
+        </a>
+        <a href="#incident-response-lesson" class="card extension-lesson-card" data-extension-id="incident-response">
+          <h3>Incident Response</h3>
+          <p>Learn the incident lifecycle and practise choosing a calm, evidence-preserving first response.</p>
+          <span class="lesson-link">Start supplemental lesson →</span>
+        </a>
       </div>
     </aside>
 
@@ -1593,17 +1601,21 @@
 </section>
   <section id="computer-tools-lesson" class="section extension-lesson" aria-labelledby="computer-tools-title">
     <p class="section-label">SUPPLEMENTAL LESSON</p><h2 id="computer-tools-title" tabindex="-1">Computer Fundamentals &amp; Security Tools</h2>
-    <p class="section-intro">Defenders learn what normal computer activity looks like before deciding that an event is suspicious.</p>
+    <p class="section-intro">A computer is a collection of hardware managed by an operating system. Defenders learn what “normal” looks like before deciding that an event is suspicious.</p>
     <div class="lesson-container">
-      <div class="lesson-block"><h3>Learning objectives</h3><ul><li>Distinguish hardware, operating systems, applications, and processes.</li><li>Explain why files, connections, and logs are useful evidence.</li><li>Select safe, read-only tools for initial observation.</li></ul></div>
-      <div class="lesson-block"><h3>Why this matters in cybersecurity</h3><p>Alerts refer to processes, accounts, files, and connections. Understanding those building blocks helps you verify an alert without changing evidence.</p></div>
-      <div class="lesson-block"><h3>Important terminology</h3><dl><dt>Operating system</dt><dd>Software that manages hardware and applications.</dd><dt>Process</dt><dd>A running instance of a program.</dd><dt>Log</dt><dd>A time-ordered record of events.</dd><dt>Telemetry</dt><dd>Measurements collected for monitoring and analysis.</dd></dl></div>
-      <div class="lesson-block"><h3>From components to evidence</h3><p>Hardware provides CPU, memory, storage, and interfaces. The OS schedules processes and enforces permissions. Defenders correlate process name, path, parent, user, time, and network activity instead of trusting one clue.</p><h3>Safe first-look tools</h3><p>On an authorized training system, read-only commands such as <code>ps</code>, <code>whoami</code>, and <code>ss -tuln</code> help observe state. Do not terminate processes or delete files during initial triage.</p><pre aria-label="Simulated process output">SIMULATED OUTPUT
+      <div class="lesson-block"><h3>Learning objectives</h3><ul><li>Distinguish hardware, operating systems, applications, and processes.</li><li>Explain why files, processes, network connections, and logs are useful evidence.</li><li>Select safe, read-only tools for initial observation.</li></ul></div>
+      <div class="lesson-block"><h3>Why this matters in cybersecurity</h3><p>Alerts refer to processes, accounts, files, and connections. Understanding those building blocks helps you verify an alert without changing evidence or interrupting a healthy system.</p></div>
+      <div class="lesson-block"><h3>Important terminology</h3><dl><dt>Operating system (OS)</dt><dd>Software that manages hardware and provides services to applications.</dd><dt>Process</dt><dd>A running instance of a program, identified by a process ID (PID).</dd><dt>Log</dt><dd>A time-ordered record of events.</dd><dt>Telemetry</dt><dd>Measurements collected from systems for monitoring and analysis.</dd></dl></div>
+      <div class="lesson-block"><h3>From components to evidence</h3><p>Hardware provides CPU, memory, storage, and network interfaces. The OS schedules processes and enforces permissions. Applications use those OS services. A defender correlates evidence across these layers instead of trusting one clue.</p><p><strong>Example:</strong> a simulated alert names PID 2410. The PID identifies a running process, while its executable path, parent process, user, and network activity provide context.</p></div>
+      <div class="lesson-block"><h3>Safe first-look tools</h3><p>In an authorized training system, read-only commands such as <code>ps</code> (processes), <code>whoami</code> (current identity), and <code>ss -tuln</code> (listening network sockets) can help you observe state. Do not terminate processes, delete files, or change permissions during initial triage.</p><pre aria-label="Simulated process output">SIMULATED OUTPUT
 PID   USER      COMMAND
 2410  learner   browser</pre></div>
-      <div class="lesson-block"><h3>Try It — safe analysis</h3><p>A simulated alert only says “PID 2410 is suspicious.” Identify two context fields you would collect before deciding, such as its path, parent, user, start time, or connections.</p></div>
-      <form class="lesson-block knowledge-check extension-check" data-extension-id="computer-tools"><fieldset><legend><strong>Knowledge check:</strong> What is the safest first response to an unfamiliar process?</legend><label><input type="radio" name="computer-tools-answer" value="stop"> Stop and delete it immediately</label><label><input type="radio" name="computer-tools-answer" value="observe"> Record details and correlate read-only evidence</label><label><input type="radio" name="computer-tools-answer" value="ignore"> Ignore every unfamiliar process</label></fieldset><button type="submit" class="primary-button">Check answer</button><p class="extension-feedback" role="status" aria-live="polite"></p></form>
-      <div class="lesson-block"><h3>Lesson recap</h3><p>Processes are running programs; logs and telemetry preserve context; careful observation comes before disruptive action.</p><p><strong>Recommended next activity:</strong> <a href="#labs">Linux File Detective</a>.</p></div>
+      <div class="lesson-block"><h3>Try It: analyze the clue</h3><p>A simulated alert only says “PID 2410 is suspicious.” Name two pieces of context you would collect before deciding. Suggested evidence includes the process name/path, parent process, user, start time, or network connections.</p></div>
+      <form class="lesson-block knowledge-check extension-check" data-extension-id="computer-tools">
+        <fieldset><legend><strong>Knowledge check:</strong> What is the safest first response to an unfamiliar process in an authorized environment?</legend><label><input type="radio" name="computer-tools-answer" value="stop"> Immediately stop and delete it</label><label><input type="radio" name="computer-tools-answer" value="observe"> Record its details and correlate read-only evidence</label><label><input type="radio" name="computer-tools-answer" value="ignore"> Ignore every unfamiliar process</label></fieldset>
+        <button type="submit" class="primary-button">Check answer</button><p class="extension-feedback" role="status" aria-live="polite"></p>
+      </form>
+      <div class="lesson-block"><h3>Recap</h3><p>Systems contain layered components; processes are running programs; logs and telemetry preserve context; careful observation comes before disruptive action.</p><p><strong>Recommended next activity:</strong> <a href="#labs">Linux File Detective</a> to practise safe, read-only inspection.</p></div>
     </div>
   </section>
 
@@ -1611,13 +1623,17 @@ PID   USER      COMMAND
     <p class="section-label">SUPPLEMENTAL LESSON</p><h2 id="incident-response-title" tabindex="-1">Incident Response</h2>
     <p class="section-intro">Incident response is a coordinated process for preparing, detecting, containing, removing, and learning from security incidents.</p>
     <div class="lesson-container">
-      <div class="lesson-block"><h3>Learning objectives</h3><ul><li>Describe the incident-response lifecycle.</li><li>Separate validation, containment, eradication, and recovery.</li><li>Choose a safe, evidence-preserving response.</li></ul></div>
-      <div class="lesson-block"><h3>Why this matters in cybersecurity</h3><p>Rushed changes can destroy evidence or increase downtime. A shared process helps teams limit harm and document decisions.</p></div>
-      <div class="lesson-block"><h3>Important terminology</h3><dl><dt>Incident</dt><dd>A security event requiring response.</dd><dt>Containment</dt><dd>Limiting spread or impact.</dd><dt>Eradication</dt><dd>Removing the confirmed cause after evidence collection.</dd><dt>Recovery</dt><dd>Safely restoring and monitoring service.</dd></dl></div>
-      <div class="lesson-block"><h3>The response lifecycle</h3><ol><li>Prepare roles, contacts, tools, and playbooks.</li><li>Detect, validate, scope, and prioritize.</li><li>Contain through an approved control.</li><li>Eradicate, recover, and monitor.</li><li>Document lessons and improve controls.</li></ol><h3>Practical example</h3><p><strong>Simulation:</strong> monitoring confirms one workstation contacts known malicious infrastructure. The responder records time and asset details, escalates through the playbook, and uses approved isolation. They do not wipe the device or publish unverified claims.</p></div>
-      <div class="lesson-block"><h3>Try It — safe analysis</h3><p>Order these actions: restore a clean service, validate an alert, isolate through an approved control. The safe order is validate, contain, then recover.</p></div>
-      <form class="lesson-block knowledge-check extension-check" data-extension-id="incident-response"><fieldset><legend><strong>Knowledge check:</strong> What is the best next step for a confirmed affected workstation?</legend><label><input type="radio" name="incident-response-answer" value="approved-containment"> Preserve details and contain it through the approved incident plan</label><label><input type="radio" name="incident-response-answer" value="wipe"> Wipe every system immediately</label><label><input type="radio" name="incident-response-answer" value="announce"> Publicly announce an unverified breach</label></fieldset><button type="submit" class="primary-button">Check answer</button><p class="extension-feedback" role="status" aria-live="polite"></p></form>
-      <div class="lesson-block"><h3>Lesson recap</h3><p>Responders validate, scope, contain, eradicate, recover, and learn while preserving evidence and following authorization.</p><p><strong>Recommended next activity:</strong> <a href="#soc-siem-lesson">SOC Alert Investigation</a>.</p></div>
+      <div class="lesson-block"><h3>Learning objectives</h3><ul><li>Describe the incident-response lifecycle.</li><li>Separate validation, containment, eradication, and recovery.</li><li>Choose a safe response that preserves evidence and follows authorization.</li></ul></div>
+      <div class="lesson-block"><h3>Why this matters in cybersecurity</h3><p>Rushed changes can destroy evidence or increase downtime. A shared process helps teams limit harm, communicate clearly, and document decisions.</p></div>
+      <div class="lesson-block"><h3>Important terminology</h3><dl><dt>Incident</dt><dd>A security event that threatens confidentiality, integrity, or availability and requires response.</dd><dt>Containment</dt><dd>Limiting spread or impact while preserving the ability to investigate.</dd><dt>Eradication</dt><dd>Removing the confirmed cause after evidence is collected.</dd><dt>Recovery</dt><dd>Safely restoring service and monitoring for recurrence.</dd></dl></div>
+      <div class="lesson-block"><h3>The response lifecycle</h3><ol><li><strong>Prepare:</strong> define roles, contacts, tools, backups, and playbooks.</li><li><strong>Detect and analyze:</strong> validate evidence, scope affected assets, and assign severity.</li><li><strong>Contain:</strong> use an approved, proportionate action to limit harm.</li><li><strong>Eradicate and recover:</strong> remove the cause, restore safely, and monitor.</li><li><strong>Learn:</strong> document lessons and improve controls without blame.</li></ol></div>
+      <div class="lesson-block"><h3>Practical example</h3><p><strong>Simulation:</strong> monitoring confirms one workstation is contacting known malicious infrastructure. The responder records time and asset details, escalates through the playbook, and uses the approved isolation control. They do not wipe the device or publish unverified claims.</p><p>A safe investigation command on an authorized Linux host might be <code>date -u</code> to record a consistent UTC timestamp; commands alone do not replace the response plan.</p></div>
+      <div class="lesson-block"><h3>Try It: order the response</h3><p>Place these ideas mentally in order: restore a clean service, validate an alert, isolate through an approved control. The safe order is validate, contain, then recover.</p></div>
+      <form class="lesson-block knowledge-check extension-check" data-extension-id="incident-response">
+        <fieldset><legend><strong>Knowledge check:</strong> A confirmed workstation is communicating with malicious infrastructure. What is the best next step?</legend><label><input type="radio" name="incident-response-answer" value="approved-containment"> Preserve key details and contain it through the approved incident plan</label><label><input type="radio" name="incident-response-answer" value="wipe"> Wipe every system immediately</label><label><input type="radio" name="incident-response-answer" value="announce"> Publicly announce an unverified organization-wide breach</label></fieldset>
+        <button type="submit" class="primary-button">Check answer</button><p class="extension-feedback" role="status" aria-live="polite"></p>
+      </form>
+      <div class="lesson-block"><h3>Recap</h3><p>Responders validate, scope, contain, eradicate, recover, and learn. Evidence preservation, authorization, documentation, and proportionate action support every phase.</p><p><strong>Recommended next activity:</strong> <a href="#soc-siem-lesson">SOC Alert Investigation</a> to apply the process to simulated evidence.</p></div>
     </div>
   </section>
 
@@ -1635,37 +1651,37 @@ PID   USER      COMMAND
 
     <div class="cards">
 
-      <div class="card">
+      <a class="card topic-link-card" href="#fundamentals-lesson">
         <h3>Level 1 — Beginner</h3>
         <p>
           Start with computer fundamentals, networking, Linux,
           cybersecurity concepts, and basic security tools.
         </p>
-      </div>
+      <span class="lesson-link">Open learning experience →</span></a>
 
-      <div class="card">
+      <a class="card topic-link-card" href="#web-security-lesson">
         <h3>Level 2 — Builder</h3>
         <p>
           Practice web security, cryptography, Windows security,
           Active Directory, and hands-on labs.
         </p>
-      </div>
+      <span class="lesson-link">Open learning experience →</span></a>
 
-      <div class="card">
+      <a class="card topic-link-card" href="#incident-response-lesson">
         <h3>Level 3 — Defender</h3>
         <p>
           Learn SOC operations, SIEM tools, log analysis,
           threat detection, and incident response.
         </p>
-      </div>
+      <span class="lesson-link">Open learning experience →</span></a>
 
-      <div class="card">
+      <a class="card topic-link-card" href="#security-testing-lesson">
         <h3>Level 4 — Security Tester</h3>
         <p>
           Develop ethical hacking skills through authorized labs,
           vulnerability testing, reconnaissance, and security assessments.
         </p>
-      </div>
+      <span class="lesson-link">Open learning experience →</span></a>
 
     </div>
 
@@ -1686,53 +1702,53 @@ PID   USER      COMMAND
 
   <div class="cards">
 
-    <div class="card">
+    <a class="card topic-link-card" href="#linux-lesson">
       <h3>🖥️ Linux & Command Line</h3>
       <p>
         Work with files, directories, commands, searches,
         and common Linux tools used in cybersecurity.
       </p>
-    </div>
+    <span class="lesson-link">Open related learning →</span></a>
 
-    <div class="card">
+    <a class="card topic-link-card" href="#networking-lesson">
       <h3>🌐 Network Analysis</h3>
       <p>
         Understand ports, protocols, IP addresses,
         network traffic, and suspicious connections.
       </p>
-    </div>
+    <span class="lesson-link">Open related learning →</span></a>
 
-    <div class="card">
+    <a class="card topic-link-card" href="#soc-siem-lesson">
       <h3>🛡️ SOC Investigation</h3>
       <p>
         Review alerts, examine login activity,
         analyze security events, and identify suspicious behavior.
       </p>
-    </div>
+    <span class="lesson-link">Open related learning →</span></a>
 
-    <div class="card">
+    <a class="card topic-link-card" href="#soc-siem-lesson">
       <h3>📧 Phishing Analysis</h3>
       <p>
         Identify suspicious senders, links, attachments,
         urgency tactics, and other phishing indicators.
       </p>
-    </div>
+    <span class="lesson-link">Open related learning →</span></a>
 
-    <div class="card">
+    <a class="card topic-link-card" href="#web-security-lesson">
       <h3>🔐 Web Security</h3>
       <p>
         Recognize common web vulnerabilities including
         SQL injection, insecure input handling, and access-control issues.
       </p>
-    </div>
+    <span class="lesson-link">Open related learning →</span></a>
 
-    <div class="card">
+    <a class="card topic-link-card" href="#active-directory-lesson">
       <h3>🪟 Windows & Active Directory</h3>
       <p>
         Understand users, groups, permissions,
         authentication, and suspicious account activity.
       </p>
-    </div>
+    <span class="lesson-link">Open related learning →</span></a>
 
   </div>
 

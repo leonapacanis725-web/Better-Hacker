@@ -455,6 +455,7 @@ test('supplemental lessons persist once without altering 8/8 Core progress or XP
   const { context, localStorage } = boot();
   assert.equal(context.__app.EXTENSION_LESSONS.length, 2);
   assert.deepEqual(JSON.parse(JSON.stringify(context.__app.completeExtensionLesson('computer-tools', 'stop'))), { correct:false, newlyCompleted:false });
+  assert.equal(context.__app.countCompletedExtensionLessons(), 0);
   assert.deepEqual(JSON.parse(JSON.stringify(context.__app.completeExtensionLesson('computer-tools', 'observe'))), { correct:true, newlyCompleted:true });
   assert.deepEqual(JSON.parse(JSON.stringify(context.__app.completeExtensionLesson('computer-tools', 'observe'))), { correct:true, newlyCompleted:false });
   assert.equal(localStorage.getItem('betterHackerComputerToolsLessonComplete'), 'true');
@@ -476,6 +477,10 @@ test('completed Core Path recommends unfinished supplemental learning then Daily
   assert.equal(state.coreComplete, true);
   assert.equal(state.lessonsCompleted, 8);
   assert.equal(state.recommendation.type, 'Supplemental Lesson');
+  assert.equal(state.recommendation.name, 'Computer Fundamentals & Security Tools');
+  localStorage.setItem('betterHackerComputerToolsLessonComplete', 'true');
+  state = context.__app.getDashboardState();
+  assert.equal(state.recommendation.name, 'Incident Response');
   context.__app.EXTENSION_LESSONS.forEach(item => localStorage.setItem(item.key, 'true'));
   state = context.__app.getDashboardState();
   assert.equal(state.recommendation.name, 'Daily Cyber Challenge');
