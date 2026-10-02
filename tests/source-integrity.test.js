@@ -95,7 +95,30 @@ test('footer copy meets WCAG AA contrast against its background', () => {
 });
 
 
-test('audited supplemental topics are complete, clickable, accessible lessons', () => {
+test('every core lesson exposes a connected, accessible learning sequence', () => {
+  const lessonIds = ['fundamentals','networking','linux','web-security','cryptography','active-directory','soc-siem','security-testing'];
+  for (const id of lessonIds) {
+    const start = html.indexOf(`<section id="${id}-lesson"`);
+    assert.ok(start >= 0, `missing ${id}`);
+    const end = html.indexOf('</section>', start);
+    const lesson = html.slice(start, end);
+    for (const part of ['Prerequisites:', 'Learning objectives', 'Why this matters in cybersecurity', 'Try It — safe analysis', 'Knowledge Check', 'Lesson recap', 'Recommended next activity:', 'View your Learner Dashboard']) {
+      assert.ok(lesson.includes(part), `${id} missing ${part}`);
+    }
+    assert.match(lesson, /role="status" aria-live="polite"/);
+  }
+  assert.equal((html.match(/type="button"\s+class="primary-button"/g) || []).length >= 8, true);
+});
+
+test('investigations expose idempotent completion, evidence guidance, and Start or Review navigation', () => {
+  assert.match(script, /function completeInvestigation\(key\)/);
+  assert.match(script, /Evidence analysis:/);
+  assert.match(script, /complete \? 'Review' : 'Start'/);
+  assert.match(script, /review without duplicate XP/);
+});
+
+
+test('supplemental lessons remain complete, clickable, and dashboard-integrated', () => {
   for (const id of ['computer-tools', 'incident-response']) {
     assert.match(html, new RegExp('class="card extension-lesson-card" data-extension-id="' + id + '"'));
     assert.match(html, new RegExp('class="lesson-block knowledge-check extension-check" data-extension-id="' + id + '"'));
@@ -104,9 +127,12 @@ test('audited supplemental topics are complete, clickable, accessible lessons', 
     assert.ok(html.includes(heading), `missing supplemental lesson element: ${heading}`);
   }
   assert.match(html, /id="dashboard-extension-lessons"/);
+  assert.match(script, /const EXTENSION_LESSONS = Object\.freeze/);
   assert.match(script, /betterHackerComputerToolsLessonComplete/);
   assert.match(script, /betterHackerIncidentResponseLessonComplete/);
+  assert.match(script, /extensionLessonsCompleted/);
+  assert.match(script, /const extensionLesson = EXTENSION_LESSONS\.find/);
   assert.match(script, /reviewing it does not award duplicate completion/);
-  assert.equal((html.match(/id="dashboard"/g) || []).length, 1);
   assert.equal((html.match(/class="card topic-link-card"/g) || []).length, 10);
+  assert.equal((script.match(/const lesson = LESSON_PROGRESS\.find/g) || []).length, 1);
 });
