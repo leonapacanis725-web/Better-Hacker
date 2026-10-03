@@ -18,6 +18,19 @@ document.addEventListener("DOMContentLoaded", function () {
     { id: "incident-response", key: "betterHackerIncidentResponseLessonComplete", target: "#incident-response-lesson", name: "Incident Response", answer: "approved-containment", next: "#soc-siem-lesson", hint: "Use the authorized plan to limit harm while preserving evidence.", lookFor: "validation, evidence preservation, and proportionate containment" }
   ]);
 
+  const ASSISTANT_PROGRESS_KEY = "betterHackerLearningAssistantTopics";
+  const ASSISTANT_TOPICS = Object.freeze([
+    { id:"fundamentals", icon:"🛡️", name:"Fundamentals", explanation:"Cybersecurity protects information and systems from harm. Professionals use shared principles to decide what matters, what could go wrong, and which safeguards reduce risk.", terms:[["Asset","Something valuable, such as data or a service."],["Threat","Something capable of causing harm."],["Vulnerability","A weakness a threat could use."],["Risk","The likelihood and impact of possible harm."]], concepts:["The CIA triad covers confidentiality, integrity, and availability.","Authentication proves identity; authorization controls permitted actions.","Least privilege limits access, while defense in depth uses multiple safeguards."], tools:"Example: multi-factor authentication, permissions, backups, monitoring, and incident plans are defensive controls—not guarantees on their own.", scenario:"A teammate needs one report but requests administrator access. Which detail matters most? The task requires one report, so broad privileges add avoidable risk.", question:"Which principle grants only the access needed for a task?", options:["Least privilege","Availability","Encoding"], correct:0, hint:"Compare the access requested with the access actually required.", feedback:"Least privilege reduces unnecessary access and limits the effect of mistakes or account compromise.", nextTopic:"networking", nextHref:"#fundamentals-lesson", nextLabel:"Review the Fundamentals lesson" },
+    { id:"networking", icon:"🌐", name:"Networking", explanation:"Networking is how devices exchange information. Defenders use network context to identify expected services, troubleshoot failures, and investigate unusual connections.", terms:[["IP address","A network address for a device or interface."],["Port","A numbered endpoint commonly associated with a service."],["DNS","The system that resolves names to addresses."],["Route","A path used to reach another network."]], concepts:["Protocols define communication rules; TCP emphasizes reliable delivery and UDP has less overhead.","A port is a useful clue, but it does not prove which application is running.","Source, destination, protocol, port, time, and volume give traffic context."], tools:"Safe local inspection examples include `ip addr` for interfaces, `ip route` for routes, `ss -tuln` for listening sockets, `ping` for basic reachability, and DNS lookups for name resolution. Use them only on systems and networks you are authorized to inspect.", scenario:"A training site opens by IP address but not by name. Address reachability works, so name resolution is the first area to examine.", question:"Which service translates a host name into an IP address?", options:["DNS","SSH","HTTPS"], correct:0, hint:"Think about the service that acts like a directory for names and addresses.", feedback:"DNS resolves names to addresses. A working IP connection with a failing name is a strong reason to inspect DNS configuration and results.", nextTopic:"linux", nextHref:"#networking-lesson", nextLabel:"Review the Networking lesson" },
+    { id:"linux", icon:"🐧", name:"Linux", explanation:"Linux is an operating system widely used for servers, cloud workloads, and security tools. Defenders use its command line to inspect files, identities, permissions, processes, and logs.", terms:[["Directory","A container for files and other directories."],["Permission","A rule controlling read, write, or execute access."],["Process","A running instance of a program."],["User/group","Identities used to assign ownership and access."]], concepts:["Confirm your current location before acting.","Read-only inspection helps preserve evidence.","Ownership and permissions explain who can access a resource."], tools:"Useful safe commands include `pwd`, `ls -l`, `cd`, `cat`, `grep`, and `find`. Process and identity context can be viewed with tools such as `ps` and `whoami`. Avoid changing or deleting evidence during initial review.", scenario:"A simulated listing contains `-rw-r--r-- notes.txt`. The leading dash indicates a regular file, and the permissions show who may read or write it.", question:"Which command displays a short text file without editing it?", options:["cat notes.txt","rm notes.txt","chmod 777 notes.txt"], correct:0, hint:"Choose the command used to print file contents, not remove or change the file.", feedback:"`cat notes.txt` displays the file. The other choices destroy evidence or unnecessarily broaden permissions.", nextTopic:"web", nextHref:"#linux-lesson", nextLabel:"Review the Linux lesson" },
+    { id:"web", icon:"🌎", name:"Web Security", explanation:"Web security protects browsers, servers, applications, identities, and data. Professionals examine how requests are processed and whether users can access only authorized actions and records.", terms:[["Request","A browser or client message sent to a server."],["Response","The server result, including a status code and content."],["Session","Server-recognized state that keeps a user signed in."],["Input validation","Checking whether supplied data meets expected rules."]], concepts:["GET commonly retrieves data and POST commonly submits data.","Status codes describe outcomes, such as 200 success, 404 not found, and 500 server error.","Parameterized queries, contextual output encoding, secure authentication, and server-side access control address different risks."], tools:"Browser developer tools can safely show requests and responses for your own application. Never test another application without explicit authorization. Common vulnerability categories include injection, cross-site scripting, and broken access control.", scenario:"A code review shows a user value joined directly into a SQL string. The important clue is that untrusted data can become query instructions.", question:"Which defensive pattern keeps SQL instructions separate from user values?", options:["Parameterized queries","A longer URL","A hidden button"], correct:0, hint:"Look for the option that changes how the database receives data.", feedback:"Parameterized queries send the query structure and values separately, reducing SQL injection risk.", nextTopic:"crypto", nextHref:"#web-security-lesson", nextLabel:"Review the Web Security lesson" },
+    { id:"crypto", icon:"🔐", name:"Cryptography", explanation:"Cryptography protects confidentiality, integrity, and authenticity. Professionals choose a mechanism based on the security goal rather than treating every transformation as encryption.", terms:[["Encryption","Reversible protection using authorized key material."],["Hashing","A one-way digest used for integrity and verification."],["Encoding","A representation change for compatibility, not secrecy."],["Certificate","A signed binding between identity information and a public key."]], concepts:["Symmetric encryption uses a shared secret; asymmetric systems use related public and private keys.","Digital signatures support integrity, origin authentication, and non-repudiation concepts.","Keys require careful generation, storage, rotation, and revocation."], tools:"A safe example is comparing a downloaded file's hash with a trusted publisher's value. A matching hash supports integrity, but the source of the expected hash must also be trusted.", scenario:"A backup must remain unreadable to unauthorized people but recoverable by an approved recipient with a key.", question:"Which mechanism best protects that backup while allowing authorized recovery?", options:["Encryption","Encoding","Hashing alone"], correct:0, hint:"Choose the reversible mechanism that uses authorized key material.", feedback:"Encryption provides confidentiality and authorized recovery. Encoding provides no secrecy, while hashing is designed to be one-way.", nextTopic:"ad", nextHref:"#cryptography-lesson", nextLabel:"Review the Cryptography lesson" },
+    { id:"ad", icon:"🪟", name:"Active Directory", explanation:"Active Directory centrally manages identities and Windows resources. Defenders review accounts, group membership, computers, sign-ins, and privilege changes to protect organizational access.", terms:[["Domain","A managed collection of directory resources."],["Domain controller","A server providing directory and authentication services."],["Group","A collection used to assign permissions efficiently."],["Computer account","The directory identity of a joined computer."]], concepts:["Users authenticate, then permissions determine access.","Group membership can grant access across many systems.","Privileged changes and unusual sign-ins need validation and related evidence."], tools:"Defensive administration uses approved consoles, directory audit logs, and identity reports. Apply least privilege and follow change-control procedures rather than experimenting in a production domain.", scenario:"An employee changes departments. Their group memberships and the resources granted by those groups should be reviewed so obsolete access can be removed safely.", question:"Which object is commonly used to assign the same permissions to several users?", options:["Group","Certificate","Network port"], correct:0, hint:"Administrators collect identities together to manage access consistently.", feedback:"Groups let administrators assign permissions to multiple users and make access reviews more manageable.", nextTopic:"soc", nextHref:"#active-directory-lesson", nextLabel:"Review the Active Directory lesson" },
+    { id:"soc", icon:"🛡️", name:"SOC / SIEM", explanation:"A Security Operations Center monitors and responds to suspicious activity. A SIEM centralizes logs and events so analysts can correlate evidence, triage alerts, and escalate confirmed risk.", terms:[["Event","A recorded action or observation."],["Alert","A rule or analytic indicating activity worth review."],["Triage","Initial validation and prioritization."],["False positive","An alert that investigation shows is not harmful."]], concepts:["An alert is not automatically an incident.","Analysts correlate who, what, where, when, and outcome across sources.","Escalation communicates verified evidence and urgency through an approved process."], tools:"SIEM searches, endpoint telemetry, authentication logs, firewall events, and case notes support investigation. Preserve original evidence and document timestamps and decisions.", scenario:"Fourteen failed logins are followed by a success from an unknown device at 2:14 AM. The sequence, device, user, time, and related authentication evidence matter together.", question:"What should an analyst do first with a suspicious but unconfirmed alert?", options:["Validate it with related evidence","Delete the logs","Publicly accuse the user"], correct:0, hint:"An alert needs context before a conclusion or disruptive response.", feedback:"Triage starts by validating and correlating evidence. Logs should be preserved, and conclusions should follow the evidence.", nextTopic:"testing", nextHref:"#soc-siem-lesson", nextLabel:"Review the SOC & SIEM lesson" },
+    { id:"testing", icon:"🔎", name:"Security Testing", explanation:"Security testing identifies and documents weaknesses so owners can reduce risk. Ethical work begins with explicit authorization and a scope defining systems, techniques, timing, and reporting.", terms:[["Reconnaissance","Gathering permitted context about the target."],["Enumeration","Systematically identifying exposed resources or services."],["Vulnerability","A weakness that could create risk."],["Validation","Safely confirming whether a finding is genuine and relevant."]], concepts:["Authorization and scope come before technical activity.","A scanner result is a lead, not proof; findings require safe validation.","Useful reports explain evidence, impact, likelihood, and remediation."], tools:"Use only approved tools in a lab or written scope. Prefer low-impact checks, preserve evidence, stop when scope or safety is unclear, and never test credentials or exploit real systems without explicit permission.", scenario:"A scope allows inventory of training host 192.0.2.10 from 09:00–10:00 UTC. Another host and intrusive validation are outside that scope.", question:"What is required before testing a system?", options:["Explicit authorization and scope","A quiet time of day","A public IP address"], correct:0, hint:"Technical caution cannot replace permission from the system owner.", feedback:"Written authorization and a clear scope establish what may be tested, when, and how results must be handled.", nextTopic:"labs", nextHref:"#security-testing-lesson", nextLabel:"Review the Security Testing lesson" },
+    { id:"labs", icon:"🧪", name:"Labs", explanation:"Better Hacker labs are safe, static exercises for applying concepts. Approach each one as a small investigation rather than guessing quickly.", terms:[["Objective","The skill or decision the activity practices."],["Evidence","The simulated facts available for analysis."],["Decision","Your conclusion or safest next action."],["Review","The explanation that connects evidence to the answer."]], concepts:["Use the sequence Objective → Evidence → Investigation → Hint → Decision → Review.","Separate relevant clues from distractions and state what supports your conclusion.","A hint should narrow your reasoning; the review explains after an attempt."], tools:"The existing labs cover Linux file inspection, network service triage, cryptography choices, and defensive database queries. They use simulated evidence and do not connect to live targets.", scenario:"Before answering a lab, restate its objective, identify the strongest clue, note one possible distraction, and choose the least risky authorized decision.", question:"When evidence is unclear, what is the best next step?", options:["Review the objective and request a hint","Run destructive commands","Guess repeatedly without reading"], correct:0, hint:"Use the learning support that narrows the evidence without changing a system.", feedback:"Return to the objective and use the authored hint. This preserves a thoughtful evidence-to-decision workflow.", nextTopic:"fundamentals", nextHref:"#labs", nextLabel:"Open the guided labs" }
+  ]);
+
   const INVESTIGATIONS = Object.freeze([
     { key: "betterHackerSocInvestigationComplete", name: "SOC Alert Investigation", selector: ".soc-investigation-lab", anchor: "investigation-soc", hint: "Compare the failed attempts, successful login, time, and device before choosing a response." },
     { key: "betterHackerNetworkInvestigationComplete", name: "Network Traffic Investigation", selector: ".network-investigation-lab", anchor: "investigation-network", hint: "Look for an unusual service and a connection count that differs sharply from normal traffic." },
@@ -247,222 +260,134 @@ document.addEventListener("DOMContentLoaded", function () {
    BETTER HACKER LEARNING ASSISTANT
 ========================= */
 
-const coachSection =
-  document.querySelector("#coach");
+function readAssistantProgress() {
+  try {
+    const value = JSON.parse(localStorage.getItem(ASSISTANT_PROGRESS_KEY));
+    if (!value || value.version !== 1 || !Array.isArray(value.completed)) return [];
+    const validIds = new Set(ASSISTANT_TOPICS.map(function (topic) { return topic.id; }));
+    if (value.completed.some(function (id) { return typeof id !== "string" || !validIds.has(id); })) return [];
+    return Array.from(new Set(value.completed));
+  } catch (error) {
+    return [];
+  }
+}
 
+function completeAssistantTopic(id, answer) {
+  const topic = ASSISTANT_TOPICS.find(function (item) { return item.id === id; });
+  if (!topic || Number(answer) !== topic.correct) return false;
+  const completed = readAssistantProgress();
+  if (completed.includes(id)) return false;
+  completed.push(id);
+  localStorage.setItem(ASSISTANT_PROGRESS_KEY, JSON.stringify({ version: 1, completed: completed }));
+  return true;
+}
+
+const coachSection = document.querySelector("#coach");
 if (coachSection) {
-
-  const coachBox =
-    coachSection.querySelector(".coach-box");
-
+  const coachBox = coachSection.querySelector(".coach-box");
   if (coachBox) {
-
-    const coachInterface =
-      document.createElement("div");
-
-    coachInterface.className =
-      "coach-interface";
-
-    coachInterface.innerHTML = `
-
-      <div class="coach-header">
-        <span class="coach-status"></span>
-        <strong>Better Hacker Learning Assistant</strong>
-        <span class="coach-online">Ready to help</span>
-      </div>
-
-      <p class="coach-question">
-        What would you like help with?
-      </p>
-
-      <div class="coach-topics">
-
-        <button class="coach-topic" data-topic="fundamentals">
-          🛡️ Fundamentals
-        </button>
-
-        <button class="coach-topic" data-topic="networking">
-          🌐 Networking
-        </button>
-
-        <button class="coach-topic" data-topic="linux">
-          🐧 Linux
-        </button>
-
-        <button class="coach-topic" data-topic="web">
-          🌎 Web Security
-        </button>
-
-        <button class="coach-topic" data-topic="crypto">
-          🔐 Cryptography
-        </button>
-
-        <button class="coach-topic" data-topic="ad">
-          🪟 Active Directory
-        </button>
-
-        <button class="coach-topic" data-topic="soc">
-          🛡️ SOC / SIEM
-        </button>
-
-        <button class="coach-topic" data-topic="testing">
-          🔎 Security Testing
-        </button>
-
-        <button class="coach-topic" data-topic="labs">
-          🧪 Labs
-        </button>
-
-      </div>
-
-      <div id="coach-response" class="coach-response" role="status" aria-live="polite">
-
-        <p>
-          Select a topic for a beginner-friendly authored
-          explanation and a suggested next step.
-        </p>
-
-      </div>
-
-    `;
-
+    const coachInterface = document.createElement("div");
+    coachInterface.className = "coach-interface";
+    coachInterface.innerHTML = '<div class="coach-header"><span class="coach-status" aria-hidden="true"></span><strong>Better Hacker Learning Assistant</strong><span class="coach-online">Authored guide</span></div>' +
+      '<p id="coach-question" class="coach-question" tabindex="-1">Choose a topic to learn, practise, and check your understanding.</p>' +
+      '<p id="coach-progress" class="coach-progress" role="status" aria-live="polite"></p>' +
+      '<div class="coach-topics" aria-label="Learning Assistant topics">' + ASSISTANT_TOPICS.map(function (topic) {
+        return '<button type="button" class="coach-topic" data-topic="' + topic.id + '" aria-controls="coach-topic-view" aria-pressed="false">' + topic.icon + ' ' + topic.name + '<span class="coach-topic-status"></span></button>';
+      }).join("") + '</div><article id="coach-topic-view" class="coach-topic-view" tabindex="-1" aria-live="polite" hidden></article>';
     coachBox.appendChild(coachInterface);
 
+    const topicView = coachInterface.querySelector("#coach-topic-view");
+    const progress = coachInterface.querySelector("#coach-progress");
+    let activeTopicId = null;
 
-    const responses = {
+    function authoredMarkup(value) {
+      return value.replace(/`([^`]+)`/g, "<code>$1</code>");
+    }
 
-      fundamentals: {
-        title: "🛡️ Cybersecurity Fundamentals",
-
-        text:
-          "Cybersecurity fundamentals include threats, vulnerabilities, risk, authentication, authorization, least privilege, and defense in depth.",
-
-        next:
-          "Next step: review the CIA Triad and make sure you understand the difference between authentication and authorization."
-      },
-
-      networking: {
-        title: "🌐 Networking",
-
-        text:
-          "Networking is the foundation of cybersecurity. Understanding IP addresses, ports, protocols, DNS, TCP, UDP, HTTP, and HTTPS makes security concepts much easier to understand.",
-
-        next:
-          "Next step: review common ports such as 22, 53, 80, and 443."
-      },
-
-      linux: {
-        title: "🐧 Linux",
-
-        text:
-          "Linux is important in cybersecurity because many servers, security tools, and cloud systems use it.",
-
-        next:
-          "Next step: practice commands such as pwd, ls, cd, cat, grep, and find."
-      },
-
-      web: {
-        title: "🌎 Web Security",
-
-        text:
-          "Web security focuses on protecting websites and applications from vulnerabilities involving authentication, input validation, access control, sessions, and databases.",
-
-        next:
-          "Next step: review SQL injection, cross-site scripting, and broken access control."
-      },
-
-      crypto: {
-        title: "🔐 Cryptography",
-
-        text:
-          "Cryptography protects information through techniques such as encryption, hashing, keys, and digital signatures.",
-
-        next:
-          "Next step: make sure you understand the difference between encryption and hashing."
-      },
-
-      ad: {
-        title: "🪟 Active Directory",
-
-        text:
-          "Active Directory helps organizations manage users, computers, groups, authentication, and permissions across Windows environments.",
-
-        next:
-          "Next step: review users, groups, domains, domain controllers, and why administrative privileges must be protected."
-      },
-
-      soc: {
-        title: "🛡️ SOC / SIEM",
-
-        text:
-          "A Security Operations Center monitors systems for suspicious activity. SIEM platforms help security teams collect, search, and analyze logs and security events.",
-
-        next:
-          "Next step: practice identifying who performed an action, what happened, where it happened, and when it occurred."
-      },
-
-      testing: {
-        title: "🔎 Security Testing",
-
-        text:
-          "Security testing looks for weaknesses in systems, applications, and networks. Testing must always stay within an authorized scope.",
-
-        next:
-          "Next step: review reconnaissance, vulnerability assessment, authorization, reporting, and remediation."
-      },
-
-      labs: {
-        title: "🧪 Better Hacker Labs",
-
-        text:
-          "Hands-on practice helps turn cybersecurity knowledge into practical skills. Use the Better Hacker labs to apply what you learn in realistic scenarios.",
-
-        next:
-          "Next step: complete the beginner labs and then work through the investigation challenges."
-      }
-
-    };
-
-
-    const topicButtons =
-      coachInterface.querySelectorAll(".coach-topic");
-
-    const responseBox =
-      coachInterface.querySelector("#coach-response");
-
-
-    topicButtons.forEach(function (button) {
-
-      button.addEventListener("click", function () {
-
-        const topic =
-          button.dataset.topic;
-
-        const response =
-          responses[topic];
-
-        responseBox.innerHTML = `
-
-          <h3>${response.title}</h3>
-
-          <p>${response.text}</p>
-
-          <div class="coach-next">
-
-            <strong>🎯 Recommended Next Step</strong>
-
-            <p>${response.next}</p>
-
-          </div>
-
-        `;
-
+    function renderAssistantProgress() {
+      const completed = readAssistantProgress();
+      progress.textContent = "Learning Assistant Topics: " + completed.length + " / " + ASSISTANT_TOPICS.length + " Completed";
+      coachInterface.querySelectorAll(".coach-topic").forEach(function (button) {
+        const done = completed.includes(button.dataset.topic);
+        button.classList.toggle("activity-complete", done);
+        const status = button.querySelector(".coach-topic-status");
+        if (status) status.textContent = done ? " — Completed; review topic" : " — Not completed";
       });
+    }
 
+    function openAssistantTopic(id, moveFocus) {
+      const topic = ASSISTANT_TOPICS.find(function (item) { return item.id === id; });
+      if (!topic) return;
+      activeTopicId = id;
+      coachInterface.querySelectorAll(".coach-topic").forEach(function (button) {
+        const selected = button.dataset.topic === id;
+        button.classList.toggle("selected", selected);
+        button.setAttribute("aria-pressed", String(selected));
+      });
+      topicView.hidden = false;
+      topicView.innerHTML = '<button type="button" class="coach-back secondary-button">← Topic menu</button>' +
+        '<p class="section-label">AUTHORED TOPIC EXPERIENCE</p><h3>' + topic.icon + ' ' + topic.name + '</h3>' +
+        '<section><h4>Beginner-friendly explanation</h4><p>' + topic.explanation + '</p></section>' +
+        '<section><h4>Important terminology</h4><dl>' + topic.terms.map(function (term) { return '<div><dt>' + term[0] + '</dt><dd>' + term[1] + '</dd></div>'; }).join("") + '</dl></section>' +
+        '<section><h4>Key concepts</h4><ul>' + topic.concepts.map(function (concept) { return '<li>' + concept + '</li>'; }).join("") + '</ul></section>' +
+        '<section><h4>Commands and tools</h4><p>' + authoredMarkup(topic.tools) + '</p></section>' +
+        '<section><h4>Example scenario</h4><p>' + topic.scenario + '</p></section>' +
+        '<section class="coach-try"><h4>Try It — quick knowledge check</h4><form class="coach-topic-check" data-topic="' + topic.id + '"><fieldset><legend>' + topic.question + '</legend>' + topic.options.map(function (option, index) { return '<label><input type="radio" name="coach-answer-' + topic.id + '" value="' + index + '"> ' + option + '</label>'; }).join("") + '</fieldset><div class="coach-topic-actions"><button type="button" class="coach-hint secondary-button">Show Hint</button><button type="submit" class="primary-button">Check Answer</button></div><p class="coach-feedback" role="status" aria-live="polite"></p></form></section>' +
+        '<section class="coach-next"><h4>Next step</h4><a class="primary-button" href="' + topic.nextHref + '">' + topic.nextLabel + '</a><button type="button" class="secondary-button coach-next-topic" data-next-topic="' + topic.nextTopic + '">Next Topic: ' + ASSISTANT_TOPICS.find(function (item) { return item.id === topic.nextTopic; }).name + '</button></section>';
+      companion.setContext({ type:"assistant-topic", activityId:"assistant-" + topic.id, topic:topic.name, hint:topic.hint, lookFor:topic.scenario, explanation:topic.feedback, submitted:false });
+      if (moveFocus !== false) topicView.focus();
+    }
+
+    coachInterface.addEventListener("click", function (event) {
+      const topicButton = event.target.closest && event.target.closest(".coach-topic");
+      if (topicButton) { openAssistantTopic(topicButton.dataset.topic, true); return; }
+      const back = event.target.closest && event.target.closest(".coach-back");
+      if (back) {
+        topicView.hidden = true;
+        const selected = coachInterface.querySelector('.coach-topic[data-topic="' + activeTopicId + '"]');
+        if (selected) selected.focus();
+        return;
+      }
+      const hint = event.target.closest && event.target.closest(".coach-hint");
+      if (hint && activeTopicId) {
+        const topic = ASSISTANT_TOPICS.find(function (item) { return item.id === activeTopicId; });
+        const feedback = topicView.querySelector(".coach-feedback");
+        feedback.className = "coach-feedback feedback-review";
+        feedback.textContent = "Hint: " + topic.hint;
+        companion.setContext({ type:"assistant-topic", activityId:"assistant-" + topic.id, topic:topic.name, hint:topic.hint, lookFor:topic.scenario, explanation:topic.feedback, submitted:false });
+        return;
+      }
+      const next = event.target.closest && event.target.closest(".coach-next-topic");
+      if (next) openAssistantTopic(next.dataset.nextTopic, true);
     });
 
-  }
+    coachInterface.addEventListener("submit", function (event) {
+      const form = event.target.closest && event.target.closest(".coach-topic-check");
+      if (!form) return;
+      event.preventDefault();
+      const topic = ASSISTANT_TOPICS.find(function (item) { return item.id === form.dataset.topic; });
+      const selected = form.querySelector('input[type="radio"]:checked');
+      const feedback = form.querySelector(".coach-feedback");
+      if (!selected) {
+        feedback.className = "coach-feedback feedback-review";
+        feedback.textContent = "Choose an answer first, or request the authored hint.";
+        return;
+      }
+      if (Number(selected.value) !== topic.correct) {
+        feedback.className = "coach-feedback feedback-review";
+        feedback.textContent = "Not quite. " + topic.feedback + " Review the concepts and try again; no progress was changed.";
+        companion.setContext({ submitted:true, explanation:feedback.textContent });
+        return;
+      }
+      const newlyCompleted = completeAssistantTopic(topic.id, selected.value);
+      feedback.className = "coach-feedback feedback-success";
+      feedback.textContent = "Correct. " + topic.feedback + (newlyCompleted ? " Topic completion was saved." : " You already completed this topic, so review does not add duplicate credit.");
+      companion.setContext({ submitted:true, explanation:topic.feedback });
+      renderAssistantProgress();
+    });
 
+    renderAssistantProgress();
+  }
 }
 
   

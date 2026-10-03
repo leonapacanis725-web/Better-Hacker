@@ -60,7 +60,7 @@ function boot({ seed = {}, elements = {}, fetchImpl = async () => ({ ok: true, s
     createTextNode(text) { return { textContent: text }; }
   };
   const localStorage = new MemoryStorage(seed);
-  const exposed = source.replace(/\n\}\);\s*$/, `\n  globalThis.__app = { readCompletedLabs, readReviewResult, getDashboardState, buildRetentionSnapshot, isReviewAnswerCorrect, COURSE_REVIEW_QUESTIONS, GUIDED_LABS, INVESTIGATIONS, LESSON_PROGRESS, EXTENSION_LESSONS, countCompletedExtensionLessons, completeExtensionLesson, getLabStatus, getLabAction, completeGuidedLab, completeInvestigation, renderDashboard, setDashboardCompanionContext, companion };\n});`);
+  const exposed = source.replace(/\n\}\);\s*$/, `\n  globalThis.__app = { readCompletedLabs, readReviewResult, getDashboardState, buildRetentionSnapshot, isReviewAnswerCorrect, COURSE_REVIEW_QUESTIONS, GUIDED_LABS, INVESTIGATIONS, LESSON_PROGRESS, EXTENSION_LESSONS, countCompletedExtensionLessons, completeExtensionLesson, getLabStatus, getLabAction, completeGuidedLab, completeInvestigation, ASSISTANT_TOPICS, ASSISTANT_PROGRESS_KEY, readAssistantProgress, completeAssistantTopic, renderDashboard, setDashboardCompanionContext, companion };\n});`);
   const context = { document, localStorage, __createdElements: createdElements, fetch: fetchImpl, setTimeout: fn => fn(), clearTimeout() {}, confirm: () => true,
     location: { reload() {} }, console, Date, JSON, Number, Math, Object, String, RegExp, Set,
     BetterHackerState, BetterHackerChallenges, BetterHackerMilestones, BetterHackerCompanion };
@@ -484,4 +484,32 @@ test('completed Core Path recommends unfinished supplemental learning then Daily
   context.__app.EXTENSION_LESSONS.forEach(item => localStorage.setItem(item.key, 'true'));
   state = context.__app.getDashboardState();
   assert.equal(state.recommendation.name, 'Daily Cyber Challenge');
+});
+
+
+test('Learning Assistant tracks all nine topic checks once without affecting Core progress or XP', () => {
+  const { context, localStorage } = boot();
+  assert.equal(context.__app.ASSISTANT_TOPICS.length, 9);
+  assert.deepEqual(Array.from(context.__app.readAssistantProgress()), []);
+  assert.equal(context.__app.completeAssistantTopic('unknown', 0), false);
+  for (const topic of context.__app.ASSISTANT_TOPICS) {
+    assert.equal(context.__app.completeAssistantTopic(topic.id, 99), false);
+    assert.equal(context.__app.completeAssistantTopic(topic.id, topic.correct), true);
+    assert.equal(context.__app.completeAssistantTopic(topic.id, topic.correct), false);
+  }
+  assert.equal(context.__app.readAssistantProgress().length, 9);
+  const stored = JSON.parse(localStorage.getItem(context.__app.ASSISTANT_PROGRESS_KEY));
+  assert.equal(stored.version, 1);
+  assert.equal(new Set(stored.completed).size, 9);
+  assert.deepEqual([context.__app.getDashboardState().lessonsCompleted, context.__app.getDashboardState().completedActivities], [0, 0]);
+  assert.equal(BetterHackerState.deriveXp(context.__app.buildRetentionSnapshot(), BetterHackerState.emptyDailyState()), 0);
+});
+
+test('Learning Assistant rejects malformed or stale topic progress safely', () => {
+  for (const value of ['{bad', JSON.stringify({version:2,completed:[]}), JSON.stringify({version:1,completed:['unknown']}), JSON.stringify({version:1,completed:'fundamentals'})]) {
+    const { context } = boot({ seed: { betterHackerLearningAssistantTopics:value } });
+    assert.deepEqual(Array.from(context.__app.readAssistantProgress()), []);
+  }
+  const { context } = boot({ seed: { betterHackerLearningAssistantTopics:JSON.stringify({version:1,completed:['linux','linux','web']}) } });
+  assert.deepEqual(Array.from(context.__app.readAssistantProgress()), ['linux','web']);
 });

@@ -1291,3 +1291,33 @@ footer p {
 .extension-feedback { min-height: 1.6em; margin-top: 14px; font-weight: 700; color: #e2e8f0; }
 .topic-link-card .lesson-link { display: block; margin-top: 12px; }
 @media (max-width: 600px) { .extension-lesson dl { grid-template-columns: 1fr; gap: 4px; } .extension-lesson dd { margin-bottom: 10px; } }
+
+/* Learning Assistant topic experiences */
+.coach-progress { margin: 0 0 16px; color: #7dd3fc; font-weight: 700; }
+.coach-topic { min-height: 58px; text-align: left; }
+.coach-topic-status { display: block; margin-top: 4px; color: #94a3b8; font-size: .78rem; }
+.coach-topic.selected { border-color: #facc15; box-shadow: 0 0 0 2px rgba(250, 204, 21, .18); }
+.coach-topic.activity-complete { border-color: #22c55e; }
+.coach-topic-view { margin-top: 24px; padding: 26px; border: 1px solid #38bdf8; border-radius: 12px; background: #0b1728; }
+.coach-topic-view[hidden] { display: none; }
+.coach-topic-view > h3 { margin: 14px 0 20px; color: #7dd3fc; font-size: 1.55rem; }
+.coach-topic-view section { margin: 22px 0; }
+.coach-topic-view h4 { margin-bottom: 8px; color: #fff; }
+.coach-topic-view p, .coach-topic-view li, .coach-topic-view dd { color: #cbd5e1; }
+.coach-topic-view ul, .coach-topic-view ol { padding-left: 24px; }
+.coach-topic-view dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.coach-topic-view dl > div { padding: 12px; border: 1px solid #1e3a56; border-radius: 8px; }
+.coach-topic-view dt { color: #7dd3fc; font-weight: 700; }
+.coach-topic-view dd { margin: 4px 0 0; }
+.coach-topic-view code { overflow-wrap: anywhere; color: #bae6fd; }
+.coach-try { padding: 18px; border-left: 4px solid #facc15; background: #07111f; }
+.coach-topic-check fieldset { display: grid; gap: 10px; margin: 12px 0; padding: 16px; border: 1px solid #475569; border-radius: 8px; }
+.coach-topic-check label { display: flex; gap: 8px; align-items: flex-start; min-height: 36px; cursor: pointer; }
+.coach-topic-actions, .coach-next { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.coach-next h4 { width: 100%; }
+.coach-feedback { min-height: 1.6em; margin-top: 14px; font-weight: 700; }
+@media (max-width: 700px) {
+  .coach-interface, .coach-topic-view { padding: 18px; }
+  .coach-topic-view dl { grid-template-columns: 1fr; }
+  .coach-topic-actions > *, .coach-next > * { width: 100%; text-align: center; }
+}

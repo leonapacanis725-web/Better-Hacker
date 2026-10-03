@@ -136,3 +136,26 @@ test('supplemental lessons remain complete, clickable, and dashboard-integrated'
   assert.equal((html.match(/class="card topic-link-card"/g) || []).length, 10);
   assert.equal((script.match(/const lesson = LESSON_PROGRESS\.find/g) || []).length, 1);
 });
+
+
+test('Learning Assistant has nine complete authored and accessible topic experiences', () => {
+  assert.match(script, /const ASSISTANT_PROGRESS_KEY = "betterHackerLearningAssistantTopics"/);
+  assert.match(script, /const ASSISTANT_TOPICS = Object\.freeze/);
+  for (const id of ['fundamentals','networking','linux','web','crypto','ad','soc','testing','labs']) {
+    assert.match(script, new RegExp('id:"' + id + '"'));
+  }
+  for (const field of ['explanation:','terms:','concepts:','tools:','scenario:','question:','options:','correct:','hint:','feedback:','nextTopic:','nextHref:']) {
+    assert.equal((script.match(new RegExp(field, 'g')) || []).length >= 9, true, `missing authored field ${field}`);
+  }
+  for (const label of ['Beginner-friendly explanation','Important terminology','Key concepts','Commands and tools','Example scenario','Try It — quick knowledge check','Show Hint','Next step']) {
+    assert.ok(script.includes(label), `missing rendered section ${label}`);
+  }
+  assert.match(script, /Learning Assistant Topics: /);
+  assert.match(script, /aria-pressed="false"/);
+  assert.match(script, /aria-controls="coach-topic-view"/);
+  assert.match(script, /role="status" aria-live="polite"/);
+  assert.match(script, /Objective → Evidence → Investigation → Hint → Decision → Review/);
+  assert.match(script, /nextHref:"#labs"/);
+  assert.equal((script.match(/coachInterface\.addEventListener\("click"/g) || []).length, 1);
+  assert.equal((script.match(/coachInterface\.addEventListener\("submit"/g) || []).length, 1);
+});
