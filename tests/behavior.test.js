@@ -60,7 +60,7 @@ function boot({ seed = {}, elements = {}, fetchImpl = async () => ({ ok: true, s
     createTextNode(text) { return { textContent: text }; }
   };
   const localStorage = new MemoryStorage(seed);
-  const exposed = source.replace(/\n\}\);\s*$/, `\n  globalThis.__app = { readCompletedLabs, readReviewResult, getDashboardState, buildRetentionSnapshot, isReviewAnswerCorrect, COURSE_REVIEW_QUESTIONS, GUIDED_LABS, INVESTIGATIONS, LESSON_PROGRESS, getLabStatus, getLabAction, completeGuidedLab, renderDashboard, setDashboardCompanionContext, companion };\n});`);
+  const exposed = source.replace(/\n\}\);\s*$/, `\n  globalThis.__app = { readCompletedLabs, readReviewResult, getDashboardState, buildRetentionSnapshot, isReviewAnswerCorrect, COURSE_REVIEW_QUESTIONS, GUIDED_LABS, INVESTIGATIONS, LESSON_PROGRESS, EXTENSION_LESSONS, countCompletedExtensionLessons, completeExtensionLesson, getLabStatus, getLabAction, completeGuidedLab, completeInvestigation, ASSISTANT_TOPICS, ASSISTANT_PROGRESS_KEY, readAssistantProgress, completeAssistantTopic, renderDashboard, setDashboardCompanionContext, companion };\n});`);
   const context = { document, localStorage, __createdElements: createdElements, fetch: fetchImpl, setTimeout: fn => fn(), clearTimeout() {}, confirm: () => true,
     location: { reload() {} }, console, Date, JSON, Number, Math, Object, String, RegExp, Set,
     BetterHackerState, BetterHackerChallenges, BetterHackerMilestones, BetterHackerCompanion };
@@ -404,4 +404,112 @@ test('companion control opens, closes, and returns focus without trapping the ke
   await close.dispatch('click');
   assert.equal(elements['#companion-panel'].hidden,true);
   assert.equal(toggle.getAttribute('aria-expanded'),'false');
+});
+
+
+test('all lesson checks teach on incorrect answers, accept documented equivalents, and restore review state', async () => {
+  const elements = allLessonElements();
+  let app = boot({ elements });
+  const cases = [
+    ['fundamentals', 'administrator', 'least privilege', 'Fundamentals'],
+    ['network', '80', 'port 443', 'Networking'],
+    ['linux', 'rm', 'cat file', 'Linux'],
+    ['web', 'xss', 'sql injection attack', 'WebSecurity'],
+    ['crypto', 'encoding', 'data encryption', 'Cryptography'],
+    ['ad', 'group', 'active directory user', 'ActiveDirectory'],
+    ['soc', 'firewall', 'security information and event management', 'Soc'],
+    ['testing', 'quiet hours', 'explicit authorization', 'SecurityTesting']
+  ];
+  for (const [prefix, wrong, right, storageName] of cases) {
+    elements[`#${prefix}-check-answer`].value = wrong;
+    await elements[`#${prefix}-check-button`].dispatch('click');
+    assert.equal(app.localStorage.getItem(`betterHacker${storageName}Complete`), null);
+    assert.ok(elements[`#${prefix}-check-result`].textContent.length > 25);
+    elements[`#${prefix}-check-answer`].value = right;
+    await elements[`#${prefix}-check-answer`].dispatch('keydown', { key: 'Enter' });
+    assert.equal(app.localStorage.getItem(`betterHacker${storageName}Complete`), 'true');
+  }
+  assert.equal(app.context.__app.getDashboardState().lessonsCompleted, 8);
+  const seed = Object.fromEntries(Object.keys(app.localStorage).map(key => [key, app.localStorage.getItem(key)]));
+  const restoredElements = allLessonElements();
+  const restored = boot({ seed, elements: restoredElements });
+  assert.equal(restored.context.__app.getDashboardState().lessonsCompleted, 8);
+  assert.match(restoredElements['#fundamentals-check-result'].textContent, /Completed previously/);
+  assert.equal(BetterHackerState.deriveXp(restored.context.__app.buildRetentionSnapshot(), BetterHackerState.emptyDailyState()), 800);
+});
+
+test('investigation completion API validates keys and is idempotent for XP evidence', () => {
+  const { context, localStorage } = boot();
+  const key = context.__app.INVESTIGATIONS[0].key;
+  assert.equal(context.__app.completeInvestigation('unrelated'), false);
+  assert.equal(context.__app.completeInvestigation(key), true);
+  assert.equal(context.__app.completeInvestigation(key), false);
+  assert.equal(localStorage.getItem(key), 'true');
+  const state = context.__app.getDashboardState();
+  assert.equal(state.investigationsCompleted, 1);
+  assert.equal(BetterHackerState.deriveXp(context.__app.buildRetentionSnapshot(), BetterHackerState.emptyDailyState()), 125);
+});
+
+
+test('supplemental lessons persist once without altering 8/8 Core progress or XP', () => {
+  const { context, localStorage } = boot();
+  assert.equal(context.__app.EXTENSION_LESSONS.length, 2);
+  assert.deepEqual(JSON.parse(JSON.stringify(context.__app.completeExtensionLesson('computer-tools', 'stop'))), { correct:false, newlyCompleted:false });
+  assert.equal(context.__app.countCompletedExtensionLessons(), 0);
+  assert.deepEqual(JSON.parse(JSON.stringify(context.__app.completeExtensionLesson('computer-tools', 'observe'))), { correct:true, newlyCompleted:true });
+  assert.deepEqual(JSON.parse(JSON.stringify(context.__app.completeExtensionLesson('computer-tools', 'observe'))), { correct:true, newlyCompleted:false });
+  assert.equal(localStorage.getItem('betterHackerComputerToolsLessonComplete'), 'true');
+  assert.equal(context.__app.countCompletedExtensionLessons(), 1);
+  assert.equal(context.__app.getDashboardState().lessonsCompleted, 0);
+  assert.equal(BetterHackerState.deriveXp(context.__app.buildRetentionSnapshot(), BetterHackerState.emptyDailyState()), 0);
+});
+
+test('completed Core Path recommends unfinished supplemental learning then Daily Challenge', () => {
+  const initial = boot();
+  const { context, localStorage } = initial;
+  context.__app.LESSON_PROGRESS.forEach(item => localStorage.setItem(item.key, 'true'));
+  localStorage.setItem('betterHackerCompletedLabs', '4');
+  context.__app.INVESTIGATIONS.forEach(item => localStorage.setItem(item.key, 'true'));
+  const topics = {};
+  context.__app.COURSE_REVIEW_QUESTIONS.forEach(question => { topics[question.topic] ||= {correct:0,total:0,lesson:question.lesson}; topics[question.topic].total++; });
+  localStorage.setItem('betterHackerCourseReviewResult', JSON.stringify({completed:true,score:0,total:14,percentage:0,completedAt:'2026-10-01T00:00:00.000Z',topics}));
+  let state = context.__app.getDashboardState();
+  assert.equal(state.coreComplete, true);
+  assert.equal(state.lessonsCompleted, 8);
+  assert.equal(state.recommendation.type, 'Supplemental Lesson');
+  assert.equal(state.recommendation.name, 'Computer Fundamentals & Security Tools');
+  localStorage.setItem('betterHackerComputerToolsLessonComplete', 'true');
+  state = context.__app.getDashboardState();
+  assert.equal(state.recommendation.name, 'Incident Response');
+  context.__app.EXTENSION_LESSONS.forEach(item => localStorage.setItem(item.key, 'true'));
+  state = context.__app.getDashboardState();
+  assert.equal(state.recommendation.name, 'Daily Cyber Challenge');
+});
+
+
+test('Learning Assistant tracks all nine topic checks once without affecting Core progress or XP', () => {
+  const { context, localStorage } = boot();
+  assert.equal(context.__app.ASSISTANT_TOPICS.length, 9);
+  assert.deepEqual(Array.from(context.__app.readAssistantProgress()), []);
+  assert.equal(context.__app.completeAssistantTopic('unknown', 0), false);
+  for (const topic of context.__app.ASSISTANT_TOPICS) {
+    assert.equal(context.__app.completeAssistantTopic(topic.id, 99), false);
+    assert.equal(context.__app.completeAssistantTopic(topic.id, topic.correct), true);
+    assert.equal(context.__app.completeAssistantTopic(topic.id, topic.correct), false);
+  }
+  assert.equal(context.__app.readAssistantProgress().length, 9);
+  const stored = JSON.parse(localStorage.getItem(context.__app.ASSISTANT_PROGRESS_KEY));
+  assert.equal(stored.version, 1);
+  assert.equal(new Set(stored.completed).size, 9);
+  assert.deepEqual([context.__app.getDashboardState().lessonsCompleted, context.__app.getDashboardState().completedActivities], [0, 0]);
+  assert.equal(BetterHackerState.deriveXp(context.__app.buildRetentionSnapshot(), BetterHackerState.emptyDailyState()), 0);
+});
+
+test('Learning Assistant rejects malformed or stale topic progress safely', () => {
+  for (const value of ['{bad', JSON.stringify({version:2,completed:[]}), JSON.stringify({version:1,completed:['unknown']}), JSON.stringify({version:1,completed:'fundamentals'})]) {
+    const { context } = boot({ seed: { betterHackerLearningAssistantTopics:value } });
+    assert.deepEqual(Array.from(context.__app.readAssistantProgress()), []);
+  }
+  const { context } = boot({ seed: { betterHackerLearningAssistantTopics:JSON.stringify({version:1,completed:['linux','linux','web']}) } });
+  assert.deepEqual(Array.from(context.__app.readAssistantProgress()), ['linux','web']);
 });

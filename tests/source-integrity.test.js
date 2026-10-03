@@ -93,3 +93,69 @@ test('footer copy meets WCAG AA contrast against its background', () => {
   assert.ok(footerColor && footerBackground);
   assert.ok(contrastRatio(footerColor, footerBackground) >= 4.5);
 });
+
+
+test('every core lesson exposes a connected, accessible learning sequence', () => {
+  const lessonIds = ['fundamentals','networking','linux','web-security','cryptography','active-directory','soc-siem','security-testing'];
+  for (const id of lessonIds) {
+    const start = html.indexOf(`<section id="${id}-lesson"`);
+    assert.ok(start >= 0, `missing ${id}`);
+    const end = html.indexOf('</section>', start);
+    const lesson = html.slice(start, end);
+    for (const part of ['Prerequisites:', 'Learning objectives', 'Why this matters in cybersecurity', 'Try It — safe analysis', 'Knowledge Check', 'Lesson recap', 'Recommended next activity:', 'View your Learner Dashboard']) {
+      assert.ok(lesson.includes(part), `${id} missing ${part}`);
+    }
+    assert.match(lesson, /role="status" aria-live="polite"/);
+  }
+  assert.equal((html.match(/type="button"\s+class="primary-button"/g) || []).length >= 8, true);
+});
+
+test('investigations expose idempotent completion, evidence guidance, and Start or Review navigation', () => {
+  assert.match(script, /function completeInvestigation\(key\)/);
+  assert.match(script, /Evidence analysis:/);
+  assert.match(script, /complete \? 'Review' : 'Start'/);
+  assert.match(script, /review without duplicate XP/);
+});
+
+
+test('supplemental lessons remain complete, clickable, and dashboard-integrated', () => {
+  for (const id of ['computer-tools', 'incident-response']) {
+    assert.match(html, new RegExp('class="card extension-lesson-card" data-extension-id="' + id + '"'));
+    assert.match(html, new RegExp('class="lesson-block knowledge-check extension-check" data-extension-id="' + id + '"'));
+  }
+  for (const heading of ['Learning objectives', 'Why this matters in cybersecurity', 'Important terminology', 'Try It:', 'Knowledge check:', 'Recap', 'Recommended next activity:']) {
+    assert.ok(html.includes(heading), `missing supplemental lesson element: ${heading}`);
+  }
+  assert.match(html, /id="dashboard-extension-lessons"/);
+  assert.match(script, /const EXTENSION_LESSONS = Object\.freeze/);
+  assert.match(script, /betterHackerComputerToolsLessonComplete/);
+  assert.match(script, /betterHackerIncidentResponseLessonComplete/);
+  assert.match(script, /extensionLessonsCompleted/);
+  assert.match(script, /const extensionLesson = EXTENSION_LESSONS\.find/);
+  assert.match(script, /reviewing it does not award duplicate completion/);
+  assert.equal((html.match(/class="card topic-link-card"/g) || []).length, 10);
+  assert.equal((script.match(/const lesson = LESSON_PROGRESS\.find/g) || []).length, 1);
+});
+
+
+test('Learning Assistant has nine complete authored and accessible topic experiences', () => {
+  assert.match(script, /const ASSISTANT_PROGRESS_KEY = "betterHackerLearningAssistantTopics"/);
+  assert.match(script, /const ASSISTANT_TOPICS = Object\.freeze/);
+  for (const id of ['fundamentals','networking','linux','web','crypto','ad','soc','testing','labs']) {
+    assert.match(script, new RegExp('id:"' + id + '"'));
+  }
+  for (const field of ['explanation:','terms:','concepts:','tools:','scenario:','question:','options:','correct:','hint:','feedback:','nextTopic:','nextHref:']) {
+    assert.equal((script.match(new RegExp(field, 'g')) || []).length >= 9, true, `missing authored field ${field}`);
+  }
+  for (const label of ['Beginner-friendly explanation','Important terminology','Key concepts','Commands and tools','Example scenario','Try It — quick knowledge check','Show Hint','Next step']) {
+    assert.ok(script.includes(label), `missing rendered section ${label}`);
+  }
+  assert.match(script, /Learning Assistant Topics: /);
+  assert.match(script, /aria-pressed="false"/);
+  assert.match(script, /aria-controls="coach-topic-view"/);
+  assert.match(script, /role="status" aria-live="polite"/);
+  assert.match(script, /Objective → Evidence → Investigation → Hint → Decision → Review/);
+  assert.match(script, /nextHref:"#labs"/);
+  assert.equal((script.match(/coachInterface\.addEventListener\("click"/g) || []).length, 1);
+  assert.equal((script.match(/coachInterface\.addEventListener\("submit"/g) || []).length, 1);
+});

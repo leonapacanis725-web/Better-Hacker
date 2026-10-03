@@ -1,80 +1,96 @@
 # Better Hacker
 
-Better Hacker is a static, dependency-light beginner cybersecurity learning prototype. It contains eight guided lessons, four guided exercises, seven defensive investigations, a local Learner Dashboard, a rule-based Learning Assistant / Topic Guide, and a Course Review.
+Better Hacker is a static, dependency-light cybersecurity learning platform for beginners. It runs in the browser without a build step or account and connects lessons, guided practice, defensive investigations, review, daily recall, and progress-derived rewards into one recommended path.
+
+## Learning path
+
+The Core Path contains 20 activities in this order:
+
+1. **Eight lessons:** Cybersecurity Fundamentals, Networking, Linux, Web Security, Cryptography, Active Directory, SOC & SIEM, and Security Testing.
+2. **Four guided labs:** Linux File Detective, Network Service Triage, Choose the Right Data Protection, and Defend a Database Query.
+3. **Seven defensive investigations:** SOC alerts, network traffic, phishing, Windows / Active Directory, malware concepts, brute-force detection, and web attacks.
+4. **Course Review:** a 14-question checkpoint spanning all eight lesson domains.
+
+Each core lesson includes prerequisites, objectives, cybersecurity relevance, terminology and concepts, a safe analysis activity, an authored knowledge check, educational feedback, a recap, and a recommended next activity. Lessons remain available after completion, and review does not duplicate progress or XP.
+
+Guided labs are clickable, hash-addressable simulations with an objective, scenario, concept briefing, static evidence, step-by-step task, hint, validated answer, explanation, completion action, and next recommendation. They preserve the original sequential `betterHackerCompletedLabs` value.
+
+Investigations use static simulated evidence and defensive decisions. Their overview reports **Start** or **Review**, and each provides evidence-analysis guidance, a hint, feedback, completion status, and a direct anchor. No activity scans, exploits, or connects to a real target.
+
+Two optional supplemental lessons—Computer Fundamentals & Security Tools and Incident Response—expand roadmap topics after the Core Path. They have their own persisted completion state, remain reviewable, award no Core XP, and do not change the established 8/8 lesson or 20-activity counters.
+
+## Learner Dashboard and Continue Learning
+
+The Learner Dashboard is the home base for:
+
+- lesson, lab, investigation, Course Review, and overall 20-activity progress;
+- a five-stage path with direct links;
+- the current recommended activity and a Continue Learning action;
+- XP, level, Daily Challenge status, current/longest streaks;
+- achievements, skill badges, and evidence supporting each badge.
+
+The recommendation advances through incomplete lessons, guided labs, investigations, and Course Review. After the Core Path is complete, it recommends optional Daily Challenge practice and allows the Course Review to be repeated. The eight-lesson counter remains 0–8 and is not changed by labs, investigations, review attempts, or daily work.
+
+## Byte Learning Guide
+
+Byte is an authored, rule-based learning guide—not a live AI service. It receives the current lesson, knowledge check, lab, investigation, daily challenge, Course Review topic, or dashboard recommendation. Help is progressive:
+
+1. a conceptual hint;
+2. a stronger evidence clue;
+3. the authored explanation after the learner submits.
+
+Changing activities clears stale activity details so guidance from one exercise cannot leak into another. Byte makes no network requests.
+
+## Learning Assistant Topic Guide
+
+The authored Learning Assistant contains nine clickable topic experiences: Fundamentals, Networking, Linux, Web Security, Cryptography, Active Directory, SOC / SIEM, Security Testing, and Labs. Each view includes beginner terminology, practical concepts, safe commands or tools where relevant, a scenario, a hint, a retryable knowledge check, educational feedback, and links to the next topic or an existing activity. The Labs topic links to the existing guided-lab hub rather than duplicating those exercises.
+
+Successful topic checks are stored in the versioned `betterHackerLearningAssistantTopics` record. Topic progress is supplemental: it awards no XP and does not change the 8/8 lesson or 20-activity Core Path counters. Byte receives the selected topic's authored hint, scenario context, and post-submission explanation.
 
 ## Course Review
 
-The **Beginner Cybersecurity Assessment** is a 14-question, one-question-at-a-time review spanning Cybersecurity Fundamentals, Networking, Linux, Web Security, Cryptography, Active Directory, SOC & SIEM, and Security Testing. It mixes multiple choice, short answers, beginner scenarios, and safe-next-action decisions.
+The Course Review mixes multiple-choice and short-answer questions across all eight domains. Learners submit before seeing the answer. Feedback explains the correct reasoning, addresses a misconception, and links to the related lesson. The final result includes score, percentage, topic strengths, topics to revisit, and a Review Again action. A repeated attempt replaces the prior review result but does not change lesson completion or create duplicate XP.
 
-Unlike the knowledge check inside an individual lesson, the Course Review asks learners to connect and apply ideas across the curriculum. An answer is not revealed until the learner submits an attempt. Each response then explains the best answer, addresses a tempting misconception, and links to the relevant lesson. The final view shows the score, percentage, stronger topics, topics worth revisiting, direct lesson links, and a **Review Again** action. Results are descriptive and do not create a pass/fail label.
+## Daily Challenges, XP, achievements, and badges
 
-## Guided labs
+A bank of 14 safe defensive scenarios selects one challenge deterministically from the learner's local date. A valid completion awards 50 XP at most once per local date; history is validated and bounded to 60 dates.
 
-The four existing guided exercises are presented as clickable Linux, Networking, Cryptography, and Web Security lab cards. Each opens a hash-addressable, keyboard-friendly lesson with an authored scenario, concept briefing, simulated evidence, task, hint, answer feedback, defensive relevance, and a next activity. Lab completion continues to use the original sequential `betterHackerCompletedLabs` value; no parallel completion store is introduced, and reviewing a completed lab cannot award XP again. Byte receives the current lab topic and authored guidance while withholding answer-level feedback until submission.
+XP is derived rather than incremented: 100 per completed lesson, 75 per guided lab, 125 per investigation, 200 for Course Review completion, plus valid Daily Challenge records. Levels begin at 0, 400, 900, 1,500, 2,300, and 3,200 XP.
 
-## Progress and local storage
+Achievements include First Step, Core Foundations, Course Complete, Hands-On Learner, Lab Ready, Investigator, Cyber Investigator, Knowledge Checkpoint, and daily-streak milestones. Skill badges combine lesson completion with Course Review and, where applicable, linked practical evidence. These are local educational indicators, not certifications.
 
-Progress remains local to the learner's browser; there are no accounts or cloud sync. Existing lesson, guided-exercise, investigation, and confirmed waitlist keys are preserved. Course Review adds one key:
+## Progress persistence and compatibility
 
-- `betterHackerCourseReviewResult`: JSON containing the most recent completed review's score, total, percentage, completion timestamp, and per-topic result summary.
+Progress is stored only in browser `localStorage`. Existing keys remain the source of truth:
 
-The complete storage inventory is:
-
-- Lessons: `betterHackerFundamentalsComplete`, `betterHackerNetworkingComplete`, `betterHackerLinuxComplete`, `betterHackerWebSecurityComplete`, `betterHackerCryptographyComplete`, `betterHackerActiveDirectoryComplete`, `betterHackerSocComplete`, and `betterHackerSecurityTestingComplete`.
-- Guided labs: `betterHackerCompletedLabs`, the original sequential integer from `0` through `4`.
-- Investigations: `betterHackerSocInvestigationComplete`, `betterHackerNetworkInvestigationComplete`, `betterHackerPhishingInvestigationComplete`, `betterHackerWindowsInvestigationComplete`, `betterHackerMalwareInvestigationComplete`, `betterHackerBruteForceInvestigationComplete`, and `betterHackerWebAttackInvestigationComplete`.
+- Lessons: `betterHackerFundamentalsComplete`, `betterHackerNetworkingComplete`, `betterHackerLinuxComplete`, `betterHackerWebSecurityComplete`, `betterHackerCryptographyComplete`, `betterHackerActiveDirectoryComplete`, `betterHackerSocComplete`, `betterHackerSecurityTestingComplete`.
+- Guided labs: `betterHackerCompletedLabs` (`0`–`4`).
+- Investigations: `betterHackerSocInvestigationComplete`, `betterHackerNetworkInvestigationComplete`, `betterHackerPhishingInvestigationComplete`, `betterHackerWindowsInvestigationComplete`, `betterHackerMalwareInvestigationComplete`, `betterHackerBruteForceInvestigationComplete`, `betterHackerWebAttackInvestigationComplete`.
 - Course Review: `betterHackerCourseReviewResult`.
 - Daily Challenge: `betterHackerDailyChallengeState`.
 - Confirmed waitlist email: `betterHackerWaitlistEmail`.
+- Supplemental lessons: `betterHackerComputerToolsLessonComplete` and `betterHackerIncidentResponseLessonComplete`.
+- Learning Assistant topics: `betterHackerLearningAssistantTopics` (versioned JSON containing completed topic IDs).
 
-XP, levels, achievements, and badges are derived from this validated evidence instead of being stored in separate counters. This prevents reloads and reviews from awarding them repeatedly.
+XP, levels, achievements, and badges are calculated from validated evidence, so reloads and reviews cannot repeatedly award them. Reset Learning Progress removes Better Hacker learning and Daily Challenge state while deliberately preserving a confirmed waitlist email and unrelated local storage.
 
-The review is an additional activity—not a ninth lesson—so core lesson progress remains **0–8 / 8**. The dashboard separately reports lessons, **4** guided exercises, **7** investigations, and Course Review status. Its recommendation advances from incomplete lessons, to exercises, to investigations, to the Course Review. Once everything is complete it offers a course review action.
+## Waitlist, privacy, and terms
 
-Completing the review unlocks the progress-derived **Knowledge Checkpoint** achievement. It is based on completion, not a score threshold.
+The waitlist validates and normalizes email, prevents duplicate in-flight requests, reports success/failure accessibly, and writes `betterHackerWaitlistEmail` only after the existing Formspree endpoint confirms success. See `privacy.html` and `terms.html` for learner-facing disclosures.
 
-## Reset behavior
+## Run and test
 
-**Reset Learning Progress** removes Better Hacker lesson, exercise, investigation, Course Review, and Daily Challenge state, including `betterHackerCourseReviewResult` and `betterHackerDailyChallengeState`. Derived XP, levels, achievements, and badges reset with their underlying evidence. It deliberately preserves `betterHackerWaitlistEmail` and does not clear unrelated local storage.
-
-## Running checks
-
-The site has no build step. Open `index.html` in a browser, or serve the directory with a simple static server. Run the dependency-free checks with:
+Open `index.html` directly or serve the directory with a static HTTP server. There are no package dependencies or build commands.
 
 ```sh
-node --check script.js
 node --test tests/*.test.js
 python3 tests/source_integrity.py
+node --check script.js
+node --check companion.js
 ```
+
+The tests cover all eight knowledge checks, persistence and recommendations, guided-lab sequencing, investigation completion, dashboard/XP/achievement derivation, Byte context, Course Review, Daily Challenges, waitlist behavior, HTML links/IDs, legal navigation, and source integrity.
 
 ## Prototype limitations
 
-This is a front-end learning prototype. Progress and assessment results are device/browser-specific and can be changed or deleted through browser developer tools. There is no authentication, database, certification, grading service, external AI API, or server-side validation. The Topic Guide uses authored responses and is not represented as a live AI service. The waitlist continues to use the existing Formspree endpoint.
-
-## Waitlist and legal pages
-
-The optional waitlist validates and normalizes an email before sending it to the existing Formspree endpoint. The local `betterHackerWaitlistEmail` value is written only after a successful HTTP response and is preserved by Reset Learning Progress. See `privacy.html` and `terms.html` for learner-facing disclosures.
-
-The in-page Learning Assistant is an authored Topic Guide, not a live or personalized AI model.
-
-## Retention and competency layer
-
-The Daily Cyber Challenge is selected deterministically from the learner's local calendar date using an authored bank of 14 defensive scenarios. Its only new storage key is `betterHackerDailyChallengeState`, a version 1 JSON object:
-
-```text
-{
-  version: 1,
-  lastCompletedDate: "YYYY-MM-DD" | null,
-  currentStreak: integer,
-  longestStreak: integer,
-  records: [{ date, challengeId, xp }]
-}
-```
-
-History is bounded to the most recent 60 completed dates and is strictly validated. A date can award its challenge XP only once. Lesson, guided-exercise, investigation, and Course Review XP is derived from existing validated completion state, so existing learners receive it retroactively and reloads cannot duplicate it.
-
-XP rules are 100 per lesson, 75 per guided exercise, 125 per investigation, 200 for Course Review completion, and 50 for each completed Daily Challenge date. Levels begin at 0, 400, 900, 1,500, 2,300, and 3,200 XP.
-
-Achievements are milestone indicators. Skill badges are separate competency indicators derived from lesson, practical, investigation, and Course Review evidence; they are not certifications or third-party accreditation. Badge definitions use stable IDs and deterministic evidence so a future learner-controlled Career Profile could consume the registry. No profile is currently created, shared, or made public.
-
-Byte Learning Guide uses the dependency-free authored provider in `companion.js`. It accepts activity context and gives hints or explanations without calling an external API or claiming to be AI. A future provider can implement the same interface without changing each activity.
+There is no authentication, cloud sync, database, live AI, server-side validation, formal grading, or certification. Browser data may be edited or cleared through developer/browser controls and does not synchronize across devices. The simulations teach safe decision-making; they are not substitutes for an organization's procedures or authorization requirements.
