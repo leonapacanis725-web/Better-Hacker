@@ -26,6 +26,7 @@
       <li><a href="#learn">Learn</a></li>
       <li><a href="#roadmap">Roadmap</a></li>
       <li><a href="#labs">Labs</a></li>
+      <li><a href="#portfolio">Portfolio</a></li>
       <li><a href="#coach">Learning Assistant</a></li>
       <li><a href="#about">About</a></li>
     <li><a href="#early-access">Early Access</a></li>
@@ -225,8 +226,19 @@
         <p id="dashboard-review-status">Not Started</p>
         <a href="#course-review" class="dashboard-review-link">Go to Course Review →</a>
       </article>
+      <article class="dashboard-card">
+        <h3>Learner Portfolio</h3>
+        <p id="dashboard-portfolio">0 projects</p>
+        <span id="dashboard-portfolio-ready">0 portfolio ready</span>
+        <span id="dashboard-portfolio-drafts">0 drafts</span>
+        <a href="#portfolio" class="dashboard-review-link">Open your portfolio →</a>
+      </article>
     </div>
     <div class="dashboard-next" id="dashboard-next" aria-live="polite"></div>
+    <aside class="portfolio-dashboard-prompt" aria-labelledby="portfolio-prompt-title">
+      <h3 id="portfolio-prompt-title">Document completed learning</h3>
+      <p id="portfolio-suggestion">Complete eligible practical work to receive a documentation suggestion.</p>
+    </aside>
     <section class="today-panel" aria-labelledby="today-title">
       <h3 id="today-title">Today at Better Hacker</h3>
       <p id="today-daily">Today’s Daily Challenge is available.</p>
@@ -247,6 +259,25 @@
       <a href="#daily-challenge" class="primary-button">Today’s Cyber Challenge</a>
       <a href="#skills-achievements" class="secondary-button">Skills &amp; Achievements</a>
     </div>
+  </section>
+
+  <section id="portfolio" class="section" aria-labelledby="portfolio-title">
+    <p class="section-label">CAREER EVIDENCE</p>
+    <h2 id="portfolio-title">Learner Portfolio</h2>
+    <p class="section-intro">Turn completed Better Hacker practice into clear, honest evidence of what you did and learned. Portfolio entries describe educational work—not professional experience.</p>
+    <p id="portfolio-status" class="portfolio-status" role="status" aria-live="polite"></p>
+    <div class="portfolio-layout">
+      <aside class="portfolio-eligible-panel" aria-labelledby="portfolio-eligible-title">
+        <h3 id="portfolio-eligible-title">Completed activities you can document</h3>
+        <p>Nothing is added automatically. Choose a completed practical activity.</p>
+        <ul id="portfolio-eligible"></ul>
+      </aside>
+      <div>
+        <h3>My projects</h3>
+        <div id="portfolio-projects" class="portfolio-grid"></div>
+      </div>
+    </div>
+    <section id="portfolio-builder" class="portfolio-builder" role="region" aria-labelledby="portfolio-builder-title" hidden></section>
   </section>
 
   <section id="daily-challenge" class="section">
@@ -2124,7 +2155,9 @@ PID   USER      COMMAND
 <script src="challenges.js"></script>
 <script src="achievements.js"></script>
 <script src="companion.js"></script>
+<script src="portfolio.js"></script>
 <script src="script.js"></script>
+<script src="portfolio-ui.js"></script>
 
 </body>
 </html>
