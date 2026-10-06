@@ -159,3 +159,53 @@ test('Learning Assistant has nine complete authored and accessible topic experie
   assert.equal((script.match(/coachInterface\.addEventListener\("click"/g) || []).length, 1);
   assert.equal((script.match(/coachInterface\.addEventListener\("submit"/g) || []).length, 1);
 });
+
+test('beginner benefit cards are accessible links to existing learning experiences', () => {
+  const sectionStart = html.indexOf('<section id="platform-entry-points"');
+  const sectionEnd = html.indexOf('</section>', sectionStart);
+  const section = html.slice(sectionStart, sectionEnd);
+  assert.ok(sectionStart >= 0);
+  for (const destination of ['#learn', '#labs', '#dashboard', '#coach']) {
+    assert.match(section, new RegExp('href="' + destination + '"'));
+    assert.match(html, new RegExp('id="' + destination.slice(1) + '"'));
+  }
+  for (const action of ['Explore Lessons →', 'Start Practicing →', 'View Dashboard →', 'Open Learning Assistant →']) {
+    assert.ok(section.includes(action), `missing card action: ${action}`);
+  }
+  assert.equal((section.match(/class="card platform-entry-card"/g) || []).length, 4);
+  assert.doesNotMatch(section, /Better Hacker Coach/);
+  assert.match(css, /\.platform-entry-card:focus-visible/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
+});
+
+test('dashboard summaries and hands-on overview cards navigate to existing activities', () => {
+  const dashboardStart = html.indexOf('<div class="dashboard-grid"');
+  const dashboardEnd = html.indexOf('</div>', dashboardStart);
+  const dashboard = html.slice(dashboardStart, dashboardEnd);
+  for (const [destination, action] of [
+    ['#learn', 'Explore lessons →'],
+    ['#labs', 'Practice in guided labs →'],
+    ['#investigation-overview-title', 'Explore investigations →']
+  ]) {
+    assert.ok(dashboard.includes(`href="${destination}"`), `missing dashboard destination ${destination}`);
+    assert.ok(dashboard.includes(action), `missing dashboard action ${action}`);
+  }
+
+  const labsStart = html.indexOf('<section id="labs"');
+  const labsIntroEnd = html.indexOf('<a href="#coach"', labsStart);
+  const labsIntro = html.slice(labsStart, labsIntroEnd);
+  const cards = [
+    ['#security-testing-lesson', 'Start Security Testing →'],
+    ['#investigation-network', 'Practice Network Analysis →'],
+    ['#lab-linux', 'Start Linux Practice →'],
+    ['#investigation-soc', 'Explore Defensive Investigations →']
+  ];
+  for (const [destination, action] of cards) {
+    assert.ok(labsIntro.includes(`href="${destination}"`), `missing practice destination ${destination}`);
+    assert.ok(labsIntro.includes(action), `missing practice action ${action}`);
+  }
+  assert.equal((labsIntro.match(/class="card practice-entry-card"/g) || []).length, 4);
+  assert.match(script, /hash === "#lab-" \+ lab\.id/);
+  for (const id of ['network', 'soc']) assert.match(script, new RegExp('anchor: "investigation-' + id + '"'));
+  assert.match(css, /\.practice-entry-card:focus-visible/);
+});

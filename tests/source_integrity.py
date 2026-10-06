@@ -27,7 +27,15 @@ for filename in ("index.html", "privacy.html", "terms.html"):
     parser.feed(html)
     duplicates = [item for item, count in Counter(parser.ids).items() if count > 1]
     assert not duplicates, f"duplicate IDs in {filename}: {duplicates}"
-    assert not set(parser.hash_links) - set(parser.ids), f"broken hash links in {filename}"
+    generated_ids = set()
+    if filename == "index.html":
+        script = Path("script.js").read_text()
+        generated_ids = {"lab-linux", "investigation-overview-title", "investigation-network", "investigation-soc"}
+        assert 'id: "linux"' in script and '"#lab-" + lab.id' in script
+        for target in ("network", "soc"):
+            assert f'anchor: "investigation-{target}"' in script
+        assert 'investigationOverview.innerHTML = \'<h3 id="investigation-overview-title"' in script
+    assert not set(parser.hash_links) - set(parser.ids) - generated_ids, f"broken hash links in {filename}"
     for link in parser.local_links:
         if link:
             assert Path(link).exists(), f"missing local page {link} from {filename}"
