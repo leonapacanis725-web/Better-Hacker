@@ -95,12 +95,25 @@ The waitlist validates and normalizes email, prevents duplicate in-flight reques
 
 Open `index.html` directly or serve the directory with a static HTTP server. There are no package dependencies or build commands.
 
+Use Node.js and Python 3 for the checks below. Local development was verified with Node.js 24 and Python 3.12.
+
+From the repository root, start a local server:
+
+```sh
+python3 -m http.server 8000 --bind 127.0.0.1
+```
+
+Open `http://127.0.0.1:8000` in your browser. Keep the server running while developing and stop it with Ctrl+C. If port 8000 is already in use, choose another unused port. No account, credentials, or backend services are needed for the learning activities; progress is saved in the browser's `localStorage`.
+
+In another terminal, run the checks from the repository root:
+
 ```sh
 node --test tests/*.test.js
 python3 tests/source_integrity.py
-node --check script.js
-node --check companion.js
+for file in *.js; do node --check "$file" || exit; done
 ```
+
+For a serving smoke check, confirm that the home page, `privacy.html`, and `terms.html` load and that the browser reports no missing stylesheet or script files. The automated tests mock the optional Formspree waitlist responses; they do not send real submissions. Live waitlist submissions require network access to `formspree.io`.
 
 The tests cover all eight knowledge checks, persistence and recommendations, guided-lab sequencing, investigation completion, dashboard/XP/achievement derivation, portfolio eligibility, deduplication, editing, readiness, removal, README export, Byte context, Course Review, Daily Challenges, waitlist behavior, HTML links/IDs, legal navigation, and source integrity.
 
