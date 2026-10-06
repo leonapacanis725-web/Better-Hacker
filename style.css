@@ -238,6 +238,36 @@ button.card:hover {
   color: #94a3b8;
 }
 
+/* Platform entry points reuse the established card treatment as navigation. */
+.platform-entry-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 230px;
+  color: inherit;
+}
+
+.platform-entry-card:focus-visible {
+  border-color: #facc15;
+  box-shadow: 0 0 0 4px rgba(250, 204, 21, 0.2);
+}
+
+.platform-entry-action {
+  display: inline-block;
+  align-self: flex-start;
+  margin-top: auto;
+  padding-top: 20px;
+  color: #7dd3fc;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.platform-entry-card:hover .platform-entry-action,
+.platform-entry-card:focus-visible .platform-entry-action {
+  color: #ffffff;
+}
+
 /* =========================
    INTERACTIVE LABS
 ========================= */
