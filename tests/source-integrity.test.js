@@ -159,3 +159,30 @@ test('Learning Assistant has nine complete authored and accessible topic experie
   assert.equal((script.match(/coachInterface\.addEventListener\("click"/g) || []).length, 1);
   assert.equal((script.match(/coachInterface\.addEventListener\("submit"/g) || []).length, 1);
 });
+
+test('action-like overview cards and dashboard summaries use semantic, valid navigation', () => {
+  const expectedLinks = [
+    ['Core Lessons', '#learn', 'Explore lessons'],
+    ['Guided Exercises', '#labs', 'Practice in guided labs'],
+    ['Investigations', '#investigation-overview-title', 'Explore investigations'],
+    ['🔎 Reconnaissance', '#security-testing-lesson', 'Start Security Testing'],
+    ['🌐 Network Analysis', '#investigation-network', 'Practice Network Analysis'],
+    ['💻 Linux Challenges', '#lab-linux', 'Start Linux Practice'],
+    ['🛡️ Defensive Security', '#investigation-soc', 'Explore Defensive Investigations'],
+    ['📚 Learn', '#learn', 'Explore Lessons'],
+    ['🧪 Practice', '#labs', 'Practice'],
+    ['📈 Track Progress', '#dashboard', 'View Progress'],
+    ['🤖 Get Guidance', '#coach', 'Get Guidance']
+  ];
+  for (const [heading, destination, label] of expectedLinks) {
+    assert.ok(html.includes(`<h3>${heading}</h3>`), `missing action heading ${heading}`);
+    assert.ok(html.includes(`href="${destination}"`), `${heading} should lead to ${destination}`);
+    assert.ok(html.includes(label), `${heading} should display ${label}`);
+  }
+  for (const id of ['soc','network','phishing','windows','malware','brute-force','web-attack']) {
+    assert.match(script, new RegExp('anchor: "investigation-' + id + '"'));
+  }
+  assert.match(script, /hash === "#lab-" \+ lab\.id/);
+  assert.match(css, /\.action-card\s*{[^}]*text-decoration:\s*none/s);
+  assert.match(css, /a:focus-visible[\s\S]*outline:\s*3px solid #facc15/);
+});

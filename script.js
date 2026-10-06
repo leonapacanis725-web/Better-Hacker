@@ -48,6 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const Milestones = globalThis.BetterHackerMilestones;
   const CompanionModule = globalThis.BetterHackerCompanion;
   const companion = CompanionModule.createCompanion(new CompanionModule.AuthoredProvider());
+  globalThis.BetterHackerCompanionInstance = companion;
   const NAVIGATION_HANDLERS = [];
   const CORE_ACTIVITY_TOTAL = 20;
 

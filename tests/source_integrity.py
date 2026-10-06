@@ -27,7 +27,18 @@ for filename in ("index.html", "privacy.html", "terms.html"):
     parser.feed(html)
     duplicates = [item for item, count in Counter(parser.ids).items() if count > 1]
     assert not duplicates, f"duplicate IDs in {filename}: {duplicates}"
-    assert not set(parser.hash_links) - set(parser.ids), f"broken hash links in {filename}"
+    dynamic_ids = set()
+    if filename == "index.html":
+        script = Path("script.js").read_text()
+        dynamic_ids.update({"lab-" + item for item in ("linux", "networking", "cryptography", "web-security")})
+        dynamic_ids.update({
+            "investigation-overview-title", "investigation-soc", "investigation-network",
+            "investigation-phishing", "investigation-windows", "investigation-malware",
+            "investigation-brute-force", "investigation-web-attack"
+        })
+        for target in dynamic_ids:
+            assert target in script or target.startswith("lab-"), f"expected generated destination {target}"
+    assert not set(parser.hash_links) - set(parser.ids) - dynamic_ids, f"broken hash links in {filename}"
     for link in parser.local_links:
         if link:
             assert Path(link).exists(), f"missing local page {link} from {filename}"
