@@ -160,6 +160,34 @@ test('Learning Assistant has nine complete authored and accessible topic experie
   assert.equal((script.match(/coachInterface\.addEventListener\("submit"/g) || []).length, 1);
 });
 
+test('What Happens Next cards link their actions to existing sections accessibly', () => {
+  const start = html.indexOf('<!-- What Happens Next Section -->');
+  assert.ok(start >= 0);
+  const section = html.slice(start, html.indexOf('<!-- Pricing Section -->', start));
+  const cards = [...section.matchAll(/<a class="card platform-entry-card" href="([^"]+)">([\s\S]*?)<\/a>/g)];
+  assert.equal(cards.length, 3);
+  const expected = [
+    ['Early Access Updates', 'Join the Waitlist →', '#early-access', 'waitlist-form'],
+    ['New Labs', 'Explore Labs →', '#labs', 'HANDS-ON PRACTICE'],
+    ['New Lessons', 'Explore Lessons →', '#learn', 'fundamentals-lesson']
+  ];
+  expected.forEach(([title, action, destination, content], index) => {
+    const [, href, body] = cards[index];
+    assert.equal(href, destination);
+    assert.ok(body.includes(title));
+    assert.ok(body.includes(`<span class="platform-entry-action">${action}</span>`));
+    assert.doesNotMatch(body, /<(?:a|button|input|select|textarea)\b/);
+    assert.doesNotMatch(body, /aria-hidden="true"|tabindex="-1"/);
+    const targets = [...html.matchAll(new RegExp(`<section id="${destination.slice(1)}"[^>]*>([\\s\\S]*?)</section>`, 'g'))];
+    assert.equal(targets.length, 1, `unique destination: ${destination}`);
+    assert.ok(targets[0][1].includes(content), `expected content in ${destination}`);
+  });
+  // Native href links provide Tab/Enter navigation, with the existing visible focus style.
+  assert.match(css, /\.platform-entry-card:focus-visible\s*\{[^}]*box-shadow:/);
+  assert.match(script, /const labSection = document\.querySelector\("#labs"\)/);
+  assert.match(script, /hash === "#lab-overview" \|\| hash === "#labs"/);
+});
+
 test('beginner benefit cards are accessible links to existing learning experiences', () => {
   const sectionStart = html.indexOf('<section id="platform-entry-points"');
   const sectionEnd = html.indexOf('</section>', sectionStart);
