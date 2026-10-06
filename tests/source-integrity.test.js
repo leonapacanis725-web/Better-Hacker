@@ -159,3 +159,40 @@ test('Learning Assistant has nine complete authored and accessible topic experie
   assert.equal((script.match(/coachInterface\.addEventListener\("click"/g) || []).length, 1);
   assert.equal((script.match(/coachInterface\.addEventListener\("submit"/g) || []).length, 1);
 });
+
+test('beginner benefit cards are accessible links to existing learning experiences', () => {
+  const sectionStart = html.indexOf('<section id="platform-entry-points"');
+  const sectionEnd = html.indexOf('</section>', sectionStart);
+  const section = html.slice(sectionStart, sectionEnd);
+  assert.ok(sectionStart >= 0);
+  for (const destination of ['#learn', '#labs', '#dashboard', '#coach']) {
+    assert.match(section, new RegExp('href="' + destination + '"'));
+    assert.match(html, new RegExp('id="' + destination.slice(1) + '"'));
+  }
+  for (const action of ['Explore Lessons →', 'Start Practicing →', 'View Dashboard →', 'Open Learning Assistant →']) {
+    assert.ok(section.includes(action), `missing card action: ${action}`);
+  }
+  assert.equal((section.match(/class="card platform-entry-card"/g) || []).length, 4);
+  assert.doesNotMatch(section, /Better Hacker Coach/);
+  assert.match(css, /\.platform-entry-card:focus-visible/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
+});
+
+test('What Happens Next cards link to existing waitlist, labs, and lesson destinations', () => {
+  const heading = html.indexOf('<h2>Join Early. Build With Better Hacker.</h2>');
+  const sectionStart = html.lastIndexOf('<section', heading);
+  const sectionEnd = html.indexOf('</section>', heading);
+  const section = html.slice(sectionStart, sectionEnd);
+  const actions = [
+    ['#early-access', 'Join the Waitlist →'],
+    ['#labs', 'Explore Labs →'],
+    ['#learn', 'Explore Lessons →']
+  ];
+  assert.ok(heading >= 0 && sectionStart >= 0 && sectionEnd > heading);
+  for (const [destination, label] of actions) {
+    assert.ok(section.includes(`href="${destination}"`), `missing destination ${destination}`);
+    assert.ok(section.includes(label), `missing action label ${label}`);
+    assert.match(html, new RegExp('id="' + destination.slice(1) + '"'));
+  }
+  assert.equal((section.match(/class="card platform-entry-card"/g) || []).length, 3);
+});

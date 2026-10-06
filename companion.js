@@ -13,6 +13,11 @@
         if (action === "look") return `Learning Path — ${context.stages}. Current rewards: ${context.rewards}.`;
         return `${context.coreProgress} Core Path complete. ${context.xpSummary}. ${context.dailyRule}`;
       }
+      if (context.type === "portfolio") {
+        if (action === "hint") return `Portfolio tip: ${context.hint}`;
+        if (action === "look") return `Evidence to record for ${topic}: ${context.lookFor}.`;
+        return context.explanation;
+      }
       if (action === "hint") return `Conceptual hint: ${context.hint || `Identify the security goal in this ${topic} activity before choosing an action.`}`;
       if (action === "look") return context.lookFor ? `Stronger clue for ${topic}: focus on ${context.lookFor}` : `Stronger clue for ${topic}: compare the affected asset, unusual behavior, relevant evidence, and the safest authorized next step.`;
       if (context.submitted && context.explanation) return context.explanation;
