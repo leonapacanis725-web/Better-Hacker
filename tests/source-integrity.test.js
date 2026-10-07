@@ -245,3 +245,20 @@ test('Why Better Hacker cards provide accessible links to existing learning and 
   });
   assert.match(css, /\.platform-entry-card:focus-visible\s*\{[^}]*box-shadow:/);
 });
+
+test('portfolio surfaces and controls explicitly pair readable foregrounds and backgrounds', () => {
+  const surfaces = css.match(/\.portfolio-eligible-panel, \.portfolio-builder, \.portfolio-card, \.portfolio-empty\s*\{([^}]+)\}/);
+  assert.ok(surfaces);
+  assert.match(surfaces[1], /background: #fff;/);
+  assert.match(surfaces[1], /color: #0f172a;/);
+  for (const [foreground, background] of [
+    ['#0f172a', '#ffffff'], ['#475569', '#ffffff'], ['#0369a1', '#ffffff'],
+    ['#075985', '#ffffff'], ['#86efac', '#0b1728'], ['#475569', '#e2e8f0'],
+    ['#07111f', '#38bdf8'], ['#0f172a', '#f0f9ff'], ['#0f172a', '#f5f3ff']
+  ]) assert.ok(contrastRatio(foreground, background) >= 4.5, `${foreground} on ${background}`);
+  assert.match(css, /\.portfolio-status\s*\{[^}]*color: #86efac;/);
+  assert.match(css, /\.portfolio-eligible-panel \.secondary-button\s*\{[^}]*color: #075985;/);
+  assert.match(css, /\.portfolio-eligible-panel button:disabled\s*\{[^}]*opacity: 1;/);
+  assert.match(css, /#portfolio-form input, #portfolio-form textarea\s*\{[^}]*background: #fff;[^}]*color: #0f172a;/);
+  assert.match(css, /#portfolio :focus-visible\s*\{[^}]*outline-color: #0284c7;/);
+});
