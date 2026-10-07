@@ -205,3 +205,20 @@ test('beginner benefit cards are accessible links to existing learning experienc
   assert.match(css, /\.platform-entry-card:focus-visible/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
 });
+
+test('Hands-On Practice cards expose four distinct accessible supplemental simulations', () => {
+  const labs = html.slice(html.indexOf('<section id="labs"'), html.indexOf('<!-- Learning Assistant Section -->'));
+  for (const id of ['reconnaissance', 'network-analysis', 'linux-challenges', 'defensive-security']) {
+    assert.match(labs, new RegExp(`<a class="card platform-entry-card" data-practice-id="${id}" href="#practice-${id}">`));
+    const matches = [...html.matchAll(new RegExp(`<section id="practice-${id}"[^>]*>([\\s\\S]*?)</section>`, 'g'))];
+    assert.equal(matches.length, 1);
+    const activity = matches[0][1];
+    for (const text of ['Learning objectives', 'Key terminology', 'Authorized scenario', 'Guided simulation', 'Reasoning hint', 'Recap', 'Recommended next step']) assert.ok(activity.includes(text));
+    assert.match(activity, /tabindex="-1"/);
+    assert.match(activity, /<pre>/);
+    assert.ok((activity.match(/<fieldset>/g) || []).length >= 3);
+    assert.match(activity, /role="status" aria-live="polite"/);
+    assert.match(activity, new RegExp(`data-practice-help="${id}" href="#coach"`));
+  }
+  assert.doesNotMatch(script, /existingCards\.hidden = true|oldHelpLink\.hidden = true/);
+});

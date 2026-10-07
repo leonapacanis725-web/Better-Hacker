@@ -60,7 +60,7 @@ function boot({ seed = {}, elements = {}, fetchImpl = async () => ({ ok: true, s
     createTextNode(text) { return { textContent: text }; }
   };
   const localStorage = new MemoryStorage(seed);
-  const exposed = source.replace(/\n\}\);\s*$/, `\n  globalThis.__app = { readCompletedLabs, readReviewResult, getDashboardState, buildRetentionSnapshot, isReviewAnswerCorrect, COURSE_REVIEW_QUESTIONS, GUIDED_LABS, INVESTIGATIONS, LESSON_PROGRESS, EXTENSION_LESSONS, countCompletedExtensionLessons, completeExtensionLesson, getLabStatus, getLabAction, completeGuidedLab, completeInvestigation, ASSISTANT_TOPICS, ASSISTANT_PROGRESS_KEY, readAssistantProgress, completeAssistantTopic, renderDashboard, setDashboardCompanionContext, companion };\n});`);
+  const exposed = source.replace(/\n\}\);\s*$/, `\n  globalThis.__app = { readCompletedLabs, readReviewResult, getDashboardState, buildRetentionSnapshot, isReviewAnswerCorrect, COURSE_REVIEW_QUESTIONS, PRACTICE_LESSONS, checkPracticeAnswers, handleNavigation, GUIDED_LABS, INVESTIGATIONS, LESSON_PROGRESS, EXTENSION_LESSONS, countCompletedExtensionLessons, completeExtensionLesson, getLabStatus, getLabAction, completeGuidedLab, completeInvestigation, ASSISTANT_TOPICS, ASSISTANT_PROGRESS_KEY, readAssistantProgress, completeAssistantTopic, renderDashboard, setDashboardCompanionContext, companion };\n});`);
   const context = { document, localStorage, __createdElements: createdElements, fetch: fetchImpl, setTimeout: fn => fn(), clearTimeout() {}, confirm: () => true,
     location: { reload() {} }, console, Date, JSON, Number, Math, Object, String, RegExp, Set,
     BetterHackerState, BetterHackerChallenges, BetterHackerMilestones, BetterHackerCompanion };
@@ -512,4 +512,30 @@ test('Learning Assistant rejects malformed or stale topic progress safely', () =
   }
   const { context } = boot({ seed: { betterHackerLearningAssistantTopics:JSON.stringify({version:1,completed:['linux','linux','web']}) } });
   assert.deepEqual(Array.from(context.__app.readAssistantProgress()), ['linux','web']);
+});
+
+
+test('supplemental practice validates every decision, persists idempotently, and leaves Core evidence unchanged', () => {
+  const { context, localStorage } = boot({ seed: { betterHackerWaitlistEmail: 'saved@example.test', unrelated: 'keep' } });
+  const app = context.__app;
+  const baseline = JSON.stringify(app.getDashboardState());
+  assert.equal(app.PRACTICE_LESSONS.length, 4);
+  for (const lesson of app.PRACTICE_LESSONS) {
+    assert.equal(app.checkPracticeAnswers(lesson.id, []).correct, false);
+    const wrong = [...lesson.answers]; wrong[0] = '1';
+    assert.equal(app.checkPracticeAnswers(lesson.id, wrong).correct, false);
+    assert.equal(localStorage.getItem(lesson.key), null);
+    assert.equal(app.checkPracticeAnswers(lesson.id, [...lesson.answers]).newlyCompleted, true);
+    assert.equal(localStorage.getItem(lesson.key), 'true');
+    assert.equal(app.checkPracticeAnswers(lesson.id, [...lesson.answers]).newlyCompleted, false);
+    assert.equal(app.checkPracticeAnswers(lesson.id, wrong).correct, false);
+    context.location.hash = lesson.target;
+    app.handleNavigation();
+    assert.equal(app.companion.getContext().activityId, lesson.id);
+  }
+  assert.equal(JSON.stringify(app.getDashboardState()), baseline);
+  const restored = boot({ seed: { ...localStorage } }).context.__app;
+  for (const lesson of restored.PRACTICE_LESSONS) assert.equal(restored.checkPracticeAnswers(lesson.id, [...lesson.answers]).newlyCompleted, false);
+  assert.equal(localStorage.getItem('unrelated'), 'keep');
+  assert.equal(localStorage.getItem('betterHackerWaitlistEmail'), 'saved@example.test');
 });
