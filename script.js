@@ -2476,8 +2476,9 @@ function renderRetentionSummary() {
   set("#dashboard-level", "Level " + level.level + " — " + level.name);
   const today=RetentionState.localDateKey(new Date());
   const dailyComplete=snapshot.daily.records.some(function(record){return record.date===today;});
-  set("#dashboard-daily", dailyComplete ? "Daily challenge completed" : "Daily challenge available");
-  set("#dashboard-streak", "Current streak: " + snapshot.daily.currentStreak + " days");
+  set("#dashboard-daily", dailyComplete ? "Daily Practice completed today" : "Daily Practice available today");
+  set("#dashboard-practice-count", "Daily Activities Completed: " + snapshot.daily.totalCompleted);
+  set("#dashboard-streak", "Current streak: " + RetentionState.activeDailyStreak(snapshot.daily, today) + " days");
   set("#dashboard-longest-streak", "Longest streak: " + snapshot.daily.longestStreak + " days");
   set("#dashboard-achievements", achievements.filter(function (a) { return a.earned; }).length + " achievements");
   set("#dashboard-badges", badges.filter(function (b) { return b.earned; }).length + " skill badges");
@@ -2544,7 +2545,7 @@ function renderDashboard() {
   const daily = RetentionState.readDailyState(localStorage);
   const dailyComplete = daily.records.some(function (record) { return record.date === RetentionState.localDateKey(new Date()); });
   setText("#today-daily", dailyComplete ? "Today’s Daily Challenge is completed." : "Today’s Daily Challenge is available.");
-  setText("#today-streaks", "Current streak: " + daily.currentStreak + " days · Longest streak: " + daily.longestStreak + " days");
+  setText("#today-streaks", "Current streak: " + RetentionState.activeDailyStreak(daily, RetentionState.localDateKey(new Date())) + " days · Longest streak: " + daily.longestStreak + " days");
   setText("#today-next", state.coreComplete ? "Core Path Complete — next optional activity: " + state.recommendation.name + "." : "Next core activity: " + state.recommendation.name + " (" + state.recommendation.type + ").");
   const todayAction = document.querySelector("#today-action");
   if (todayAction) { todayAction.href = state.recommendation.target; todayAction.textContent = state.recommendation.action; }
@@ -2744,30 +2745,12 @@ if (reviewIntro && reviewForm && reviewResults) {
    DAILY CHALLENGE & AUTHORED COMPANION
 ========================= */
 const dailyCard = document.querySelector("#daily-challenge-card");
-function renderDailyChallenge() {
-  if (!dailyCard) return;
-  const dateKey = RetentionState.localDateKey(new Date());
-  const challenge = DailyChallenges.challengeForDate(dateKey);
-  const state = RetentionState.readDailyState(localStorage);
-  const completed = state.records.some(function (record) { return record.date === dateKey && record.challengeId === challenge.id; });
-  dailyCard.innerHTML = '<p class="review-topic">' + challenge.topic + '</p><h3>' + challenge.title + '</h3><p>' + challenge.scenario + '</p>' +
-    '<p><strong>Reward:</strong> ' + challenge.xp + ' XP</p><fieldset><legend>Choose the safest answer</legend><div class="review-answers">' + challenge.choices.map(function(choice,index){return '<label class="review-option"><input type="radio" name="daily-answer" value="'+index+'">'+choice+'</label>';}).join('') + '</div></fieldset>' +
-    '<div class="daily-actions"><button type="button" class="primary-button" id="daily-submit">Submit Answer</button><button type="button" class="secondary-button" id="daily-hint">Hint</button></div><div id="daily-feedback" role="status" aria-live="polite"></div>' +
-    (completed?'<p class="activity-complete-badge">✓ Completed today — XP already awarded. You may review it again.</p>':'');
-  companion.setContext({ type:"daily", topic:challenge.topic, hint:challenge.hint, explanation:challenge.explanation, submitted:false });
-  const submit=dailyCard.querySelector("#daily-submit"), hint=dailyCard.querySelector("#daily-hint"), feedback=dailyCard.querySelector("#daily-feedback");
-  hint.addEventListener("click",function(){feedback.textContent="Hint: "+challenge.hint; companion.setContext({hint:challenge.hint});});
-  submit.addEventListener("click",function(){
-    const selected=dailyCard.querySelector('input[name="daily-answer"]:checked');
-    if(!selected){feedback.textContent="Choose an answer before submitting.";return;}
-    if(!DailyChallenges.isCorrect(challenge,selected.value)){feedback.textContent="Not quite yet. "+challenge.hint;companion.setContext({submitted:true});return;}
-    const result=RetentionState.completeDailyChallenge(state,dateKey,challenge.id,challenge.xp);
-    if(result.awarded)localStorage.setItem(RetentionState.DAILY_KEY,JSON.stringify(result.state));
-    feedback.textContent="✓ Correct. "+challenge.explanation+(result.awarded?" You earned "+challenge.xp+" XP.":" Today’s XP was already awarded.");
-    companion.setContext({submitted:true,explanation:challenge.explanation});
-    renderDailyChallenge(); renderDashboard();
-  });
-}
+const dailyPracticeUI = dailyCard ? globalThis.BetterHackerDailyPracticeUI.create({
+  root: document.querySelector("#daily-challenge"), storage: localStorage, companion: companion,
+  onComplete: function () { renderDashboard(); }
+}) : null;
+function renderDailyChallenge() { if (dailyPracticeUI) dailyPracticeUI.summary(); }
+NAVIGATION_HANDLERS.push(function () { if (dailyPracticeUI) dailyPracticeUI.navigate(location.hash || ""); });
 renderDailyChallenge();
 
 function renderExtensionLessonProgress() {

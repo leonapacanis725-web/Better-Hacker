@@ -539,3 +539,19 @@ test('supplemental practice validates every decision, persists idempotently, and
   assert.equal(localStorage.getItem('unrelated'), 'keep');
   assert.equal(localStorage.getItem('betterHackerWaitlistEmail'), 'saved@example.test');
 });
+
+test('Daily Practice credit leaves Core 8/8, guided-lab and investigation evidence intact', () => {
+  const initial = boot().context.__app;
+  const seed = Object.fromEntries(initial.LESSON_PROGRESS.map(lesson => [lesson.key, 'true']));
+  seed.betterHackerCompletedLabs = '4';
+  initial.INVESTIGATIONS.forEach(investigation => { seed[investigation.key] = 'true'; });
+  const activity = BetterHackerChallenges.challengeForDate('2026-10-07');
+  const daily = BetterHackerState.completeDailyChallenge(BetterHackerState.emptyDailyState(), '2026-10-07', activity.id, 50, {title:activity.title,track:activity.track}).state;
+  seed[BetterHackerState.DAILY_KEY] = JSON.stringify(daily);
+  const app = boot({ seed }).context.__app;
+  const dashboard = app.getDashboardState();
+  assert.equal(dashboard.lessonsCompleted, 8);
+  assert.equal(dashboard.exercisesCompleted, 4);
+  assert.equal(dashboard.investigationsCompleted, 7);
+  assert.equal(app.buildRetentionSnapshot().daily.totalCompleted, 1);
+});

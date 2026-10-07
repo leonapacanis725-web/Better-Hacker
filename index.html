@@ -27,6 +27,7 @@
       <li><a href="#roadmap">Roadmap</a></li>
       <li><a href="#labs">Labs</a></li>
       <li><a href="#portfolio">Portfolio</a></li>
+      <li><a href="#daily-practice">Daily Practice</a></li>
       <li><a href="#coach">Learning Assistant</a></li>
       <li><a href="#about">About</a></li>
     <li><a href="#early-access">Early Access</a></li>
@@ -248,7 +249,7 @@
     </section>
     <div class="retention-summary" aria-label="Learner level and daily activity summary">
       <div><strong id="dashboard-xp">0 XP</strong><span id="dashboard-level">Level 1 — New Recruit</span></div>
-      <div><strong id="dashboard-daily">Daily challenge available</strong><span id="dashboard-streak">Current streak: 0 days</span><span id="dashboard-longest-streak">Longest streak: 0 days</span></div>
+      <div><strong id="dashboard-daily">Daily challenge available</strong><span id="dashboard-streak">Current streak: 0 days</span><span id="dashboard-longest-streak">Longest streak: 0 days</span><span id="dashboard-practice-count">Daily Activities Completed: 0</span></div>
       <div><strong id="dashboard-achievements">0 achievements</strong><span id="dashboard-badges">0 skill badges</span></div>
     </div>
     <div class="level-progress" id="level-progress" role="progressbar" aria-label="Progress to next learner level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
@@ -256,7 +257,7 @@
       <p id="level-progress-text">400 XP to Cyber Explorer</p>
     </div>
     <div class="dashboard-retention-actions">
-      <a href="#daily-challenge" class="primary-button">Today’s Cyber Challenge</a>
+      <a href="#daily-challenge" class="primary-button">Continue Daily Practice →</a>
       <a href="#skills-achievements" class="secondary-button">Skills &amp; Achievements</a>
     </div>
   </section>
@@ -281,10 +282,17 @@
   </section>
 
   <section id="daily-challenge" class="section">
-    <p class="section-label">RETURN AND PRACTICE</p>
-    <h2>Daily Cyber Challenge</h2>
-    <p class="section-intro">One safe, defensive scenario selected from your local calendar date. Complete it once today to earn XP and build your streak.</p>
-    <div id="daily-challenge-card" class="review-panel daily-challenge-card" aria-live="polite"></div>
+    <div id="daily-practice">
+      <p class="section-label">DAILY PRACTICE</p>
+      <h2>Build Your Skills Every Day</h2>
+      <p class="section-intro">Practice one short cybersecurity challenge at a time. Daily Practice extends the Daily Cyber Challenge without changing Core 8/8 completion.</p>
+      <p id="daily-practice-summary" role="status" aria-live="polite"></p>
+      <div id="daily-challenge-card" class="review-panel daily-challenge-card"></div>
+      <span id="daily-practice-daily-least-privilege"></span><span id="daily-practice-daily-dns"></span><span id="daily-practice-daily-linux-permissions"></span><span id="daily-practice-daily-web-input"></span><span id="daily-practice-daily-hash"></span><span id="daily-practice-daily-ad-groups"></span><span id="daily-practice-daily-siem"></span><span id="daily-practice-daily-scope"></span><span id="daily-practice-daily-windows-log"></span><span id="daily-practice-daily-phishing"></span><span id="daily-practice-daily-malware"></span><span id="daily-practice-daily-mfa"></span><span id="daily-practice-daily-bruteforce"></span><span id="daily-practice-daily-incident"></span>
+      <article id="daily-practice-workspace" class="review-panel" aria-labelledby="daily-practice-title" hidden></article>
+      <h3>Practice History</h3>
+      <ul id="daily-practice-history" class="daily-practice-history"></ul>
+    </div>
   </section>
 
   <section id="skills-achievements" class="section dark-section">
@@ -2305,6 +2313,7 @@ Baseline: no approved account/privilege changes during this period.</pre></div><
 <script src="achievements.js"></script>
 <script src="companion.js"></script>
 <script src="portfolio.js"></script>
+<script src="daily-practice-ui.js"></script>
 <script src="script.js"></script>
 <script src="portfolio-ui.js"></script>
 
