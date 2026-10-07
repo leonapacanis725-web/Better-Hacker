@@ -1,8 +1,9 @@
 (function (root, factory) {
-  const api = factory();
+  const api = factory(typeof module === "object" && module.exports ? require('./learner-state.js') : root.BetterHackerState,
+    typeof module === "object" && module.exports ? require('./challenges.js') : root.BetterHackerChallenges);
   if (typeof module === "object" && module.exports) module.exports = api;
   else root.BetterHackerPortfolio = api;
-})(typeof globalThis !== "undefined" ? globalThis : this, function () {
+})(typeof globalThis !== "undefined" ? globalThis : this, function (DailyState, DailyLibrary) {
   "use strict";
 
   const STORAGE_KEY = "betterHackerPortfolioProjects";
@@ -27,12 +28,19 @@
     { id:"investigation-malware", title:"Malware Investigation", type:"Defensive Investigation · Malware", objective:"Identify evidence of persistence or suspicious communication.", skills:["Indicator analysis","Persistence recognition","Evidence prioritization"], tools:["Endpoint telemetry"], key:"betterHackerMalwareInvestigationComplete", href:"#investigation-malware" },
     { id:"investigation-brute-force", title:"Brute Force Investigation", type:"Defensive Investigation · Authentication", objective:"Analyze repeated authentication failures and their timing.", skills:["Authentication analysis","Pattern recognition","Defensive response"], tools:["Authentication logs"], key:"betterHackerBruteForceInvestigationComplete", href:"#investigation-brute-force" },
     { id:"investigation-web-attack", title:"Web Attack Investigation", type:"Defensive Investigation · Web Security", objective:"Interpret simulated malicious input and identify the affected interpreter.", skills:["Web log analysis","Injection recognition","Defensive investigation"], tools:["Web server logs"], key:"betterHackerWebAttackInvestigationComplete", href:"#investigation-web-attack" }
-  ]);
+  ].concat(DailyLibrary.CHALLENGES.filter(activity => activity.portfolio).map(activity => ({
+    id: "practice-" + activity.id, dailyId: activity.id, title: activity.title,
+    type: "Daily Practice · " + activity.track,
+    objective: "Educational Daily Practice using supplied fictional evidence (not professional experience): " + activity.task,
+    skills: [activity.track, "Evidence interpretation", "Defensive reasoning"], tools: ["Simulated evidence"],
+    href: "#daily-practice-" + activity.id
+  }))));
 
   function clean(value, max) { return typeof value === "string" ? value.trim().slice(0, max || 5000) : ""; }
   function activityById(id) { return ACTIVITIES.find(function (item) { return item.id === id; }) || null; }
   function isComplete(activity, storage) {
     if (!activity) return false;
+    if (activity.dailyId) return DailyState.readDailyState(storage).records.some(record => record.practice && record.challengeId === activity.dailyId);
     if (Number.isInteger(activity.labIndex)) return Math.max(0, Math.min(4, parseInt(storage.getItem("betterHackerCompletedLabs"), 10) || 0)) > activity.labIndex;
     return storage.getItem(activity.key) === "true";
   }
@@ -58,7 +66,7 @@
     const existing=state.projects.find(function (item) { return item.activityId === activityId; });
     if (existing) return { state:state, project:existing, reason:"This activity is already in your portfolio." };
     const stamp=(now || new Date()).toISOString();
-    const project=normalizeProject({ activityId:activityId, title:activity.title, createdAt:stamp, updatedAt:stamp, completedAt:"" });
+    const project=normalizeProject({ activityId:activityId, title:activity.title, createdAt:stamp, updatedAt:stamp, completedAt:activity.dailyId ? (DailyState.readDailyState(storage).records.find(record => record.practice && record.challengeId === activity.dailyId) || {}).date || "" : "" });
     state.projects.push(project); save(storage,state); return { state:state, project:project, reason:"Project added. Add your own evidence when you are ready." };
   }
   function updateProject(storage, activityId, changes, now) {

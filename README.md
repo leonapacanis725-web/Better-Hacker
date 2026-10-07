@@ -63,9 +63,29 @@ Successful topic checks are stored in the versioned `betterHackerLearningAssista
 
 The Course Review mixes multiple-choice and short-answer questions across all eight domains. Learners submit before seeing the answer. Feedback explains the correct reasoning, addresses a misconception, and links to the related lesson. The final result includes score, percentage, topic strengths, topics to revisit, and a Review Again action. A repeated attempt replaces the prior review result but does not change lesson completion or create duplicate XP.
 
-## Daily Challenges, XP, achievements, and badges
+## Daily Practice
 
-A bank of 14 safe defensive scenarios selects one challenge deterministically from the learner's local date. A valid completion awards 50 XP at most once per local date; history is validated and bounded to 60 dates.
+Daily Practice expands the existing Daily Cyber Challenge into a short evidence-analysis experience, using the same engine, activity IDs, daily storage, 50 XP award and existing achievements. It is optional: it never changes the eight Core Lessons, the 20-activity Core Path, guided-lab sequencing, investigations or supplemental lesson completion. The old `#daily-challenge` anchor still works; `#daily-practice` opens the daily overview.
+
+The 14 starter activities cover ten tracks: OWASP / Web Security, SOC / SIEM, AI + Cybersecurity, Linux, Networking, Windows Security, Cryptography, Phishing Analysis, Threat Analysis, and Defensive Security / Security Testing. Each offers a fictional scenario, supplied evidence, an interpretation question, a next-action decision, a hint, a learner reflection, retryable feedback, explanation and existing next-step links. Nothing executes commands, contacts a target, requires an account or uses a live AI service.
+
+The two selected answers are validated against authored answers. The reflection asks learners to cite evidence and explain uncertainty; only a minimum length is checked. It is not automatically graded for meaning and is not stored. Byte provides contextual authored hints. The help link opens the existing Topic Guide at the related topic.
+
+### Rotation, completion and history
+
+`challenges.js` selects one activity from the ordered library by hashing the digits of the browser's local `YYYY-MM-DD` date with `hash = (hash * 31 + digit) >>> 0`, then taking the remainder modulo the library length. This retains the existing daily schedule and remains stable on reload for the same date and library. A new date rotates the activity. Changing library size/order can change the schedule, so preserve stable IDs and order when editing. An open page refreshes the overview on focus, visibility changes and a one-minute poll; submitting yesterday's form cannot earn today's credit.
+
+`betterHackerDailyChallengeState` remains version 1. Existing records are read without a destructive migration. New records add `practice: true`, `title` and `track` to `{ date, challengeId, xp }`. State includes `lastCompletedDate`, `currentStreak`, `longestStreak`, `totalCompleted` and a bounded `records` array. Missing legacy `totalCompleted` starts from the retained record count; counts lost before this update cannot be reconstructed. New totals survive history trimming. History retains the latest 60 completed dates; the existing XP derivation still uses retained valid daily records. Dates use calendar-day differences rather than elapsed hours, so daylight-saving changes do not break streaks. A missed day resets the displayed active streak; tomorrow preserves a streak completed today. Duplicate submissions and history reviews never award more credit.
+
+History links reopen activities in review mode without recording new daily completion. The dashboard shows today's status, active/longest streak and lifetime completion count. Unknown archived activity IDs retain readable history text without broken review links. Learning Progress Reset continues removing daily state while preserving confirmed waitlist email and unrelated storage.
+
+### Portfolio and adding activities
+
+Substantial activities opt into the existing portfolio through `portfolio: true`. After a new-format completion, an explicit **Add to Portfolio** action becomes available. Nothing is added automatically. Portfolio IDs are stable per activity (`practice-<daily-id>`), so repeating it on another date cannot create duplicate projects. Authored objectives clearly identify fictional educational practice, never professional work. Earlier quick-question completions do not automatically qualify. Eligibility requires a retained new-format completion; already saved projects remain readable after their completion leaves the 60-record history.
+
+To add an activity, append one object to the ordered `entries` library in `challenges.js`: use a unique stable ID, `scenario`, `choices`, `correctIndex`, `explanation`, `hint`, and `xp: 50`; then provide `track`, `difficulty`, `minutes`, fictional `evidence`, evidence question `task`, `evidenceChoices`, `evidenceIndex`, `evidenceExplanation`, related `assistantTopic`, existing `nextHref`, and boolean `portfolio` eligibility. Add its `daily-practice-<id>` anchor inside the Daily Practice section in `index.html`. The shared renderer and storage need no changes. Use the existing Topic Guide IDs (`fundamentals`, `networking`, `linux`, `web`, `crypto`, `ad`, `soc`, `testing`, `labs`) and existing section anchors. Keep evidence defensive and authorized. Run the full Node suite and Python source-integrity check to validate targets and content. Do not change existing IDs: persisted history and portfolio projects depend on them.
+
+## XP, achievements, and badges
 
 XP is derived rather than incremented: 100 per completed lesson, 75 per guided lab, 125 per investigation, 200 for Course Review completion, plus valid Daily Challenge records. Levels begin at 0, 400, 900, 1,500, 2,300, and 3,200 XP.
 
@@ -101,6 +121,16 @@ python3 tests/source_integrity.py
 node --check script.js
 node --check companion.js
 ```
+
+Optional Chromium regression checks for Daily Practice require an available Playwright installation and Chromium (development tooling only; the site has no new dependencies). With the static server running, run:
+
+```sh
+BETTER_HACKER_TEST_URL=http://127.0.0.1:8000 \
+PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium \
+node tests/browser/daily-practice.cjs
+```
+
+Omit `PLAYWRIGHT_CHROMIUM_EXECUTABLE` to use Playwright's installed default Chromium. The checks cover 1280, 1024, 768, 390 and 320px layouts, all 14 activity panels, keyboard navigation/hints, answer retries, daily credit, history, topic help, portfolio deduplication, local-midnight rollover, and independent Core 8/8 progress.
 
 The tests cover all eight knowledge checks, persistence and recommendations, guided-lab sequencing, investigation completion, dashboard/XP/achievement derivation, portfolio eligibility, deduplication, editing, readiness, removal, README export, Byte context, Course Review, Daily Challenges, waitlist behavior, HTML links/IDs, legal navigation, and source integrity.
 

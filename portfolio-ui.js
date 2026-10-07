@@ -62,5 +62,6 @@ document.addEventListener("DOMContentLoaded", function () {
     if(event.target.closest && event.target.closest("#labs, .lesson")) setTimeout(renderProjects,0);
   });
   document.addEventListener("submit",function(event){if(event.target.id!=="portfolio-form")return;event.preventDefault();const data=new FormData(event.target),changes={};["title","completedAt"].concat(Portfolio.LEARNER_FIELDS).forEach(function(f){changes[f]=data.get(f)||"";});Portfolio.updateProject(localStorage,activeId,changes);setStatus("Project saved. Readiness has been updated.");renderProjects();openBuilder(activeId,true);});
+  document.addEventListener("daily-practice-completed", renderProjects);
   renderProjects();
 });
