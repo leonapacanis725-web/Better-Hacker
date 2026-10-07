@@ -222,3 +222,26 @@ test('Hands-On Practice cards expose four distinct accessible supplemental simul
   }
   assert.doesNotMatch(script, /existingCards\.hidden = true|oldHelpLink\.hidden = true/);
 });
+
+test('Why Better Hacker cards provide accessible links to existing learning and safe practice sections', () => {
+  const section = html.slice(html.indexOf('<!-- Why Better Hacker -->'), html.indexOf('<!-- About Section -->'));
+  const cards = [...section.matchAll(/<a class="card platform-entry-card" href="([^"]+)">([\s\S]*?)<\/a>/g)];
+  assert.equal(cards.length, 4);
+  const expected = [
+    ['Simple', '#learn', 'Explore Core Lessons →', 'Build Your Cybersecurity Skills'],
+    ['Practical', '#labs', 'Explore Hands-On Practice →', 'HANDS-ON PRACTICE'],
+    ['Guided', '#dashboard', 'Continue Your Learning Path →', 'Learner Dashboard'],
+    ['Responsible', '#security-testing-lesson', 'Review Safe Practice Guidance →', 'approved']
+  ];
+  expected.forEach(([title, target, action, content], index) => {
+    const [, href, body] = cards[index];
+    assert.equal(href, target);
+    assert.ok(body.includes(`<h3>${title}</h3>`));
+    assert.ok(body.includes(`<span class="platform-entry-action">${action}</span>`));
+    assert.doesNotMatch(body, /<(?:a|button|input|select|textarea)\b|tabindex="-1"|aria-hidden="true"/);
+    const destinations = [...html.matchAll(new RegExp(`<section id="${target.slice(1)}"[^>]*>([\\s\\S]*?)</section>`, 'g'))];
+    assert.equal(destinations.length, 1);
+    assert.ok(destinations[0][1].includes(content));
+  });
+  assert.match(css, /\.platform-entry-card:focus-visible\s*\{[^}]*box-shadow:/);
+});
