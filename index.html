@@ -1799,37 +1799,37 @@ PID   USER      COMMAND
 
     <div class="cards">
 
-      <div class="card">
+      <a class="card platform-entry-card" data-practice-id="reconnaissance" href="#practice-reconnaissance">
         <h3>🔎 Reconnaissance</h3>
         <p>
           Practice identifying information about systems in
           safe and authorized environments.
         </p>
-      </div>
+      <span class="platform-entry-action">Start Practice →</span><span class="practice-status">Not completed</span></a>
 
-      <div class="card">
+      <a class="card platform-entry-card" data-practice-id="network-analysis" href="#practice-network-analysis">
         <h3>🌐 Network Analysis</h3>
         <p>
           Learn how to examine network traffic and recognize
           common protocols and suspicious activity.
         </p>
-      </div>
+      <span class="platform-entry-action">Start Practice →</span><span class="practice-status">Not completed</span></a>
 
-      <div class="card">
+      <a class="card platform-entry-card" data-practice-id="linux-challenges" href="#practice-linux-challenges">
         <h3>💻 Linux Challenges</h3>
         <p>
           Practice Linux commands, permissions, processes,
           files, and system administration.
         </p>
-      </div>
+      <span class="platform-entry-action">Start Practice →</span><span class="practice-status">Not completed</span></a>
 
-      <div class="card">
+      <a class="card platform-entry-card" data-practice-id="defensive-security" href="#practice-defensive-security">
         <h3>🛡️ Defensive Security</h3>
         <p>
           Investigate alerts, analyze logs, identify threats,
           and practice incident-response concepts.
         </p>
-      </div>
+      <span class="platform-entry-action">Start Practice →</span><span class="practice-status">Not completed</span></a>
 
     </div>
 
@@ -1838,6 +1838,144 @@ PID   USER      COMMAND
   </section>
 
 
+<section id="practice-reconnaissance" class="section extension-lesson" aria-labelledby="practice-reconnaissance-title"><p class="section-label">SUPPLEMENTAL HANDS-ON PRACTICE — NO CORE XP</p><h2 id="practice-reconnaissance-title" tabindex="-1">Reconnaissance</h2><p>Reconnaissance means gathering information to understand a system. Defenders use it to notice unnecessary exposure before it becomes a problem.</p><p class="practice-status" role="status">Not completed</p>
+<div class="lesson-block"><h3>Learning objectives</h3><p>Distinguish passive observation from active interaction, respect authorization and scope, and identify exposed information.</p></div>
+<div class="lesson-block"><h3>Key terminology</h3><p>Passive reconnaissance: reviewing information already supplied. Active reconnaissance: interacting with a system to obtain information. Scope: the explicit boundaries of permission. Exposure: information available to others.</p></div>
+<div class="lesson-block"><h3>Beginner explanation and safe examples</h3><p>Public information is not permission to test a system. In this simulation, read only the fictional records supplied below. Active checks require explicit approval; do not visit or probe real systems.</p></div>
+<div class="lesson-block"><h3>Authorized scenario</h3><p>You are reviewing a fictional school’s supplied public inventory. Your authorization permits reading these records only. An outdated software label and an unnecessary staff contact may help outsiders infer system details.</p></div>
+<div class="lesson-block"><h3>Guided simulation: inspect the evidence</h3><p>Read the supplied records, then work through each decision below. Nothing is executed or sent over the network.</p><pre>SIMULATED PUBLIC INVENTORY — training.example (fictional; do not connect)
+Record A: Public homepage says “Example Portal 1.0 — last updated 2020”
+Record B: Staff directory includes helpdesk contact and office hours
+Scope: review supplied records only; no scans, logins, or direct requests.</pre></div><details class="lesson-block"><summary>Reasoning hint</summary><p>Separate what the records reveal from what you are allowed to do.</p><p>Record A reveals a version and age; neither record authorizes an active check.</p></details><form class="lesson-block practice-check" data-practice-id="reconnaissance">
+<fieldset><legend>Step 1: Which action stays within scope?</legend>
+<label><input type="radio" name="reconnaissance-0" value="0" required> Review the supplied inventory</label>
+<label><input type="radio" name="reconnaissance-0" value="1" required> Scan the school network</label>
+<label><input type="radio" name="reconnaissance-0" value="2" required> Try the staff password</label>
+</fieldset>
+<fieldset><legend>Step 2: What exposure should a defender review?</legend>
+<label><input type="radio" name="reconnaissance-1" value="0" required> The dated software/version label</label>
+<label><input type="radio" name="reconnaissance-1" value="1" required> Proof that the system is compromised</label>
+<label><input type="radio" name="reconnaissance-1" value="2" required> Permission to exploit the portal</label>
+</fieldset>
+<fieldset><legend>Step 3: What does active reconnaissance require?</legend>
+<label><input type="radio" name="reconnaissance-2" value="0" required> Explicit authorization and agreed scope</label>
+<label><input type="radio" name="reconnaissance-2" value="1" required> A public homepage only</label>
+<label><input type="radio" name="reconnaissance-2" value="2" required> A guess about ownership</label>
+</fieldset>
+<button class="primary-button" type="submit">Check answers and complete practice</button><p class="practice-feedback" role="status" aria-live="polite"></p></form>
+<div class="lesson-block"><h3>Recap</h3><p>Gather only authorized information, document the source and uncertainty, and ask the owner to review unnecessary exposure.</p><a class="primary-button" href="#practice-network-analysis">Recommended next step →</a> <a class="secondary-button" data-practice-help="reconnaissance" href="#coach">Get Help With a Challenge</a> <a href="#labs">Return to Hands-On Practice</a></div></section>
+<section id="practice-network-analysis" class="section extension-lesson" aria-labelledby="practice-network-analysis-title"><p class="section-label">SUPPLEMENTAL HANDS-ON PRACTICE — NO CORE XP</p><h2 id="practice-network-analysis-title" tabindex="-1">Network Analysis</h2><p>A packet is a small unit of network data. Source and destination addresses identify endpoints; ports identify services.</p><p class="practice-status" role="status">Not completed</p>
+<div class="lesson-block"><h3>Learning objectives</h3><p>Read a traffic table, identify protocols and endpoints, and support a cautious conclusion with evidence.</p></div>
+<div class="lesson-block"><h3>Key terminology</h3><p>TCP: connection-oriented transport. UDP: datagram transport. ICMP: network status/error messages, without TCP/UDP ports. DNS: maps names to addresses, commonly port 53. HTTP: web requests, commonly TCP port 80; HTTPS commonly uses 443.</p></div>
+<div class="lesson-block"><h3>Beginner explanation and safe examples</h3><p>One unusual row is a clue, not proof. Compare timing, repetition, direction, service, and the expected baseline. Private addresses here describe fictional hosts. Do not capture or contact real traffic.</p></div>
+<div class="lesson-block"><h3>Authorized scenario</h3><p>A fictional workstation normally sends a DNS query followed by a web request. Compare that pattern with repeated connection attempts to a server administration service.</p></div>
+<div class="lesson-block"><h3>Guided simulation: inspect the evidence</h3><p>Read the supplied records, then work through each decision below. Nothing is executed or sent over the network.</p><pre>SIMULATED TRAFFIC
+Time      Source       Destination   Transport  Dest port  Detail
+09:00:01  10.0.0.20    10.0.0.53     UDP        53         DNS query for training.example
+09:00:02  10.0.0.20    10.0.0.80     TCP        80         HTTP GET /lesson
+09:00:03  10.0.0.20    10.0.0.1      ICMP       —          status reply
+09:01:00  10.0.0.99    10.0.0.10     TCP        22         60 attempts in 10 seconds; no approved maintenance</pre></div><details class="lesson-block"><summary>Reasoning hint</summary><p>Read the columns before interpreting the pattern.</p><p>The last row repeats rapidly against port 22, unlike the DNS-then-web baseline.</p></details><form class="lesson-block practice-check" data-practice-id="network-analysis">
+<fieldset><legend>Step 1: What transport does the last row use?</legend>
+<label><input type="radio" name="network-analysis-0" value="0" required> TCP</label>
+<label><input type="radio" name="network-analysis-0" value="1" required> UDP</label>
+<label><input type="radio" name="network-analysis-0" value="2" required> ICMP</label>
+</fieldset>
+<fieldset><legend>Step 2: What is its source IP?</legend>
+<label><input type="radio" name="network-analysis-1" value="0" required> 10.0.0.99</label>
+<label><input type="radio" name="network-analysis-1" value="1" required> 10.0.0.10</label>
+<label><input type="radio" name="network-analysis-1" value="2" required> 10.0.0.53</label>
+</fieldset>
+<fieldset><legend>Step 3: What is its destination port?</legend>
+<label><input type="radio" name="network-analysis-2" value="0" required> 22</label>
+<label><input type="radio" name="network-analysis-2" value="1" required> 53</label>
+<label><input type="radio" name="network-analysis-2" value="2" required> 80</label>
+</fieldset>
+<fieldset><legend>Step 4: Which conclusion is supported?</legend>
+<label><input type="radio" name="network-analysis-3" value="0" required> Suspicious: rapid repeated attempts outside approved maintenance; investigate</label>
+<label><input type="radio" name="network-analysis-3" value="1" required> Confirmed compromise from port 22 alone</label>
+<label><input type="radio" name="network-analysis-3" value="2" required> Normal because every TCP packet is safe</label>
+</fieldset>
+<button class="primary-button" type="submit">Check answers and complete practice</button><p class="practice-feedback" role="status" aria-live="polite"></p></form>
+<div class="lesson-block"><h3>Recap</h3><p>Identify endpoints, protocol and service first, then compare the observed sequence with a baseline. Record supporting evidence and uncertainty.</p><a class="primary-button" href="#practice-linux-challenges">Recommended next step →</a> <a class="secondary-button" data-practice-help="network-analysis" href="#coach">Get Help With a Challenge</a> <a href="#labs">Return to Hands-On Practice</a></div></section>
+<section id="practice-linux-challenges" class="section extension-lesson" aria-labelledby="practice-linux-challenges-title"><p class="section-label">SUPPLEMENTAL HANDS-ON PRACTICE — NO CORE XP</p><h2 id="practice-linux-challenges-title" tabindex="-1">Linux Challenges</h2><p>Linux inspection connects users, files, permissions and processes. This exercise uses supplied outputs only: there is no terminal and nothing runs on your computer.</p><p class="practice-status" role="status">Not completed</p>
+<div class="lesson-block"><h3>Learning objectives</h3><p>Identify the current user, locate and inspect evidence, interpret permissions, and choose a safe next action.</p></div>
+<div class="lesson-block"><h3>Key terminology</h3><p>User: an account identity. Group: a collection of accounts used for access control. Process: a running program with a PID. Permissions: read (r), write (w), execute (x) for owner, group and others.</p></div>
+<div class="lesson-block"><h3>Beginner explanation and safe examples</h3><p>pwd shows the current directory; ls lists entries; cd changes directory; cat reads a file; grep selects matching lines; find locates files; whoami names the current user; id shows user/group IDs; ps lists processes. Example inspection sequence: pwd; ls; cd /training; cat notice.txt; grep &quot;failed&quot; /training/auth.log; find /training -name &quot;*.log&quot;; whoami; id; ps. These are explanations of fictional outputs, not commands to execute.</p></div>
+<div class="lesson-block"><h3>Authorized scenario</h3><p>An authorized fictional training host has an unfamiliar notice file and an authentication log. Review the read-only outputs, preserve evidence and report concerns rather than changing files or stopping processes.</p></div>
+<div class="lesson-block"><h3>Guided simulation: inspect the evidence</h3><p>Read the supplied records, then work through each decision below. Nothing is executed or sent over the network.</p><pre>SIMULATED OUTPUTS
+$ pwd
+/training
+$ whoami
+learner
+$ id
+uid=1000(learner) gid=1000(learners) groups=1000(learners)
+$ ls -l notice.txt
+-rw-r----- 1 analyst defenders 120 notice.txt
+$ cat notice.txt
+Unapproved support request: share your password.
+$ find /training -name &quot;*.log&quot;
+/training/auth.log
+$ grep &quot;failed&quot; /training/auth.log
+10:05 failed logon for demo-admin
+$ ps
+PID USER COMMAND
+2410 analyst log-viewer</pre></div><details class="lesson-block"><summary>Reasoning hint</summary><p>Read each command’s output; keep observation separate from modification.</p><p>Permissions split into rw-, r--, ---; the process row names both its PID and owner.</p></details><form class="lesson-block practice-check" data-practice-id="linux-challenges">
+<fieldset><legend>Step 1: Which user is currently signed in?</legend>
+<label><input type="radio" name="linux-challenges-0" value="0" required> learner</label>
+<label><input type="radio" name="linux-challenges-0" value="1" required> analyst</label>
+<label><input type="radio" name="linux-challenges-0" value="2" required> demo-admin</label>
+</fieldset>
+<fieldset><legend>Step 2: Who can write notice.txt?</legend>
+<label><input type="radio" name="linux-challenges-1" value="0" required> Only its owner analyst</label>
+<label><input type="radio" name="linux-challenges-1" value="1" required> Everyone in defenders</label>
+<label><input type="radio" name="linux-challenges-1" value="2" required> All users</label>
+</fieldset>
+<fieldset><legend>Step 3: Which log and process were found?</legend>
+<label><input type="radio" name="linux-challenges-2" value="0" required> /training/auth.log; PID 2410 owned by analyst</label>
+<label><input type="radio" name="linux-challenges-2" value="1" required> /etc/passwd; PID 1000 owned by learner</label>
+<label><input type="radio" name="linux-challenges-2" value="2" required> No evidence was supplied</label>
+</fieldset>
+<fieldset><legend>Step 4: What is the safest next action?</legend>
+<label><input type="radio" name="linux-challenges-3" value="0" required> Record the file and log evidence and report the password request</label>
+<label><input type="radio" name="linux-challenges-3" value="1" required> Send the password</label>
+<label><input type="radio" name="linux-challenges-3" value="2" required> Delete the file and kill PID 2410</label>
+</fieldset>
+<button class="primary-button" type="submit">Check answers and complete practice</button><p class="practice-feedback" role="status" aria-live="polite"></p></form>
+<div class="lesson-block"><h3>Recap</h3><p>Use identity, file metadata, content, logs and process context together. Preserve evidence and follow the authorized response plan.</p><a class="primary-button" href="#practice-defensive-security">Recommended next step →</a> <a class="secondary-button" data-practice-help="linux-challenges" href="#coach">Get Help With a Challenge</a> <a href="#labs">Return to Hands-On Practice</a></div></section>
+<section id="practice-defensive-security" class="section extension-lesson" aria-labelledby="practice-defensive-security-title"><p class="section-label">SUPPLEMENTAL HANDS-ON PRACTICE — NO CORE XP</p><h2 id="practice-defensive-security-title" tabindex="-1">Defensive Security</h2><p>A security alert is a signal to investigate. Logs record events; an indicator of compromise is an observable clue that may suggest unauthorized activity, not proof by itself.</p><p class="practice-status" role="status">Not completed</p>
+<div class="lesson-block"><h3>Learning objectives</h3><p>Build an event timeline, identify involved accounts and addresses, document evidence, and propose proportionate response.</p></div>
+<div class="lesson-block"><h3>Key terminology</h3><p>Failed logon: rejected authentication. Successful logon: accepted authentication. Privilege change: altered access rights. Account creation: a new identity. Containment: approved steps to limit potential harm while preserving evidence.</p></div>
+<div class="lesson-block"><h3>Beginner explanation and safe examples</h3><p>Correlate events rather than judging one alert in isolation. Check approved changes, account ownership and authentication context. Document timestamps, event IDs, actors, affected assets, observations and uncertainty.</p></div>
+<div class="lesson-block"><h3>Authorized scenario</h3><p>You are an authorized analyst reviewing a fictional server. No account creation or privilege changes were scheduled. The record set may indicate account misuse; investigate through the incident-response plan.</p></div>
+<div class="lesson-block"><h3>Guided simulation: inspect the evidence</h3><p>Read the supplied records, then work through each decision below. Nothing is executed or sent over the network.</p><pre>FICTIONAL AUTH/EVENT LOG — server demo-01
+10:00 E101 failed logon account=demo-admin source=192.0.2.44
+10:01 E102 failed logon account=demo-admin source=192.0.2.44
+10:02 E103 successful logon account=demo-admin source=192.0.2.44
+10:03 E104 account created actor=demo-admin new=backup-helper
+10:04 E105 privilege change actor=demo-admin target=backup-helper group=administrators
+Baseline: no approved account/privilege changes during this period.</pre></div><details class="lesson-block"><summary>Reasoning hint</summary><p>Order the records, then correlate the repeated account and source with the later changes.</p><p>E103 follows the failures; E104 and E105 create and elevate backup-helper.</p></details><form class="lesson-block practice-check" data-practice-id="defensive-security">
+<fieldset><legend>Step 1: Which timeline matches the evidence?</legend>
+<label><input type="radio" name="defensive-security-0" value="0" required> Failures → successful logon → account creation → privilege change</label>
+<label><input type="radio" name="defensive-security-0" value="1" required> Privilege change → failures → account deletion</label>
+<label><input type="radio" name="defensive-security-0" value="2" required> Only failed logons occurred</label>
+</fieldset>
+<fieldset><legend>Step 2: Which identity and source require investigation?</legend>
+<label><input type="radio" name="defensive-security-1" value="0" required> demo-admin from 192.0.2.44; new backup-helper account</label>
+<label><input type="radio" name="defensive-security-1" value="1" required> learner from 10.0.0.20</label>
+<label><input type="radio" name="defensive-security-1" value="2" required> No account or address is recorded</label>
+</fieldset>
+<fieldset><legend>Step 3: What supports concern?</legend>
+<label><input type="radio" name="defensive-security-2" value="0" required> E103–E105 follow failures and include unscheduled creation/elevation</label>
+<label><input type="radio" name="defensive-security-2" value="1" required> Every successful logon proves an attack</label>
+<label><input type="radio" name="defensive-security-2" value="2" required> The server name alone</label>
+</fieldset>
+<fieldset><legend>Step 4: What should the defender do next?</legend>
+<label><input type="radio" name="defensive-security-3" value="0" required> Preserve E101–E105, verify authorization and escalate for approved containment of affected accounts</label>
+<label><input type="radio" name="defensive-security-3" value="1" required> Delete all logs immediately</label>
+<label><input type="radio" name="defensive-security-3" value="2" required> Contact or attack the source IP</label>
+</fieldset>
+<button class="primary-button" type="submit">Check answers and complete practice</button><p class="practice-feedback" role="status" aria-live="polite"></p></form>
+<div class="lesson-block"><h3>Recap</h3><p>Write an evidence-based timeline, distinguish observation from inference, identify affected accounts, and preserve records before approved response.</p><a class="primary-button" href="#dashboard">Recommended next step →</a> <a class="secondary-button" data-practice-help="defensive-security" href="#coach">Get Help With a Challenge</a> <a href="#labs">Return to Hands-On Practice</a></div></section>
   <!-- Learning Assistant Section -->
   <section id="coach" class="section dark-section">
 

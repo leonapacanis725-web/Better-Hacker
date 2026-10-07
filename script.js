@@ -18,6 +18,72 @@ document.addEventListener("DOMContentLoaded", function () {
     { id: "incident-response", key: "betterHackerIncidentResponseLessonComplete", target: "#incident-response-lesson", name: "Incident Response", answer: "approved-containment", next: "#soc-siem-lesson", hint: "Use the authorized plan to limit harm while preserving evidence.", lookFor: "validation, evidence preservation, and proportionate containment" }
   ]);
 
+  const PRACTICE_LESSONS = Object.freeze([
+    {
+      "id": "reconnaissance",
+      "key": "betterHackerPracticeReconnaissanceComplete",
+      "target": "#practice-reconnaissance",
+      "name": "Reconnaissance",
+      "answer": "complete",
+      "answers": [
+        "0",
+        "0",
+        "0"
+      ],
+      "hint": "Separate what the records reveal from what you are allowed to do.",
+      "lookFor": "Record A reveals a version and age; neither record authorizes an active check.",
+      "explanation": "Reviewing supplied records is passive and within scope. The old version label merits owner review but does not prove a vulnerability or compromise. Active interaction requires explicit permission."
+    },
+    {
+      "id": "network-analysis",
+      "key": "betterHackerPracticeNetworkAnalysisComplete",
+      "target": "#practice-network-analysis",
+      "name": "Network Analysis",
+      "answer": "complete",
+      "answers": [
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "hint": "Read the columns before interpreting the pattern.",
+      "lookFor": "The last row repeats rapidly against port 22, unlike the DNS-then-web baseline.",
+      "explanation": "The last row is TCP from 10.0.0.99 to destination port 22. Sixty attempts in ten seconds without approved maintenance justify investigation, not a claim of confirmed compromise. DNS followed by HTTP fits the supplied normal baseline."
+    },
+    {
+      "id": "linux-challenges",
+      "key": "betterHackerPracticeLinuxChallengesComplete",
+      "target": "#practice-linux-challenges",
+      "name": "Linux Challenges",
+      "answer": "complete",
+      "answers": [
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "hint": "Read each command’s output; keep observation separate from modification.",
+      "lookFor": "Permissions split into rw-, r--, ---; the process row names both its PID and owner.",
+      "explanation": "whoami identifies learner. The file grants owner read/write, group read, and no permissions to others. find locates auth.log; ps shows analyst’s PID 2410. A password request warrants documentation and reporting, not deletion or credential sharing."
+    },
+    {
+      "id": "defensive-security",
+      "key": "betterHackerPracticeDefensiveSecurityComplete",
+      "target": "#practice-defensive-security",
+      "name": "Defensive Security",
+      "answer": "complete",
+      "answers": [
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "hint": "Order the records, then correlate the repeated account and source with the later changes.",
+      "lookFor": "E103 follows the failures; E104 and E105 create and elevate backup-helper.",
+      "explanation": "The timeline links demo-admin at 192.0.2.44 to later creation and elevation of backup-helper. Unscheduled changes following failures merit investigation. Preserve event IDs and timestamps, verify ownership/authorization, and use approved containment; the logs alone do not prove who operated the account."
+    }
+  ]);
+
   const ASSISTANT_PROGRESS_KEY = "betterHackerLearningAssistantTopics";
   const ASSISTANT_TOPICS = Object.freeze([
     { id:"fundamentals", icon:"🛡️", name:"Fundamentals", explanation:"Cybersecurity protects information and systems from harm. Professionals use shared principles to decide what matters, what could go wrong, and which safeguards reduce risk.", terms:[["Asset","Something valuable, such as data or a service."],["Threat","Something capable of causing harm."],["Vulnerability","A weakness a threat could use."],["Risk","The likelihood and impact of possible harm."]], concepts:["The CIA triad covers confidentiality, integrity, and availability.","Authentication proves identity; authorization controls permitted actions.","Least privilege limits access, while defense in depth uses multiple safeguards."], tools:"Example: multi-factor authentication, permissions, backups, monitoring, and incident plans are defensive controls—not guarantees on their own.", scenario:"A teammate needs one report but requests administrator access. Which detail matters most? The task requires one report, so broad privileges add avoidable risk.", question:"Which principle grants only the access needed for a task?", options:["Least privilege","Availability","Encoding"], correct:0, hint:"Compare the access requested with the access actually required.", feedback:"Least privilege reduces unnecessary access and limits the effect of mistakes or account compromise.", nextTopic:"networking", nextHref:"#fundamentals-lesson", nextLabel:"Review the Fundamentals lesson" },
@@ -146,9 +212,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const labSection = document.querySelector("#labs");
   if (labSection) {
     const existingCards = labSection.querySelector(".cards");
-    if (existingCards) existingCards.hidden = true;
+    if (existingCards) existingCards.hidden = false;
     const oldHelpLink = labSection.querySelector('a[href="#coach"]');
-    if (oldHelpLink) oldHelpLink.hidden = true;
+    if (oldHelpLink) oldHelpLink.hidden = false;
 
     const overview = document.createElement("div");
     overview.className = "lab-overview";
@@ -2291,7 +2357,7 @@ function countCompletedExtensionLessons() {
 }
 
 function completeExtensionLesson(id, answer) {
-  const lesson = EXTENSION_LESSONS.find(function (item) { return item.id === id; });
+  const lesson = EXTENSION_LESSONS.concat(PRACTICE_LESSONS).find(function (item) { return item.id === id; });
   if (!lesson || answer !== lesson.answer) return { correct: false, newlyCompleted: false };
   const newlyCompleted = localStorage.getItem(lesson.key) !== "true";
   if (newlyCompleted) localStorage.setItem(lesson.key, "true");
@@ -2705,6 +2771,7 @@ function renderDailyChallenge() {
 renderDailyChallenge();
 
 function renderExtensionLessonProgress() {
+  renderPracticeProgress();
   EXTENSION_LESSONS.forEach(function (lesson) {
     const complete = localStorage.getItem(lesson.key) === "true";
     const card = document.querySelector('.extension-lesson-card[data-extension-id="' + lesson.id + '"]');
@@ -2757,6 +2824,62 @@ function updateCompanionForLessonHash() {
     if (extensionHeading) extensionHeading.focus();
   }
 }
+
+function checkPracticeAnswers(id, answers) {
+  const lesson = PRACTICE_LESSONS.find(function (item) { return item.id === id; });
+  if (!lesson || answers.length !== lesson.answers.length || !lesson.answers.every(function (answer, index) { return answer === answers[index]; })) return { correct: false, newlyCompleted: false };
+  return completeExtensionLesson(id, "complete");
+}
+function setPracticeContext(lesson, submitted, explanation) {
+  companion.setContext({ type: "activity", activityId: lesson.id, topic: lesson.name, hint: lesson.hint, lookFor: lesson.lookFor, submitted: submitted, explanation: explanation || "" });
+}
+function renderPracticeProgress() {
+  PRACTICE_LESSONS.forEach(function (lesson) {
+    const complete = localStorage.getItem(lesson.key) === "true";
+    const card = document.querySelector('[data-practice-id="' + lesson.id + '"].card');
+    const section = document.querySelector(lesson.target);
+    [card, section].forEach(function (element) {
+      if (!element) return;
+      const status = element.querySelector(".practice-status");
+      if (status) status.textContent = complete ? "✓ Completed — Review Practice" : "Not completed";
+      element.classList.toggle("activity-complete", complete);
+    });
+  });
+}
+document.querySelectorAll(".practice-check").forEach(function (form) {
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    const lesson = PRACTICE_LESSONS.find(function (item) { return item.id === form.dataset.practiceId; });
+    if (!lesson) return;
+    const answers = lesson.answers.map(function (_, index) {
+      const selected = form.querySelector('input[name="' + lesson.id + '-' + index + '"]:checked');
+      return selected ? selected.value : null;
+    });
+    const feedback = form.querySelector(".practice-feedback");
+    if (answers.includes(null)) { feedback.textContent = "Answer every step first. Use the evidence and reasoning hint."; return; }
+    const result = checkPracticeAnswers(lesson.id, answers);
+    feedback.className = "practice-feedback " + (result.correct ? "feedback-success" : "feedback-review");
+    feedback.textContent = (result.correct ? (result.newlyCompleted ? "Correct — supplemental practice completed and saved. " : "Correct — reviewing your completed practice. ") : "Not quite — review the evidence and retry. Completion has not changed. ") + lesson.explanation;
+    setPracticeContext(lesson, true, lesson.explanation);
+    renderPracticeProgress();
+  });
+});
+document.querySelectorAll("[data-practice-help]").forEach(function (link) {
+  link.addEventListener("click", function () {
+    const lesson = PRACTICE_LESSONS.find(function (item) { return item.id === link.dataset.practiceHelp; });
+    if (lesson) setPracticeContext(lesson, false);
+  });
+});
+NAVIGATION_HANDLERS.push(function () {
+  const lesson = PRACTICE_LESSONS.find(function (item) { return location.hash === item.target; });
+  if (!lesson) return;
+  setPracticeContext(lesson, false);
+  const section = document.querySelector(lesson.target);
+  const heading = section && section.querySelector("h2");
+  if (heading) heading.focus();
+});
+renderPracticeProgress();
+
 function handleNavigation() {
   NAVIGATION_HANDLERS.forEach(function (handler) { handler(); });
   updateCompanionForLessonHash();
