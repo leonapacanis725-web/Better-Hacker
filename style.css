@@ -971,7 +971,7 @@ footer p {
 }
 
 .dashboard-review-link,
-.review-panel a {
+.review-panel a:not(.primary-button):not(.secondary-button) {
   color: #7dd3fc;
   text-decoration: underline;
   text-underline-offset: 3px;
