@@ -30,17 +30,17 @@
     { id:"investigation-web-attack", title:"Web Attack Investigation", type:"Defensive Investigation · Web Security", objective:"Interpret simulated malicious input and identify the affected interpreter.", skills:["Web log analysis","Injection recognition","Defensive investigation"], tools:["Web server logs"], key:"betterHackerWebAttackInvestigationComplete", href:"#investigation-web-attack" }
   ].concat(DailyLibrary.CHALLENGES.filter(activity => activity.portfolio).map(activity => ({
     id: "practice-" + activity.id, dailyId: activity.id, title: activity.title,
-    type: "Daily Practice · " + activity.track,
-    objective: "Educational Daily Practice using supplied fictional evidence (not professional experience): " + activity.task,
+    type: "Educational Practice · " + activity.track,
+    objective: "Educational practice using supplied fictional evidence (not professional experience): " + activity.task,
     skills: [activity.track, "Evidence interpretation", "Defensive reasoning"], tools: ["Simulated evidence"],
-    href: "#daily-practice-" + activity.id
+    href: "#library-activity-" + activity.id
   }))));
 
   function clean(value, max) { return typeof value === "string" ? value.trim().slice(0, max || 5000) : ""; }
   function activityById(id) { return ACTIVITIES.find(function (item) { return item.id === id; }) || null; }
   function isComplete(activity, storage) {
     if (!activity) return false;
-    if (activity.dailyId) return DailyState.readDailyState(storage).records.some(record => record.practice && record.challengeId === activity.dailyId);
+    if (activity.dailyId) return DailyState.readDailyState(storage).records.some(record => record.practice && record.challengeId === activity.dailyId) || DailyState.readPracticeLibraryState(storage).completed.some(record => record.activityId === activity.dailyId);
     if (Number.isInteger(activity.labIndex)) return Math.max(0, Math.min(4, parseInt(storage.getItem("betterHackerCompletedLabs"), 10) || 0)) > activity.labIndex;
     return storage.getItem(activity.key) === "true";
   }
@@ -60,13 +60,18 @@
   }
   function read(storage) { try { return validateState(JSON.parse(storage.getItem(STORAGE_KEY))); } catch (_) { return emptyState(); } }
   function save(storage, state) { const valid=validateState(state); storage.setItem(STORAGE_KEY, JSON.stringify(valid)); return valid; }
+  function practiceCompletionDate(activity, storage) {
+    const dates = DailyState.readDailyState(storage).records.filter(record => record.practice && record.challengeId === activity.dailyId).map(record => record.date)
+      .concat(DailyState.readPracticeLibraryState(storage).completed.filter(record => record.activityId === activity.dailyId).map(record => record.date));
+    return dates.sort()[0] || "";
+  }
   function createProject(storage, activityId, now) {
     const activity=activityById(activityId), state=read(storage);
     if (!activity || !isComplete(activity, storage)) return { state:state, project:null, reason:"Complete this activity before adding it to your portfolio." };
     const existing=state.projects.find(function (item) { return item.activityId === activityId; });
     if (existing) return { state:state, project:existing, reason:"This activity is already in your portfolio." };
     const stamp=(now || new Date()).toISOString();
-    const project=normalizeProject({ activityId:activityId, title:activity.title, createdAt:stamp, updatedAt:stamp, completedAt:activity.dailyId ? (DailyState.readDailyState(storage).records.find(record => record.practice && record.challengeId === activity.dailyId) || {}).date || "" : "" });
+    const project=normalizeProject({ activityId:activityId, title:activity.title, createdAt:stamp, updatedAt:stamp, completedAt:activity.dailyId ? practiceCompletionDate(activity, storage) : "" });
     state.projects.push(project); save(storage,state); return { state:state, project:project, reason:"Project added. Add your own evidence when you are ready." };
   }
   function updateProject(storage, activityId, changes, now) {

@@ -1415,3 +1415,11 @@ footer p {
 #daily-feedback { margin: 16px 0; }
 .daily-practice-history { text-align: left; max-width: 900px; margin: 18px auto; padding-left: 24px; overflow-wrap: anywhere; }
 .daily-practice-history a { color: #7dd3fc; text-decoration: underline; }
+
+/* Practice Library shares the existing card, action, focus and review styles. */
+#practice-library { margin-top: 32px; }
+#practice-library > p, #practice-library > a { margin-bottom: 20px; }
+#practice-library-tracks, #practice-library-activities .cards { margin-top: 20px; }
+#practice-library .card { min-width: 0; overflow-wrap: anywhere; }
+#practice-library-activities { text-align: left; margin-top: 24px; }
+#practice-library-activities[hidden] { display: none; }

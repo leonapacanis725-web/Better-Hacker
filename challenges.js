@@ -430,6 +430,22 @@
   const CHALLENGES = Object.freeze(entries.map(activity => Object.freeze({
     ...activity, choices: Object.freeze(activity.choices), evidenceChoices: Object.freeze(activity.evidenceChoices)
   })));
+  const TRACKS = Object.freeze([
+    ['web', 'OWASP / Web Security', 'Spot weaknesses in fictional web applications and choose safer defenses.'],
+    ['soc', 'SOC / SIEM', 'Correlate authentication records and investigate alerts with evidence.'],
+    ['ai', 'AI + Cybersecurity', 'Check AI conclusions against source evidence and recognize untrusted instructions.'],
+    ['linux', 'Linux', 'Interpret supplied permissions, process and service information safely.'],
+    ['networking', 'Networking', 'Read simulated traffic and troubleshoot connections and protocols.'],
+    ['windows', 'Windows Security', 'Review account access and fictional Windows event sequences.'],
+    ['crypto', 'Cryptography', 'Use trusted fingerprints to reason about file integrity.'],
+    ['phishing', 'Phishing Analysis', 'Identify suspicious message indicators without opening attachments.'],
+    ['threat', 'Threat Analysis', 'Connect endpoint clues and propose proportionate defensive responses.'],
+    ['testing', 'Defensive Security / Security Testing', 'Apply permission, scope and least privilege to authorized practice.']
+  ].map(([id, name, description]) => Object.freeze({ id, name, description })));
+  function activitiesForTrack(id) {
+    const track = TRACKS.find(item => item.id === id);
+    return track ? CHALLENGES.filter(activity => activity.track === track.name) : [];
+  }
   function activityById(id) { return CHALLENGES.find(activity => activity.id === id) || null; }
   function checkAnswers(activity, evidence, decision, reasoning) {
     return Boolean(activity && String(evidence) === String(activity.evidenceIndex) && isCorrect(activity, decision) && typeof reasoning === "string" && reasoning.trim().length >= 12);
@@ -440,5 +456,5 @@
     return CHALLENGES[hash % CHALLENGES.length];
   }
   function isCorrect(challenge, value) { return value !== null && value !== undefined && String(value).trim() !== "" && Number(value) === challenge.correctIndex; }
-  return { CHALLENGES, challengeForDate, isCorrect, activityById, checkAnswers };
+  return { CHALLENGES, TRACKS, activitiesForTrack, challengeForDate, isCorrect, activityById, checkAnswers };
 });
