@@ -90,10 +90,18 @@
     const completed=3-missing.length;
     return { status:completed === 3 ? "Portfolio Ready" : completed >= 2 ? "Almost Ready" : "Draft", missing:missing };
   }
+  // Standalone exports render learner text literally rather than as HTML,
+  // links or injected Markdown headings. This does not change stored evidence.
+  function markdownText(value) {
+    return String(value || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/[\\`*_#\[\]]/g, "\\$&");
+  }
   function markdown(project) {
     const activity=activityById(project.activityId); if (!activity) return "";
-    const sections=[["Project Objective",activity.objective],["Skills Practiced",activity.skills.map(function(x){return "- "+x;}).join("\n")],["Tools Used",activity.tools.length ? activity.tools.map(function(x){return "- "+x;}).join("\n") : ""],["Commands Used",project.commands],["Investigation / Work Performed",project.investigation],["Findings",project.findings],["Challenges",project.challenges],["Solutions",project.solutions],["What I Learned",project.learned],["Related Better Hacker Activity","["+activity.title+"]("+activity.href+")"],["Completion Date",project.completedAt]];
-    return "# "+project.title+"\n\n"+sections.filter(function(item){return clean(item[1]);}).map(function(item){return "## "+item[0]+"\n\n"+item[1];}).join("\n\n")+"\n";
+    const sections=[["Project Objective",markdownText(activity.objective)],["Skills Practiced",activity.skills.map(function(x){return "- "+markdownText(x);}).join("\n")],["Tools / Concepts",activity.tools.length ? activity.tools.map(function(x){return "- "+markdownText(x);}).join("\n") : ""],["Commands Used",markdownText(project.commands)],["Investigation / Work Performed",markdownText(project.investigation)],["Findings",markdownText(project.findings)],["Challenges",markdownText(project.challenges)],["Solutions",markdownText(project.solutions)],["What I Learned",markdownText(project.learned)],["Related Better Hacker Activity",markdownText(activity.title)+" — "+markdownText(activity.type)],["Completion Date",markdownText(project.completedAt)]];
+    return "# "+markdownText(project.title).replace(/[\r\n]+/g, " ")+"\n\n"+
+      "> Educational work completed through Better Hacker. This record documents learning and practice, not professional employment experience or independent certification.\n\n"+
+      sections.filter(function(item){return clean(item[1]);}).map(function(item){return "## "+item[0]+"\n\n"+item[1];}).join("\n\n")+"\n";
   }
   function stats(storage) { const projects=read(storage).projects; return { total:projects.length, ready:projects.filter(function(p){return readiness(p).status === "Portfolio Ready";}).length, drafts:projects.filter(function(p){return readiness(p).status !== "Portfolio Ready";}).length }; }
   function suggestion(storage) { return ACTIVITIES.find(function(a){return isComplete(a,storage) && !read(storage).projects.some(function(p){return p.activityId===a.id;});}) || null; }

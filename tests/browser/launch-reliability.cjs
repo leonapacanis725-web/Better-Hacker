@@ -40,7 +40,7 @@ const reason = 'The fictional records support further review, not proof of compr
       await page.locator('#portfolio-form input[name="title"]').fill('My "quoted" project: <notes> & learner’s evidence');
       await page.locator('#portfolio-form button[type="submit"]').click();
       await page.locator('#portfolio-builder [data-portfolio-export]').click();
-      assert.match(await page.locator('#readme-preview code').innerText(), /<notes> & learner’s evidence/);
+      assert.match(await page.locator('#readme-preview code').innerText(), /&lt;notes&gt; &amp; learner’s evidence/);
       assert.equal(await page.locator('#portfolio-builder img, #portfolio-builder script').count(), 0);
       for (const field of Portfolio.LEARNER_FIELDS) assert.equal(await page.locator(`[data-evidence="${field}"]`).innerText(), fieldExploit);
       await page.reload();

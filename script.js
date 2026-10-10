@@ -2548,7 +2548,7 @@ function renderDashboard() {
 
   const next = document.querySelector("#dashboard-next");
   if (next) next.innerHTML = '<strong>' + (state.coreComplete ? 'Core Path Complete' : 'Recommended next activity') + '</strong><h3>' + state.recommendation.name + ' <span>(' + state.recommendation.type + ')</span></h3>' +
-    '<p><b>Why next:</b> ' + state.recommendation.why + '</p><p><b>You will practice:</b> ' + state.recommendation.practice + '</p><p><b>XP contribution:</b> ' + state.recommendation.xp + ' XP' + (state.coreComplete ? ' optional Daily Challenge XP' : '') + '</p>' +
+    '<p><b>Why next:</b> ' + state.recommendation.why + '</p><p><b>You will practice:</b> ' + state.recommendation.practice + '</p><p><b>XP contribution:</b> ' + state.recommendation.xp + ' XP' + '</p>' +
     '<a class="primary-button" href="' + state.recommendation.target + '">' + state.recommendation.action + '</a>' + (state.recommendation.secondaryTarget ? ' <a class="secondary-button" href="' + state.recommendation.secondaryTarget + '">' + state.recommendation.secondaryAction + '</a>' : '');
 
   const daily = RetentionState.readDailyState(localStorage);
