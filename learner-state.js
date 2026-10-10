@@ -5,6 +5,7 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
   const DAILY_KEY = "betterHackerDailyChallengeState";
+  const PRACTICE_LIBRARY_KEY = "betterHackerPracticeLibraryState";
   const DAILY_VERSION = 1;
   const MAX_DAILY_RECORDS = 60;
   const XP_RULES = Object.freeze({ lesson: 100, guidedExercise: 75, investigation: 125, courseReview: 200 });
@@ -59,6 +60,28 @@
   function readDailyState(storage) {
     try { return validateDailyState(JSON.parse(storage.getItem(DAILY_KEY))); } catch (_) { return emptyDailyState(); }
   }
+  function emptyPracticeLibraryState() { return { version: 1, completed: [] }; }
+  function validatePracticeLibraryState(value) {
+    if (!value || value.version !== 1 || !Array.isArray(value.completed) || value.completed.length > 1000) return emptyPracticeLibraryState();
+    const seen = new Set(), completed = [];
+    for (const record of value.completed) {
+      if (!record || !/^daily-[a-z0-9-]+$/.test(record.activityId || "") || !validDate(record.date) || seen.has(record.activityId)) return emptyPracticeLibraryState();
+      seen.add(record.activityId);
+      completed.push({ activityId: record.activityId, date: record.date });
+    }
+    return { version: 1, completed };
+  }
+  function readPracticeLibraryState(storage) {
+    try { return validatePracticeLibraryState(JSON.parse(storage.getItem(PRACTICE_LIBRARY_KEY))); } catch (_) { return emptyPracticeLibraryState(); }
+  }
+  function completeLibraryPractice(storage, date, activityId) {
+    const state = readPracticeLibraryState(storage);
+    if (!validDate(date) || !/^daily-[a-z0-9-]+$/.test(activityId || "") || state.completed.length >= 1000) return { state, newlyCompleted: false };
+    if (state.completed.some(record => record.activityId === activityId)) return { state, newlyCompleted: false };
+    state.completed.push({ activityId, date });
+    storage.setItem(PRACTICE_LIBRARY_KEY, JSON.stringify(state));
+    return { state, newlyCompleted: true };
+  }
   function completeDailyChallenge(state, date, challengeId, xp, metadata) {
     state = validateDailyState(state);
     if (!validDate(date) || typeof challengeId !== "string" || !Number.isInteger(xp) || xp < 0 || xp > 100) return { state, awarded: false };
@@ -91,5 +114,6 @@
     return { ...current, xp, next, progress, xpToNext: next ? next.threshold - xp : 0 };
   }
   return { DAILY_KEY, DAILY_VERSION, MAX_DAILY_RECORDS, XP_RULES, LEVELS, localDateKey, dayDifference, emptyDailyState,
-    validateDailyState, readDailyState, completeDailyChallenge, activeDailyStreak, deriveXp, getLevel };
+    validateDailyState, readDailyState, completeDailyChallenge, activeDailyStreak, deriveXp, getLevel,
+    PRACTICE_LIBRARY_KEY, emptyPracticeLibraryState, validatePracticeLibraryState, readPracticeLibraryState, completeLibraryPractice };
 });

@@ -258,6 +258,7 @@
     </div>
     <div class="dashboard-retention-actions">
       <a href="#daily-challenge" class="primary-button">Continue Daily Practice →</a>
+      <a href="#practice-library" class="secondary-button">Explore Practice Library →</a>
       <a href="#skills-achievements" class="secondary-button">Skills &amp; Achievements</a>
     </div>
   </section>
@@ -288,6 +289,14 @@
       <p class="section-intro">Practice one short cybersecurity challenge at a time. Daily Practice extends the Daily Cyber Challenge without changing Core 8/8 completion.</p>
       <p id="daily-practice-summary" role="status" aria-live="polite"></p>
       <div id="daily-challenge-card" class="review-panel daily-challenge-card"></div>
+      <div id="practice-library" aria-labelledby="practice-library-title">
+        <h3 id="practice-library-title" tabindex="-1">Practice Library</h3>
+        <p>Choose any topic at any time. Practice Mode has no daily XP or streak credit; today’s rotating activity remains available above.</p>
+        <a class="secondary-button" href="#daily-practice-workspace">Today’s Daily Practice →</a>
+        <div id="practice-library-tracks" class="cards"></div>
+        <span id="practice-track-web"></span><span id="practice-track-soc"></span><span id="practice-track-ai"></span><span id="practice-track-linux"></span><span id="practice-track-networking"></span><span id="practice-track-windows"></span><span id="practice-track-crypto"></span><span id="practice-track-phishing"></span><span id="practice-track-threat"></span><span id="practice-track-testing"></span><span id="library-activity-daily-least-privilege"></span><span id="library-activity-daily-dns"></span><span id="library-activity-daily-linux-permissions"></span><span id="library-activity-daily-web-input"></span><span id="library-activity-daily-hash"></span><span id="library-activity-daily-ad-groups"></span><span id="library-activity-daily-siem"></span><span id="library-activity-daily-scope"></span><span id="library-activity-daily-windows-log"></span><span id="library-activity-daily-phishing"></span><span id="library-activity-daily-malware"></span><span id="library-activity-daily-mfa"></span><span id="library-activity-daily-bruteforce"></span><span id="library-activity-daily-incident"></span>
+        <div id="practice-library-activities" class="review-panel" hidden></div>
+      </div>
       <span id="daily-practice-daily-least-privilege"></span><span id="daily-practice-daily-dns"></span><span id="daily-practice-daily-linux-permissions"></span><span id="daily-practice-daily-web-input"></span><span id="daily-practice-daily-hash"></span><span id="daily-practice-daily-ad-groups"></span><span id="daily-practice-daily-siem"></span><span id="daily-practice-daily-scope"></span><span id="daily-practice-daily-windows-log"></span><span id="daily-practice-daily-phishing"></span><span id="daily-practice-daily-malware"></span><span id="daily-practice-daily-mfa"></span><span id="daily-practice-daily-bruteforce"></span><span id="daily-practice-daily-incident"></span>
       <article id="daily-practice-workspace" class="review-panel" aria-labelledby="daily-practice-title" hidden></article>
       <h3>Practice History</h3>
@@ -1804,6 +1813,11 @@ PID   USER      COMMAND
       Reading about cybersecurity is only the beginning.
       Build confidence by practicing what you learn.
     </p>
+
+    <div class="dashboard-retention-actions">
+      <a href="#daily-practice" class="primary-button">Today’s Daily Practice →</a>
+      <a href="#practice-library" class="secondary-button">Explore Practice Library →</a>
+    </div>
 
     <div class="cards">
 
