@@ -75,9 +75,9 @@ The two selected answers are validated against authored answers. The reflection 
 
 `challenges.js` selects one activity from the ordered library by hashing the digits of the browser's local `YYYY-MM-DD` date with `hash = (hash * 31 + digit) >>> 0`, then taking the remainder modulo the library length. This retains the existing daily schedule and remains stable on reload for the same date and library. A new date rotates the activity. Changing library size/order can change the schedule, so preserve stable IDs and order when editing. An open page refreshes the overview on focus, visibility changes and a one-minute poll; submitting yesterday's form cannot earn today's credit.
 
-`betterHackerDailyChallengeState` remains version 1. Existing records are read without a destructive migration. New records add `practice: true`, `title` and `track` to `{ date, challengeId, xp }`. State includes `lastCompletedDate`, `currentStreak`, `longestStreak`, `totalCompleted` and a bounded `records` array. Missing legacy `totalCompleted` starts from the retained record count; counts lost before this update cannot be reconstructed. New totals survive history trimming. History retains the latest 60 completed dates; the existing XP derivation still uses retained valid daily records. Dates use calendar-day differences rather than elapsed hours, so daylight-saving changes do not break streaks. A missed day resets the displayed active streak; tomorrow preserves a streak completed today. Duplicate submissions and history reviews never award more credit.
+`betterHackerDailyChallengeState` remains version 1. Existing records are read without a destructive migration. New records add `practice: true`, `title` and `track` to `{ date, challengeId, xp }`. State includes `lastCompletedDate`, `currentStreak`, `longestStreak`, `totalCompleted`, lifetime `totalXp` and a bounded `records` array. Missing legacy `totalCompleted` starts from the retained record count; counts lost before this update cannot be reconstructed. New totals survive history trimming. History retains the latest 60 completed dates; XP uses the lifetime total independently of retained history. Legacy states without `totalXp` retain their recorded XP and recover older shipped 50-XP awards when a lifetime completion count is available. Dates use calendar-day differences rather than elapsed hours, so daylight-saving changes do not break streaks. A missed day resets the displayed active streak; tomorrow preserves a streak completed today. Duplicate submissions and history reviews never award more credit.
 
-History links reopen activities in review mode without recording new daily completion. The dashboard shows today's status, active/longest streak and lifetime completion count. Unknown archived activity IDs retain readable history text without broken review links. Learning Progress Reset continues removing daily state while preserving confirmed waitlist email and unrelated storage.
+History links reopen activities in review mode without recording new daily completion. The dashboard shows today's status, active/longest streak and lifetime completion count. Unknown archived activity IDs retain readable history text without broken review links. Learning Progress Reset continues removing daily state while preserving authored portfolio projects, confirmed waitlist email and unrelated storage.
 
 ### Portfolio and adding activities
 
@@ -89,7 +89,7 @@ To add an activity, append one object to the ordered `entries` library in `chall
 
 The library at `#practice-library` lets learners browse all ten tracks and all 14 activities whenever they want. It reuses `CHALLENGES`, the evidence/decision/reflection renderer, authored Byte hints and the existing Topic Guide. Track cards display descriptions, activity counts, beginner difficulty and estimated time. Track routes (`#practice-track-<track-id>`) expose the matching activities; activity routes (`#library-activity-<daily-id>`) reopen directly, including after a reload. Today’s Daily Practice and its original `#daily-challenge`/`#daily-practice` anchors remain intact. Library links are available from the daily overview, dashboard and Hands-On Practice section.
 
-Library sessions are explicitly labeled **Practice Mode — No Daily XP or Streak Credit**. Correct answers save only a first-completion marker under `betterHackerPracticeLibraryState`: `{ version: 1, completed: [{ activityId, date }] }`. Dates use the browser's local calendar. Records are validated, unique per activity and bounded to 1,000 activities; malformed data is read as empty without overwriting unrelated storage. This is eligibility/status evidence, with no XP, streak, daily count or daily history. Daily storage and all Core, lab, investigation, Course Review and supplemental lesson keys stay separate. Repeats show **Practiced** without adding records. Learning Progress Reset already clears Better Hacker keys, including this new state.
+Library sessions are explicitly labeled **Practice Mode — No Daily XP or Streak Credit**. Correct answers save only a first-completion marker under `betterHackerPracticeLibraryState`: `{ version: 1, completed: [{ activityId, date }] }`. Dates use the browser's local calendar. Records are validated, unique per activity and bounded to 1,000 activities; malformed individual records are skipped while valid records and unrelated storage are retained. This is eligibility/status evidence, with no XP, streak, daily count or daily history. Daily storage and all Core, lab, investigation, Course Review and supplemental lesson keys stay separate. Repeats show **Practiced** without adding records. Learning Progress Reset already clears Better Hacker keys, including this new state.
 
 For activities with `portfolio: true`, a successful library completion enables the existing explicit **Add to Portfolio** action. No project is created automatically. Stable `practice-<daily-id>` project IDs are shared across both modes, so daily/free repeats never create duplicate projects. Project objectives describe simulated educational practice and the first supported completion date is used for a new project. Small activities marked `portfolio: false` remain ineligible. Reflections still have only a minimum-length check; they are not graded for meaning or stored automatically.
 
@@ -97,7 +97,7 @@ Track metadata (`TRACKS`) contains only names, stable IDs and descriptions. `act
 
 ## XP, achievements, and badges
 
-XP is derived rather than incremented: 100 per completed lesson, 75 per guided lab, 125 per investigation, 200 for Course Review completion, plus valid Daily Challenge records. Levels begin at 0, 400, 900, 1,500, 2,300, and 3,200 XP.
+XP is derived rather than incremented: 100 per completed lesson, 75 per guided lab, 125 per investigation, 200 for Course Review completion, plus the validated lifetime Daily Challenge XP total. Levels begin at 0, 400, 900, 1,500, 2,300, and 3,200 XP.
 
 Achievements include First Step, Core Foundations, Course Complete, Hands-On Learner, Lab Ready, Investigator, Cyber Investigator, Knowledge Checkpoint, and daily-streak milestones. Skill badges combine lesson completion with Course Review and, where applicable, linked practical evidence. These are local educational indicators, not certifications.
 
@@ -116,11 +116,17 @@ Progress is stored only in browser `localStorage`. Existing keys remain the sour
 - Learning Assistant topics: `betterHackerLearningAssistantTopics` (versioned JSON containing completed topic IDs).
 - Learner Portfolio: `betterHackerPortfolioProjects` (versioned JSON containing one editable project per stable eligible activity ID).
 
-XP, levels, achievements, and badges are calculated from validated evidence, so reloads and reviews cannot repeatedly award them. Reset Learning Progress removes Better Hacker learning and Daily Challenge state while deliberately preserving a confirmed waitlist email and unrelated local storage.
+XP, levels, achievements, and badges are calculated from validated evidence, so reloads and reviews cannot repeatedly award them. Reset Learning Progress removes Better Hacker learning and Daily Challenge state while deliberately preserving authored portfolio projects, a confirmed waitlist email and unrelated local storage.
 
 ## Waitlist, privacy, and terms
 
 The waitlist validates and normalizes email, prevents duplicate in-flight requests, reports success/failure accessibly, and writes `betterHackerWaitlistEmail` only after the existing Formspree endpoint confirms success. See `privacy.html` and `terms.html` for learner-facing disclosures.
+
+## Storage failures and portfolio safety
+
+The shared `storage.js` facade retains existing storage keys and uses session-only values when browser storage is blocked or full. A live status and completion/save feedback explicitly explain when changes have not persisted. Saved records are not deleted on failure; an unreadable original record is not overwritten by a session replacement. Retry a portfolio save after freeing storage, or export the evidence before reloading. If reads were blocked, reload when storage is available to restore the original records. Reset clears learning/practice evidence but keeps authored portfolio projects editable and exportable even if the underlying completion is reset.
+
+Learner-entered portfolio titles, dates and evidence are assigned using DOM `.value` / `.textContent`, including edit/detail/Markdown-preview paths; no learner data is interpolated into HTML attributes.
 
 ## Run and test
 
@@ -139,6 +145,9 @@ Optional Chromium regression checks for Daily Practice require an available Play
 BETTER_HACKER_TEST_URL=http://127.0.0.1:8000 \
 PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium \
 node tests/browser/daily-practice.cjs
+BETTER_HACKER_TEST_URL=http://127.0.0.1:8000 \
+PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium \
+node tests/browser/launch-reliability.cjs
 ```
 
 Omit `PLAYWRIGHT_CHROMIUM_EXECUTABLE` to use Playwright's installed default Chromium. The checks cover 1280, 1024, 768, 390 and 320px layouts, all 14 activity panels, keyboard navigation/hints, answer retries, daily credit, history, topic help, portfolio deduplication, local-midnight rollover, and independent Core 8/8 progress.

@@ -112,3 +112,33 @@ test('daily dashboard and accessible form use existing anchors, labels, feedback
   assert.match(script,/Daily Activities Completed: /);
   assert.match(fs.readFileSync('portfolio-ui.js','utf8'),/daily-practice-completed/);
 });
+
+test('61 and 65 legitimate completions retain all earned XP with bounded history and no duplicate credit', () => {
+  for (const days of [61,65]) {
+    const storage = new Storage();
+    for (let i=0; i<days; i++) assert.equal(complete(storage, State.localDateKey(new Date(2026,0,1+i))).saved, true);
+    const state = State.readDailyState(new Storage({...storage.data}));
+    assert.equal(state.totalCompleted, days); assert.equal(state.totalXp, days*50);
+    assert.equal(State.deriveXp({lessonsCompleted:0,exercisesCompleted:0,investigationsCompleted:0,reviewResult:null},state), days*50);
+    assert.equal(state.records.length,60); assert.equal(state.currentStreak,days);
+    assert.equal(complete(storage,state.lastCompletedDate).awarded,false);
+    assert.equal(complete(storage,'2026-01-01').awarded,false);
+    assert.equal(State.readDailyState(storage).totalXp, days*50);
+  }
+});
+
+test('legacy bounded daily state recovers dropped 50-XP awards from lifetime count without rewriting on read', () => {
+  const storage = new Storage();
+  for(let i=0;i<65;i++) complete(storage,State.localDateKey(new Date(2026,0,1+i)));
+  const legacy = State.readDailyState(storage); delete legacy.totalXp;
+  storage.setItem(State.DAILY_KEY,JSON.stringify(legacy)); const before=storage.getItem(State.DAILY_KEY);
+  assert.equal(State.readDailyState(storage).totalXp,3250);
+  assert.equal(storage.getItem(State.DAILY_KEY),before);
+  assert.equal(complete(storage,State.localDateKey(new Date(2026,0,66))).state.totalXp,3300);
+});
+
+test('lifetime XP tracks actual mixed award amounts rather than multiplying day count', () => {
+  let state=State.emptyDailyState(), expected=0;
+  for(let i=0;i<70;i++) {const xp=i%3===0 ? 25 : 50;expected+=xp;state=State.completeDailyChallenge(state,State.localDateKey(new Date(2026,0,1+i)),'mixed',xp).state;}
+  assert.equal(State.validateDailyState(JSON.parse(JSON.stringify(state))).totalXp,expected);
+});

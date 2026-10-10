@@ -1,6 +1,12 @@
 // Better Hacker Interactive Features
 
 document.addEventListener("DOMContentLoaded", function () {
+  const localStorage = BetterHackerStorage.create(function () { return globalThis.localStorage; }, function (message) {
+    const status = document.querySelector("#storage-status");
+    if (status) { status.textContent = message; status.hidden = !message; }
+  });
+  globalThis.BetterHackerSessionStorage = localStorage;
+
 
   const LESSON_PROGRESS = Object.freeze([
     { key: "betterHackerFundamentalsComplete", target: "#fundamentals-lesson", name: "Cybersecurity Fundamentals", check: "#fundamentals-check-result", next: "#networking-lesson", nextName: "Networking" },
@@ -297,7 +303,7 @@ document.addEventListener("DOMContentLoaded", function () {
           if (!answerWasCorrect || !completeGuidedLab(index)) return;
           refreshLearningUI();
           renderLabCards();
-          actions.innerHTML = '<h4>11. Lab Complete</h4><p class="feedback-success">Completed. Progress, XP, achievements, badge evidence, and your dashboard are now updated.</p>' +
+          actions.innerHTML = '<h4>11. Lab Complete</h4><p class="feedback-success">Completed. ' + localStorage.feedback('Progress saved; XP, achievements, badge evidence, and your dashboard are now updated.', 'betterHackerCompletedLabs') + '</p>' +
             (index + 1 < GUIDED_LABS.length ? '<button type="button" class="primary-button" id="next-guided-lab">Continue Learning: ' + GUIDED_LABS[index + 1].title + '</button>' : '<a class="primary-button" href="#dashboard">Continue Learning from Dashboard</a>') + '<a class="secondary-button" href="#lab-overview">Return to Labs</a>';
           const next = workspace.querySelector("#next-guided-lab");
           if (next) next.addEventListener("click", function () { openLab(index + 1, true); });
@@ -332,8 +338,7 @@ function readAssistantProgress() {
     const value = JSON.parse(localStorage.getItem(ASSISTANT_PROGRESS_KEY));
     if (!value || value.version !== 1 || !Array.isArray(value.completed)) return [];
     const validIds = new Set(ASSISTANT_TOPICS.map(function (topic) { return topic.id; }));
-    if (value.completed.some(function (id) { return typeof id !== "string" || !validIds.has(id); })) return [];
-    return Array.from(new Set(value.completed));
+    return Array.from(new Set(value.completed.filter(function (id) { return typeof id === "string" && validIds.has(id); })));
   } catch (error) {
     return [];
   }
@@ -448,7 +453,7 @@ if (coachSection) {
       }
       const newlyCompleted = completeAssistantTopic(topic.id, selected.value);
       feedback.className = "coach-feedback feedback-success";
-      feedback.textContent = "Correct. " + topic.feedback + (newlyCompleted ? " Topic completion was saved." : " You already completed this topic, so review does not add duplicate credit.");
+      feedback.textContent = "Correct. " + topic.feedback + " " + localStorage.feedback(newlyCompleted ? " Topic completion was saved." : " You already completed this topic, so review does not add duplicate credit.", ASSISTANT_PROGRESS_KEY);
       companion.setContext({ submitted:true, explanation:topic.feedback });
       renderAssistantProgress();
     });
@@ -518,6 +523,10 @@ function renderLessonCompletionStates() {
     }
     if (lessonSection) lessonSection.classList.toggle("activity-complete", complete);
     const result = document.querySelector(lesson.check);
+    if (complete && result && result.textContent && !result.textContent.includes("Not saved to this browser")) {
+      if (!localStorage.isPersisted(lesson.key)) result.textContent += " " + localStorage.feedback("", lesson.key);
+      else if (result.textContent.includes("Correct") && !result.textContent.includes("Progress saved.")) result.textContent += " Progress saved.";
+    }
     if (complete && result && !result.textContent) {
       result.textContent = "✓ Completed previously. Review this lesson and knowledge check whenever you like; progress and XP are not awarded twice.";
       result.className = "feedback-success";
@@ -2718,7 +2727,7 @@ function finishCourseReview() {
     (value.correct / value.total >= 0.5 ? strong : review).push({ topic: topic, lesson: value.lesson });
   });
   const links = function (items) { return items.length ? '<ul>' + items.map(function (item) { return '<li><a href="' + item.lesson + '">' + item.topic + '</a></li>'; }).join("") + '</ul>' : '<p>Keep using the lesson links below to reinforce every topic.</p>'; };
-  reviewResults.innerHTML = '<h3>Course Review Complete</h3><p class="review-score"><strong>' + reviewScore + ' / ' + total + '</strong><span>' + percentage + '%</span></p>' +
+  reviewResults.innerHTML = '<p role="status">' + localStorage.feedback('Review result saved.', COURSE_REVIEW_STORAGE_KEY) + '</p><h3>Course Review Complete</h3><p class="review-score"><strong>' + reviewScore + ' / ' + total + '</strong><span>' + percentage + '%</span></p>' +
     '<div class="review-topic-columns"><div><h4>Answered correctly</h4>' + links(strong) + '</div><div><h4>Worth revisiting</h4>' + links(review) + '</div></div>' +
     '<p>Your result is a study guide, not a label. Revisit any lesson and try again whenever you are ready.</p><button id="review-again" class="primary-button" type="button">Review Again</button>';
   document.querySelector("#review-again").addEventListener("click", startCourseReview);
@@ -2782,7 +2791,7 @@ document.querySelectorAll(".extension-check").forEach(function (form) {
       return;
     }
     feedback.className = "extension-feedback feedback-success";
-    feedback.textContent = result.newlyCompleted ? "Correct — lesson complete. Your supplemental progress has been saved." : "Correct. You already completed this lesson, so reviewing it does not award duplicate completion or XP.";
+    feedback.textContent = "Correct. " + localStorage.feedback(result.newlyCompleted ? "Lesson complete. Your supplemental progress has been saved." : "You already completed this lesson, so reviewing it does not award duplicate completion or XP.", extensionLesson.key);
     companion.setContext({ type: "lesson", activityId: extensionLesson.id, topic: extensionLesson.name, hint: extensionLesson.hint, lookFor: extensionLesson.lookFor, submitted: true, explanation: feedback.textContent });
     renderExtensionLessonProgress();
     renderDashboard();
@@ -2842,7 +2851,7 @@ document.querySelectorAll(".practice-check").forEach(function (form) {
     if (answers.includes(null)) { feedback.textContent = "Answer every step first. Use the evidence and reasoning hint."; return; }
     const result = checkPracticeAnswers(lesson.id, answers);
     feedback.className = "practice-feedback " + (result.correct ? "feedback-success" : "feedback-review");
-    feedback.textContent = (result.correct ? (result.newlyCompleted ? "Correct — supplemental practice completed and saved. " : "Correct — reviewing your completed practice. ") : "Not quite — review the evidence and retry. Completion has not changed. ") + lesson.explanation;
+    feedback.textContent = (result.correct ? ("Correct. " + localStorage.feedback(result.newlyCompleted ? "Supplemental practice completed and saved. " : "Reviewing your completed practice. ", lesson.key)) : "Not quite — review the evidence and retry. Completion has not changed. ") + lesson.explanation;
     setPracticeContext(lesson, true, lesson.explanation);
     renderPracticeProgress();
   });
@@ -2912,19 +2921,20 @@ if (learnSection) {
 
       const confirmed =
         confirm(
-          "Reset all Better Hacker learning, Daily Challenge, XP, streak, achievement, and skill badge progress?"
+          "Reset Better Hacker learning, Practice Library, Daily Challenge, XP, streak, achievement, and skill badge progress? Your authored portfolio projects and confirmed waitlist email will be kept."
         );
 
       if (!confirmed) {
         return;
       }
 
-      Object.keys(localStorage).forEach(
+      localStorage.keys().forEach(
         function (key) {
 
           if (
             key.startsWith("betterHacker") &&
-            key !== "betterHackerWaitlistEmail"
+            key !== "betterHackerWaitlistEmail" &&
+            key !== "betterHackerPortfolioProjects"
           ) {
             localStorage.removeItem(key);
           }
@@ -2932,7 +2942,11 @@ if (learnSection) {
         }
       );
 
-      location.reload();
+      if (!localStorage.hasFailures()) location.reload();
+      else {
+        refreshLearningUI(); renderDailyChallenge(); renderExtensionLessonProgress();
+        document.dispatchEvent(new Event("daily-practice-completed"));
+      }
     }
   );
 }
@@ -2980,8 +2994,8 @@ if (waitlistForm && waitlistButton && waitlistEmail && waitlistResult) {
         body: JSON.stringify({ email: email })
       });
       if (!response.ok) throw new Error("Waitlist request failed with status " + response.status);
-      localStorage.setItem("betterHackerWaitlistEmail", email);
-      waitlistResult.textContent = "✓ You’re confirmed on the Better Hacker early-access list.";
+      const emailSaved = localStorage.setItem("betterHackerWaitlistEmail", email);
+      waitlistResult.textContent = "✓ You’re confirmed on the Better Hacker early-access list." + (emailSaved ? "" : " Your email could not be saved on this device; the signup was confirmed by Formspree.");
       waitlistResult.className = "feedback-success";
       waitlistButton.textContent = "Update Waitlist Email";
     } catch (error) {

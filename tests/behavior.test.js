@@ -5,6 +5,7 @@ const vm = require('node:vm');
 
 const source = fs.readFileSync('script.js', 'utf8');
 const BetterHackerState = require('../learner-state.js');
+const BetterHackerStorage = require('../storage.js');
 const BetterHackerChallenges = require('../challenges.js');
 const BetterHackerMilestones = require('../achievements.js');
 const BetterHackerCompanion = require('../companion.js');
@@ -48,7 +49,7 @@ class MemoryStorage {
   get length() { return Object.keys(this).length; }
 }
 
-function boot({ seed = {}, elements = {}, fetchImpl = async () => ({ ok: true, status: 200 }) } = {}) {
+function boot({ seed = {}, elements = {}, fetchImpl = async () => ({ ok: true, status: 200 }), storageImpl } = {}) {
   let ready;
   const createdElements = [];
   const document = {
@@ -59,11 +60,11 @@ function boot({ seed = {}, elements = {}, fetchImpl = async () => ({ ok: true, s
     createElement() { const element = new FakeElement(); createdElements.push(element); return element; },
     createTextNode(text) { return { textContent: text }; }
   };
-  const localStorage = new MemoryStorage(seed);
+  const localStorage = storageImpl || new MemoryStorage(seed);
   const exposed = source.replace(/\n\}\);\s*$/, `\n  globalThis.__app = { readCompletedLabs, readReviewResult, getDashboardState, buildRetentionSnapshot, isReviewAnswerCorrect, COURSE_REVIEW_QUESTIONS, PRACTICE_LESSONS, checkPracticeAnswers, handleNavigation, GUIDED_LABS, INVESTIGATIONS, LESSON_PROGRESS, EXTENSION_LESSONS, countCompletedExtensionLessons, completeExtensionLesson, getLabStatus, getLabAction, completeGuidedLab, completeInvestigation, ASSISTANT_TOPICS, ASSISTANT_PROGRESS_KEY, readAssistantProgress, completeAssistantTopic, renderDashboard, setDashboardCompanionContext, companion };\n});`);
   const context = { document, localStorage, __createdElements: createdElements, fetch: fetchImpl, setTimeout: fn => fn(), clearTimeout() {}, confirm: () => true,
     location: { reload() {} }, console, Date, JSON, Number, Math, Object, String, RegExp, Set,
-    BetterHackerState, BetterHackerChallenges, BetterHackerMilestones, BetterHackerCompanion };
+    BetterHackerStorage, BetterHackerState, BetterHackerChallenges, BetterHackerMilestones, BetterHackerCompanion };
   vm.createContext(context);
   vm.runInContext(exposed, context);
   ready();
@@ -554,4 +555,58 @@ test('Daily Practice credit leaves Core 8/8, guided-lab and investigation eviden
   assert.equal(dashboard.exercisesCompleted, 4);
   assert.equal(dashboard.investigationsCompleted, 7);
   assert.equal(app.buildRetentionSnapshot().daily.totalCompleted, 1);
+});
+
+test('reset removes learning and practice evidence but preserves authored portfolio projects and email', async () => {
+  const project = JSON.stringify({version:1,projects:[{activityId:'lesson-linux',title:'My "quoted" evidence',findings:'Saved before reset'}]});
+  const {context, localStorage} = boot({seed:{betterHackerPortfolioProjects:project,betterHackerWaitlistEmail:'learner@example.test',betterHackerLinuxComplete:'true',betterHackerPracticeLibraryState:'library',betterHackerDailyChallengeState:'daily',unrelated:'keep'},elements:{'#learn':new FakeElement()}});
+  let prompt; context.confirm = text => { prompt=text; return true; };
+  const reset = context.__createdElements.find(e=>e.className==='secondary-button reset-progress-button');
+  await reset.dispatch('click');
+  assert.match(prompt,/portfolio projects.*kept/);
+  assert.equal(localStorage.getItem('betterHackerPortfolioProjects'),project);
+  assert.equal(localStorage.getItem('betterHackerWaitlistEmail'),'learner@example.test');
+  assert.equal(localStorage.getItem('betterHackerLinuxComplete'),null);
+  assert.equal(localStorage.getItem('betterHackerPracticeLibraryState'),null);
+  assert.equal(localStorage.getItem('betterHackerDailyChallengeState'),null);
+  assert.equal(localStorage.getItem('unrelated'),'keep');
+});
+
+test('quota failure allows correct feedback and session progress without claiming persistence', async () => {
+  const storage = new MemoryStorage({betterHackerNetworkingComplete:'true'});
+  storage.setItem=()=>{throw new DOMException('full','QuotaExceededError');};
+  const elements=fundamentalElements();elements['#storage-status']=new FakeElement();
+  const {context}=boot({elements,storageImpl:storage});
+  elements['#fundamentals-check-answer'].value='least privilege';
+  await elements['#fundamentals-check-button'].dispatch('click');
+  assert.match(elements['#fundamentals-check-result'].textContent,/Correct/);
+  assert.match(elements['#fundamentals-check-result'].textContent,/Not saved to this browser/);
+  assert.equal(storage.getItem('betterHackerFundamentalsComplete'),null);
+  assert.equal(storage.getItem('betterHackerNetworkingComplete'),'true');
+  assert.equal(context.__app.getDashboardState().lessonsCompleted,2);
+});
+
+test('blocked storage reads do not interrupt bootstrap or the learning recommendation', () => {
+  const storage = new MemoryStorage();storage.getItem=()=>{throw new DOMException('blocked','SecurityError');};
+  const elements={'#storage-status':new FakeElement()};
+  const {context}=boot({storageImpl:storage,elements});
+  assert.equal(context.__app.getDashboardState().recommendation.target,'#fundamentals-lesson');
+  assert.match(elements['#storage-status'].textContent,/Not saved to this browser/);
+});
+
+test('confirmed waitlist signup remains confirmed when saving its local email throws', async () => {
+  const storage=new MemoryStorage();storage.setItem=()=>{throw new DOMException('full','QuotaExceededError');};
+  const elements={'#waitlist-form':new FakeElement(),'#waitlist-button':new FakeElement(),'#waitlist-email':new FakeElement(),'#waitlist-result':new FakeElement()};
+  boot({storageImpl:storage,elements});elements['#waitlist-email'].value='Learner@Example.test';
+  await elements['#waitlist-form'].dispatch('submit');
+  assert.match(elements['#waitlist-result'].textContent,/confirmed.*email could not be saved/s);
+  assert.doesNotMatch(elements['#waitlist-result'].textContent,/couldn’t confirm/);
+  assert.equal(storage.getItem('betterHackerWaitlistEmail'),null);
+});
+
+test('valid Assistant topic progress survives an adjacent stale or malformed entry', () => {
+  const seed={betterHackerLearningAssistantTopics:JSON.stringify({version:1,completed:['linux',null,'unknown','web','linux']})};
+  const {context,localStorage}=boot({seed});
+  assert.deepEqual(Array.from(context.__app.readAssistantProgress()),['linux','web']);
+  assert.equal(localStorage.getItem('betterHackerLearningAssistantTopics'),seed.betterHackerLearningAssistantTopics);
 });
