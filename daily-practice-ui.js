@@ -20,8 +20,11 @@
     const activity = Library.activityById(id);
     if (!activity || Library.challengeForDate(date).id !== id || !Library.checkAnswers(activity, evidence, decision, reasoning)) return { correct: false, awarded: false };
     const result = State.completeDailyChallenge(State.readDailyState(storage), date, id, activity.xp, { title: activity.title, track: activity.track });
-    if (result.awarded) storage.setItem(State.DAILY_KEY, JSON.stringify(result.state));
-    return { ...result, correct: true };
+    let saved = !storage.isPersisted || storage.isPersisted(State.DAILY_KEY);
+    if (result.awarded || !saved) {
+      try { saved = storage.setItem(State.DAILY_KEY, JSON.stringify(result.state)) !== false; } catch (_) { saved = false; }
+    }
+    return { ...result, correct: true, saved };
   }
   function submitLibraryPractice(storage, date, id, evidence, decision, reasoning) {
     const activity = Library.activityById(id);
@@ -58,7 +61,7 @@
     }
     function summary() {
       const date = today(), state = State.readDailyState(storage), activity = Library.challengeForDate(date);
-      const completed = state.records.some(record => record.date === date);
+      const completed = state.lastCompletedDate === date;
       root.querySelector('#daily-challenge-card').innerHTML = '<p class="review-topic">Today’s Practice · ' + date + '</p><h3>' + escape(activity.title) + '</h3><p>' + escape(activity.track) + ' · ' + activity.difficulty + ' · ' + activity.minutes + '</p><p>' + escape(activity.scenario) + '</p><p>' + (completed ? '✓ Completed today — review without extra credit' : 'Not completed today') + '</p><a class="primary-button" href="#daily-practice-workspace">' + (completed ? 'Review Today’s Activity →' : 'Start Today’s Activity →') + '</a> <a class="secondary-button" href="#practice-library">Explore Practice Library →</a>';
       root.querySelector('#daily-practice-summary').textContent = 'Practice streak: ' + State.activeDailyStreak(state, date) + ' days · Daily Activities Completed: ' + state.totalCompleted + ' · History: latest ' + State.MAX_DAILY_RECORDS + ' days completed';
       root.querySelector('#daily-practice-history').innerHTML = historyHtml(state, date);
@@ -115,13 +118,13 @@
       if (!evidence || !decision || reasoning.trim().length < 12) { feedback.textContent = 'Choose both answers and provide a short evidence-based reflection.'; return; }
       context(true);
       if (!Library.checkAnswers(active, evidence.value, decision.value, reasoning)) { feedback.textContent = 'Not quite — review the evidence and retry. ' + active.explanation; return; }
-      let message = '✓ Activity Complete. ' + active.explanation;
+      let message = '✓ Correct — Activity Complete. ' + active.explanation;
       if (mode === 'daily') {
         const result = submitPractice(storage, activeDate, active.id, evidence.value, decision.value, reasoning);
-        message += result.awarded ? ' Completion saved; 50 XP awarded once for today.' : ' Today’s credit was already recorded; no duplicate XP.';
+        message += !result.saved ? ' Not saved to this browser. Progress and XP are only available for this session; they may be lost on reload.' : result.awarded ? ' Completion saved; 50 XP awarded once for today.' : ' Today’s credit was already recorded; no duplicate XP.';
       } else if (mode === 'library') {
         const result = submitLibraryPractice(storage, today(), active.id, evidence.value, decision.value, reasoning);
-        message += result.newlyCompleted ? ' Practice completed and saved. No daily XP, streak or history credit.' : ' Practiced before — no duplicate completion and no daily XP, streak or history credit.';
+        message += result.saved === false ? ' Not saved to this browser. Practice completion is only available for this session; it may be lost on reload.' : result.newlyCompleted ? ' Practice completed and saved. No daily XP, streak or history credit.' : ' Practiced before — no duplicate completion and no daily XP, streak or history credit.';
       } else message += ' Review only; no new completion or XP.';
       feedback.textContent = message;
       workspace.querySelector('#daily-practice-next').innerHTML = nextActions();
