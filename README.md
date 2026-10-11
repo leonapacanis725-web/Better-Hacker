@@ -49,7 +49,7 @@ The Learner Portfolio reuses existing completion evidence rather than introducin
 
 Each builder separates Better Hacker-authored context—objective, skills, tools, and the related activity—from learner-authored commands, work performed, findings, learning, challenges, and solutions. **Draft**, **Almost Ready**, and **Portfolio Ready** explain which of the three essential learner-evidence areas are missing: work performed, findings, and what was learned. Incomplete projects always remain viewable and editable.
 
-Project details can be previewed as Markdown, copied, or downloaded as a `.md` README without GitHub authentication. Empty learner sections are omitted so exports never invent evidence. The versioned `betterHackerPortfolioProjects` local-storage record is deliberately based on stable activity IDs, leaving room for later GitHub export, public profiles, shareable pages, templates, resume summaries, and verified evidence without changing existing completion keys.
+Project details can be previewed as Markdown, copied, or downloaded as a `.md` README without GitHub authentication. Standalone exports include an educational-work disclaimer and a plain-text activity reference instead of site-only fragment links; learner text is escaped for literal Markdown rendering without changing saved evidence. Empty learner sections are omitted so exports never invent evidence. The versioned `betterHackerPortfolioProjects` local-storage record is deliberately based on stable activity IDs, leaving room for later GitHub export, public profiles, shareable pages, templates, resume summaries, and verified evidence without changing existing completion keys.
 
 The dashboard reports project, ready, and draft counts and may suggest one completed activity to document. This suggestion is separate from—and never replaces—the Core Path Continue Learning recommendation. Byte offers authored portfolio-writing guidance and never supplies accomplishments, commands, findings, credentials, or employment history for the learner.
 
@@ -157,3 +157,19 @@ The tests cover all eight knowledge checks, persistence and recommendations, gui
 ## Prototype limitations
 
 There is no authentication, cloud sync, database, live AI, direct GitHub publishing, public portfolio hosting, server-side validation, formal grading, or certification. Browser data may be edited or cleared through developer/browser controls and does not synchronize across devices. Downloaded READMEs are learner-controlled, unverified educational records. The simulations teach safe decision-making; they are not substitutes for an organization's procedures or authorization requirements.
+
+## Launch verification still required
+
+No verified public deployment URL or public operator/contact information is configured in this repository. Do not derive or publish a production URL solely from the GitHub repository name. The configured signup endpoint is `https://formspree.io/f/xdeobdjl`; mocks verify browser behavior, not service ownership or delivery. No real signup is sent by the test suites.
+
+Before a publicly invited beta, the owner needs to supply the verified operator name and a monitored public contact, confirm the HTTPS deployment and deployed revision/assets/legal links/deep links, and verify Formspree ownership, delivery, limits/abuse controls and an unsubscribe/deletion contact process. Have the current privacy and terms reviewed for the intended audience and jurisdiction. A real signup test requires explicit authorization. Browser-local progress and portfolio exports are not accounts, cloud sync or independent credentials.
+
+The focused launch-readiness Chromium runner additionally uses development-only `axe-core` and `marked` alongside Playwright. These are not shipped to learners. With those modules available to Node, run:
+
+```sh
+BETTER_HACKER_TEST_URL=http://127.0.0.1:8000 \
+PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium \
+node tests/browser/launch-readiness.cjs
+```
+
+If axe-core is installed outside Node's normal module search path, set `AXE_CORE_PATH` to its installed package directory. The runner checks contrast through normal/hover/focus/disabled states, navigation-card names and keyboard behavior, portable Markdown rendered with GFM, legal pages, anchors and mocked waitlist failures/success without contacting the live signup endpoint.
