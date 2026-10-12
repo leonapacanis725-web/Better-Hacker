@@ -137,7 +137,26 @@ node --test tests/*.test.js
 python3 tests/source_integrity.py
 node --check script.js
 node --check companion.js
+node --check checkout.js
 ```
+
+## Pricing and hosted checkout
+
+Current displayed plans are **Free ($0)**, **Better Hacker Pro ($7.99/month)**, and **Better Hacker Pro Annual ($69/year)**. Annual is about **$5.75/month billed yearly**, about **28% less** than 12 monthly payments ($95.88). Free is a meaningful way to use the published beginner lessons, hands-on practice, investigations, Daily Practice, progress tracking, authored Learning Assistant guidance, and portfolio tools. Those published beta features remain available to everyone; the site does not currently restrict features by plan. Pro is positioned as a paid membership supporting Better Hacker and providing Pro access when paid membership launches. No paid purchase can currently be made.
+
+`checkout.js` contains the client boundary for choosing the distinct `monthly` and `annual` plan IDs and requesting a Stripe-hosted Checkout Session. The browser must call a same-origin backend endpoint, which owns the Stripe secret and maps each plan ID to its matching Stripe Price ID. The client accepts only a returned `https://checkout.stripe.com` URL. It never collects or stores card data. The endpoint is intentionally absent in this beta: selecting a plan opens a review panel, and continuing explains that checkout is not configured without claiming a successful payment. `?checkout=success` and `?checkout=cancel` provide neutral future return states; a return URL alone must never grant Pro access. A verified backend/webhook must confirm subscription state before any entitlement is enabled.
+
+Before production payment acceptance, provide and validate these deployment settings on the **server**, not in committed source or client JavaScript:
+
+- `STRIPE_SECRET_KEY` — restricted to the server-side checkout service.
+- `STRIPE_PRICE_ID_MONTHLY` — the live Stripe recurring Price for $7.99 USD/month.
+- `STRIPE_PRICE_ID_ANNUAL` — the live Stripe recurring Price for $69 USD/year.
+- `STRIPE_WEBHOOK_SECRET` — verifies signed Stripe subscription/payment events.
+- `PUBLIC_SITE_URL` — the verified HTTPS Better Hacker origin.
+- `STRIPE_SUCCESS_URL` and `STRIPE_CANCEL_URL` — allowlisted HTTPS return URLs on that origin.
+- Public deployment setting `BETTER_HACKER_CHECKOUT_ENDPOINT` — injects the same-origin backend route as `<meta name="better-hacker-checkout-endpoint" content="…">`; the current page deliberately has no value.
+
+Production launch checklist: deploy the authenticated/rate-limited backend endpoint; validate plan IDs server-side and create subscription-mode Checkout Sessions with server-defined prices and allowlisted return URLs; verify Stripe webhook signatures and idempotently record subscription status; add a cancellation/customer-portal flow and renewal/cancellation disclosures; confirm tax, refund, support, privacy, and terms details for the operating jurisdiction; test with Stripe test mode and a separate production review; configure live credentials only through the hosting provider’s secret manager; verify that neither a canceled session nor a spoofed return query grants access; and only then enable the endpoint for live traffic. Never put secret keys or webhook secrets in HTML, JavaScript, README files, logs, or Git history. Update legal notices to identify the provider and actual data flow before launch.
 
 Optional Chromium regression checks for Daily Practice require an available Playwright installation and Chromium (development tooling only; the site has no new dependencies). With the static server running, run:
 
