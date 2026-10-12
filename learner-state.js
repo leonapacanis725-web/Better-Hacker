@@ -28,6 +28,7 @@
     const d = date || new Date();
     return [d.getFullYear(), String(d.getMonth() + 1).padStart(2, "0"), String(d.getDate()).padStart(2, "0")].join("-");
   }
+  function formatDayCount(count) { return count + (count === 1 ? " day" : " days"); }
   function dayDifference(from, to) {
     if (!validDate(from) || !validDate(to)) return null;
     const a = from.split("-").map(Number), b = to.split("-").map(Number);
@@ -127,7 +128,7 @@
     const progress = next ? Math.round(((xp - current.threshold) / (next.threshold - current.threshold)) * 100) : 100;
     return { ...current, xp, next, progress, xpToNext: next ? next.threshold - xp : 0 };
   }
-  return { DAILY_KEY, DAILY_VERSION, MAX_DAILY_RECORDS, XP_RULES, LEVELS, localDateKey, dayDifference, emptyDailyState,
+  return { DAILY_KEY, DAILY_VERSION, MAX_DAILY_RECORDS, XP_RULES, LEVELS, localDateKey, formatDayCount, dayDifference, emptyDailyState,
     validateDailyState, readDailyState, completeDailyChallenge, activeDailyStreak, deriveXp, getLevel,
     PRACTICE_LIBRARY_KEY, emptyPracticeLibraryState, validatePracticeLibraryState, readPracticeLibraryState, completeLibraryPractice };
 });

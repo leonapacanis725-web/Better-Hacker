@@ -63,7 +63,7 @@
       const date = today(), state = State.readDailyState(storage), activity = Library.challengeForDate(date);
       const completed = state.lastCompletedDate === date;
       root.querySelector('#daily-challenge-card').innerHTML = '<p class="review-topic">Today’s Practice · ' + date + '</p><h3>' + escape(activity.title) + '</h3><p>' + escape(activity.track) + ' · ' + activity.difficulty + ' · ' + activity.minutes + '</p><p>' + escape(activity.scenario) + '</p><p>' + (completed ? '✓ Completed today — review without extra credit' : 'Not completed today') + '</p><a class="primary-button" href="#daily-practice-workspace">' + (completed ? 'Review Today’s Activity →' : 'Start Today’s Activity →') + '</a> <a class="secondary-button" href="#practice-library">Explore Practice Library →</a>';
-      root.querySelector('#daily-practice-summary').textContent = 'Practice streak: ' + State.activeDailyStreak(state, date) + ' days · Daily Activities Completed: ' + state.totalCompleted + ' · History: latest ' + State.MAX_DAILY_RECORDS + ' days completed';
+      root.querySelector('#daily-practice-summary').textContent = 'Practice streak: ' + State.formatDayCount(State.activeDailyStreak(state, date)) + ' · Daily Activities Completed: ' + state.totalCompleted + ' · History: latest ' + State.MAX_DAILY_RECORDS + ' days completed';
       root.querySelector('#daily-practice-history').innerHTML = historyHtml(state, date);
       root.querySelector('#practice-library-tracks').innerHTML = trackCardsHtml();
       lastDate = date;

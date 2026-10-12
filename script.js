@@ -2499,8 +2499,8 @@ function renderRetentionSummary() {
   const dailyComplete=snapshot.daily.records.some(function(record){return record.date===today;});
   set("#dashboard-daily", dailyComplete ? "Daily Practice completed today" : "Daily Practice available today");
   set("#dashboard-practice-count", "Daily Activities Completed: " + snapshot.daily.totalCompleted);
-  set("#dashboard-streak", "Current streak: " + RetentionState.activeDailyStreak(snapshot.daily, today) + " days");
-  set("#dashboard-longest-streak", "Longest streak: " + snapshot.daily.longestStreak + " days");
+  set("#dashboard-streak", "Current streak: " + RetentionState.formatDayCount(RetentionState.activeDailyStreak(snapshot.daily, today)));
+  set("#dashboard-longest-streak", "Longest streak: " + RetentionState.formatDayCount(snapshot.daily.longestStreak));
   set("#dashboard-achievements", achievements.filter(function (a) { return a.earned; }).length + " achievements");
   set("#dashboard-badges", badges.filter(function (b) { return b.earned; }).length + " skill badges");
   const progress=document.querySelector("#level-progress");
@@ -2569,7 +2569,7 @@ function renderDashboard() {
   const daily = RetentionState.readDailyState(localStorage);
   const dailyComplete = daily.records.some(function (record) { return record.date === RetentionState.localDateKey(new Date()); });
   setText("#today-daily", dailyComplete ? "Today’s Daily Challenge is completed." : "Today’s Daily Challenge is available.");
-  setText("#today-streaks", "Current streak: " + RetentionState.activeDailyStreak(daily, RetentionState.localDateKey(new Date())) + " days · Longest streak: " + daily.longestStreak + " days");
+  setText("#today-streaks", "Current streak: " + RetentionState.formatDayCount(RetentionState.activeDailyStreak(daily, RetentionState.localDateKey(new Date()))) + " · Longest streak: " + RetentionState.formatDayCount(daily.longestStreak));
   setText("#today-next", state.coreComplete ? "Core Path Complete — next optional activity: " + state.recommendation.name + "." : "Next core activity: " + state.recommendation.name + " (" + state.recommendation.type + ").");
   const todayAction = document.querySelector("#today-action");
   if (todayAction) { todayAction.href = state.recommendation.target; todayAction.textContent = state.recommendation.action; }
