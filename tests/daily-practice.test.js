@@ -11,6 +11,13 @@ class Storage {
   setItem(key,value) { this.data[key]=String(value); }
 }
 const reasoning='Record A supports investigation, but is not proof of compromise.';
+
+test('day-count wording is singular only for one day', () => {
+  assert.equal(State.formatDayCount(0),'0 days');
+  assert.equal(State.formatDayCount(1),'1 day');
+  assert.equal(State.formatDayCount(2),'2 days');
+});
+
 function complete(storage,date) {
   const activity=Library.challengeForDate(date);
   return UI.submitPractice(storage,date,activity.id,activity.evidenceIndex,activity.correctIndex,reasoning);

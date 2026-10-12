@@ -114,6 +114,7 @@
     const difference = dayDifference(state.lastCompletedDate, today);
     return difference === 0 || difference === 1 ? state.currentStreak : 0;
   }
+  function formatDayCount(days) { return days + (days === 1 ? " day" : " days"); }
   function deriveXp(snapshot, dailyState) {
     const dailyXp = validateDailyState(dailyState).totalXp;
     return snapshot.lessonsCompleted * XP_RULES.lesson + snapshot.exercisesCompleted * XP_RULES.guidedExercise +
@@ -128,6 +129,6 @@
     return { ...current, xp, next, progress, xpToNext: next ? next.threshold - xp : 0 };
   }
   return { DAILY_KEY, DAILY_VERSION, MAX_DAILY_RECORDS, XP_RULES, LEVELS, localDateKey, dayDifference, emptyDailyState,
-    validateDailyState, readDailyState, completeDailyChallenge, activeDailyStreak, deriveXp, getLevel,
+    validateDailyState, readDailyState, completeDailyChallenge, activeDailyStreak, formatDayCount, deriveXp, getLevel,
     PRACTICE_LIBRARY_KEY, emptyPracticeLibraryState, validatePracticeLibraryState, readPracticeLibraryState, completeLibraryPractice };
 });
