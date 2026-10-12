@@ -15,6 +15,12 @@ function reviewResult(percentage=75) {
   return { completed:true, percentage, topics:Object.fromEntries(topics.map(topic=>[topic,{correct:1,total:1,lesson:'#lesson'}])) };
 }
 
+test('streak day labels use singular only for one day', () => {
+  assert.equal(State.formatDayCount(0), '0 days');
+  assert.equal(State.formatDayCount(1), '1 day');
+  assert.equal(State.formatDayCount(2), '2 days');
+});
+
 test('daily challenge bank is safe, stable, complete, and deterministic by local date key', () => {
   assert.equal(Challenges.CHALLENGES.length, 14);
   assert.equal(new Set(Challenges.CHALLENGES.map(c=>c.id)).size, 14);
