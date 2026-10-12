@@ -6,7 +6,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 96px;
+  scroll-padding-top: var(--navigation-offset, 96px);
 }
 
 body {
@@ -971,7 +971,7 @@ footer p {
 }
 
 .dashboard-review-link,
-.review-panel a {
+.review-panel a:not(.primary-button):not(.secondary-button) {
   color: #7dd3fc;
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -1039,6 +1039,9 @@ footer p {
   border-radius: 14px;
   overflow-wrap: anywhere;
 }
+
+.review-panel ol { margin: 16px 0; padding-left: 24px; text-align: left; }
+.review-panel ol li + li { margin-top: 8px; }
 
 .review-panel[hidden] {
   display: none;
