@@ -8,6 +8,17 @@ document.addEventListener("DOMContentLoaded", function () {
   globalThis.BetterHackerSessionStorage = localStorage;
 
 
+  // The fixed navigation wraps on narrow screens; keep anchor destinations visible.
+  const navigationBar = document.querySelector(".navbar");
+  if (navigationBar && document.documentElement) {
+    const updateNavigationOffset = function () {
+      document.documentElement.style.setProperty("--navigation-offset", Math.ceil(navigationBar.getBoundingClientRect().height) + 16 + "px");
+    };
+    updateNavigationOffset();
+    if (typeof ResizeObserver !== "undefined") new ResizeObserver(updateNavigationOffset).observe(navigationBar);
+    else window.addEventListener("resize", updateNavigationOffset);
+  }
+
   const LESSON_PROGRESS = Object.freeze([
     { key: "betterHackerFundamentalsComplete", target: "#fundamentals-lesson", name: "Cybersecurity Fundamentals", check: "#fundamentals-check-result", next: "#networking-lesson", nextName: "Networking" },
     { key: "betterHackerNetworkingComplete", target: "#networking-lesson", name: "Networking", check: "#network-check-result", next: "#linux-lesson", nextName: "Linux" },
@@ -456,6 +467,7 @@ if (coachSection) {
       feedback.textContent = "Correct. " + topic.feedback + " " + localStorage.feedback(newlyCompleted ? " Topic completion was saved." : " You already completed this topic, so review does not add duplicate credit.", ASSISTANT_PROGRESS_KEY);
       companion.setContext({ submitted:true, explanation:topic.feedback });
       renderAssistantProgress();
+      renderDashboard();
     });
 
     renderAssistantProgress();
@@ -2526,6 +2538,9 @@ function renderDashboard() {
     const element = document.querySelector(selector);
     if (element) element.textContent = value;
   };
+  setText("#dashboard-hands-on", countCompleted(PRACTICE_LESSONS.map(function (lesson) { return lesson.key; })) + " / " + PRACTICE_LESSONS.length + " completed");
+  setText("#dashboard-library", RetentionState.readPracticeLibraryState(localStorage).completed.length + " / " + globalThis.BetterHackerChallenges.CHALLENGES.length + " practiced");
+  setText("#dashboard-topics", readAssistantProgress().length + " / " + ASSISTANT_TOPICS.length + " completed");
   setText("#dashboard-lessons", state.lessonsCompleted + " / " + LESSON_PROGRESS.length + " completed");
   setText("#dashboard-extension-lessons", state.extensionLessonsCompleted + " / " + EXTENSION_LESSONS.length + " completed");
   setText("#dashboard-exercises", state.exercisesCompleted + " / " + GUIDED_EXERCISE_TOTAL + " completed");
@@ -2854,6 +2869,7 @@ document.querySelectorAll(".practice-check").forEach(function (form) {
     feedback.textContent = (result.correct ? ("Correct. " + localStorage.feedback(result.newlyCompleted ? "Supplemental practice completed and saved. " : "Reviewing your completed practice. ", lesson.key)) : "Not quite — review the evidence and retry. Completion has not changed. ") + lesson.explanation;
     setPracticeContext(lesson, true, lesson.explanation);
     renderPracticeProgress();
+    renderDashboard();
   });
 });
 document.querySelectorAll("[data-practice-help]").forEach(function (link) {

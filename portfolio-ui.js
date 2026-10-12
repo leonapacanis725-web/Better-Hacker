@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const builder = document.querySelector("#portfolio-builder");
   const status = document.querySelector("#portfolio-status");
   let activeId = null;
+  let returnFocus = null;
 
   function escapeHtml(value) { const node=document.createElement("span"); node.textContent=String(value || ""); return node.innerHTML; }
   function setStatus(message) { if (status) status.textContent=message; }
@@ -38,8 +39,16 @@ document.addEventListener("DOMContentLoaded", function () {
     list.querySelectorAll("[data-project-title]").forEach(function (heading, index) { heading.textContent = projects[index].title; });
     renderEligible(); renderDashboard();
   }
+  function closeBuilder() {
+    builder.hidden=true;
+    const fallback=Array.from(list.querySelectorAll("[data-portfolio-view]")).find(function(button){return button.dataset.portfolioView===activeId;}) || document.querySelector("#portfolio-title");
+    const target=returnFocus && returnFocus.isConnected && !returnFocus.disabled ? returnFocus : fallback;
+    if(target){if(!target.matches("button,a,input"))target.setAttribute("tabindex","-1");target.focus();}
+    activeId=null;
+  }
   function openBuilder(id, viewOnly) {
     const project=Portfolio.read(localStorage).projects.find(function(p){return p.activityId===id;}), a=Portfolio.activityById(id); if (!project || !a || !builder) return;
+    if (!builder.contains(document.activeElement)) returnFocus = document.activeElement && document.activeElement.matches("button,a,input") ? document.activeElement : null;
     activeId=id; const ready=Portfolio.readiness(project);
     builder.hidden=false;
     builder.innerHTML='<div class="portfolio-builder-head"><div><p class="portfolio-type">'+escapeHtml(a.type)+'</p><h3 id="portfolio-builder-title" tabindex="-1">'+(viewOnly?'Project Detail':'Edit Portfolio Project')+'</h3></div><button type="button" data-portfolio-close aria-label="Close project builder">×</button></div>'+
@@ -53,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
       builder.querySelectorAll("[data-evidence]").forEach(function (node) { node.textContent = project[node.dataset.evidence]; });
       builder.querySelector("[data-completion-date]").textContent = project.completedAt || "date not recorded";
     }
-    builder.scrollIntoView({behavior:"smooth",block:"start"}); builder.querySelector("#portfolio-builder-title").focus(); setByte(a);
+    builder.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",block:"start"}); builder.querySelector("#portfolio-builder-title").focus(); setByte(a);
   }
   function authoredHtml(a) { return '<aside class="authored-info"><strong>Provided by Better Hacker</strong><p><b>Objective:</b> '+escapeHtml(a.objective)+'</p><p><b>Skills practised:</b> '+escapeHtml(a.skills.join(", "))+'</p><p><b>Relevant tools:</b> '+escapeHtml(a.tools.join(", ") || "None specified")+'</p></aside>'; }
   function formHtml(p,a) { const fields=[["commands","Commands I used"],["investigation","What I investigated / work I performed"],["findings","What I found"],["learned","What I learned"],["challenges","Challenges I encountered"],["solutions","How I solved them"]]; return authoredHtml(a)+'<form id="portfolio-form"><p class="learner-label"><strong>Your evidence</strong> — only record work you actually completed.</p><label>Project title<input name="title" maxlength="120" required></label><label>Completion date<input name="completedAt" type="date"></label>'+fields.map(function(f){return '<label>'+f[1]+'<textarea name="'+f[0]+'" rows="4"></textarea></label>';}).join("")+'<div class="portfolio-actions"><button class="primary-button" type="submit">Save Project</button><button type="button" class="secondary-button" data-portfolio-remove>Remove from Portfolio</button></div></form>'; }
@@ -61,16 +70,19 @@ document.addEventListener("DOMContentLoaded", function () {
   function evidenceSection(title, field, project) {
     return project[field] ? '<section><h4>' + title + '</h4><p class="preserve-lines" data-evidence="' + field + '"></p></section>' : '';
   }
-  function detailHtml(p,a){return authoredHtml(a)+'<div class="project-detail"><section><h4>Project Overview</h4><p>'+escapeHtml(a.type)+' · Completed <span data-completion-date></span></p></section>'+section("Objective",a.objective)+section("Skills Demonstrated",a.skills.join(", "))+section("Tools Used",a.tools.join(", "))+evidenceSection("Commands Used","commands",p)+evidenceSection("Investigation / Work Performed","investigation",p)+evidenceSection("Findings","findings",p)+evidenceSection("Challenges","challenges",p)+evidenceSection("Solutions","solutions",p)+evidenceSection("What I Learned","learned",p)+'<section><h4>Related Better Hacker Activity</h4><a href="'+a.href+'">'+escapeHtml(a.title)+'</a></section></div><div class="portfolio-actions"><button type="button" data-portfolio-edit="'+a.id+'">Edit Project</button><button type="button" data-portfolio-export="'+a.id+'">Preview README</button></div>';}
-  function showExport(id) { const project=Portfolio.read(localStorage).projects.find(function(p){return p.activityId===id;}); if(!project)return; if(!builder || activeId!==id)openBuilder(id,true); const preview=builder.querySelector("#readme-preview"), md=Portfolio.markdown(project); preview.hidden=false; preview.innerHTML='<h4>README Preview</h4><pre><code></code></pre><div class="portfolio-actions"><button type="button" data-copy-readme>Copy Markdown</button><button type="button" data-download-readme>Download .md</button></div>'; preview.querySelector("code").textContent = md; preview.scrollIntoView({block:"nearest"}); }
+  function detailHtml(p,a){return authoredHtml(a)+'<div class="project-detail"><section><h4>Project Overview</h4><p>'+escapeHtml(a.type)+' · Completed <span data-completion-date></span></p></section>'+section("Objective",a.objective)+section("Skills Demonstrated",a.skills.join(", "))+section("Tools / Concepts",a.tools.join(", "))+evidenceSection("Commands Used","commands",p)+evidenceSection("Investigation / Work Performed","investigation",p)+evidenceSection("Findings","findings",p)+evidenceSection("Challenges","challenges",p)+evidenceSection("Solutions","solutions",p)+evidenceSection("What I Learned","learned",p)+'<section><h4>Related Better Hacker Activity</h4><a href="'+a.href+'">'+escapeHtml(a.title)+'</a></section></div><div class="portfolio-actions"><button type="button" data-portfolio-edit="'+a.id+'">Edit Project</button><button type="button" data-portfolio-export="'+a.id+'">Preview README</button></div>';}
+  function showExport(id) { const project=Portfolio.read(localStorage).projects.find(function(p){return p.activityId===id;}); if(!project)return; if(!builder || activeId!==id)openBuilder(id,true); const preview=builder.querySelector("#readme-preview"), md=Portfolio.markdown(project); preview.hidden=false; preview.innerHTML='<h4 tabindex="-1">README Preview</h4><pre><code></code></pre><div class="portfolio-actions"><button type="button" data-copy-readme>Copy Markdown</button><button type="button" data-download-readme>Download .md</button></div>'; preview.querySelector("code").textContent = md; preview.scrollIntoView({block:"nearest"}); preview.querySelector("h4").focus(); }
   document.addEventListener("click", function(event){
     const add=event.target.closest && event.target.closest("[data-portfolio-add],[data-portfolio-suggest]"); if(add){const id=add.dataset.portfolioAdd||add.dataset.portfolioSuggest,result=Portfolio.createProject(localStorage,id);setStatus(localStorage.feedback(result.reason, Portfolio.STORAGE_KEY));renderProjects();if(result.project)openBuilder(id,false);return;}
     const edit=event.target.closest && event.target.closest("[data-portfolio-edit]"); if(edit){openBuilder(edit.dataset.portfolioEdit,false);return;}
     const view=event.target.closest && event.target.closest("[data-portfolio-view]"); if(view){openBuilder(view.dataset.portfolioView,true);return;}
     const exp=event.target.closest && event.target.closest("[data-portfolio-export]"); if(exp){showExport(exp.dataset.portfolioExport);return;}
-    if(event.target.closest&&event.target.closest("[data-portfolio-close]")){builder.hidden=true;activeId=null;return;}
-    if(event.target.closest&&event.target.closest("[data-portfolio-remove]")){if(confirm("Remove this portfolio entry? Your activity completion will stay unchanged.")){Portfolio.removeProject(localStorage,activeId);builder.hidden=true;setStatus(localStorage.feedback("Portfolio entry removed. Activity completion was not changed.", Portfolio.STORAGE_KEY));renderProjects();}return;}
-    if(event.target.closest&&event.target.closest("[data-copy-readme]")){const p=Portfolio.read(localStorage).projects.find(function(x){return x.activityId===activeId;}); if(navigator.clipboard&&p)navigator.clipboard.writeText(Portfolio.markdown(p)).then(function(){setStatus("README Markdown copied.");}).catch(function(){setStatus("Clipboard unavailable. Select the README preview or download it instead.");});return;}
+    if(event.target.closest&&event.target.closest("[data-portfolio-close]")){closeBuilder();return;}
+    if(event.target.closest&&event.target.closest("[data-portfolio-remove]")){if(confirm("Remove this portfolio entry? Your activity completion will stay unchanged.")){Portfolio.removeProject(localStorage,activeId);setStatus(localStorage.feedback("Portfolio entry removed. Activity completion was not changed.", Portfolio.STORAGE_KEY));renderProjects();closeBuilder();}return;}
+    if(event.target.closest&&event.target.closest("[data-copy-readme]")){const p=Portfolio.read(localStorage).projects.find(function(x){return x.activityId===activeId;}); if(!p)return;
+      const unavailable=function(){setStatus("Clipboard unavailable. Select the README preview or download it instead.");};
+      if(!navigator.clipboard || typeof navigator.clipboard.writeText!=="function"){unavailable();return;}
+      Promise.resolve().then(function(){return navigator.clipboard.writeText(Portfolio.markdown(p));}).then(function(){setStatus("README Markdown copied.");}).catch(unavailable);return;}
     if(event.target.closest&&event.target.closest("[data-download-readme]")){const p=Portfolio.read(localStorage).projects.find(function(x){return x.activityId===activeId;});if(p){const blob=new Blob([Portfolio.markdown(p)],{type:"text/markdown"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=p.title.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")+"-README.md";a.click();URL.revokeObjectURL(a.href);setStatus("README downloaded.");}return;}
     if(event.target.closest && event.target.closest("#labs, .lesson, .lesson-container, .extension-check, .practice-check")) setTimeout(renderProjects,0);
   });

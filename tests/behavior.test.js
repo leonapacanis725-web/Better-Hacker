@@ -610,3 +610,24 @@ test('valid Assistant topic progress survives an adjacent stale or malformed ent
   assert.deepEqual(Array.from(context.__app.readAssistantProgress()),['linux','web']);
   assert.equal(localStorage.getItem('betterHackerLearningAssistantTopics'),seed.betterHackerLearningAssistantTopics);
 });
+
+test('optional dashboard summaries reuse saved evidence without changing Core or XP', () => {
+  const elements = Object.fromEntries(['#dashboard-hands-on','#dashboard-library','#dashboard-topics'].map(id=>[id,new FakeElement()]));
+  const {context,localStorage}=boot({elements});
+  const before=JSON.stringify(context.__app.getDashboardState());
+  const xp=BetterHackerState.deriveXp(context.__app.getDashboardState(),BetterHackerState.readDailyState(localStorage));
+  for(const lesson of context.__app.PRACTICE_LESSONS) context.__app.checkPracticeAnswers(lesson.id,lesson.answers);
+  context.__app.completeAssistantTopic('networking',0);
+  BetterHackerState.completeLibraryPractice(localStorage,'2026-10-12','daily-dns');
+  context.__app.renderDashboard();
+  assert.equal(elements['#dashboard-hands-on'].textContent,'4 / 4 completed');
+  assert.equal(elements['#dashboard-library'].textContent,'1 / 14 practiced');
+  assert.equal(elements['#dashboard-topics'].textContent,'1 / 9 completed');
+  assert.equal(JSON.stringify(context.__app.getDashboardState()),before);
+  assert.equal(BetterHackerState.deriveXp(context.__app.getDashboardState(),BetterHackerState.readDailyState(localStorage)),xp);
+  const reloaded=boot({seed:Object.fromEntries(Object.keys(localStorage).map(key=>[key,localStorage.getItem(key)])),elements});
+  reloaded.context.__app.renderDashboard();
+  assert.equal(elements['#dashboard-hands-on'].textContent,'4 / 4 completed');
+  assert.equal(elements['#dashboard-library'].textContent,'1 / 14 practiced');
+  assert.equal(elements['#dashboard-topics'].textContent,'1 / 9 completed');
+});

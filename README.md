@@ -173,3 +173,19 @@ node tests/browser/launch-readiness.cjs
 ```
 
 If axe-core is installed outside Node's normal module search path, set `AXE_CORE_PATH` to its installed package directory. The runner checks contrast through normal/hover/focus/disabled states, navigation-card names and keyboard behavior, portable Markdown rendered with GFM, legal pages, anchors and mocked waitlist failures/success without contacting the live signup endpoint.
+
+## Public beta learner journey
+
+New visitors can use the lightweight beginner path in Learn, then reuse existing lessons, Hands-On Practice and Daily Practice. The dashboard includes derived Hands-On Practice, Practice Library and Topic Guide completion summaries; these optional counters do not add Core activities or XP. Incomplete attempts are not persisted. No storage keys or schema versions changed.
+
+The portfolio contains collapsible GitHub README guidance, preserves the educational-work disclaimer and never publishes automatically. Copy failures (including browsers without a Clipboard API) explain how to select or download the Markdown instead. Closing or removing a project returns keyboard focus; reduced-motion preferences apply to editor scrolling. Anchor offsets follow the fixed navigation’s actual height so mobile wrapping does not cover destinations.
+
+Run the fresh learner journey at 1280/1024/768/390/320px with the same Playwright/Chromium prerequisites:
+
+```sh
+BETTER_HACKER_TEST_URL=http://127.0.0.1:8000 \
+PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium \
+node tests/browser/public-beta-journey.cjs
+```
+
+It completes actual lesson checks, all four Hands-On activities, a Topic Guide, free practice, all guided labs/investigations and Course Review, verifies dashboard/reload/portfolio behavior and clipboard fallbacks, and checks internal anchors and reduced-motion layouts. It sends no live signup requests.
