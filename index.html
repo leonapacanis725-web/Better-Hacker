@@ -31,8 +31,8 @@
       <li><a href="#daily-practice">Daily Practice</a></li>
       <li><a href="#coach">Learning Assistant</a></li>
       <li><a href="#about">About</a></li>
-    <li><a href="#early-access">Early Access</a></li>
-<li><a href="#pricing">Pricing</a></li>
+      <li><a href="#early-access">Early Access</a></li>
+      <li><a href="#pricing">Pricing</a></li>
     </ul>
   </nav>
 
@@ -2280,37 +2280,59 @@ Baseline: no approved account/privilege changes during this period.</pre></div><
 </div>
 </section>
   <!-- Pricing Section -->
-<section id="pricing" class="section dark-section">
-
+<section id="pricing" class="section dark-section pricing-section" aria-labelledby="pricing-title">
   <p class="section-label">BETTER HACKER PLANS</p>
+  <h2 id="pricing-title">Learn at your pace</h2>
+  <p class="section-intro">Start free with the beginner-friendly platform. Pro is planned as a paid membership that supports Better Hacker and provides Pro access when paid membership launches. All features currently published in the beta remain available to everyone.</p>
 
-  <h2>Start Learning Free</h2>
-
-  <p class="section-intro">
-    Begin building your cybersecurity skills with Better Hacker.
-    Advanced features are planned and are not available in the current free beta.
-  </p>
-
-  <div class="cards">
-
-    <div class="card">
-      <h3>🛡️ Free Early Access</h3>
-      <p>✓ Beginner cybersecurity lessons</p>
-      <p>✓ Hands-on practice labs</p>
-      <p>✓ Investigation challenges</p>
-      <p>✓ Progress tracking</p>
+  <div class="pricing-grid" aria-label="Better Hacker plan options">
+    <article class="card pricing-card" aria-labelledby="plan-free-name">
+      <h3 id="plan-free-name">Free</h3>
+      <p class="plan-price"><span class="sr-only">Price:</span>$0<span class="plan-period"> no cost</span></p>
+      <p>Try cybersecurity learning with the current Better Hacker beta.</p>
+      <ul class="plan-features">
+        <li>Guided beginner lessons</li><li>Hands-on practice and investigations</li>
+        <li>Daily Practice and progress tracking</li><li>Learning Assistant guidance</li>
+        <li>Portfolio-building tools</li>
+      </ul>
       <a href="#learn" class="primary-button">Start Learning Free</a>
-    </div>
+    </article>
 
-    <div class="card">
-      <h3>🚀 Better Hacker Pro</h3>
-      <p>More advanced labs, guided learning, and additional tools are planned.</p>
-      <p><strong>Coming Soon</strong></p>
-      <a href="#early-access" class="secondary-button">Join Updates Waitlist</a>
-    </div>
+    <article class="card pricing-card" aria-labelledby="plan-monthly-name">
+      <h3 id="plan-monthly-name">Better Hacker Pro</h3>
+      <p class="plan-price"><span class="sr-only">Price:</span>$7.99<span class="plan-period"> / month</span></p>
+      <p>Pro membership for the Better Hacker learning platform.</p>
+      <ul class="plan-features"><li>Guided cybersecurity learning</li><li>Practice, investigations, and Daily Practice</li><li>Progress, Learning Assistant guidance, and portfolio tools</li></ul>
+      <p class="plan-note">Billed monthly. Cancel anytime after subscriptions launch.</p>
+      <button type="button" class="primary-button" data-checkout-plan="monthly" aria-label="Start Pro — Better Hacker Pro, 7 dollars and 99 cents per month">Start Pro</button>
+    </article>
 
+    <article class="card pricing-card pricing-card-best" aria-labelledby="plan-annual-name">
+      <p class="best-value-label">Best value</p>
+      <h3 id="plan-annual-name">Better Hacker Pro Annual</h3>
+      <p class="plan-price"><span class="sr-only">Price:</span>$69<span class="plan-period"> / year</span></p>
+      <p>About $5.75 per month, billed yearly.</p>
+      <ul class="plan-features"><li>Guided cybersecurity learning</li><li>Practice, investigations, and Daily Practice</li><li>Progress, Learning Assistant guidance, and portfolio tools</li></ul>
+      <p class="plan-note">About 28% less than paying monthly for 12 months. Renews yearly after subscriptions launch.</p>
+      <button type="button" class="primary-button" data-checkout-plan="annual" aria-label="Start Annual — Better Hacker Pro Annual, 69 dollars per year">Start Annual</button>
+    </article>
   </div>
+  <p class="pricing-transparency">Plans are displayed for transparency; paid checkout is not configured yet. No subscription starts and no payment is taken from this page.</p>
 
+  <section id="checkout-panel" class="checkout-panel" aria-labelledby="checkout-title" hidden>
+    <a class="checkout-back" href="#pricing">← Back to plans</a>
+    <h3 id="checkout-title" tabindex="-1">Review your plan</h3>
+    <dl class="checkout-summary">
+      <div><dt>Selected plan</dt><dd id="checkout-plan-name"></dd></div>
+      <div><dt>Price</dt><dd id="checkout-plan-price"></dd></div>
+      <div><dt>Billing frequency</dt><dd id="checkout-plan-frequency"></dd></div>
+    </dl>
+    <p id="checkout-renewal-note" class="plan-note"></p>
+    <p class="checkout-transparency">You are choosing a Better Hacker Pro subscription. Monthly subscriptions renew monthly; annual subscriptions renew yearly. Cancellation will be managed through the hosted payment provider once subscriptions are available. Review the final billing and cancellation terms before any future purchase.</p>
+    <button id="checkout-continue" type="button" class="primary-button">Continue to secure checkout</button>
+    <p id="checkout-status" role="status" aria-live="polite"></p>
+  </section>
+  <p id="checkout-return-status" class="review-panel" role="status" aria-live="polite" hidden></p>
 </section>
   <!-- Call To Action -->
   <section class="section cta-section">
@@ -2365,6 +2387,7 @@ Baseline: no approved account/privilege changes during this period.</pre></div><
 <script src="daily-practice-ui.js"></script>
 <script src="script.js"></script>
 <script src="portfolio-ui.js"></script>
+<script src="checkout.js"></script>
 
 </body>
 </html>
