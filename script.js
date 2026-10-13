@@ -206,6 +206,7 @@ document.addEventListener("DOMContentLoaded", function () {
       importance: "SQL injection can expose or alter data. Defensive input handling and parameterized queries protect confidentiality and integrity."
     }
   ]);
+  globalThis.BetterHackerGuidedLabEvidence = GUIDED_LABS.map(function (lab) { return { id:lab.id, title:lab.title, evidence:lab.evidence }; });
 
   function getLabStatus(index, activeIndex) {
     const completed = readCompletedLabs();
@@ -2483,12 +2484,14 @@ function buildRetentionSnapshot() {
   const completedKeys = new Set();
   LESSON_PROGRESS.forEach(function (item) { if (localStorage.getItem(item.key) === "true") completedKeys.add(item.key); });
   INVESTIGATIONS.forEach(function (item) { if (localStorage.getItem(item.key) === "true") completedKeys.add(item.key); });
-  return Object.assign({}, dashboard, { completedKeys: completedKeys, daily: RetentionState.readDailyState(localStorage) });
+  const attackBox = globalThis.BetterHackerAttackBox;
+  const attackBoxXp = attackBox ? attackBox.totalXp(attackBox.read(localStorage)) : 0;
+  return Object.assign({}, dashboard, { completedKeys: completedKeys, daily: RetentionState.readDailyState(localStorage), attackBoxXp: attackBoxXp });
 }
 
 function renderRetentionSummary() {
   const snapshot = buildRetentionSnapshot();
-  const xp = RetentionState.deriveXp(snapshot, snapshot.daily);
+  const xp = RetentionState.deriveXp(snapshot, snapshot.daily, snapshot.attackBoxXp);
   const level = RetentionState.getLevel(xp);
   const achievements = Milestones.evaluateAchievements(snapshot);
   const badges = Milestones.evaluateBadges(snapshot);
@@ -2516,6 +2519,8 @@ function renderRetentionSummary() {
   if (skillsSummary) skillsSummary.textContent=achievements.filter(function(a){return a.earned;}).length + " of " + achievements.length + " achievements and " + badges.filter(function(b){return b.earned;}).length + " of " + badges.length + " skill badges earned.";
   return { snapshot:snapshot, xp:xp, level:level, achievements:achievements, badges:badges };
 }
+
+document.addEventListener("attack-box-completed", renderRetentionSummary);
 
 function setDashboardCompanionContext(state) {
   const snapshot = buildRetentionSnapshot();
@@ -3026,3 +3031,4 @@ if (waitlistForm && waitlistButton && waitlistEmail && waitlistResult) {
 }
 
 });
+

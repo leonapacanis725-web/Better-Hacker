@@ -45,13 +45,17 @@ Changing activities clears stale activity details so guidance from one exercise 
 
 ## Learner Portfolio
 
-The Learner Portfolio reuses existing completion evidence rather than introducing another progress counter. Completed practical lessons (Networking through Security Testing), all four guided labs, and all seven defensive investigations become eligible for optional documentation. Learners choose what to add; repeated selections resolve to the same stable activity ID.
+The Learner Portfolio reuses existing completion evidence rather than introducing another progress counter. Completed practical lessons (Networking through Security Testing), all four guided labs, all seven defensive investigations, eligible Daily Practice activities, and completed Attack Box simulations become eligible for optional documentation. Learners choose what to add; repeated selections resolve to the same stable activity ID.
 
 Each builder separates Better Hacker-authored context—objective, skills, tools, and the related activity—from learner-authored commands, work performed, findings, learning, challenges, and solutions. **Draft**, **Almost Ready**, and **Portfolio Ready** explain which of the three essential learner-evidence areas are missing: work performed, findings, and what was learned. Incomplete projects always remain viewable and editable.
 
-Project details can be previewed as Markdown, copied, or downloaded as a `.md` README without GitHub authentication. Standalone exports include an educational-work disclaimer and a plain-text activity reference instead of site-only fragment links; learner text is escaped for literal Markdown rendering without changing saved evidence. Empty learner sections are omitted so exports never invent evidence. The versioned `betterHackerPortfolioProjects` local-storage record is deliberately based on stable activity IDs, leaving room for later GitHub export, public profiles, shareable pages, templates, resume summaries, and verified evidence without changing existing completion keys.
+Project details can be previewed as Markdown, copied, or downloaded as a `.md` README without GitHub authentication. **Prepare GitHub Files** previews the suggested repository name and description plus README.md, findings.md, and safe supplied sample evidence when available. Files download individually and include an educational-work disclaimer; learner text is escaped for literal Markdown rendering without changing saved evidence. Direct GitHub authentication and publishing are unavailable, so Better Hacker never asks for a GitHub password or token and never publishes automatically. The versioned `betterHackerPortfolioProjects` local-storage record remains based on stable activity IDs.
 
 The dashboard reports project, ready, and draft counts and may suggest one completed activity to document. This suggestion is separate from—and never replaces—the Core Path Continue Learning recommendation. Byte offers authored portfolio-writing guidance and never supplies accomplishments, commands, findings, credentials, or employment history for the learner.
+
+## Simulated Attack Box
+
+The Attack Box is a beginner terminal simulation with five Linux, Networking, SOC, and Web Security exercises. Its command interpreter accepts a small allowlist (`pwd`, `ls`, `cd`, `cat`, `whoami`, `id`, `grep`, `find`, `ip addr`, `ping`, `curl`, `ss`, `ps`) and reads only fixed fictional data. It rejects shell operators, unsupported commands, and non-training network targets. It never invokes a host shell, makes network requests, or connects to backend infrastructure. The objective, hint, command history, reset action, Byte link, keyboard controls, and completion count share the existing learner interface. Each first completion awards 50 derived XP and is retained under `betterHackerAttackBoxState`; reset and repeat review do not remove completion or duplicate XP. The key is cleared by the existing Learning Progress Reset.
 
 ## Learning Assistant Topic Guide
 
@@ -195,9 +199,9 @@ If axe-core is installed outside Node's normal module search path, set `AXE_CORE
 
 ## Public beta learner journey
 
-New visitors can use the lightweight beginner path in Learn, then reuse existing lessons, Hands-On Practice and Daily Practice. The dashboard includes derived Hands-On Practice, Practice Library and Topic Guide completion summaries; these optional counters do not add Core activities or XP. Incomplete attempts are not persisted. No storage keys or schema versions changed.
+New visitors can use the lightweight beginner path in Learn, then reuse existing lessons, Hands-On Practice and Daily Practice. The dashboard includes derived Hands-On Practice, Practice Library and Topic Guide completion summaries; these optional counters do not add Core activities. Incomplete Attack Box attempts are not persisted; the new versioned Attack Box completion key is separate from all existing progress keys.
 
-The portfolio contains collapsible GitHub README guidance, preserves the educational-work disclaimer and never publishes automatically. Copy failures (including browsers without a Clipboard API) explain how to select or download the Markdown instead. Closing or removing a project returns keyboard focus; reduced-motion preferences apply to editor scrolling. Anchor offsets follow the fixed navigation’s actual height so mobile wrapping does not cover destinations.
+The portfolio contains beginner-friendly GitHub guidance, preserves the educational-work disclaimer and never publishes automatically. GitHub-ready README, findings, and supplied sample-evidence files can be previewed, copied, and downloaded. Copy failures (including browsers without a Clipboard API) explain how to select or download the Markdown instead. Closing or removing a project returns keyboard focus; reduced-motion preferences apply to editor scrolling. Anchor offsets follow the fixed navigation’s actual height so mobile wrapping does not cover destinations.
 
 Run the fresh learner journey at 1280/1024/768/390/320px with the same Playwright/Chromium prerequisites:
 
@@ -208,3 +212,4 @@ node tests/browser/public-beta-journey.cjs
 ```
 
 It completes actual lesson checks, all four Hands-On activities, a Topic Guide, free practice, all guided labs/investigations and Course Review, verifies dashboard/reload/portfolio behavior and clipboard fallbacks, and checks internal anchors and reduced-motion layouts. It sends no live signup requests.
+

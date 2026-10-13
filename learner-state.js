@@ -115,10 +115,11 @@
     const difference = dayDifference(state.lastCompletedDate, today);
     return difference === 0 || difference === 1 ? state.currentStreak : 0;
   }
-  function deriveXp(snapshot, dailyState) {
+  function deriveXp(snapshot, dailyState, attackBoxXp) {
     const dailyXp = validateDailyState(dailyState).totalXp;
+    const safeAttackBoxXp = Number.isSafeInteger(attackBoxXp) && attackBoxXp >= 0 && attackBoxXp <= 10000 ? attackBoxXp : 0;
     return snapshot.lessonsCompleted * XP_RULES.lesson + snapshot.exercisesCompleted * XP_RULES.guidedExercise +
-      snapshot.investigationsCompleted * XP_RULES.investigation + (snapshot.reviewResult ? XP_RULES.courseReview : 0) + dailyXp;
+      snapshot.investigationsCompleted * XP_RULES.investigation + (snapshot.reviewResult ? XP_RULES.courseReview : 0) + dailyXp + safeAttackBoxXp;
   }
   function getLevel(xp) {
     xp = Number.isFinite(xp) && xp >= 0 ? Math.floor(xp) : 0;
@@ -132,3 +133,4 @@
     validateDailyState, readDailyState, completeDailyChallenge, activeDailyStreak, deriveXp, getLevel,
     PRACTICE_LIBRARY_KEY, emptyPracticeLibraryState, validatePracticeLibraryState, readPracticeLibraryState, completeLibraryPractice };
 });
+
