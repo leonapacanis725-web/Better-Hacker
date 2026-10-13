@@ -292,12 +292,14 @@
     <p class="section-intro">Turn completed Better Hacker practice into clear, honest evidence of what you did and learned. Portfolio entries describe educational work—not professional experience.</p>
     <details class="review-panel" id="portfolio-github-guide">
       <summary>Use your work in a GitHub cybersecurity portfolio</summary>
+      <p>GitHub is an online place to store and share project files. A repository (or “repo”) is one project folder. Clear READMEs, honest findings, safe sample evidence, and notes about what you learned can help an employer understand how you approach cybersecurity work. They are learning evidence—not proof of job experience or a certification.</p>
       <ol>
-        <li>Complete an eligible activity, choose Add to Portfolio, and write what you actually did, found and learned.</li>
-        <li>Preview README, then copy the Markdown or download the .md file. Review it for private information before sharing.</li>
-        <li>In a GitHub repository you own, create or edit README.md and paste the Markdown, or upload the downloaded file as README.md. Use GitHub’s Preview to check the result before committing.</li>
+        <li>Complete an eligible activity, choose Add to Portfolio, and write what you actually did, found, and learned.</li>
+        <li>Choose <strong>Prepare GitHub Files</strong> on your project. Review the suggested repository name and description plus every README.md, findings.md, and sample-evidence.md file.</li>
+        <li>Download the files. On GitHub, sign in and choose <strong>New repository</strong>. Use the suggested name and description; choose private visibility if you are unsure.</li>
+        <li>Upload the files to your new repository. Preview them, check visibility, and choose <strong>Commit changes</strong> only when you are ready.</li>
       </ol>
-      <p>Keep the educational-work disclaimer. A public repository can be read by anyone; use only fictional evidence and never include passwords, personal data or real organization logs. Better Hacker does not sign in to GitHub or publish for you.</p>
+      <p>Keep the educational-work disclaimer. A public repository can be read by anyone; use only fictional evidence and never include passwords, personal data, or real organization logs. Direct GitHub publishing is unavailable until secure authentication and integration exist. Better Hacker never asks for a GitHub password or token, and nothing is published automatically.</p>
       <a href="#labs">Find practice to document →</a>
     </details>
     <p id="portfolio-status" class="portfolio-status" role="status" aria-live="polite"></p>
@@ -1890,6 +1892,33 @@ PID   USER      COMMAND
 
     <a href="#coach" class="primary-button">Get Help With a Challenge</a>
 
+    <a href="#attack-box" class="secondary-button">Open the simulated Attack Box →</a>
+
+    <section id="attack-box" class="attack-box-panel" aria-labelledby="attack-box-title">
+      <p class="section-label">SAFE SIMULATION</p>
+      <h3 id="attack-box-title">Better Hacker Attack Box</h3>
+      <p class="attack-box-intro"><strong>Simulation only.</strong> This beginner terminal imitates a few commands against fictional, controlled challenge data. It is not a real Linux machine, shell, network connection, or security testing tool.</p>
+      <p>Choose a challenge, read the objective, then enter commands. Completed simulations are saved on this device and award 50 XP once each. No command can reach the internet or your device.</p>
+      <label for="attack-challenge">Choose a simulation</label>
+      <select id="attack-challenge" aria-describedby="attack-objective attack-complete"></select>
+      <p id="attack-objective" class="attack-objective"></p>
+      <p id="attack-complete" class="attack-complete" role="status"></p>
+      <details class="attack-hint"><summary>Show a hint</summary><p id="attack-hint-text"></p></details>
+      <div class="attack-terminal">
+        <div class="attack-terminal-title"><span>Simulated terminal</span><span aria-hidden="true">● ● ●</span></div>
+        <pre id="attack-output" class="attack-output" role="log" aria-live="polite" aria-relevant="additions text" tabindex="0"></pre>
+        <form id="attack-form" class="attack-form">
+          <label for="attack-command">Enter one simulated command</label>
+          <div class="attack-input-row"><span aria-hidden="true">$</span><input id="attack-command" name="command" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="180" aria-describedby="attack-command-help" placeholder="Try: pwd"><button type="submit" class="primary-button">Run</button></div>
+          <small id="attack-command-help">One command at a time. Use ↑ / ↓ to review commands from this page session.</small>
+        </form>
+      </div>
+      <p id="attack-progress" class="attack-progress" aria-live="polite"></p>
+      <p id="attack-status" class="attack-status" role="status" aria-live="polite"></p>
+      <div class="attack-actions"><button id="attack-reset" type="button" class="secondary-button">Reset challenge</button><button id="attack-history-up" type="button" class="secondary-button">Load last command</button><button id="attack-help" type="button" class="secondary-button">Ask Byte for help</button></div>
+      <p>Supported examples: <code>pwd</code>, <code>ls</code>, <code>cd</code>, <code>cat</code>, <code>whoami</code>, <code>id</code>, <code>grep</code>, <code>find</code>, <code>ip addr</code>, <code>ping</code>, <code>curl</code>, <code>ss</code>, and <code>ps</code>. Unsupported commands, shell operators, and non-training network targets are rejected.</p>
+    </section>
+
   </section>
 
 
@@ -2383,11 +2412,16 @@ Baseline: no approved account/privilege changes during this period.</pre></div><
 <script src="challenges.js"></script>
 <script src="achievements.js"></script>
 <script src="companion.js"></script>
+<script src="attack-box.js"></script>
 <script src="portfolio.js"></script>
 <script src="daily-practice-ui.js"></script>
 <script src="script.js"></script>
 <script src="portfolio-ui.js"></script>
 <script src="checkout.js"></script>
+<script src="attack-box-ui.js"></script>
+<script src="attack-box.js"></script>
+<script src="attack-box-ui.js"></script>
 
 </body>
 </html>
+

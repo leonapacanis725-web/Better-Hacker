@@ -62,6 +62,44 @@ test('README contains saved evidence and omits missing learner sections', () => 
   assert.match(output, /Interface 2 was the relevant simulated source/);
 });
 
+test('GitHub preparation previews a professional file set without publishing or inventing learner findings',()=>{
+  const storage=new MemoryStorage({betterHackerLinuxComplete:'true'});
+  Portfolio.createProject(storage,'lesson-linux');
+  const project=Portfolio.updateProject(storage,'lesson-linux',{commands:'pwd\nls /home/learner',investigation:'Inspected the supplied training directory.',findings:'The exercise notes are in the learner home directory.',learned:'Use pwd and ls to establish location and contents.'});
+  const prepared=Portfolio.githubPackage(project);
+  assert.equal(prepared.repositoryName,'linux-fundamentals');
+  assert.match(prepared.description,/Linux Fundamentals/);
+  assert.deepEqual(Object.keys(prepared.files),['README.md','findings.md']);
+  assert.match(prepared.files['README.md'],/Educational work completed through Better Hacker/);
+  assert.match(prepared.files['README.md'],/Commands Used/);
+  assert.match(prepared.files['findings.md'],/Inspected the supplied training directory/);
+  assert.match(prepared.files['findings.md'],/The exercise notes are in the learner home directory/);
+  assert.doesNotMatch(prepared.files['findings.md'],/real host|professional experience/i);
+  assert.match(prepared.files['README.md'],/not professional employment experience/);
+  assert.equal(storage.getItem('githubToken'),null);
+});
+
+test('provided fictional challenge evidence is included as a clearly labeled separate sample file',()=>{
+  const storage=new MemoryStorage({betterHackerPracticeLibraryState:JSON.stringify({version:1,completed:[{activityId:'daily-linux-permissions',date:'2026-10-13'}]})});
+  Portfolio.createProject(storage,'practice-daily-linux-permissions');
+  const prepared=Portfolio.githubPackage(Portfolio.read(storage).projects[0]);
+  assert.ok(prepared.files['sample-evidence.md']);
+  assert.match(prepared.files['sample-evidence.md'],/SIMULATED ls -l/);
+  assert.match(prepared.files['sample-evidence.md'],/fictional evidence/i);
+});
+
+test('completed Attack Box simulations become portfolio-ready and export only their fixed sample data',()=>{
+  const box=require('../attack-box.js');
+  const storage=new MemoryStorage({[box.STORAGE_KEY]:JSON.stringify({version:1,completed:['linux-log-search']})});
+  assert.equal(Portfolio.isComplete(Portfolio.activityById('attackbox-linux-log-search'),storage),true);
+  const result=Portfolio.createProject(storage,'attackbox-linux-log-search');
+  const prepared=Portfolio.githubPackage(result.project);
+  assert.ok(prepared.files['sample-evidence.md']);
+  assert.match(prepared.files['sample-evidence.md'],/\/var\/log\/auth\.log/);
+  assert.match(prepared.files['sample-evidence.md'],/fictional evidence/i);
+  assert.equal(Portfolio.isComplete(Portfolio.activityById('attackbox-linux-navigation'),storage),false);
+});
+
 test('removing a portfolio entry leaves underlying completion evidence intact', () => {
   const storage = new MemoryStorage({ betterHackerSocInvestigationComplete:'true' });
   Portfolio.createProject(storage, 'investigation-soc');
@@ -86,3 +124,4 @@ test('Byte portfolio guidance explains evidence without fabricating it', () => {
   assert.match(byte.respond('explain'), /without presenting it as employment/);
   assert.doesNotMatch(byte.respond('explain'), /you found|you used|certified/i);
 });
+
