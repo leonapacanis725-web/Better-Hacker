@@ -25,26 +25,12 @@ vm.runInNewContext(source.slice(start,end).replace('const COURSE_REVIEW_QUESTION
    const pricingNav=page.locator('.navbar a[href="#pricing"]');
    await pricingNav.focus(); await page.keyboard.press('Enter');
    await page.waitForFunction(()=>location.hash==='#pricing');
-   await page.locator('[data-checkout-plan="monthly"]').focus(); await page.keyboard.press('Enter');
-   await page.locator('#checkout-title').waitFor({state:'visible'});
-   assert.equal(await page.locator('#checkout-plan-name').innerText(),'Better Hacker Pro');
-   assert.equal(await page.locator('#checkout-plan-price').innerText(),'$7.99 per month');
-   await page.locator('#checkout-continue').click();
-   assert.match(await page.locator('#checkout-status').innerText(),/checkout is not configured yet/);
-   await page.locator('.checkout-back').click();
-   await page.locator('[data-checkout-plan="annual"]').click();
-   assert.equal(await page.locator('#checkout-plan-name').innerText(),'Better Hacker Pro Annual');
-   assert.equal(await page.locator('#checkout-plan-price').innerText(),'$69 per year');
-   assert.equal(await page.locator('#checkout-plan-frequency').innerText(),'Yearly');
-   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),true,`Pricing/checkout must not overflow at ${width}px`);
-   await page.locator('.checkout-back').click();
-   assert.equal(await page.evaluate(()=>JSON.stringify(Object.keys(localStorage).sort())),pricingStorageBefore,'pricing and checkout selection must not alter learner progress storage');
-   const returnPage=await browser.newPage({viewport:{width,height:900},reducedMotion:'reduce'});
-   await returnPage.goto(url+'?checkout=success');
-   assert.match(await returnPage.locator('#checkout-return-status').innerText(),/Subscription status must be confirmed securely/);
-   await returnPage.goto(url+'?checkout=cancel');
-   assert.match(await returnPage.locator('#checkout-return-status').innerText(),/Checkout was canceled/);
-   await returnPage.close();
+   assert.equal(await page.locator('#pricing .plan-coming-soon').count(),2);
+   assert.equal(await page.locator('#pricing button').count(),0,'paid plans must not expose purchase buttons before checkout exists');
+   assert.match(await page.locator('#pricing').innerText(),/You cannot purchase a subscription or be charged from this site today/);
+   assert.equal(await page.locator('#checkout-panel').count(),0,'no simulated checkout panel should appear');
+   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),true,`Pricing must not overflow at ${width}px`);
+   assert.equal(await page.evaluate(()=>JSON.stringify(Object.keys(localStorage).sort())),pricingStorageBefore,'pricing must not alter learner progress storage');
    assert.equal(await page.locator('#portfolio-projects .portfolio-empty').count(),1);
    const path=page.locator('nav[aria-labelledby="beginner-path-title"]');
    for(const link of await path.locator('a').all()) assert.equal(await page.locator(await link.getAttribute('href')).count(),1);
@@ -140,3 +126,4 @@ vm.runInNewContext(source.slice(start,end).replace('const COURSE_REVIEW_QUESTION
   }
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
+
