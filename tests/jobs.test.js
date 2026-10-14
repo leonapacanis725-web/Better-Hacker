@@ -169,6 +169,35 @@ test('demo jobs are isolated, explicitly labeled, and provide honest empty state
   assert.equal(documentRef.elements['pro-jobs-search'].focused, true);
 });
 
+test('jobs UI loads only same-origin validated live data and keeps it separate from demo labels', async () => {
+  const previousLocation = Object.getOwnPropertyDescriptor(globalThis, 'location');
+  const previousFetch = globalThis.fetch;
+  let fetchedUrl = null;
+  Object.defineProperty(globalThis, 'location', { configurable: true, value: { href: 'https://betterhacker.example/', origin: 'https://betterhacker.example' } });
+  globalThis.fetch = async url => {
+    fetchedUrl = url;
+    assert.equal(url, 'https://betterhacker.example/jobs-live.json');
+    return { ok: true, json: async () => ({ schemaVersion: 1, kind: 'live-job-feed', jobs: [record({ source: { id: 'approved-feed', name: 'Approved Feed', kind: 'ats-public-feed', url: 'https://careers.example/' }, lastObservedAt: fixedImport })] }) };
+  };
+  try {
+    assert.equal(globalThis.location.href, 'https://betterhacker.example/');
+    assert.equal(typeof globalThis.fetch, 'function');
+    const documentRef = fakeDocument();
+    const ui = JobsUI.mount(documentRef, null);
+    await ui.refreshLiveJobs();
+    assert.equal(fetchedUrl, 'https://betterhacker.example/jobs-live.json');
+    assert.equal(ui.jobs.length, 4);
+    assert.equal(ui.jobs.filter(job => !job.isDemo).length, 1);
+    assert.match(documentRef.elements['pro-jobs-status'].textContent, /1 real listing shown/);
+    assert.match(documentRef.elements['pro-jobs-results'].textContent, /LIVE · CURRENT LISTING/);
+    assert.match(documentRef.elements['pro-jobs-results'].textContent, /DEMO · NOT A CURRENT OPENING/);
+  } finally {
+    globalThis.fetch = previousFetch;
+    if (previousLocation) Object.defineProperty(globalThis, 'location', previousLocation);
+    else delete globalThis.location;
+  }
+});
+
 test('external application links clearly leave Better Hacker and are omitted from demo jobs', () => {
   const documentRef = fakeDocument();
   const demoJob = Demo.createDemoJobs(Jobs, fixedImport)[0];
@@ -178,7 +207,7 @@ test('external application links clearly leave Better Hacker and are omitted fro
   assert.equal(anchor.href, 'https://jobs.example/roles/123');
   assert.equal(anchor.target, '_blank');
   assert.equal(anchor.rel, 'noopener noreferrer');
-  assert.match(anchor.textContent, /source site/);
+  assert.match(anchor.textContent, /Apply at Source/);
   assert.match(anchor.attributes['aria-label'], /leaves Better Hacker/);
 });
 
@@ -193,6 +222,8 @@ test('jobs interface has labeled controls, keyboard focus styling, and no remote
   assert.match(html, /id="pro-jobs-status" class="jobs-results-status" role="status" aria-live="polite"/);
   assert.match(css, /\.pro-jobs-experience :focus-visible/);
   assert.match(ui, /noopener noreferrer/);
-  assert.doesNotMatch(ui, /fetch\(|XMLHttpRequest|sendBeacon/);
+  assert.match(ui, /new URL\("jobs-live\.json", root\.location\.href\)/);
+  assert.match(ui, /datasetUrl\.origin !== root\.location\.origin/);
+  assert.doesNotMatch(ui, /XMLHttpRequest|sendBeacon/);
   assert.match(css, /prefers-reduced-motion/);
 });

@@ -1,0 +1,21 @@
+{
+  "sources": [
+    {
+      "type": "greenhouse",
+      "id": "employer-greenhouse",
+      "name": "Employer Careers",
+      "employerName": "Employer-provided name",
+      "sourceUrl": "https://careers.example.com",
+      "boardToken": "public-board-token"
+    },
+    {
+      "type": "lever",
+      "id": "employer-lever",
+      "name": "Employer Careers",
+      "employerName": "Employer-provided name",
+      "sourceUrl": "https://jobs.lever.co/example",
+      "site": "example",
+      "region": "global"
+    }
+  ]
+}

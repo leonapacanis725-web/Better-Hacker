@@ -69,7 +69,7 @@
     return validDate(text, true) ? text.slice(0, 10) : null;
   }
   function canonicalApplicationUrl(value) {
-    if (typeof value !== "string" || !value.trim()) return null;
+    if (typeof value !== "string" || !value.trim() || value.length > 2048) return null;
     try {
       const url = new URL(value.trim());
       if (url.protocol !== "https:" || url.username || url.password) return null;
@@ -94,8 +94,9 @@
     if (values === undefined || values === null || values === "") return [];
     const items = Array.isArray(values) ? values : typeof values === "string" ? values.split(/[;,]/) : null;
     if (!items) { warnings.push("Skills must be a list or delimited string; no skills were imported."); return []; }
+    if (items.length > 100) warnings.push("Only the first 100 skill entries were considered.");
     const seen = new Set();
-    return items.map(item => {
+    return items.slice(0, 100).map(item => {
       const object = isPlainObject(item) ? item : { label: item };
       const label = cleanText(pick(object, ["label", "name", "skill"]), 120);
       if (!label) return null;
@@ -113,7 +114,8 @@
   function normalizeCategories(values, warnings) {
     const items = Array.isArray(values) ? values : typeof values === "string" ? values.split(/[;,]/) : [];
     const categories = [];
-    for (const item of items) {
+    if (items.length > 50) warnings.push("Only the first 50 category entries were considered.");
+    for (const item of items.slice(0, 50)) {
       const key = slug(item);
       if (CATEGORIES.includes(key) && !categories.includes(key)) categories.push(key);
       else if (key && !CATEGORIES.includes(key)) warnings.push(`Unrecognized category “${String(item).slice(0, 80)}” was not used as a filter category.`);
@@ -176,6 +178,8 @@
     let importedAt = cleanText(opts.importedAt || raw.importedAt || raw.dateImported, 40);
     if (!importedAt) importedAt = new Date().toISOString();
     if (!validDate(importedAt, true)) errors.push("Import timestamp must be a valid ISO date or timestamp.");
+    const lastObservedRaw = pick(raw, ["lastObservedAt", "last_observed_at"]);
+    if (lastObservedRaw && !validDate(String(lastObservedRaw), true)) errors.push("Last observed timestamp must be a valid ISO date or timestamp.");
     const skills = normalizeSkillList(pick(raw, ["skills", "technologies", "requiredSkills"]), warnings);
     const categories = normalizeCategories(pick(raw, ["categories", "roleCategories", "role_categories"]), warnings);
     const salaryRange = normalizeSalary(pick(raw, ["salaryRange", "salary_range", "salary"]), errors);
@@ -184,7 +188,11 @@
     const id = cleanText(raw.id, 180) || (externalId ? `${source.id}-${slug(externalId)}` : applicationUrl ? `job-${slug(applicationUrl)}` : `job-${slug(`${title}-${employer || "unknown"}`)}`);
     let extensions = {};
     if (isPlainObject(raw.extensions)) {
-      try { extensions = JSON.parse(JSON.stringify(raw.extensions)); }
+      try {
+        const serialized = JSON.stringify(raw.extensions);
+        if (serialized.length <= 50000) extensions = JSON.parse(serialized);
+        else warnings.push("Extension fields exceeded the size limit and were omitted.");
+      }
       catch (_) { warnings.push("Unserializable extension fields were omitted."); }
     }
     const job = {
@@ -192,7 +200,8 @@
       workplace, employmentType, experienceLevel, categories, salaryRange,
       datePosted: isoDate(datePostedRaw), skills, description, source,
       applicationUrl, dateImported: importedAt,
-      expiresAt: isoDate(expiresAtRaw), isDemo: opts.demo === true,
+      expiresAt: isoDate(expiresAtRaw), lastObservedAt: lastObservedRaw ? String(lastObservedRaw) : null,
+      isDemo: opts.demo === true,
       extensions
     };
     return { ok: errors.length === 0, job: errors.length ? null : job, errors, warnings };

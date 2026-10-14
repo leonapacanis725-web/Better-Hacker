@@ -6,6 +6,7 @@
   "use strict";
   function parseCsv(text) {
     if (typeof text !== "string") return { rows: [], errors: ["CSV input must be text."] };
+    if (text.length > 5 * 1024 * 1024) return { rows: [], errors: ["CSV input exceeded the 5 MB import limit."] };
     const matrix = [], errors = [];
     let row = [], field = "", quoted = false;
     for (let i = 0; i < text.length; i++) {
