@@ -4,7 +4,8 @@
     commonJs ? require("./jobs.js") : root.BetterHackerJobs,
     commonJs ? require("./jobs-demo.js") : root.BetterHackerJobsDemo,
     commonJs ? require("./jobs-matching.js") : root.BetterHackerJobsMatching,
-    commonJs ? require("./portfolio.js") : root.BetterHackerPortfolio
+    commonJs ? require("./portfolio.js") : root.BetterHackerPortfolio,
+    root
   );
   if (typeof module === "object" && module.exports) module.exports = api;
   else {
@@ -15,7 +16,7 @@
       api.mount(root.document, storage);
     }
   }
-})(typeof globalThis !== "undefined" ? globalThis : this, function (Jobs, Demo, Matching, Portfolio) {
+})(typeof globalThis !== "undefined" ? globalThis : this, function (Jobs, Demo, Matching, Portfolio, root) {
   "use strict";
   function applicationLink(documentRef, job) {
     if (!job || job.isDemo || !job.applicationUrl) return null;
@@ -24,7 +25,7 @@
     link.target = "_blank";
     link.rel = "noopener noreferrer";
     link.className = "secondary-button jobs-apply-link";
-    link.textContent = "Apply on source site ↗";
+    link.textContent = "Apply at Source ↗";
     link.setAttribute("aria-label", `View the application on ${job.source.name} (opens a new tab and leaves Better Hacker)`);
     return link;
   }
@@ -58,11 +59,12 @@
     if (job.isDemo) article.append(text(documentRef, "p", "Sample only. There is no real employer or application available.", "jobs-demo-card-note"));
     else if (job.applicationUrl) article.append(applicationLink(documentRef, job));
     else article.append(text(documentRef, "p", "No application URL was provided by the source.", "jobs-no-application"));
-    article.append(text(documentRef, "p", `Source: ${job.source.name}${job.datePosted ? ` · Posted ${job.datePosted}` : " · Posting date not supplied"}`, "jobs-source"));
+    const observed = job.lastObservedAt ? ` · Last observed ${job.lastObservedAt.slice(0, 10)}` : "";
+    article.append(text(documentRef, "p", `Source: ${job.source.name}${job.datePosted ? ` · Posted ${job.datePosted}` : " · Posting date not supplied"}${observed}`, "jobs-source"));
     return article;
   }
   function statusLabel(status) {
-    return ({ stale: "POSSIBLY STALE · VERIFY AT SOURCE", expired: "EXPIRED", unknown: "POSTING DATE UNKNOWN", current: "SOURCE DATE PROVIDED" })[status] || "STATUS UNKNOWN";
+    return ({ stale: "POSSIBLY STALE · VERIFY AT SOURCE", expired: "EXPIRED", unknown: "LIVE LISTING · POSTING DATE NOT SUPPLIED", current: "LIVE · CURRENT LISTING" })[status] || "STATUS UNKNOWN";
   }
   function label(value) { return value && value !== "unspecified" ? value.replace(/-/g, " ") : ""; }
   function formatSalary(value) {
@@ -71,8 +73,8 @@
     return range.length ? `Salary reported by source: ${range.join("–")}${value.period ? ` per ${value.period}` : ""}` : "Salary not supplied";
   }
   function mount(documentRef, storage) {
-    const root = documentRef.getElementById("pro-jobs-experience");
-    if (!root || !Jobs || !Demo || !Matching) return null;
+    const experienceRoot = documentRef.getElementById("pro-jobs-experience");
+    if (!experienceRoot || !Jobs || !Demo || !Matching) return null;
     const controls = {
       query: documentRef.getElementById("pro-jobs-search"),
       category: documentRef.getElementById("pro-jobs-category"),
@@ -85,16 +87,20 @@
       results: documentRef.getElementById("pro-jobs-results"),
       status: documentRef.getElementById("pro-jobs-status")
     };
-    const jobs = Demo.createDemoJobs(Jobs);
+    const demoJobs = Demo.createDemoJobs(Jobs);
+    let liveJobs = [];
+    let jobs = demoJobs.slice();
     let evidence = Matching.deriveLocalEvidence(Portfolio, storage);
     function render() {
       const filters = Object.fromEntries(Object.entries(controls).filter(([key, element]) => ["query", "category", "workplace", "employmentType", "experienceLevel", "location", "skill"].includes(key)).map(([key, element]) => [key, element.value]));
       const results = Jobs.filterJobs(jobs, filters);
       controls.results.replaceChildren();
       if (!results.length) {
-        controls.results.append(text(documentRef, "p", "No sample roles match those filters. Try clearing a filter or broadening the search.", "jobs-empty-state"));
+        controls.results.append(text(documentRef, "p", liveJobs.length ? "No job listings match those filters. Try clearing a filter or broadening the search." : "No sample roles match those filters. Try clearing a filter or broadening the search.", "jobs-empty-state"));
       } else results.forEach(job => controls.results.append(renderJob(documentRef, job, evidence)));
-      controls.status.textContent = `${results.length} demo ${results.length === 1 ? "role" : "roles"} shown. These are not current vacancies.`;
+      const liveCount = results.filter(job => !job.isDemo).length;
+      const demoCount = results.length - liveCount;
+      controls.status.textContent = [liveCount ? `${liveCount} real ${liveCount === 1 ? "listing" : "listings"} shown` : "", demoCount ? `${demoCount} demo ${demoCount === 1 ? "role" : "roles"} shown` : ""].filter(Boolean).join(" · ") + (liveCount ? ". Verify current availability and details at the source." : ". These are not current vacancies.");
     }
     [controls.query, controls.location, controls.skill].forEach(element => element.addEventListener("input", render));
     [controls.category, controls.workplace, controls.employmentType, controls.experienceLevel].forEach(element => element.addEventListener("change", render));
@@ -104,8 +110,29 @@
       render();
       controls.query.focus();
     });
+    function validLiveRecords(dataset) {
+      if (!dataset || dataset.schemaVersion !== 1 || dataset.kind !== "live-job-feed" || !Array.isArray(dataset.jobs)) return [];
+      return dataset.jobs.map(raw => Jobs.normalizeJob(raw, { importedAt: raw && raw.dateImported })).filter(result =>
+        result.ok && !result.job.isDemo && result.job.source.kind === "ats-public-feed" &&
+        result.job.source.name && result.job.source.url && result.job.applicationUrl
+      ).map(result => result.job);
+    }
+    async function refreshLiveJobs() {
+      if (typeof root.fetch !== "function" || !root.location || !root.location.href) return;
+      try {
+        const datasetUrl = new URL("jobs-live.json", root.location.href);
+        if (datasetUrl.origin !== root.location.origin) return;
+        const response = await root.fetch(datasetUrl.href, { credentials: "omit", redirect: "error", headers: { accept: "application/json" } });
+        if (!response.ok) return;
+        const dataset = await response.json();
+        liveJobs = validLiveRecords(dataset);
+        jobs = liveJobs.concat(demoJobs);
+        render();
+      } catch (_) { /* Keep the clearly labeled demo preview when no dataset is available. */ }
+    }
     render();
-    return { jobs, render, refreshEvidence() { evidence = Matching.deriveLocalEvidence(Portfolio, storage); render(); }, applicationLink: job => applicationLink(documentRef, job) };
+    refreshLiveJobs();
+    return { get jobs() { return jobs; }, render, refreshLiveJobs, refreshEvidence() { evidence = Matching.deriveLocalEvidence(Portfolio, storage); render(); }, applicationLink: job => applicationLink(documentRef, job) };
   }
   return { applicationLink, renderJob, mount, formatSalary };
 });
