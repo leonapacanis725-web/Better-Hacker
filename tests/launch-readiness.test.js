@@ -41,7 +41,7 @@ test('portfolio Markdown treats special characters and injected headings/HTML/li
 test('privacy describes current local data, external signup and actual reset/export controls',()=>{
   for(const text of ['Core Lessons','supplemental lessons','Hands-On Practice','guided labs','Topic Guide','Course Review','latest 60','Lifetime completion and XP','Practice Library','first completion date','Attack Box','command history stays in the current page session','Learner Portfolio','creation/update times','commands','findings','session-only','clipboard','GitHub-ready files','Formspree','not included in this request','preserving your authored portfolio projects','Remove from Portfolio','does not undo an external waitlist submission']) assert.ok(privacy.includes(text),text);
   assert.match(html,/Joining sends your email to Formspree/);assert.match(html,/href="privacy.html">Read how your data/);
-  assert.doesNotMatch(privacy,/mailto:|certified compliant|GDPR compliant|HIPAA compliant/i);
+  assert.doesNotMatch(privacy,/certified compliant|GDPR compliant|HIPAA compliant/i);
 });
 
 test('learner-facing production assets contain no accidental development endpoints or debug markers',()=>{

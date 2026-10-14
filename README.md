@@ -171,9 +171,9 @@ There is no authentication, cloud sync, database, live AI, direct GitHub publish
 
 ## Launch verification still required
 
-No verified public deployment URL or public operator/contact information is configured in this repository. Do not derive or publish a production URL solely from the GitHub repository name. The configured signup endpoint is `https://formspree.io/f/xdeobdjl`; mocks verify browser behavior, not service ownership or delivery. No real signup is sent by the test suites.
+No verified public deployment URL is configured in this repository. The official public contact email is [betterhackerteam@gmail.com](mailto:betterhackerteam@gmail.com); confirm that the inbox is monitored and has a deletion-request process. Do not derive or publish a production URL solely from the GitHub repository name. The configured signup endpoint is `https://formspree.io/f/xdeobdjl`; mocks verify browser behavior, not service ownership or delivery. No real signup is sent by the test suites.
 
-Before a publicly invited beta, the owner needs to supply the verified operator name and a monitored public contact, confirm the HTTPS deployment and deployed revision/assets/legal links/deep links, and verify Formspree ownership, delivery, limits/abuse controls and an unsubscribe/deletion contact process. Have the current privacy and terms reviewed for the intended audience and jurisdiction. A real signup test requires explicit authorization. Browser-local progress and portfolio exports are not accounts, cloud sync or independent credentials.
+Before a publicly invited beta, confirm the public contact inbox is monitored and can handle deletion requests; verify the HTTPS deployment and deployed revision/assets/legal links/deep links, and verify Formspree ownership, delivery, limits/abuse controls and an unsubscribe process. Have the current privacy and terms reviewed for the intended audience and jurisdiction. A real signup test requires explicit authorization. Browser-local progress and portfolio exports are not accounts, cloud sync or independent credentials.
 
 The focused launch-readiness Chromium runner additionally uses development-only `axe-core` and `marked` alongside Playwright. These are not shipped to learners. With those modules available to Node, run:
 
