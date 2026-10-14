@@ -150,6 +150,57 @@ The site displays **Free ($0)**, **Better Hacker Pro ($7.99/month)**, and **Bett
 
 Paid plans are labeled **Coming Soon**. The site has no active checkout, does not accept payment details, and cannot create a subscription or charge a learner. Payment processing, subscriptions, authentication, and paid-feature access control are a separate future milestone. The existing `checkout.js` file is an unconnected checkout foundation and is not loaded by the learner-facing page. Do not enable it as a purchase flow until real server-side authentication, payment processing, subscription verification, cancellation handling, and appropriate legal and support information are implemented and reviewed.
 
+## Better Hacker Pro Cybersecurity Jobs foundation
+
+The **Cybersecurity Jobs** experience is nested in the Learner Portfolio section as the next learner step after learning, practice, and portfolio building. A dashboard card links to it. It is a planned Better Hacker Pro feature, not a standalone Employer section. Current cards are visibly marked **DEMO · NOT A CURRENT OPENING**; no real vacancy, employer, salary, posting date, or application URL is included. Prices remain $7.99/month and $69/year. Because this static beta has no sign-in, payment processing, or subscription entitlement service, the preview is not paywalled and does not claim to enforce Pro access.
+
+### Canonical job record (schema version 1)
+
+`jobs.js` normalizes each source record to this extensible shape:
+
+```json
+{
+  "schemaVersion": 1,
+  "id": "approved-feed-req-123",
+  "externalId": "req-123",
+  "title": "SOC Analyst",
+  "employer": "Employer supplied by source",
+  "location": { "display": "Detroit, MI", "city": null, "region": null, "country": null },
+  "workplace": "remote",
+  "employmentType": "full-time",
+  "experienceLevel": "entry-level",
+  "categories": ["entry-level", "soc"],
+  "salaryRange": null,
+  "datePosted": null,
+  "skills": [{ "id": "alert-triage", "label": "Alert triage", "level": "required" }],
+  "description": "Description supplied by the source.",
+  "source": { "id": "approved-feed", "name": "Approved Feed", "kind": "api", "url": null },
+  "applicationUrl": "https://careers.example/jobs/req-123",
+  "dateImported": "2026-10-14T19:00:00.000Z",
+  "expiresAt": null,
+  "isDemo": false,
+  "extensions": {}
+}
+```
+
+Unknown dates and salary are `null`; import normalization never estimates them. URLs for application handoffs must be valid HTTPS URLs. Skill labels outside the current curated taxonomy remain visible but are not matchable until an approved mapping is added. `extensions` and `schemaVersion` allow fields to evolve without changing the base contract.
+
+### Ingestion and freshness
+
+`jobs-ingest.js` accepts structured JSON and CSV text, validates every row through the same normalizer, and returns imported records plus explicit warnings, rejected rows, and duplicate reports. It supports CSV quoted commas and escaped quotes. Duplicates are detected first by source plus external ID, then by canonical HTTPS application URL with common tracking parameters removed, and finally by a title/employer/location fingerprint when no URL exists. Invalid rows are retained in the error report; callers should review that report before accepting an import.
+
+The schema and import functions are source-neutral. Future adapters can map permitted approved job APIs, employer career feeds, public ATS feeds, or other legally authorized feeds into canonical records, and upload workflows can pass structured JSON/CSV through the same validation path. Automated imports should run in a reviewed backend/serverless job that records source permission, rate limits, attribution, import timestamps, diagnostics, and feed-specific retention rules. The current site remains static-only: it has no API credentials, scheduled ingestion, job database, or live source configured. No LinkedIn or Clay scraping is implemented; no authentication, CAPTCHA, robots rule, rate limit, or other access control should be bypassed.
+
+Expiration is explicit when a source provides `expiresAt`. Expired records are hidden by default; records older than 30 days without a supplied expiration are marked **Possibly stale · verify at source**. A missing posting date is reported as unknown. Demo records always retain their distinct demo status and are stored separately in `jobs-demo.js`, outside any production import.
+
+### Local skill evidence comparison
+
+`jobs-matching.js` reads only the existing `BetterHackerPortfolio.ACTIVITIES` registry and local completion/project IDs. It maps authored activity skills and tools through a curated allowlist in `jobs.js`, and compares those stable skill IDs with source-supplied structured job skills. It does not inspect learner-authored portfolio text, infer a qualification, use AI, or send learner data anywhere. Results say how many listed skills appear in saved Better Hacker evidence and include a disclaimer that this is not a qualification or hiring assessment. Unmapped job skills are displayed but excluded from comparison counts. The evidence reader can expand to additional structured activity sources without changing the job record contract.
+
+### Future authentication and Pro entitlement requirements
+
+When paid access is ready, enforce it on a trusted server using authenticated accounts and payment-provider subscription webhooks/status checks. The server must validate entitlement on every protected job API request; frontend visibility alone is not a paywall. Avoid sending learner evidence to that service unless a separate, clear user choice and privacy review justify it. Before live listings launch, establish source permissions, freshness and removal handling, employer/source attribution, safe external-link policy, privacy/terms updates, and operational monitoring. The current preview is only the static UI/data contract until those services exist.
+
 Optional Chromium regression checks for Daily Practice require an available Playwright installation and Chromium (development tooling only; the site has no new dependencies). With the static server running, run:
 
 ```sh

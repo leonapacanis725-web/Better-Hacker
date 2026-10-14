@@ -251,6 +251,11 @@
         <span id="dashboard-portfolio-drafts">0 drafts</span>
         <a href="#portfolio" class="dashboard-review-link">Open your portfolio →</a>
       </article>
+      <article class="dashboard-card">
+        <h3>Cybersecurity Jobs · Pro Preview</h3>
+        <p>Explore sample entry paths after building learning and portfolio evidence.</p>
+        <a href="#pro-cybersecurity-jobs" class="dashboard-review-link">Preview Cybersecurity Jobs →</a>
+      </article>
     </div>
     <div class="dashboard-grid" aria-label="Optional practice and guidance progress">
       <article class="dashboard-card"><h3>Hands-On Practice</h3><p id="dashboard-hands-on">0 / 4 completed</p><a href="#labs" class="dashboard-review-link">Continue Hands-On Practice →</a></article>
@@ -315,6 +320,34 @@
       </div>
     </div>
     <section id="portfolio-builder" class="portfolio-builder" role="region" aria-labelledby="portfolio-builder-title" hidden></section>
+    <section id="pro-cybersecurity-jobs" class="pro-jobs-experience" aria-labelledby="pro-jobs-title">
+      <p class="section-label">BETTER HACKER PRO · FEATURE PREVIEW</p>
+      <h3 id="pro-jobs-title">Cybersecurity Jobs</h3>
+      <p class="pro-jobs-intro">Your next step after learning, practice, and portfolio building: explore beginner-friendly cybersecurity and IT pathways.</p>
+      <p class="jobs-demo-notice" role="note"><strong>DEMO DATA ONLY.</strong> These fictional examples are not current openings. There is no real employer, salary, or application link in this preview. Live listings and secure Pro access are not connected.</p>
+      <p class="jobs-entitlement-note">Better Hacker Pro is planned at the prices shown on this page. Subscriptions and entitlement checks are not active, so this preview is available without a paywall.</p>
+      <fieldset class="jobs-filter-group">
+        <legend>Search and filter sample roles</legend>
+        <div class="jobs-filter-grid">
+          <label for="pro-jobs-search">Search by title, employer, skill, or keyword<input id="pro-jobs-search" type="search" autocomplete="off" placeholder="Try SOC, analyst, or Linux"></label>
+          <label for="pro-jobs-category">Role area<select id="pro-jobs-category">
+            <option value="all">All role areas</option><option value="entry-level">Entry-level</option><option value="soc">SOC / Security Operations</option><option value="cybersecurity-analyst">Cybersecurity Analyst</option><option value="security-analyst">Security Analyst</option><option value="junior-security">Junior security roles</option><option value="help-desk-it">Help Desk / IT pathway</option><option value="internship">Internship</option>
+          </select></label>
+          <label for="pro-jobs-workplace">Work arrangement<select id="pro-jobs-workplace"><option value="all">Any arrangement</option><option value="remote">Remote</option><option value="hybrid">Hybrid</option><option value="onsite">Onsite</option></select></label>
+          <label for="pro-jobs-type">Employment type<select id="pro-jobs-type"><option value="all">Any type</option><option value="full-time">Full-time</option><option value="part-time">Part-time</option><option value="contract">Contract</option><option value="internship">Internship</option><option value="apprenticeship">Apprenticeship</option><option value="temporary">Temporary</option></select></label>
+          <label for="pro-jobs-level">Experience level<select id="pro-jobs-level"><option value="all">Any level</option><option value="entry-level">Entry-level</option><option value="junior">Junior</option><option value="internship">Internship</option><option value="mid-level">Mid-level</option><option value="senior">Senior</option></select></label>
+          <label for="pro-jobs-location">Location<input id="pro-jobs-location" type="search" autocomplete="off" placeholder="City, region, or remote"></label>
+          <label for="pro-jobs-skill">Skills or tools<input id="pro-jobs-skill" type="search" autocomplete="off" placeholder="Try SIEM or log analysis"></label>
+        </div>
+        <button id="pro-jobs-clear" class="secondary-button" type="button">Clear filters</button>
+      </fieldset>
+      <p id="pro-jobs-status" class="jobs-results-status" role="status" aria-live="polite"></p>
+      <div id="pro-jobs-results" class="jobs-results" aria-label="Cybersecurity job samples"></div>
+      <details class="jobs-matching-help">
+        <summary>How Better Hacker skill matching works</summary>
+        <p>When live listings are supported, this comparison will run in your browser against structured skills and completion records already stored here. It does not send your learning or portfolio information to employers or job sources. A match only shows which listed skills appear in your saved Better Hacker evidence; it does not assess qualifications or predict hiring outcomes.</p>
+      </details>
+    </section>
   </section>
 
   <section id="daily-challenge" class="section">
@@ -2331,7 +2364,7 @@ Baseline: no approved account/privilege changes during this period.</pre></div><
       <h3 id="plan-monthly-name">Better Hacker Pro</h3>
       <p class="plan-price"><span class="sr-only">Price:</span>$7.99<span class="plan-period"> / month</span></p>
       <p>Pro membership for the Better Hacker learning platform.</p>
-      <ul class="plan-features"><li>Guided cybersecurity learning</li><li>Practice, investigations, and Daily Practice</li><li>Progress, Learning Assistant guidance, and portfolio tools</li></ul>
+      <ul class="plan-features"><li>Guided cybersecurity learning</li><li>Practice, investigations, and Daily Practice</li><li>Progress, Learning Assistant guidance, and portfolio tools</li><li>Cybersecurity Jobs experience (planned Pro feature)</li></ul>
       <p class="plan-note">Cancel anytime once paid subscriptions are available.</p>
       <p class="plan-coming-soon" aria-label="Better Hacker Pro monthly plan coming soon">Coming Soon</p>
     </article>
@@ -2341,7 +2374,7 @@ Baseline: no approved account/privilege changes during this period.</pre></div><
       <h3 id="plan-annual-name">Better Hacker Pro Annual</h3>
       <p class="plan-price"><span class="sr-only">Price:</span>$69<span class="plan-period"> / year</span></p>
       <p>About $5.75 per month, billed yearly.</p>
-      <ul class="plan-features"><li>Guided cybersecurity learning</li><li>Practice, investigations, and Daily Practice</li><li>Progress, Learning Assistant guidance, and portfolio tools</li></ul>
+      <ul class="plan-features"><li>Guided cybersecurity learning</li><li>Practice, investigations, and Daily Practice</li><li>Progress, Learning Assistant guidance, and portfolio tools</li><li>Cybersecurity Jobs experience (planned Pro feature)</li></ul>
       <p class="plan-note">About 28% savings compared with 12 monthly payments. Renews yearly once paid subscriptions are available.</p>
       <p class="plan-coming-soon" aria-label="Better Hacker Pro Annual plan coming soon">Coming Soon</p>
     </article>
@@ -2401,10 +2434,15 @@ Baseline: no approved account/privilege changes during this period.</pre></div><
 <script src="companion.js"></script>
 <script src="attack-box.js"></script>
 <script src="portfolio.js"></script>
+<script src="jobs.js"></script>
+<script src="jobs-demo.js"></script>
+<script src="jobs-ingest.js"></script>
+<script src="jobs-matching.js"></script>
 <script src="daily-practice-ui.js"></script>
 <script src="script.js"></script>
 <script src="portfolio-ui.js"></script>
 <script src="attack-box-ui.js"></script>
+<script src="jobs-ui.js"></script>
 <script src="attack-box.js"></script>
 <script src="attack-box-ui.js"></script>
 

@@ -253,6 +253,36 @@ button.card:hover {
 @media (max-width: 900px) { .pricing-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .pricing-card-best { grid-column: 1 / -1; } }
 @media (max-width: 600px) { .pricing-grid { grid-template-columns: minmax(0, 1fr); } .pricing-card-best { grid-column: auto; } .pricing-card { padding: 23px; } .pricing-card .primary-button { width: 100%; } }
 
+/* Better Hacker Pro Cybersecurity Jobs preview (sample data only). */
+.pro-jobs-experience { margin-top: 38px; padding: clamp(18px, 4vw, 30px); border: 1px solid #1e3a56; border-radius: 14px; background: #081422; text-align: left; scroll-margin-top: var(--navigation-offset, 96px); }
+.pro-jobs-experience > h3 { margin: 0 0 10px; color: #7dd3fc; font-size: clamp(1.5rem, 3vw, 2rem); }
+.pro-jobs-intro, .jobs-entitlement-note, .jobs-matching-help { color: #cbd5e1; }
+.jobs-demo-notice { margin: 18px 0 10px; padding: 14px 16px; border-left: 4px solid #facc15; background: #182132; color: #fff; }
+.jobs-filter-group { min-width: 0; margin: 22px 0; padding: 18px; border: 1px solid #334155; border-radius: 10px; }
+.jobs-filter-group legend { padding: 0 8px; color: #e0f2fe; font-weight: 700; }
+.jobs-filter-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.jobs-filter-grid label { display: grid; align-content: start; gap: 6px; color: #e2e8f0; font-weight: 700; }
+.jobs-filter-grid input, .jobs-filter-grid select { width: 100%; min-width: 0; min-height: 44px; padding: 9px 10px; border: 1px solid #64748b; border-radius: 7px; background: #050b14; color: #fff; font: inherit; }
+.jobs-results-status { min-height: 1.5em; color: #bae6fd; font-weight: 700; }
+.jobs-results { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.jobs-card { display: flex; min-width: 0; flex-direction: column; padding: 20px; border: 1px solid #29435e; border-radius: 12px; background: #0b1728; }
+.jobs-status-badge { align-self: flex-start; margin: 0 0 10px; padding: 4px 8px; border-radius: 5px; background: #43320c; color: #fde68a; font-size: .78rem; font-weight: 800; letter-spacing: .025em; }
+.jobs-card-title { margin: 0 0 7px; overflow-wrap: anywhere; color: #fff; }
+.jobs-employer-location, .jobs-meta, .jobs-source { color: #cbd5e1; overflow-wrap: anywhere; }
+.jobs-description { color: #e2e8f0; }
+.jobs-skill-list { display: flex; flex-wrap: wrap; gap: 7px; margin: 4px 0 12px; padding: 0; list-style: none; }
+.jobs-skill-list li { padding: 4px 8px; border: 1px solid #334155; border-radius: 999px; color: #e0f2fe; font-size: .86rem; }
+.jobs-match-summary { margin-top: auto; padding-top: 10px; color: #bae6fd; font-weight: 700; }
+.jobs-demo-card-note, .jobs-no-application { color: #fde68a; }
+.jobs-apply-link { align-self: flex-start; min-height: 44px; margin: 6px 0; }
+.jobs-empty-state { grid-column: 1 / -1; padding: 18px; border: 1px dashed #64748b; border-radius: 10px; color: #e2e8f0; }
+.jobs-matching-help { margin-top: 22px; }
+.jobs-matching-help summary { min-height: 44px; display: flex; align-items: center; color: #7dd3fc; font-weight: 700; cursor: pointer; }
+.jobs-matching-help p { max-width: 80ch; }
+.pro-jobs-experience :focus-visible { outline: 3px solid #38bdf8; outline-offset: 3px; }
+@media (max-width: 760px) { .jobs-filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .jobs-results { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 480px) { .jobs-filter-grid { grid-template-columns: minmax(0, 1fr); } .jobs-filter-group { padding: 13px; } .jobs-card { padding: 17px; } .jobs-apply-link { width: 100%; justify-content: center; } }
+
 .card p {
   color: #94a3b8;
 }
