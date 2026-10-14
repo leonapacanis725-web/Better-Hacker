@@ -77,6 +77,19 @@ test('existing curriculum totals and waitlist endpoint remain intact', () => {
   assert.ok(fs.existsSync('terms.html'));
 });
 
+test('official contact email is present in site footers and legal contact sections', () => {
+  const email = 'betterhackerteam@gmail.com';
+  for (const page of ['index.html', 'privacy.html', 'terms.html']) {
+    const source = fs.readFileSync(page, 'utf8');
+    assert.match(source, new RegExp(`<a href="mailto:${email}">Contact Better Hacker</a>`), `${page} footer email link`);
+  }
+  for (const page of ['privacy.html', 'terms.html']) {
+    const source = fs.readFileSync(page, 'utf8');
+    assert.ok(source.includes('<h2>Contact</h2>'), page + ' contact section');
+    assert.ok(source.includes('mailto:betterhackerteam@gmail.com'), page + ' mailto link');
+  }
+});
+
 test('representative answers calculate the expected score', () => {
   const questions = reviewQuestions();
   const attempts = questions.map(q => q.type === 'choice' ? q.answer : q.answers[0]);
