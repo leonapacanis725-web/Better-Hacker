@@ -123,7 +123,7 @@
     return range.length ? `Salary reported by source: ${range.join("–")}${value.period ? ` per ${value.period}` : ""}` : "Salary not supplied";
   }
   function mount(documentRef, storage) {
-    const experienceRoot = documentRef.getElementById("pro-jobs-experience");
+    const experienceRoot = documentRef.getElementById("pro-cybersecurity-jobs");
     if (!experienceRoot || !Jobs || !Demo || !Matching) return null;
     const controls = {
       query: documentRef.getElementById("pro-jobs-search"),
