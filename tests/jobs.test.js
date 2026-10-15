@@ -33,7 +33,7 @@ class FakeElement {
 }
 function fakeDocument() {
   const elements = {
-    'pro-jobs-experience': new FakeElement('SECTION'), 'pro-jobs-search': new FakeElement('INPUT'),
+    'pro-cybersecurity-jobs': new FakeElement('SECTION'), 'pro-jobs-search': new FakeElement('INPUT'),
     'pro-jobs-category': new FakeElement('SELECT'), 'pro-jobs-workplace': new FakeElement('SELECT'),
     'pro-jobs-type': new FakeElement('SELECT'), 'pro-jobs-level': new FakeElement('SELECT'),
     'pro-jobs-location': new FakeElement('INPUT'), 'pro-jobs-skill': new FakeElement('INPUT'),
@@ -145,13 +145,27 @@ test('local evidence matching is deterministic, uses completed records, and avoi
   const match = Matching.matchJobSkills(job, evidence);
   assert.equal(match.matchedCount, 3);
   assert.equal(match.totalCount, 3);
-  assert.equal(match.message, 'Your Better Hacker evidence: 3 of 3 mapped skills.');
-  assert.match(match.disclaimer, /does not determine eligibility or hiring decisions/i);
+  assert.equal(match.message, 'Demonstrated: 3 skills · Developing: 0 skills · Skill gaps: 0 skills');
+  assert.match(match.disclaimer, /does not determine eligibility, hiring decisions/i);
   assert.ok(evidence.activities.some(item => item.id.startsWith('investigation-')));
   assert.ok(evidence.activities.some(item => item.id.startsWith('practice-')));
   assert.ok(!JSON.stringify(evidence).includes('password'));
   const unknownSkill = Jobs.normalizeJob(record({ skills: [{ id: 'invented-skill', label: 'Invented Skill' }] }), { importedAt: fixedImport });
   assert.equal(unknownSkill.job.skills[0].id, null);
+});
+
+test('job view links only relevant saved portfolio evidence and explains unmapped learning gaps', () => {
+  const local = new Map([['betterHackerPracticeNetworkAnalysisComplete', 'true']]);
+  const storage = { getItem: key => local.get(key) || null, setItem(key, value) { local.set(key, value); return true; } };
+  Portfolio.createProject(storage, 'practice-network-analysis');
+  const evidence = Matching.deriveLocalEvidence(Portfolio, storage);
+  const job = { title: 'Security Analyst', employer: 'Example Employer', description: 'Network analysis and Nmap', skills: [], source: { name: 'Greenhouse' }, applicationUrl: null, dateImported: fixedImport, isDemo: false, extensions: { skillMappings: [{ id: 'network-analysis' }, { id: 'nmap' }] } };
+  const rendered = JobsUI.renderJob({ createElement: tag => new FakeElement(tag.toUpperCase()) }, job, evidence);
+  const portfolioButton = descendants(rendered).find(node => node.dataset.portfolioView === 'practice-network-analysis');
+  assert.ok(portfolioButton);
+  assert.match(rendered.textContent, /No Better Hacker activity is currently available for this skill\./);
+  assert.match(rendered.textContent, /Demonstrated/);
+  assert.match(rendered.textContent, /Skill Gap/);
 });
 
 test('demo jobs are isolated, explicitly labeled, and provide honest empty states', () => {

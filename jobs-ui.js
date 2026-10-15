@@ -12,7 +12,7 @@
     root.BetterHackerJobsUI = api;
     if (root.document) {
       let storage = null;
-      try { storage = root.localStorage; } catch (_) {}
+      try { storage = root.BetterHackerSessionStorage || root.localStorage; } catch (_) {}
       api.mount(root.document, storage);
     }
   }
@@ -62,48 +62,70 @@
     if (job.salaryRange) article.append(text(documentRef, "p", formatSalary(job.salaryRange), "jobs-salary"));
     if (job.description) article.append(text(documentRef, "p", job.description, "jobs-description"));
     const mappedSkills = job.isDemo ? [] : Matching.jobSkills(job);
-    if (!job.isDemo && mappedSkills.length) {
-      const list = documentRef.createElement("ul");
-      list.className = "jobs-skill-list";
-      list.setAttribute("aria-label", "Skills shown in this job");
-      article.append(text(documentRef, "h5", "Skills shown in this job", "jobs-match-subheading"));
-      mappedSkills.forEach(skill => list.append(text(documentRef, "li", skill.label)));
-      article.append(list);
-      article.append(text(documentRef, "h5", "Your Better Hacker evidence", "jobs-match-heading"));
+    if (!job.isDemo) {
       const match = Matching.matchJobSkills(job, evidence, Portfolio);
+      article.append(text(documentRef, "h5", "Your readiness", "jobs-match-heading"));
       article.append(text(documentRef, "p", match.message, "jobs-match-summary"));
-      if (match.noEvidenceMessage) article.append(text(documentRef, "p", match.noEvidenceMessage, "jobs-evidence-empty"));
-      if (match.matchedEvidence.length) {
-        const matched = documentRef.createElement("ul");
-        matched.className = "jobs-evidence-list jobs-evidence-matched";
-        matched.setAttribute("aria-label", "Matched skills shown in Better Hacker evidence");
-        match.matchedEvidence.forEach(skill => {
-          const activity = skill.evidence[0];
-          matched.append(text(documentRef, "li", `✓ ${skill.label}${activity ? ` — Evidence: ${activity.activityTitle}${activity.source === "structured-portfolio" ? " (portfolio)" : ""}` : ""}`));
-        });
-        article.append(text(documentRef, "h5", "Matched skills", "jobs-match-subheading"), matched);
-      }
-      if (match.gaps.length) {
-        const missing = documentRef.createElement("ul");
-        missing.className = "jobs-evidence-list jobs-evidence-missing";
-        missing.setAttribute("aria-label", "Skills not yet shown in Better Hacker evidence");
-        match.gaps.forEach(skill => {
+      const sourceSkills = Array.isArray(job.skills) ? job.skills : [];
+      if (sourceSkills.length) {
+        const sourceList = documentRef.createElement("ul");
+        sourceList.className = "jobs-skill-list jobs-source-skill-list";
+        sourceList.setAttribute("aria-label", "Skills listed in the original employer feed");
+        sourceSkills.forEach(sourceSkill => {
           const item = documentRef.createElement("li");
-          item.append(text(documentRef, "span", `○ ${skill.label}`));
-          skill.activities.forEach(activity => {
-            const link = documentRef.createElement("a");
-            link.href = activity.href;
-            link.textContent = `Practice ${skill.label}: ${activity.title}`;
-            link.setAttribute("aria-label", `Build evidence for ${skill.label}: open ${activity.title}`);
-            item.append(documentRef.createElement("br"), link);
-          });
-          missing.append(item);
+          item.append(text(documentRef, "span", sourceSkill.label || Jobs.skillLabel(sourceSkill.id) || "Skill listed by source"));
+          const sourceSkillId = sourceSkill.id || Jobs.skillId(sourceSkill.label);
+          const matched = sourceSkillId && match.skills.find(skill => skill.id === sourceSkillId);
+          item.append(text(documentRef, "span", matched ? statusText(matched.status) : "Not mapped for comparison", "jobs-readiness-status"));
+          if (sourceSkill.level && sourceSkill.level !== "unspecified") item.append(text(documentRef, "span", `Source level: ${sourceSkill.level}`, "jobs-readiness-detail"));
+          sourceList.append(item);
         });
-        article.append(text(documentRef, "h5", "Not yet shown in your Better Hacker evidence", "jobs-match-subheading"), missing);
+        article.append(text(documentRef, "h5", "Skills listed by the employer source", "jobs-match-subheading"), sourceList);
+      }
+      if (mappedSkills.length) {
+        const list = documentRef.createElement("ul");
+        list.className = "jobs-skill-list jobs-readiness-list";
+        list.setAttribute("aria-label", "Employer skills and Better Hacker evidence status");
+        match.skills.forEach(skill => {
+          const item = documentRef.createElement("li");
+          item.append(text(documentRef, "span", skill.label, "jobs-readiness-skill"));
+          item.append(text(documentRef, "span", statusText(skill.status), `jobs-readiness-status jobs-readiness-${skill.status}`));
+          if (skill.status === "demonstrated") {
+            const record = (evidence.skills.find(entry => entry.id === skill.id) || {}).evidence || [];
+            if (record.length) item.append(text(documentRef, "span", `Evidence: ${record.map(entry => entry.activityTitle).join("; ")}`, "jobs-readiness-detail"));
+          } else {
+            const activities = Matching.learningActivities(skill.id, Portfolio);
+            if (activities.length) {
+              const link = documentRef.createElement("a");
+              link.href = activities[0].href;
+              link.textContent = `${skill.status === "developing" ? "Continue" : "Build evidence"}: ${activities[0].title}`;
+              link.setAttribute("aria-label", `${skill.status === "developing" ? "Continue developing" : "Build evidence for"} ${skill.label}: ${activities[0].title}`);
+              item.append(link);
+            } else item.append(text(documentRef, "span", "No Better Hacker activity is currently available for this skill.", "jobs-readiness-detail"));
+          }
+          list.append(item);
+        });
+        article.append(text(documentRef, "h5", "Additional skills Better Hacker recognized in the listing", "jobs-match-subheading"), list);
+      } else article.append(text(documentRef, "p", Matching.NO_SKILLS, "jobs-evidence-empty"));
+      if (match.portfolioEvidence.length) {
+        const portfolioList = documentRef.createElement("ul");
+        portfolioList.className = "jobs-evidence-list jobs-portfolio-evidence";
+        portfolioList.setAttribute("aria-label", "Portfolio items linked to demonstrated job skills");
+        match.portfolioEvidence.forEach(item => {
+          const row = documentRef.createElement("li");
+          row.append(text(documentRef, "span", `${item.skillLabel}: ${item.title}`));
+          const view = documentRef.createElement("button");
+          view.type = "button";
+          view.dataset.portfolioView = item.activityId;
+          view.className = "jobs-portfolio-view";
+          view.textContent = "Open portfolio item";
+          view.setAttribute("aria-label", `Open portfolio item ${item.title} for ${item.skillLabel}`);
+          row.append(view);
+          portfolioList.append(row);
+        });
+        article.append(text(documentRef, "h5", "Related portfolio evidence", "jobs-match-subheading"), portfolioList);
       }
       article.append(text(documentRef, "p", match.disclaimer, "jobs-match-disclaimer"));
-    } else if (!job.isDemo) {
-      article.append(text(documentRef, "p", Matching.NO_SKILLS, "jobs-evidence-empty"));
     }
     if (job.isDemo) article.append(text(documentRef, "p", "Sample only. There is no real employer or application available.", "jobs-demo-card-note"));
     else if (job.applicationUrl) article.append(applicationLink(documentRef, job));
@@ -116,6 +138,7 @@
   function statusLabel(status) {
     return ({ stale: "POSSIBLY STALE · VERIFY AT SOURCE", expired: "EXPIRED", unknown: "LIVE LISTING · POSTING DATE NOT SUPPLIED", current: "LIVE · CURRENT LISTING" })[status] || "STATUS UNKNOWN";
   }
+  function statusText(status) { return ({ demonstrated: "Demonstrated", developing: "Developing", gap: "Skill Gap" })[status] || "Not mapped"; }
   function label(value) { return value && value !== "unspecified" ? value.replace(/-/g, " ") : ""; }
   function formatSalary(value) {
     const money = amount => amount === null ? null : new Intl.NumberFormat("en-US", { style: "currency", currency: value.currency || "USD", maximumFractionDigits: 0 }).format(amount);
@@ -123,8 +146,11 @@
     return range.length ? `Salary reported by source: ${range.join("–")}${value.period ? ` per ${value.period}` : ""}` : "Salary not supplied";
   }
   function mount(documentRef, storage) {
-    const experienceRoot = documentRef.getElementById("pro-jobs-experience");
+    const experienceRoot = documentRef.getElementById("pro-cybersecurity-jobs");
     if (!experienceRoot || !Jobs || !Demo || !Matching) return null;
+    if (!storage) {
+      try { storage = root.BetterHackerSessionStorage || root.localStorage; } catch (_) { storage = null; }
+    }
     const controls = {
       query: documentRef.getElementById("pro-jobs-search"),
       category: documentRef.getElementById("pro-jobs-category"),
@@ -143,6 +169,7 @@
     let jobs = demoJobs.slice();
     let evidence = Matching.deriveLocalEvidence(Portfolio, storage);
     function render() {
+      evidence = Matching.deriveLocalEvidence(Portfolio, storage);
       const filters = Object.fromEntries(Object.entries(controls).filter(([key, element]) => ["query", "category", "workplace", "employmentType", "experienceLevel", "location", "skill"].includes(key)).map(([key, element]) => [key, element.value]));
       const results = Jobs.filterJobs(jobs, filters);
       controls.results.replaceChildren();

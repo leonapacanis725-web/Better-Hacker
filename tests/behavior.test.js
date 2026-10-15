@@ -358,6 +358,7 @@ test('reset removes learning state and preserves the confirmed waitlist email', 
     betterHackerSocInvestigationComplete: 'true',
     betterHackerCourseReviewResult: '{}',
     betterHackerDailyChallengeState: '{}',
+    betterHackerJobReadinessProgress: JSON.stringify({ version: 1, started: ['practice-linux-challenges'] }),
     betterHackerWaitlistEmail: 'learner@example.com',
     unrelated: 'keep'
   }});
@@ -368,6 +369,7 @@ test('reset removes learning state and preserves the confirmed waitlist email', 
   assert.equal(localStorage.getItem('betterHackerCompletedLabs'), null);
   assert.equal(localStorage.getItem('betterHackerCourseReviewResult'), null);
   assert.equal(localStorage.getItem('betterHackerDailyChallengeState'), null);
+  assert.equal(localStorage.getItem('betterHackerJobReadinessProgress'), null);
   assert.equal(localStorage.getItem('betterHackerWaitlistEmail'), 'learner@example.com');
   assert.equal(localStorage.getItem('unrelated'), 'keep');
 });
@@ -578,9 +580,9 @@ test('Daily Practice credit leaves Core 8/8, guided-lab and investigation eviden
   assert.equal(app.buildRetentionSnapshot().daily.totalCompleted, 1);
 });
 
-test('reset removes learning and practice evidence but preserves authored portfolio projects and email', async () => {
+test('reset removes learning, practice and readiness progress but preserves portfolio projects and email', async () => {
   const project = JSON.stringify({version:1,projects:[{activityId:'lesson-linux',title:'My "quoted" evidence',findings:'Saved before reset'}]});
-  const {context, localStorage} = boot({seed:{betterHackerPortfolioProjects:project,betterHackerWaitlistEmail:'learner@example.test',betterHackerLinuxComplete:'true',betterHackerPracticeLibraryState:'library',betterHackerDailyChallengeState:'daily',unrelated:'keep'},elements:{'#learn':new FakeElement()}});
+  const {context, localStorage} = boot({seed:{betterHackerPortfolioProjects:project,betterHackerWaitlistEmail:'learner@example.test',betterHackerLinuxComplete:'true',betterHackerPracticeLibraryState:'library',betterHackerDailyChallengeState:'daily',betterHackerJobReadinessProgress:'readiness',unrelated:'keep'},elements:{'#learn':new FakeElement()}});
   let prompt; context.confirm = text => { prompt=text; return true; };
   const reset = context.__createdElements.find(e=>e.className==='secondary-button reset-progress-button');
   await reset.dispatch('click');
@@ -590,6 +592,7 @@ test('reset removes learning and practice evidence but preserves authored portfo
   assert.equal(localStorage.getItem('betterHackerLinuxComplete'),null);
   assert.equal(localStorage.getItem('betterHackerPracticeLibraryState'),null);
   assert.equal(localStorage.getItem('betterHackerDailyChallengeState'),null);
+  assert.equal(localStorage.getItem('betterHackerJobReadinessProgress'),null);
   assert.equal(localStorage.getItem('unrelated'),'keep');
 });
 

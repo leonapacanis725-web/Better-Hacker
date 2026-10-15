@@ -278,6 +278,15 @@ button.card:hover {
 .jobs-evidence-list { margin: 4px 0 8px; padding-left: 1.4rem; color: #e2e8f0; }
 .jobs-evidence-list li { margin: 5px 0; overflow-wrap: anywhere; }
 .jobs-evidence-list a { display: inline-block; min-height: 36px; padding: 6px 0; color: #7dd3fc; text-decoration: underline; text-underline-offset: 3px; }
+.jobs-readiness-list li, .jobs-source-skill-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: start; }
+.jobs-readiness-skill { font-weight: 700; }
+.jobs-readiness-status { display: inline-block; width: fit-content; padding: 2px 8px; border: 1px solid #64748b; border-radius: 999px; font-size: .85rem; font-weight: 700; }
+.jobs-readiness-demonstrated { border-color: #86efac; }
+.jobs-readiness-developing { border-color: #fde68a; }
+.jobs-readiness-gap { border-color: #fca5a5; }
+.jobs-readiness-detail, .jobs-readiness-list a { grid-column: 1 / -1; }
+.jobs-portfolio-evidence li { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.jobs-portfolio-view { min-height: 36px; color: #7dd3fc; background: transparent; border: 1px solid #45627d; border-radius: 6px; padding: 6px 10px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .jobs-demo-card-note, .jobs-no-application { color: #fde68a; }
 .jobs-apply-link { align-self: flex-start; min-height: 44px; margin: 6px 0; }
 .jobs-empty-state { grid-column: 1 / -1; padding: 18px; border: 1px dashed #64748b; border-radius: 10px; color: #e2e8f0; }
