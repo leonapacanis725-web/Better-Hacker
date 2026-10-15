@@ -18,8 +18,22 @@
   }
 })(typeof globalThis !== "undefined" ? globalThis : this, function (Jobs, Demo, Matching, Portfolio, root) {
   "use strict";
+  function trustedApplicationUrl(job) {
+    if (!job || !job.applicationUrl || !job.externalId) return false;
+    try {
+      const url = new URL(job.applicationUrl);
+      if (url.protocol !== "https:" || url.username || url.password) return false;
+      const ext = job.extensions || {};
+      const parts = url.pathname.split("/").filter(Boolean);
+      if (ext.adapter === "greenhouse-job-board") return ["job-boards.greenhouse.io", "boards.greenhouse.io"].includes(url.hostname) &&
+        typeof ext.boardToken === "string" && parts.length === 3 && parts[0].toLowerCase() === ext.boardToken.toLowerCase() && parts[1] === "jobs" && parts[2] === String(job.externalId);
+      if (ext.adapter === "lever-postings") return url.hostname === "jobs.lever.co" && typeof ext.site === "string" &&
+        parts.length >= 2 && parts.length <= 3 && parts[0].toLowerCase() === ext.site.toLowerCase() && parts[1] === String(job.externalId) && (parts.length === 2 || parts[2] === "apply");
+      return false;
+    } catch (_) { return false; }
+  }
   function applicationLink(documentRef, job) {
-    if (!job || job.isDemo || !job.applicationUrl) return null;
+    if (!job || job.isDemo || !trustedApplicationUrl(job)) return null;
     const link = documentRef.createElement("a");
     link.href = job.applicationUrl;
     link.target = "_blank";
@@ -59,7 +73,8 @@
     if (job.isDemo) article.append(text(documentRef, "p", "Sample only. There is no real employer or application available.", "jobs-demo-card-note"));
     else if (job.applicationUrl) article.append(applicationLink(documentRef, job));
     else article.append(text(documentRef, "p", "No application URL was provided by the source.", "jobs-no-application"));
-    const observed = job.lastObservedAt ? ` · Last observed ${job.lastObservedAt.slice(0, 10)}` : "";
+    const observedAt = job.lastObservedAt || job.dateImported;
+    const observed = observedAt ? ` · Checked ${observedAt.slice(0, 10)}` : "";
     article.append(text(documentRef, "p", `Source: ${job.source.name}${job.datePosted ? ` · Posted ${job.datePosted}` : " · Posting date not supplied"}${observed}`, "jobs-source"));
     return article;
   }
@@ -89,6 +104,7 @@
     };
     const demoJobs = Demo.createDemoJobs(Jobs);
     let liveJobs = [];
+    let liveFeedLoaded = false;
     let jobs = demoJobs.slice();
     let evidence = Matching.deriveLocalEvidence(Portfolio, storage);
     function render() {
@@ -96,11 +112,14 @@
       const results = Jobs.filterJobs(jobs, filters);
       controls.results.replaceChildren();
       if (!results.length) {
-        controls.results.append(text(documentRef, "p", liveJobs.length ? "No job listings match those filters. Try clearing a filter or broadening the search." : "No sample roles match those filters. Try clearing a filter or broadening the search.", "jobs-empty-state"));
+        const visibleLive = Jobs.filterJobs(liveJobs, {});
+        controls.results.append(text(documentRef, "p", visibleLive.length ? "No job listings match those filters. Try clearing a filter or broadening the search." : liveFeedLoaded ? "No current cybersecurity listings were found from the connected sources. Check back as employer feeds update." : "No sample roles match those filters. Try clearing a filter or broadening the search.", "jobs-empty-state"));
       } else results.forEach(job => controls.results.append(renderJob(documentRef, job, evidence)));
       const liveCount = results.filter(job => !job.isDemo).length;
       const demoCount = results.length - liveCount;
-      controls.status.textContent = [liveCount ? `${liveCount} real ${liveCount === 1 ? "listing" : "listings"} shown` : "", demoCount ? `${demoCount} demo ${demoCount === 1 ? "role" : "roles"} shown` : ""].filter(Boolean).join(" · ") + (liveCount ? ". Verify current availability and details at the source." : ". These are not current vacancies.");
+      const visibleLive = Jobs.filterJobs(liveJobs, {}).length;
+      const liveStatus = liveCount ? `${liveCount} real ${liveCount === 1 ? "listing" : "listings"} shown` : visibleLive ? "No current listings match these filters." : liveFeedLoaded ? "No current cybersecurity listings were found from the connected sources. Check back as employer feeds update." : "Sample roles shown separately. These are not current vacancies.";
+      controls.status.textContent = [liveStatus, demoCount ? `${demoCount} demo ${demoCount === 1 ? "role" : "roles"} shown separately` : ""].filter(Boolean).join(" · ") + (liveCount ? ". Verify current availability and details at the source." : "");
     }
     [controls.query, controls.location, controls.skill].forEach(element => element.addEventListener("input", render));
     [controls.category, controls.workplace, controls.employmentType, controls.experienceLevel].forEach(element => element.addEventListener("change", render));
@@ -114,7 +133,7 @@
       if (!dataset || dataset.schemaVersion !== 1 || dataset.kind !== "live-job-feed" || !Array.isArray(dataset.jobs)) return [];
       return dataset.jobs.map(raw => Jobs.normalizeJob(raw, { importedAt: raw && raw.dateImported })).filter(result =>
         result.ok && !result.job.isDemo && result.job.source.kind === "ats-public-feed" &&
-        result.job.source.name && result.job.source.url && result.job.applicationUrl
+        result.job.source.name && result.job.source.url && result.job.applicationUrl && trustedApplicationUrl(result.job)
       ).map(result => result.job);
     }
     async function refreshLiveJobs() {
@@ -126,6 +145,7 @@
         if (!response.ok) return;
         const dataset = await response.json();
         liveJobs = validLiveRecords(dataset);
+        liveFeedLoaded = true;
         jobs = liveJobs.concat(demoJobs);
         render();
       } catch (_) { /* Keep the clearly labeled demo preview when no dataset is available. */ }
@@ -134,5 +154,5 @@
     refreshLiveJobs();
     return { get jobs() { return jobs; }, render, refreshLiveJobs, refreshEvidence() { evidence = Matching.deriveLocalEvidence(Portfolio, storage); render(); }, applicationLink: job => applicationLink(documentRef, job) };
   }
-  return { applicationLink, renderJob, mount, formatSalary };
+  return { applicationLink, trustedApplicationUrl, renderJob, mount, formatSalary };
 });

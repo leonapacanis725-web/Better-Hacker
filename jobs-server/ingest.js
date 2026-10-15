@@ -4,6 +4,7 @@ const fs = require("node:fs/promises");
 const path = require("node:path");
 const Jobs = require("../jobs.js");
 const Adapters = require("../jobs-adapters.js");
+const Relevance = require("../jobs-relevance.js");
 
 const MAX_RESPONSE_BYTES = 5 * 1024 * 1024;
 const MAX_SOURCES = 100;
@@ -69,6 +70,20 @@ async function loadFeed(source, fetchImpl) {
     return await readJsonResponse(response);
   } finally { clearTimeout(timeout); }
 }
+function expectedApplicationUrl(record, source) {
+  const value = Jobs.canonicalApplicationUrl(record && record.applicationUrl);
+  if (!value || !record.externalId) return false;
+  const url = new URL(value);
+  if (source.type === "greenhouse") {
+    const board = String(source.boardToken).toLowerCase();
+    const parts = url.pathname.split("/").filter(Boolean);
+    return ["job-boards.greenhouse.io", "boards.greenhouse.io"].includes(url.hostname) &&
+      parts.length === 3 && parts[0].toLowerCase() === board && parts[1] === "jobs" && parts[2] === String(record.externalId);
+  }
+  const parts = url.pathname.split("/").filter(Boolean);
+  return url.hostname === "jobs.lever.co" && parts.length >= 2 && parts.length <= 3 && parts[0].toLowerCase() === String(source.site).toLowerCase() &&
+    parts[1] === String(record.externalId) && (parts.length === 2 || parts[2] === "apply");
+}
 async function buildDataset(config, options = {}) {
   const sources = validateConfig(config);
   const fetchImpl = options.fetch || globalThis.fetch;
@@ -76,11 +91,26 @@ async function buildDataset(config, options = {}) {
   const importedAt = options.importedAt || new Date().toISOString();
   const records = [];
   const diagnostics = [];
+  let relevanceRejectedCount = 0;
+  let unsafeUrlRejectedCount = 0;
+  let incompleteRejectedCount = 0;
   for (const [index, source] of sources.entries()) {
     try {
       const payload = await loadFeed(source, fetchImpl);
-      records.push(...Adapters.adapt(source, payload, importedAt));
-      diagnostics.push({ sourceId: source.id, status: "ok", recordsReceived: Array.isArray(payload) ? payload.length : payload.jobs.length });
+      const mapped = Adapters.adapt(source, payload, importedAt);
+      const accepted = [];
+      let sourceRelevanceRejected = 0, sourceUnsafeUrlRejected = 0, sourceIncompleteRejected = 0;
+      for (const record of mapped) {
+        const relevance = Relevance.classify(record);
+        if (!relevance.relevant) { relevanceRejectedCount++; sourceRelevanceRejected++; continue; }
+        if (!expectedApplicationUrl(record, source)) { unsafeUrlRejectedCount++; sourceUnsafeUrlRejected++; continue; }
+        if (!record.title || !record.employer || !record.externalId || !record.source || !record.importedAt) { incompleteRejectedCount++; sourceIncompleteRejected++; continue; }
+        record.extensions = { ...record.extensions, relevance: { reason: relevance.reason, matchedSignals: relevance.matchedSignals } };
+        accepted.push(record);
+      }
+      records.push(...accepted);
+      diagnostics.push({ sourceId: source.id, status: "ok", recordsReceived: mapped.length, relevanceRejected: sourceRelevanceRejected,
+        candidatesAccepted: accepted.length, unsafeUrlRejected: sourceUnsafeUrlRejected, incompleteRejected: sourceIncompleteRejected });
     } catch (error) {
       const message = error && error.name === "AbortError" ? "Feed request timed out." : String(error && error.message || "Feed request failed.").slice(0, 240);
       diagnostics.push({ sourceId: String(source.id || "unknown").slice(0, 100), status: "error", message });
@@ -103,6 +133,9 @@ async function buildDataset(config, options = {}) {
     ...(sources.length ? {} : { note: "No approved employer feed is configured." }),
     duplicateCount: report.duplicates.length,
     rejectedCount: report.rejected.length,
+    relevanceRejectedCount,
+    unsafeUrlRejectedCount,
+    incompleteRejectedCount,
     diagnostics
   };
   return dataset;
@@ -137,4 +170,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { MAX_RESPONSE_BYTES, MAX_SOURCES, validateConfig, readJsonResponse, loadFeed, buildDataset, run };
+module.exports = { MAX_RESPONSE_BYTES, MAX_SOURCES, validateConfig, readJsonResponse, loadFeed, expectedApplicationUrl, buildDataset, run };

@@ -40,12 +40,12 @@ test('Greenhouse adapter preserves source facts and leaves absent level, skills,
   assert.equal(job.isDemo, false);
 });
 
-test('Lever adapter maps published postings and known date without inferring job level or skills', () => {
+test('Lever adapter maps published postings and source-provided level without inventing skills', () => {
   const posted = Date.parse('2026-10-01T12:30:00.000Z');
   const raw = Adapters.adapt(lever, [{ id: 'lever-55', text: 'Security Analyst', createdAt: posted, hostedUrl: 'https://jobs.lever.co/example/lever-55', applyUrl: 'https://jobs.lever.co/example/lever-55/apply', descriptionPlain: 'Monitor security alerts.', categories: { location: 'Remote', level: 'Junior' } }], importedAt);
   const job = Jobs.ingestRecords(raw, { importedAt }).jobs[0];
   assert.equal(job.datePosted, '2026-10-01');
-  assert.equal(job.experienceLevel, 'unspecified');
+  assert.equal(job.experienceLevel, 'junior');
   assert.deepEqual(job.skills, []);
   assert.equal(job.applicationUrl, 'https://jobs.lever.co/example/lever-55/apply');
   assert.equal(job.extensions.level, 'Junior');
@@ -71,19 +71,22 @@ test('source endpoints are fixed HTTPS hosts and malformed configs or payloads f
 
 test('backend creates a sanitized source-attributed dataset, filters expired entries at search time, and rejects bad feeds', async () => {
   const payload = { jobs: [
-    { id: 1, title: 'Junior SOC Analyst', location: { name: 'Detroit, MI' }, absolute_url: 'https://boards.greenhouse.io/example/jobs/1', first_published: '2026-10-10', content: '<script>alert(1)</script> Review alerts.' },
-    { id: 2, title: 'Expired Analyst', absolute_url: 'https://boards.greenhouse.io/example/jobs/2', application_deadline: '2026-10-01' },
-    { id: 3, title: 'Unsafe Link', absolute_url: 'javascript:alert(1)' }
+    { id: 1, title: 'Junior SOC Analyst', location: { name: 'Detroit, MI' }, absolute_url: 'https://job-boards.greenhouse.io/example-board/jobs/1', first_published: '2026-10-10', content: '<script>alert(1)</script> Review alerts.' },
+    { id: 2, title: 'SOC Analyst', absolute_url: 'https://job-boards.greenhouse.io/example-board/jobs/2', application_deadline: '2026-10-01' },
+    { id: 3, title: 'SOC Analyst', absolute_url: 'https://evil.example/jobs/3' },
+    { id: 4, title: 'Marketing Coordinator', absolute_url: 'https://job-boards.greenhouse.io/example-board/jobs/4' }
   ] };
   const dataset = await Ingestion.buildDataset({ sources: [greenhouse] }, { importedAt, delayMs: 0, fetch: async url => { assert.equal(url, Adapters.endpoint(greenhouse)); return response(payload); } });
   assert.equal(dataset.kind, 'live-job-feed');
   assert.equal(dataset.sourceCount, 1);
   assert.equal(dataset.jobs.length, 2);
-  assert.equal(dataset.rejectedCount, 1);
+  assert.equal(dataset.rejectedCount, 0);
+  assert.equal(dataset.relevanceRejectedCount, 1);
+  assert.equal(dataset.unsafeUrlRejectedCount, 1);
   assert.ok(dataset.jobs.every(job => job.source.name === 'Example Careers' && job.source.kind === 'ats-public-feed' && job.source.url));
   assert.equal(Jobs.filterJobs(dataset.jobs, {}, '2026-10-14').length, 1);
   assert.equal(Jobs.filterJobs(dataset.jobs, { query: 'Junior SOC', location: 'detroit' }, '2026-10-14').length, 1);
-  assert.equal(dataset.jobs.find(job => job.externalId === '1').description, 'alert(1) Review alerts.');
+  assert.equal(dataset.jobs.find(job => job.externalId === '1').description, 'Review alerts.');
   const empty = await Ingestion.buildDataset({ sources: [] }, { importedAt });
   assert.equal(empty.sourceCount, 0);
   assert.match(empty.note, /No approved employer feed/i);

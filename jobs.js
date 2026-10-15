@@ -7,6 +7,7 @@
 
   const SCHEMA_VERSION = 1;
   const DEFAULT_STALE_DAYS = 30;
+  const MAX_LIVE_OBSERVATION_AGE_DAYS = 7;
   const CATEGORIES = Object.freeze([
     "entry-level", "soc", "cybersecurity-analyst", "security-analyst", "junior-security", "help-desk-it", "internship", "other"
   ]);
@@ -237,6 +238,10 @@
     if (job && job.isDemo) return "demo";
     const date = today || new Date().toISOString().slice(0, 10);
     if (job && job.expiresAt && job.expiresAt <= date) return "expired";
+    if (job && !job.isDemo && job.lastObservedAt) {
+      const observedAge = Math.floor((Date.parse(date) - Date.parse(job.lastObservedAt)) / 86400000);
+      if (Number.isFinite(observedAge) && observedAge > MAX_LIVE_OBSERVATION_AGE_DAYS) return "removed";
+    }
     if (!job || !job.datePosted) return "unknown";
     const threshold = Number.isInteger(staleDays) ? staleDays : DEFAULT_STALE_DAYS;
     const age = Math.floor((Date.parse(date) - Date.parse(job.datePosted)) / 86400000);
@@ -255,7 +260,7 @@
     const skill = normalizeLabel(f.skill || "");
     return (Array.isArray(jobs) ? jobs : []).filter(job => {
       const state = freshness(job, today, f.staleDays);
-      if (state === "expired" && f.includeExpired !== true) return false;
+      if ((state === "expired" && f.includeExpired !== true) || state === "removed") return false;
       if (f.includeDemo === false && job.isDemo) return false;
       if (terms.length && !terms.every(term => searchText(job).includes(term))) return false;
       if (f.category && f.category !== "all" && !(job.categories || []).includes(f.category)) return false;
@@ -268,6 +273,6 @@
     });
   }
 
-  return { SCHEMA_VERSION, DEFAULT_STALE_DAYS, CATEGORIES, WORKPLACE_TYPES, EMPLOYMENT_TYPES, EXPERIENCE_LEVELS,
+  return { SCHEMA_VERSION, DEFAULT_STALE_DAYS, MAX_LIVE_OBSERVATION_AGE_DAYS, CATEGORIES, WORKPLACE_TYPES, EMPLOYMENT_TYPES, EXPERIENCE_LEVELS,
     SKILLS, normalizeLabel, skillId, normalizeJob, canonicalApplicationUrl, duplicateKey, ingestRecords, freshness, filterJobs };
 });

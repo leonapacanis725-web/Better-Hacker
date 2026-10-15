@@ -123,6 +123,9 @@ test('freshness distinguishes demo, unknown, stale and expired postings without 
   assert.equal(Jobs.freshness(stale, '2026-10-14'), 'stale');
   assert.equal(Jobs.freshness(expired, '2026-10-14'), 'expired');
   assert.equal(Jobs.filterJobs([expired], {}).length, 0);
+  const lastObservedTooLongAgo = Jobs.normalizeJob(record({ lastObservedAt: '2026-10-01T00:00:00.000Z' }), { importedAt: fixedImport }).job;
+  assert.equal(Jobs.freshness(lastObservedTooLongAgo, '2026-10-14'), 'removed');
+  assert.equal(Jobs.filterJobs([lastObservedTooLongAgo], {}, '2026-10-14').length, 0);
 });
 
 test('local evidence matching is deterministic, uses completed records, and avoids learner text', () => {
@@ -177,7 +180,11 @@ test('jobs UI loads only same-origin validated live data and keeps it separate f
   globalThis.fetch = async url => {
     fetchedUrl = url;
     assert.equal(url, 'https://betterhacker.example/jobs-live.json');
-    return { ok: true, json: async () => ({ schemaVersion: 1, kind: 'live-job-feed', jobs: [record({ source: { id: 'approved-feed', name: 'Approved Feed', kind: 'ats-public-feed', url: 'https://careers.example/' }, lastObservedAt: fixedImport })] }) };
+    return { ok: true, json: async () => ({ schemaVersion: 1, kind: 'live-job-feed', jobs: [record({
+      externalId: '123', applicationUrl: 'https://job-boards.greenhouse.io/example/jobs/123',
+      source: { id: 'approved-feed', name: 'Greenhouse', kind: 'ats-public-feed', url: 'https://careers.example/' },
+      lastObservedAt: fixedImport, extensions: { adapter: 'greenhouse-job-board', boardToken: 'example' }
+    })] }) };
   };
   try {
     assert.equal(globalThis.location.href, 'https://betterhacker.example/');
@@ -198,13 +205,34 @@ test('jobs UI loads only same-origin validated live data and keeps it separate f
   }
 });
 
+test('a verified empty live dataset states that no current cybersecurity listings were found', async () => {
+  const previousLocation = Object.getOwnPropertyDescriptor(globalThis, 'location');
+  const previousFetch = globalThis.fetch;
+  Object.defineProperty(globalThis, 'location', { configurable: true, value: { href: 'https://betterhacker.example/', origin: 'https://betterhacker.example' } });
+  globalThis.fetch = async () => ({ ok: true, json: async () => ({ schemaVersion: 1, kind: 'live-job-feed', jobs: [] }) });
+  try {
+    const documentRef = fakeDocument();
+    const ui = JobsUI.mount(documentRef, null);
+    await ui.refreshLiveJobs();
+    assert.match(documentRef.elements['pro-jobs-status'].textContent, /No current cybersecurity listings were found from the connected sources\. Check back as employer feeds update\./);
+    assert.equal(ui.jobs.filter(job => !job.isDemo).length, 0);
+    assert.match(documentRef.elements['pro-jobs-status'].textContent, /demo roles shown separately/i);
+  } finally {
+    globalThis.fetch = previousFetch;
+    if (previousLocation) Object.defineProperty(globalThis, 'location', previousLocation);
+    else delete globalThis.location;
+  }
+});
+
 test('external application links clearly leave Better Hacker and are omitted from demo jobs', () => {
   const documentRef = fakeDocument();
   const demoJob = Demo.createDemoJobs(Jobs, fixedImport)[0];
   assert.equal(JobsUI.applicationLink(documentRef, demoJob), null);
-  const normalized = Jobs.normalizeJob(record(), { importedAt: fixedImport }).job;
+  const normalized = Jobs.normalizeJob(record({ externalId: '123', applicationUrl: 'https://job-boards.greenhouse.io/example/jobs/123',
+    source: { id: 'approved-feed', name: 'Greenhouse', kind: 'ats-public-feed' },
+    extensions: { adapter: 'greenhouse-job-board', boardToken: 'example' } }), { importedAt: fixedImport }).job;
   const anchor = JobsUI.applicationLink(documentRef, normalized);
-  assert.equal(anchor.href, 'https://jobs.example/roles/123');
+  assert.equal(anchor.href, 'https://job-boards.greenhouse.io/example/jobs/123');
   assert.equal(anchor.target, '_blank');
   assert.equal(anchor.rel, 'noopener noreferrer');
   assert.match(anchor.textContent, /Apply at Source/);
