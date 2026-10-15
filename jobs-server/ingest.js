@@ -5,6 +5,7 @@ const path = require("node:path");
 const Jobs = require("../jobs.js");
 const Adapters = require("../jobs-adapters.js");
 const Relevance = require("../jobs-relevance.js");
+const SkillMapping = require("../jobs-skill-mapping.js");
 
 const MAX_RESPONSE_BYTES = 5 * 1024 * 1024;
 const MAX_SOURCES = 100;
@@ -106,7 +107,7 @@ async function buildDataset(config, options = {}) {
         if (!expectedApplicationUrl(record, source)) { unsafeUrlRejectedCount++; sourceUnsafeUrlRejected++; continue; }
         if (!record.title || !record.employer || !record.externalId || !record.source || !record.importedAt) { incompleteRejectedCount++; sourceIncompleteRejected++; continue; }
         record.extensions = { ...record.extensions, relevance: { reason: relevance.reason, matchedSignals: relevance.matchedSignals } };
-        accepted.push(record);
+        accepted.push(SkillMapping.attachMappings(record));
       }
       records.push(...accepted);
       diagnostics.push({ sourceId: source.id, status: "ok", recordsReceived: mapped.length, relevanceRejected: sourceRelevanceRejected,
