@@ -89,6 +89,8 @@ test('missing skills only link to authored existing activities with taxonomy evi
   const python = match.gaps.find(item => item.id === 'python');
   assert.ok(linux.activities.some(item => item.href === '#linux-lesson' || item.href === '#practice-linux-challenges'));
   assert.deepEqual(python.activities, []);
+  const windows = Matching.matchJobSkills({ skills: [], extensions: { skillMappings: [{ id: 'windows-platform' }] } }, { skills: [] }, Portfolio).gaps[0];
+  assert.ok(windows.activities.some(item => item.href === '#investigation-windows'));
   assert.ok(match.gaps.every(item => item.activities.every(activity => Portfolio.ACTIVITIES.some(authored => authored.id === activity.id && authored.href === activity.href))));
 });
 

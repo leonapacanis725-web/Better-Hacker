@@ -54,7 +54,7 @@
     "malware-analysis": ["malware analysis"],
     "digital-forensics": ["digital forensics", "computer forensics"],
     "nmap": ["nmap"],
-    "windows-platform": ["windows platform", "microsoft windows"]
+    "windows-platform": ["windows platform", "microsoft windows", "windows"]
   });
   const SKILL_ALIASES = Object.freeze(Object.fromEntries(Object.entries(SKILLS).flatMap(([id, aliases]) =>
     aliases.map(alias => [normalizeLabel(alias), id]))));
