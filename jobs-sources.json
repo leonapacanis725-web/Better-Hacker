@@ -1,0 +1,45 @@
+{
+  "sources": [
+    {
+      "type": "greenhouse",
+      "id": "volexity-greenhouse",
+      "name": "Greenhouse",
+      "employerName": "Volexity",
+      "sourceUrl": "https://www.volexity.com/careers/",
+      "boardToken": "volexity"
+    },
+    {
+      "type": "greenhouse",
+      "id": "huntress-greenhouse",
+      "name": "Greenhouse",
+      "employerName": "Huntress",
+      "sourceUrl": "https://www.huntress.com/company/careers",
+      "boardToken": "huntress"
+    },
+    {
+      "type": "greenhouse",
+      "id": "censys-greenhouse",
+      "name": "Greenhouse",
+      "employerName": "Censys",
+      "sourceUrl": "https://censys.com/careers/",
+      "boardToken": "censys"
+    },
+    {
+      "type": "greenhouse",
+      "id": "relay-greenhouse",
+      "name": "Greenhouse",
+      "employerName": "Relay",
+      "sourceUrl": "https://relaypro.com/careers/",
+      "boardToken": "relaypro"
+    },
+    {
+      "type": "lever",
+      "id": "brightedge-lever",
+      "name": "Lever",
+      "employerName": "BrightEdge",
+      "sourceUrl": "https://www.brightedge.com/careers",
+      "site": "brightedge",
+      "region": "global"
+    }
+  ]
+}

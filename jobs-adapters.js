@@ -23,7 +23,7 @@ function requireSource(config, type) {
 }
 function descriptionText(value) {
   if (typeof value !== "string") return "";
-  return value.replace(/<[^>]*>/g, " ").replace(/&nbsp;/gi, " ").replace(/&amp;/gi, "&")
+  return value.replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, " ").replace(/<[^>]*>/g, " ").replace(/&nbsp;/gi, " ").replace(/&amp;/gi, "&")
     .replace(/&lt;/gi, "<").replace(/&gt;/gi, ">").replace(/&#39;|&apos;/gi, "'").replace(/&quot;/gi, '"')
     .replace(/\s+/g, " ").trim().slice(0, 3000);
 }
@@ -43,7 +43,7 @@ function mapGreenhouse(config, payload, importedAt) {
     workplace: "unspecified",
     employmentType: "unspecified",
     experienceLevel: "unspecified",
-    categories: [],
+    categories: Array.isArray(row && row.departments) ? row.departments.map(item => item && item.name).filter(Boolean) : [],
     datePosted: row && row.first_published || null,
     expiresAt: row && row.application_deadline || null,
     skills: [],
@@ -53,7 +53,8 @@ function mapGreenhouse(config, payload, importedAt) {
     externalId: row && row.id != null ? String(row.id) : null,
     importedAt,
     lastObservedAt: importedAt,
-    extensions: { adapter: "greenhouse-job-board", boardToken, requisitionId: row && row.requisition_id || null }
+    extensions: { adapter: "greenhouse-job-board", boardToken, requisitionId: row && row.requisition_id || null,
+      sourceCategories: Array.isArray(row && row.departments) ? row.departments.map(item => item && item.name).filter(Boolean) : [] }
   }));
 }
 function dateFromEpoch(value) {
@@ -75,8 +76,8 @@ function mapLever(config, payload, importedAt) {
       location: typeof location === "string" ? location : "",
       workplace: "unspecified",
       employmentType: "unspecified",
-      experienceLevel: "unspecified",
-      categories: [],
+      experienceLevel: categories.level || "unspecified",
+      categories: [categories.team, categories.department, categories.commitment].filter(value => typeof value === "string"),
       datePosted: dateFromEpoch(row && row.createdAt),
       skills: [],
       description: descriptionText(row && (row.descriptionPlain || row.description)),
@@ -85,7 +86,9 @@ function mapLever(config, payload, importedAt) {
       externalId: row && row.id != null ? String(row.id) : null,
       importedAt,
       lastObservedAt: importedAt,
-      extensions: { adapter: "lever-postings", site, team: categories.team || null, commitment: categories.commitment || null, level: categories.level || null }
+      extensions: { adapter: "lever-postings", site, team: categories.team || null, department: categories.department || null,
+        commitment: categories.commitment || null, level: categories.level || null,
+        sourceCategories: [categories.team, categories.department, categories.commitment].filter(value => typeof value === "string") }
     };
   });
 }

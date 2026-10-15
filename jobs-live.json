@@ -1,11 +1,1129 @@
 {
   "schemaVersion": 1,
   "kind": "live-job-feed",
-  "generatedAt": "2026-10-14T23:45:10.389Z",
-  "sourceCount": 0,
-  "jobs": [],
-  "note": "No approved employer feed is configured.",
+  "generatedAt": "2026-10-14T23:59:54.663Z",
+  "sourceCount": 5,
+  "jobs": [
+    {
+      "schemaVersion": 1,
+      "id": "volexity-greenhouse-4320640009",
+      "externalId": "4320640009",
+      "title": "Incident Response and Forensic Analyst",
+      "employer": "Volexity",
+      "location": {
+        "display": "United States",
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "workplace": "unspecified",
+      "employmentType": "unspecified",
+      "experienceLevel": "unspecified",
+      "categories": [],
+      "salaryRange": null,
+      "datePosted": "2026-07-15",
+      "skills": [],
+      "description": "<p><strong>Location: &nbsp;</strong>Remote (USA)</p> <p><strong>Experience Level: &nbsp;</strong>Mid-level (Senior role may be considered for the right applicant)</p> <p><strong>Position Type: &nbsp;</strong>Volexity Incident Response &amp; Advanced Threat Analysis</p> <h3><strong>JOB DESCRIPTION</strong></h3> <p>Volexity’s Incident Response and Forensic Analysts provide support and lead investigations related to a wide range of cyber-attacks.&nbsp;&nbsp;</p> <p>Candidates applying for this role should expect a job opportunity where they can:</p> <ul> <li>Analyze and respond to everything ranging from widespread commodity threats to the most complex and advanced intrusions facing organizations today</li> <li>Work on investigations that evoke a sense of personal investment</li> <li>Collaborate with Volexity’s Network Security Monitoring, Threat Intelligence, and Engineering teams&nbsp;</li> </ul> <p>Candidates should have experience with analyzing systems and system artifacts, such as memory, disk images, logs, and network data, to determine root cause and impact. Analysts collaborate with Volexity's Threat Intelligence and client teams to uncover attacker activity, preserve digital evidence, and provide clear forensic findings.</p> <h3><strong>RESPONSIBILITIES</strong></h3> <p>Responsibilities of an Incident Response and Forensic Analyst will include but not be limited to:</p> <ul> <li><strong>Incident Response:</strong>&nbsp;Lead and support investigations into security incidents, including APT intrusions, malware infections, ransomware, unauthorized access to cloud environments, and data breaches.</li> <li><strong>Digital Forensics:</strong>&nbsp;Collect, preserve, and analyze digital evidence across endpoints, servers, cloud environments, and network systems, placing strong emphasis on memory forensics and volatile data analysis.</li> <li><strong>Tool &amp; Process Development:</strong>&nbsp;Develop and refine forensic workflows, scripts, and methodologies to improve investigation effectiveness.</li> <li><strong>Reporting &amp; Documentation:</strong>&nbsp;Produce detailed forensic reports, executive summaries, and technical briefs that clearly communicate findings.</li> <li><strong>Cross-Team Collaboration:</strong>&nbsp;Partner with our Network Security Monitoring, Threat Intelligence, and Engineering teams to share insights and strengthen detection and response capabilities within our solutions.</li> <li><strong>Proactive Assessments:</strong>&nbsp;Support threat-hunting activities, compromise assessments, and M&amp;A cybersecurity assessments to identify weaknesses before incidents occur.</li> <li><strong>Trusted Advisory</strong>: Serve as a trusted advisor to clients by addressing cybersecurity questions, providing expert guidance, and supporting their overall security posture.</li> </ul> <h3><strong>REQUIRED SKILLS</strong></h3> <p>As an Incident Response and Forensic Analyst, the expected skillset should include:</p> <ul> <li>At least",
+      "source": {
+        "id": "volexity-greenhouse",
+        "name": "Greenhouse",
+        "kind": "ats-public-feed",
+        "url": "https://www.volexity.com/careers"
+      },
+      "applicationUrl": "https://job-boards.greenhouse.io/volexity/jobs/4320640009",
+      "dateImported": "2026-10-14T23:59:54.663Z",
+      "expiresAt": null,
+      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "isDemo": false,
+      "extensions": {
+        "adapter": "greenhouse-job-board",
+        "boardToken": "volexity",
+        "requisitionId": "2",
+        "sourceCategories": [
+          "Services"
+        ],
+        "relevance": {
+          "reason": "Matched source title.",
+          "matchedSignals": [
+            "incident-response"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "volexity-greenhouse-4323123009",
+      "externalId": "4323123009",
+      "title": "SOC Analyst",
+      "employer": "Volexity",
+      "location": {
+        "display": "Remote",
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "workplace": "unspecified",
+      "employmentType": "unspecified",
+      "experienceLevel": "unspecified",
+      "categories": [],
+      "salaryRange": null,
+      "datePosted": "2026-07-20",
+      "skills": [],
+      "description": "<p><strong>Location: &nbsp;</strong>Remote (USA: West Coast preferred; Other locations considered); Remote (Australia)</p> <p><strong>Experience Level: &nbsp;</strong>Junior to Mid-level (Senior role may be considered for the right applicant)</p> <p data-renderer-start-pos=\"291\" data-local-id=\"382330ad04d4\"><strong data-renderer-mark=\"true\">JOB DESCRIPTION</strong></p> <p data-renderer-start-pos=\"308\" data-local-id=\"92d11b94f4f7\">Volexity’s Security Operation Center (SOC) Analysts work to protect organizations from a wide variety of threats, ranging from commodity phishing and malware campaigns to highly targeted attacks involving zero-day exploits.</p> <p data-renderer-start-pos=\"533\" data-local-id=\"00101ccd2268\">Candidates applying for this role should expect a job opportunity where they can:</p> <ul class=\"ak-ul\" data-local-id=\"bc1cf9feb668\" data-indent-level=\"1\"> <li> <p data-renderer-start-pos=\"618\" data-local-id=\"b6a1a63c58a5\">Analyze and respond to advanced and emerging threats</p> </li> <li> <p data-renderer-start-pos=\"674\" data-local-id=\"d2a12af32e07\">Work on investigations that evoke a sense of personal investment</p> </li> <li> <p data-renderer-start-pos=\"742\" data-local-id=\"e3cfe9681004\">Be part of a growing industry-leading security operations team</p> </li> <li> <p data-renderer-start-pos=\"808\" data-local-id=\"b8837ab80463\">Collaborate with Volexity’s Threat Intelligence and Incident Response teams</p> </li> <li> <p data-renderer-start-pos=\"887\" data-local-id=\"b8837ab80463\">Help protect NGOs, activists, dissidents, human rights defenders, and other highly targeted groups</p> </li> </ul> <p data-renderer-start-pos=\"990\" data-local-id=\"aec6acaa1067\">Candidates are expected to have a minimum of two years of experience in an IT Security focused role, specifically with a strong emphasis on investigating security incidents stemming from alerts generated by network intrusion detection systems, endpoint detection response/antivirus software, and logs generated from security devices and/or productivity suites (e.g., Microsoft 365, Google Workspace, etc.).</p> <p data-renderer-start-pos=\"1398\" data-local-id=\"7dd55791e21c\"><strong data-renderer-mark=\"true\">RESPONSIBILITIES</strong></p> <p data-renderer-start-pos=\"1416\" data-local-id=\"9f8bd7bda573\">Responsibilities of Volexity's SOC analysts include but are not limited to:</p> <ul class=\"ak-ul\" data-local-id=\"6d42590dfc8f\" data-indent-level=\"1\"> <li> <p data-renderer-start-pos=\"1495\" data-local-id=\"07e5e70ceb64\">Monitoring and triaging alerts generated via network security monitoring, EDR platforms, and other log sources</p> </li> <li> <p data-renderer-start-pos=\"1609\" data-local-id=\"681366549e99\">Threat hunting across Volexity’s customer base to look for new or previously undetected threats</p> </li> <li> <p data-renderer-start-pos=\"1708\" data-local-id=\"56873d61762d\">Creating detailed incident reports that provide context, as well as actionable recommendations and next steps</p> </li> <li> <p d",
+      "source": {
+        "id": "volexity-greenhouse",
+        "name": "Greenhouse",
+        "kind": "ats-public-feed",
+        "url": "https://www.volexity.com/careers"
+      },
+      "applicationUrl": "https://job-boards.greenhouse.io/volexity/jobs/4323123009",
+      "dateImported": "2026-10-14T23:59:54.663Z",
+      "expiresAt": null,
+      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "isDemo": false,
+      "extensions": {
+        "adapter": "greenhouse-job-board",
+        "boardToken": "volexity",
+        "requisitionId": "11",
+        "sourceCategories": [
+          "Services"
+        ],
+        "relevance": {
+          "reason": "Matched source title.",
+          "matchedSignals": [
+            "security-operations"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "volexity-greenhouse-4328838009",
+      "externalId": "4328838009",
+      "title": "Support Engineer",
+      "employer": "Volexity",
+      "location": {
+        "display": "United States",
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "workplace": "unspecified",
+      "employmentType": "unspecified",
+      "experienceLevel": "unspecified",
+      "categories": [],
+      "salaryRange": null,
+      "datePosted": "2026-07-22",
+      "skills": [],
+      "description": "<p><strong>Location: </strong>Remote (USA)</p> <p><strong>Experience Level:</strong><strong> &nbsp;</strong>Junior to Mid-level</p> <h3>Job Description</h3> <p>To support our growing software product line, Volexity is looking for a Support Engineer to help deliver exceptional technical support. Our platform operates across Windows, Linux, and macOS environments, both on-premises and in cloud infrastructures.&nbsp;</p> <p>This role is ideal for someone who thrives in complex technical environments, enjoys troubleshooting across the full stack, and clearly communicates solutions to technical and non-technical stakeholders.</p> <p>Candidates&nbsp;are expected to have a 3-7+ years of experience in technical support, systems engineering, or similar roles.</p> <h3>Responsibilities</h3> <p>Responsibilities of a Support Engineer will include but not be limited to:</p> <ul> <li>Provide Tier 2/3 technical support for customers and internal teams</li> <li>Troubleshoot issues across:</li> <ul> <li>Operating systems. including Windows, Linux, macOS</li> <li>Cloud platforms, including AWS, Azure, GCP</li> <li>Application stack, including Python, PostgreSQL, Nginx, Node/npm ecosystems</li> </ul> <li>Reproduce customer issues in test environments and identify root causes</li> <li>Develop and document clear remediation steps, runbooks, and knowledge base articles</li> <li>Collaborate with Engineering, DevOps, and Product teams to escalate and resolve bugs</li> <li>Support deployments, upgrades, and migrations&nbsp;</li> <li>Contribute to improving support processes, tooling, and automation</li> </ul> <h3>Required Skills</h3> <p>As a Support Engineer, the expected skillset should include:</p> <ul> <li>Strong troubleshooting skills across multi-platform and cloud environments</li> <li>Solid understanding of:</li> <ul> <li>Networking fundamentals (DNS, HTTP/S, ports, firewalls, proxies, load balancers, SSL/PKI, REST APIs, JSON)</li> <li>System logs and monitoring tools</li> <li>Cloud logging infrastructure</li> </ul> </ul> <ul> <li>Experience writing:</li> <ul> <li>Technical documentation</li> <li>Troubleshooting guides</li> <li>Customer-facing remediation steps</li> </ul> <li>Strong communication skills (written and verbal)</li> </ul> <h3>Preferred Experience</h3> <p>Successful candidates for this role may also demonstrate the following experience or skills:</p> <ul> <li>Working knowledge of Terraform (or similar Infrastructure-as-Code tools)</li> <li>Scripting skills (Python, Ruby, PowerShell, or similar)</li> <li>Experience in the digital forensics and incident response industries</li> <li>Experience using EDRs, SOARs, and MDMs</li> <li>Ability to reproduce problems on virtualization platforms</li> <li>Understanding of enterprise authentication, such as LDAP, SAML, and IPA</li> <li>Ability to troubleshoot issues with network file shares, cloud storage, and auto-scaling groups</li> <li>Proficiency using web developer tools and proxies such as Burp Suite and/or Pos",
+      "source": {
+        "id": "volexity-greenhouse",
+        "name": "Greenhouse",
+        "kind": "ats-public-feed",
+        "url": "https://www.volexity.com/careers"
+      },
+      "applicationUrl": "https://job-boards.greenhouse.io/volexity/jobs/4328838009",
+      "dateImported": "2026-10-14T23:59:54.663Z",
+      "expiresAt": null,
+      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "isDemo": false,
+      "extensions": {
+        "adapter": "greenhouse-job-board",
+        "boardToken": "volexity",
+        "requisitionId": "12",
+        "sourceCategories": [
+          "Research & Development"
+        ],
+        "relevance": {
+          "reason": "Source description confirms security related support duties.",
+          "matchedSignals": [
+            "description-confirmed-security-support"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "huntress-greenhouse-8014350003",
+      "externalId": "8014350003",
+      "title": "Principal macOS Security Researcher",
+      "employer": "Huntress",
+      "location": {
+        "display": "United States of America",
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "workplace": "unspecified",
+      "employmentType": "unspecified",
+      "experienceLevel": "unspecified",
+      "categories": [],
+      "salaryRange": null,
+      "datePosted": "2026-10-09",
+      "skills": [],
+      "description": "<div class=\"content-intro\"><p></p> <p><strong>What We Do:</strong></p> <p>Cybercrime is growing, and more businesses are getting hit by threats that used to target only the biggest organizations. That pushes defenders like us to operate at the highest level, and it deepens our need for good people who want to make a meaningful impact.</p> <p>Founded in 2015 by former NSA cyber operators, Huntress is a remote-first team working to make enterprise-grade cybersecurity accessible to businesses of all sizes. We work closely with security teams and service providers protecting complex environments, often without the time or headcount to handle it all. That’s why we build our technology in-house and back it with a 24/7 human-led Security Operations Center (SOC). As a result, our platform is never disconnected from the experts who manage it, ensuring our customers' protection.</p> <p>Huntress now secures more than 5M endpoints and 16M identities worldwide. Those numbers keep growing because more businesses rely on us to help carry the load and operate with more confidence. Every day, you can see that commitment in how we stand with our customers and how we show up for each other.</p> <p></p></div><p><strong>Reports to: Manager, Product Research</strong><strong><br></strong><strong>Location: Remote US</strong></p> <p><strong>Compensation Range: $215,000.00 to </strong><strong>$225,000.00&nbsp; base plus bonus and equity</strong></p> <p><strong>What You’ll Do:&nbsp;</strong></p> <ul> <li>Lead product research initiatives that develop and evaluate macOS security product strategies and technologies</li> <li>Identify and prototype new telemetry from Apple's Endpoint Security API and other macOS subsystems to expand prevention, hardening, and detection capabilities</li> <li>Reproduce and analyze macOS attacks through hands-on execution of attacker techniques, malware detonation, and vulnerability exploitation</li> <li>Reverse engineer macOS malware and Apple's own security frameworks (XProtect, XProtect Remediator, Gatekeeper, TCC) to identify coverage gaps and inform product direction</li> <li>Prototype and test new tools and methodologies for offensive operations against macOS endpoints, including EDR evasion and bypass research</li> <li>Build proof-of-concept implementations that demonstrate the feasibility of new capabilities</li> <li>Document research findings and collaborate with Detection Engineering on writing and tuning detectors</li> <li>Coordinate with Product and Engineering teams to integrate and operationalize solutions developed by Security teams</li> <li>Stand up ephemeral research environments and attacker infrastructure using cloud, VM, and container technologies</li> <li>Track Apple platform changes across beta and release cycles, and assess their impact on agent capability, telemetry, and detection coverage</li> <li>Identify and address gaps in macOS product coverage, including false positive and false negative investigations</li> <li>Devel",
+      "source": {
+        "id": "huntress-greenhouse",
+        "name": "Greenhouse",
+        "kind": "ats-public-feed",
+        "url": "https://www.huntress.com/company/careers"
+      },
+      "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/8014350003",
+      "dateImported": "2026-10-14T23:59:54.663Z",
+      "expiresAt": null,
+      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "isDemo": false,
+      "extensions": {
+        "adapter": "greenhouse-job-board",
+        "boardToken": "huntress",
+        "requisitionId": "100368",
+        "sourceCategories": [
+          "Product Research"
+        ],
+        "relevance": {
+          "reason": "Matched source title.",
+          "matchedSignals": [
+            "security-role"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "huntress-greenhouse-7807467003",
+      "externalId": "7807467003",
+      "title": "Principal Security Researcher - EDR (Windows)",
+      "employer": "Huntress",
+      "location": {
+        "display": "United States of America",
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "workplace": "unspecified",
+      "employmentType": "unspecified",
+      "experienceLevel": "unspecified",
+      "categories": [],
+      "salaryRange": null,
+      "datePosted": "2026-07-17",
+      "skills": [],
+      "description": "<div class=\"content-intro\"><p></p> <p><strong>What We Do:</strong></p> <p>Cybercrime is growing, and more businesses are getting hit by threats that used to target only the biggest organizations. That pushes defenders like us to operate at the highest level, and it deepens our need for good people who want to make a meaningful impact.</p> <p>Founded in 2015 by former NSA cyber operators, Huntress is a remote-first team working to make enterprise-grade cybersecurity accessible to businesses of all sizes. We work closely with security teams and service providers protecting complex environments, often without the time or headcount to handle it all. That’s why we build our technology in-house and back it with a 24/7 human-led Security Operations Center (SOC). As a result, our platform is never disconnected from the experts who manage it, ensuring our customers' protection.</p> <p>Huntress now secures more than 5M endpoints and 16M identities worldwide. Those numbers keep growing because more businesses rely on us to help carry the load and operate with more confidence. Every day, you can see that commitment in how we stand with our customers and how we show up for each other.</p> <p></p></div><p><strong>Reports to: Manager, Product Research</strong></p> <p><strong>Location: Remote, US</strong></p> <p><strong>Compensation Range: $200,000 to $230,000 base plus bonus and equity</strong></p> <p><strong>What You’ll Do:&nbsp;</strong></p> <p>The Huntress Product Research team has the unique honor of waking up every morning knowing we’re going to make hackers regret targeting our partners and customers. As a Principal Product Researcher, we’re looking for someone who wants to pour all of their creativity into building and implementing simple solutions that are disproportionately effective at countering these constantly evolving threats. Competitive candidates have experience managing, deploying, and securing SMB environments utilizing a wide variety of security software, best practices, and automation tools. Familiarity with product management, incident response, social engineering, psychology, education, and managed service provider tools is an additional way to differentiate yourself.</p> <p>As you can imagine, success doesn’t happen in a vacuum. An effective Product Researcher fosters highly collaborative environments between the Product, Engineering, and Security teams to accelerate our mission and secure the 99% of businesses that fall below the enterprise poverty line. This collaboration is needed to produce and prioritize a unified technical vision that ultimately delivers our most impactful features and capabilities.</p> <p>We defend over 5M endpoints for 225,000+ mid-sized and small-business customers, and that number continues to grow each month. Given this market’s tighter budget, it’s not financially feasible to assign human analysts to each client. The Security Operations team addresses this challenge head-on by building and scaling highly auto",
+      "source": {
+        "id": "huntress-greenhouse",
+        "name": "Greenhouse",
+        "kind": "ats-public-feed",
+        "url": "https://www.huntress.com/company/careers"
+      },
+      "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7807467003",
+      "dateImported": "2026-10-14T23:59:54.663Z",
+      "expiresAt": null,
+      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "isDemo": false,
+      "extensions": {
+        "adapter": "greenhouse-job-board",
+        "boardToken": "huntress",
+        "requisitionId": "100253",
+        "sourceCategories": [
+          "Product Research"
+        ],
+        "relevance": {
+          "reason": "Matched source title.",
+          "matchedSignals": [
+            "security-role"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "huntress-greenhouse-8014855003",
+      "externalId": "8014855003",
+      "title": "Principal Software Engineer - Agentic SOC",
+      "employer": "Huntress",
+      "location": {
+        "display": "United States of America",
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "workplace": "unspecified",
+      "employmentType": "unspecified",
+      "experienceLevel": "unspecified",
+      "categories": [],
+      "salaryRange": null,
+      "datePosted": "2026-10-06",
+      "skills": [],
+      "description": "<div class=\"content-intro\"><p></p> <p><strong>What We Do:</strong></p> <p>Cybercrime is growing, and more businesses are getting hit by threats that used to target only the biggest organizations. That pushes defenders like us to operate at the highest level, and it deepens our need for good people who want to make a meaningful impact.</p> <p>Founded in 2015 by former NSA cyber operators, Huntress is a remote-first team working to make enterprise-grade cybersecurity accessible to businesses of all sizes. We work closely with security teams and service providers protecting complex environments, often without the time or headcount to handle it all. That’s why we build our technology in-house and back it with a 24/7 human-led Security Operations Center (SOC). As a result, our platform is never disconnected from the experts who manage it, ensuring our customers' protection.</p> <p>Huntress now secures more than 5M endpoints and 16M identities worldwide. Those numbers keep growing because more businesses rely on us to help carry the load and operate with more confidence. Every day, you can see that commitment in how we stand with our customers and how we show up for each other.</p> <p></p></div><p><strong>Reports to: Director, Engineering</strong><br><strong>Location: Remote US, Only</strong><br><strong>Compensation:</strong> <strong>$215,000 to $240,000 base plus bonus and equity</strong></p> <p><strong>What You’ll Do:&nbsp;</strong></p> <p>Huntress is building an Agentic SOC. When our detection pipeline raises a signal, an LLM-based agent picks it up and investigates it end-to-end. It gathers telemetry across our products, reconstructs what happened, and makes a well-documented determination about whether the activity is malicious. Over time, it will take on more of the work itself, growing from resolving routine cases to acting fast when it finds an attack and handing analysts cases with the evidence already assembled. We’re hiring a Principal Software Engineer to head this effort.</p> <p>This system is meant to augment our analysts, not replace them. It takes the high-volume, repetitive work off their plates so they can focus on complex cases and hands-on keyboard intrusions where human expertise matters most. It also reduces toil in the rest of their day by using LLMs to pre-process the output of the tools analysts use constantly, so they start from a clear picture instead of raw telemetry.</p> <p>This isn’t a chatbot bolted onto a dashboard. The system investigates a large volume of signals a day across thousands of customer organizations. Many signals are benign, but some are live intrusions where minutes matter. The telemetry the system reads comes from environments in which attackers are actively operating. Because the system makes real decisions, like closing an investigation or isolating a host, it has to be right, it has to show its work, and it has to know when to hand off to a person.</p> <p>As the technical lead, you’ll own the system’s",
+      "source": {
+        "id": "huntress-greenhouse",
+        "name": "Greenhouse",
+        "kind": "ats-public-feed",
+        "url": "https://www.huntress.com/company/careers"
+      },
+      "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/8014855003",
+      "dateImported": "2026-10-14T23:59:54.663Z",
+      "expiresAt": null,
+      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "isDemo": false,
+      "extensions": {
+        "adapter": "greenhouse-job-board",
+        "boardToken": "huntress",
+        "requisitionId": "100371",
+        "sourceCategories": [
+          "Platform Engineering"
+        ],
+        "relevance": {
+          "reason": "Matched source title.",
+          "matchedSignals": [
+            "security-operations"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "huntress-greenhouse-7998473003",
+      "externalId": "7998473003",
+      "title": "Security Operations Analyst",
+      "employer": "Huntress",
+      "location": {
+        "display": "Australia",
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "workplace": "unspecified",
+      "employmentType": "unspecified",
+      "experienceLevel": "unspecified",
+      "categories": [],
+      "salaryRange": null,
+      "datePosted": "2026-09-17",
+      "skills": [],
+      "description": "<div class=\"content-intro\"><p></p> <p><strong>What We Do:</strong></p> <p>Cybercrime is growing, and more businesses are getting hit by threats that used to target only the biggest organizations. That pushes defenders like us to operate at the highest level, and it deepens our need for good people who want to make a meaningful impact.</p> <p>Founded in 2015 by former NSA cyber operators, Huntress is a remote-first team working to make enterprise-grade cybersecurity accessible to businesses of all sizes. We work closely with security teams and service providers protecting complex environments, often without the time or headcount to handle it all. That’s why we build our technology in-house and back it with a 24/7 human-led Security Operations Center (SOC). As a result, our platform is never disconnected from the experts who manage it, ensuring our customers' protection.</p> <p>Huntress now secures more than 5M endpoints and 16M identities worldwide. Those numbers keep growing because more businesses rely on us to help carry the load and operate with more confidence. Every day, you can see that commitment in how we stand with our customers and how we show up for each other.</p> <p></p></div><p><strong>Reports to: Senior Manager, Security Operations Center</strong></p> <p><strong>Location: Remote Australia</strong></p> <p><strong>Compensation Range: $110,000 to $140,000 AUD base plus bonus and equity</strong></p> <p><strong>What You’ll Do:&nbsp;</strong></p> <p>You’re a hands-on SOC Analyst who thrives on detecting and responding to cybercrime. You’ll triage Active Hands-On Keyboard intrusions, track attackers through networks, and help remove them before they achieve their objectives. You’ll contextualise endpoint telemetry, analyse logs, leverage forensic artifacts, and understand malware to uncover the full scope of an intrusion.</p> <p>You give a $ht about protecting customers and improving how the team operates, taking ownership of investigations and acting on the information available. You bring Warrior Spirit to complex incidents, staying resilient and composed under pressure. You are Outcome-Obsessed, measuring your work by the threats contained, customers protected, and actionable remediation delivered. Alongside alert triage and intrusion response, you’ll support sales, collaborate with Product to shape Huntress’ MDR service and platform, and have opportunities to contribute across Incident Response, Security Operations, Threat Hunting, and Detection Engineering. We’ll also support you in sharing your work through blogs, conference talks, webinars, and research publications that build your personal brand and the broader security community.</p> <p>&nbsp;</p> <p class=\"p8i6j03 paragraph\"><strong>You’ll need to be available to work one of the following shifts:</strong></p> <ul class=\"p8i6j09 p8i6j04\"> <li class=\"p8i6j0c\">Western Australia: Monday to Friday, 8:00 am - 4:00 pm AWST</li> <li class=\"p8i6j0c\">East Coast: Monday to Friday, 9:00 am",
+      "source": {
+        "id": "huntress-greenhouse",
+        "name": "Greenhouse",
+        "kind": "ats-public-feed",
+        "url": "https://www.huntress.com/company/careers"
+      },
+      "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7998473003",
+      "dateImported": "2026-10-14T23:59:54.663Z",
+      "expiresAt": null,
+      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "isDemo": false,
+      "extensions": {
+        "adapter": "greenhouse-job-board",
+        "boardToken": "huntress",
+        "requisitionId": "100336",
+        "sourceCategories": [
+          "Security Analysis"
+        ],
+        "relevance": {
+          "reason": "Matched source title.",
+          "matchedSignals": [
+            "security-operations",
+            "security-role"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "huntress-greenhouse-7835871003",
+      "externalId": "7835871003",
+      "title": "Security Operations Analyst- Ireland",
+      "employer": "Huntress",
+      "location": {
+        "display": "Ireland",
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "workplace": "unspecified",
+      "employmentType": "unspecified",
+      "experienceLevel": "unspecified",
+      "categories": [],
+      "salaryRange": null,
+      "datePosted": "2026-08-07",
+      "skills": [],
+      "description": "<div class=\"content-intro\"><p></p> <p><strong>What We Do:</strong></p> <p>Cybercrime is growing, and more businesses are getting hit by threats that used to target only the biggest organizations. That pushes defenders like us to operate at the highest level, and it deepens our need for good people who want to make a meaningful impact.</p> <p>Founded in 2015 by former NSA cyber operators, Huntress is a remote-first team working to make enterprise-grade cybersecurity accessible to businesses of all sizes. We work closely with security teams and service providers protecting complex environments, often without the time or headcount to handle it all. That’s why we build our technology in-house and back it with a 24/7 human-led Security Operations Center (SOC). As a result, our platform is never disconnected from the experts who manage it, ensuring our customers' protection.</p> <p>Huntress now secures more than 5M endpoints and 16M identities worldwide. Those numbers keep growing because more businesses rely on us to help carry the load and operate with more confidence. Every day, you can see that commitment in how we stand with our customers and how we show up for each other.</p> <p></p></div><p><strong>Reports to: Manager, Security Operations Center</strong></p> <p><strong>Location: Remote Ireland</strong></p> <p><strong>Compensation Range: €70,000 to €90,000 base plus bonus and equity</strong></p> <p><strong>What You’ll Do:</strong></p> <p>Huntress is looking for a Security Operations Center Analyst to add to our growing team. In this role, you will get to triage, investigate, respond, and remediate a variety of intrusions on a daily basis. You’ll be surrounded by passionate individuals who are mission-driven to help protect companies around the world from cyber-attacks and will have daily opportunities to progress your analyst skillset and accelerate your career growth.<br><br>The Huntress Security Operations Center is an elite team of individuals who wake up every day to combat threat actors. You will have daily opportunities to progress your analysis skills while being at the forefront of what’s happening in the wild. If you’re looking to accelerate your career and skills, this is the team for you!</p> <p><strong>Responsibilities:</strong></p> <ul> <li>Triage, investigate, and respond to alerts from the Huntress platform</li> <li>Perform tactical review of EDR telemetry, log sources, and forensic artifacts to determine the root cause of attacks where possible and provide remediations needed to remove the threat</li> <li>Perform tactical malware analysis as part of investigating and triaging alerts</li> <li>Investigate suspicious Microsoft M365 activity and provide remediations</li> <li>Assist in escalations from the Product Support team for threat-related and SOC-relevant questions</li> <li>Contribute to detection engineering creation and tuning efforts</li> <li>Contribute to projects focused on driving better outcomes for our analysts and partn",
+      "source": {
+        "id": "huntress-greenhouse",
+        "name": "Greenhouse",
+        "kind": "ats-public-feed",
+        "url": "https://www.huntress.com/company/careers"
+      },
+      "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7835871003",
+      "dateImported": "2026-10-14T23:59:54.663Z",
+      "expiresAt": null,
+      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "isDemo": false,
+      "extensions": {
+        "adapter": "greenhouse-job-board",
+        "boardToken": "huntress",
+        "requisitionId": "100285",
+        "sourceCategories": [
+          "Security Analysis"
+        ],
+        "relevance": {
+          "reason": "Matched source title.",
+          "matchedSignals": [
+            "security-operations",
+            "security-role"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "huntress-greenhouse-7835873003",
+      "externalId": "7835873003",
+      "title": "Security Operations Analyst- UK",
+      "employer": "Huntress",
+      "location": {
+        "display": "United Kingdom",
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "workplace": "unspecified",
+      "employmentType": "unspecified",
+      "experienceLevel": "unspecified",
+      "categories": [],
+      "salaryRange": null,
+      "datePosted": "2026-08-07",
+      "skills": [],
+      "description": "<div class=\"content-intro\"><p></p> <p><strong>What We Do:</strong></p> <p>Cybercrime is growing, and more businesses are getting hit by threats that used to target only the biggest organizations. That pushes defenders like us to operate at the highest level, and it deepens our need for good people who want to make a meaningful impact.</p> <p>Founded in 2015 by former NSA cyber operators, Huntress is a remote-first team working to make enterprise-grade cybersecurity accessible to businesses of all sizes. We work closely with security teams and service providers protecting complex environments, often without the time or headcount to handle it all. That’s why we build our technology in-house and back it with a 24/7 human-led Security Operations Center (SOC). As a result, our platform is never disconnected from the experts who manage it, ensuring our customers' protection.</p> <p>Huntress now secures more than 5M endpoints and 16M identities worldwide. Those numbers keep growing because more businesses rely on us to help carry the load and operate with more confidence. Every day, you can see that commitment in how we stand with our customers and how we show up for each other.</p> <p></p></div><p><strong>Reports to: Manager, Security Operations Center</strong></p> <p><strong>Location: Remote UK</strong></p> <p><strong>Compensation Range: £62,000 to £70,500 base plus bonus and equity</strong><strong>&nbsp;</strong></p> <p><strong>What You’ll Do:</strong></p> <p>Huntress is looking for a Security Operations Center Analyst to add to our growing team. In this role, you will get to triage, investigate, respond, and remediate a variety of intrusions on a daily basis. You’ll be surrounded by passionate individuals who are mission-driven to help protect companies around the world from cyber-attacks and will have daily opportunities to progress your analyst skillset and accelerate your career growth.<br><br>The Huntress Security Operations Center is an elite team of individuals who wake up every day to combat threat actors. You will have daily opportunities to progress your analysis skills while being at the forefront of what’s happening in the wild. If you’re looking to accelerate your career and skills, this is the team for you!</p> <p><strong>Responsibilities:</strong></p> <ul> <li>Triage, investigate, and respond to alerts from the Huntress platform</li> <li>Perform tactical review of EDR telemetry, log sources, and forensic artifacts to determine the root cause of attacks where possible and provide remediations needed to remove the threat</li> <li>Perform tactical malware analysis as part of investigating and triaging alerts</li> <li>Investigate suspicious Microsoft M365 activity and provide remediations</li> <li>Assist in escalations from the Product Support team for threat-related and SOC-relevant questions</li> <li>Contribute to detection engineering creation and tuning efforts</li> <li>Contribute to projects focused on driving better outcomes for our",
+      "source": {
+        "id": "huntress-greenhouse",
+        "name": "Greenhouse",
+        "kind": "ats-public-feed",
+        "url": "https://www.huntress.com/company/careers"
+      },
+      "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7835873003",
+      "dateImported": "2026-10-14T23:59:54.663Z",
+      "expiresAt": null,
+      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "isDemo": false,
+      "extensions": {
+        "adapter": "greenhouse-job-board",
+        "boardToken": "huntress",
+        "requisitionId": "100285",
+        "sourceCategories": [
+          "Security Analysis"
+        ],
+        "relevance": {
+          "reason": "Matched source title.",
+          "matchedSignals": [
+            "security-operations",
+            "security-role"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "huntress-greenhouse-7743188003",
+      "externalId": "7743188003",
+      "title": "Security Operations Analyst - West Coast Shift",
+      "employer": "Huntress",
+      "location": {
+        "display": "Remote US",
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "workplace": "unspecified",
+      "employmentType": "unspecified",
+      "experienceLevel": "unspecified",
+      "categories": [],
+      "salaryRange": null,
+      "datePosted": "2026-06-05",
+      "skills": [],
+      "description": "<div class=\"content-intro\"><p></p> <p><strong>What We Do:</strong></p> <p>Cybercrime is growing, and more businesses are getting hit by threats that used to target only the biggest organizations. That pushes defenders like us to operate at the highest level, and it deepens our need for good people who want to make a meaningful impact.</p> <p>Founded in 2015 by former NSA cyber operators, Huntress is a remote-first team working to make enterprise-grade cybersecurity accessible to businesses of all sizes. We work closely with security teams and service providers protecting complex environments, often without the time or headcount to handle it all. That’s why we build our technology in-house and back it with a 24/7 human-led Security Operations Center (SOC). As a result, our platform is never disconnected from the experts who manage it, ensuring our customers' protection.</p> <p>Huntress now secures more than 5M endpoints and 16M identities worldwide. Those numbers keep growing because more businesses rely on us to help carry the load and operate with more confidence. Every day, you can see that commitment in how we stand with our customers and how we show up for each other.</p> <p></p></div><p><strong>Reports to: Manager, Security Operations Center</strong></p> <p><strong>Location: Remote, US (West Coast)&nbsp;</strong></p> <p><strong>Compensation Range: $100,000-$125,000 base plus bonus and equity. </strong><strong>This role may be eligible for on-call/call-in pay in addition to base pay</strong><strong>&nbsp;</strong></p> <p><em><strong>*The initial training period for this position will be Monday-Friday. Following training, the work schedule is subject to change and may include weekend or a 4x10 shift, depending on business requirements*</strong></em></p> <p>&nbsp;</p> <p><strong>What You’ll Do:</strong></p> <p>Huntress is looking for a Security Operations Center Analyst to add to our growing team. In this role, you will get to triage, investigate, respond, and remediate a variety of intrusions on a daily basis. You’ll be surrounded by passionate individuals who are mission-driven to help protect companies around the world from cyberattacks and will have daily opportunities to progress your analyst skillset and accelerate your career growth.<br><br>The Huntress Security Operations Center is an elite team of individuals who wake up every day to combat threat actors. You will have daily opportunities to progress your analysis skills while being at the forefront of what’s happening in the wild. If you’re looking to accelerate your career and skills, this is the team for you!</p> <p><strong>Responsibilities:</strong></p> <ul> <li>Triage, investigate, and respond to alerts coming in from the Huntress platform.</li> <li>Perform tactical review of EDR telemetry, log sources, and forensic artifacts to determine the root cause of attacks, where possible, and provide remediations needed to remove the threat.</li> <li>Perform tactical malware analysis as p",
+      "source": {
+        "id": "huntress-greenhouse",
+        "name": "Greenhouse",
+        "kind": "ats-public-feed",
+        "url": "https://www.huntress.com/company/careers"
+      },
+      "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7743188003",
+      "dateImported": "2026-10-14T23:59:54.663Z",
+      "expiresAt": null,
+      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "isDemo": false,
+      "extensions": {
+        "adapter": "greenhouse-job-board",
+        "boardToken": "huntress",
+        "requisitionId": "1186",
+        "sourceCategories": [
+          "Security Analysis"
+        ],
+        "relevance": {
+          "reason": "Matched source title.",
+          "matchedSignals": [
+            "security-operations",
+            "security-role"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "huntress-greenhouse-7998317003",
+      "externalId": "7998317003",
+      "title": "Senior Detection Engineering & Threat Hunting Analyst",
+      "employer": "Huntress",
+      "location": {
+        "display": "United States of America",
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "workplace": "unspecified",
+      "employmentType": "unspecified",
+      "experienceLevel": "unspecified",
+      "categories": [],
+      "salaryRange": null,
+      "datePosted": "2026-09-22",
+      "skills": [],
+      "description": "<div class=\"content-intro\"><p></p> <p><strong>What We Do:</strong></p> <p>Cybercrime is growing, and more businesses are getting hit by threats that used to target only the biggest organizations. That pushes defenders like us to operate at the highest level, and it deepens our need for good people who want to make a meaningful impact.</p> <p>Founded in 2015 by former NSA cyber operators, Huntress is a remote-first team working to make enterprise-grade cybersecurity accessible to businesses of all sizes. We work closely with security teams and service providers protecting complex environments, often without the time or headcount to handle it all. That’s why we build our technology in-house and back it with a 24/7 human-led Security Operations Center (SOC). As a result, our platform is never disconnected from the experts who manage it, ensuring our customers' protection.</p> <p>Huntress now secures more than 5M endpoints and 16M identities worldwide. Those numbers keep growing because more businesses rely on us to help carry the load and operate with more confidence. Every day, you can see that commitment in how we stand with our customers and how we show up for each other.</p> <p></p></div><p><strong>Reports to:</strong> Director, Detection Engineering &amp; Threat Hunting</p> <p><strong>Location:</strong> Remote US</p> <p><strong>Compensation Range:</strong> $150,000 to $170,000 base plus bonus and equity</p> <p><strong>What You’ll Do:&nbsp;</strong></p> <p>Members of the Huntress DE&amp;TH team wake up every morning with the honor of impeding threat actors through a combination of detection engineering and threat hunting. This team sits alongside our 24x7 Security Operations Center and our Adversary Tactics &amp; Tactical Response function, and plays a pivotal role in detecting threat actors before they can impact our partner environments.&nbsp;</p> <p>As a Senior Detection Engineering and Threat Hunting (DE&amp;TH) Analyst, you should be drawn to the hard problems: detecting stealthy intrusions, managing false positives and false negatives at scale, and uncovering clues that may expose an evolving campaign across Huntress partners. In this role, you will turn threat intelligence, or a hypothesis, into detections that help the SOC find real intrusions faster. While the SOC is responding to alerts within minutes, this team is developing detections and reviewing more ambiguous signs of attacker activity on a daily &amp; weekly basis.</p> <p>On the Detection Engineering side of the role, you will play a part in designing, building, and maintaining a resilient, scalable, and high-fidelity detection portfolio that enables the SOC to rapidly identify and respond to adversary activity. This will involve working with engineering and other adjacent teams to achieve a shared goal across multiple domains, which includes identities and endpoints.</p> <p>On the Threat Hunting side of the role, you will get to research new attacker tradecraft, test new theori",
+      "source": {
+        "id": "huntress-greenhouse",
+        "name": "Greenhouse",
+        "kind": "ats-public-feed",
+        "url": "https://www.huntress.com/company/careers"
+      },
+      "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7998317003",
+      "dateImported": "2026-10-14T23:59:54.663Z",
+      "expiresAt": null,
+      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "isDemo": false,
+      "extensions": {
+        "adapter": "greenhouse-job-board",
+        "boardToken": "huntress",
+        "requisitionId": "100326",
+        "sourceCategories": [
+          "DE&TH"
+        ],
+        "relevance": {
+          "reason": "Matched source title.",
+          "matchedSignals": [
+            "threat-detection"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "huntress-greenhouse-7998321003",
+      "externalId": "7998321003",
+      "title": "Senior Detection Engineering & Threat Hunting Analyst",
+      "employer": "Huntress",
+      "location": {
+        "display": "Australia",
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "workplace": "unspecified",
+      "employmentType": "unspecified",
+      "experienceLevel": "unspecified",
+      "categories": [],
+      "salaryRange": null,
+      "datePosted": "2026-09-23",
+      "skills": [],
+      "description": "<div class=\"content-intro\"><p></p> <p><strong>What We Do:</strong></p> <p>Cybercrime is growing, and more businesses are getting hit by threats that used to target only the biggest organizations. That pushes defenders like us to operate at the highest level, and it deepens our need for good people who want to make a meaningful impact.</p> <p>Founded in 2015 by former NSA cyber operators, Huntress is a remote-first team working to make enterprise-grade cybersecurity accessible to businesses of all sizes. We work closely with security teams and service providers protecting complex environments, often without the time or headcount to handle it all. That’s why we build our technology in-house and back it with a 24/7 human-led Security Operations Center (SOC). As a result, our platform is never disconnected from the experts who manage it, ensuring our customers' protection.</p> <p>Huntress now secures more than 5M endpoints and 16M identities worldwide. Those numbers keep growing because more businesses rely on us to help carry the load and operate with more confidence. Every day, you can see that commitment in how we stand with our customers and how we show up for each other.</p> <p></p></div><p><strong>Reports to: Senior Manager, Detection Engineering &amp; Threat Hunting</strong></p> <p><strong>Location: Remote Australia</strong></p> <p><strong>Compensation Range: $150,000 to $170,000 AUD base plus bonus and equity</strong></p> <p><strong>What You’ll Do:&nbsp;</strong></p> <p>Members of the Huntress DE&amp;TH team wake up every morning with the honor of impeding threat actors through a combination of detection engineering and threat hunting. This team sits alongside our 24x7 Security Operations Center, and our Adversary Tactics &amp; Tactical Response function, and plays a pivotal role in detecting threats actors before they get a chance to impact our partner environments.&nbsp;</p> <p>As a Senior Detection Engineering and Threat Hunting (DE&amp;TH) Analyst you should be drawn to the hard problems: detecting stealthy intrusions, managing false positives and false negatives at scale, and uncovering clues that may expose an evolving campaign across Huntress partners. In this role you will turn threat intelligence, or a hypothesis, into detections that help the SOC find real intrusions faster. While the SOC is responding to alerts within minutes, this team is developing detections and reviewing more ambiguous signs of attacker activity on a daily &amp; weekly basis.</p> <p>On the Detection Engineering side of the role, you will play a part in designing, building, and maintaining a resilient, scalable, and high-fidelity detection portfolio that enables the SOC to rapidly identify and respond to adversary activity. This will involve working with engineering and other adjacent teams to achieve a shared goal across multiple domains which includes identities and endpoints.</p> <p>On the Threat Hunting side of the role, you will get to research new attacker",
+      "source": {
+        "id": "huntress-greenhouse",
+        "name": "Greenhouse",
+        "kind": "ats-public-feed",
+        "url": "https://www.huntress.com/company/careers"
+      },
+      "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7998321003",
+      "dateImported": "2026-10-14T23:59:54.663Z",
+      "expiresAt": null,
+      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "isDemo": false,
+      "extensions": {
+        "adapter": "greenhouse-job-board",
+        "boardToken": "huntress",
+        "requisitionId": "100329",
+        "sourceCategories": [
+          "DE&TH"
+        ],
+        "relevance": {
+          "reason": "Matched source title.",
+          "matchedSignals": [
+            "threat-detection"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "huntress-greenhouse-7728615003",
+      "externalId": "7728615003",
+      "title": "Senior Manager, Detection Engineering & Threat Hunting",
+      "employer": "Huntress",
+      "location": {
+        "display": "United States of America",
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "workplace": "unspecified",
+      "employmentType": "unspecified",
+      "experienceLevel": "unspecified",
+      "categories": [],
+      "salaryRange": null,
+      "datePosted": "2026-05-13",
+      "skills": [],
+      "description": "<div class=\"content-intro\"><p></p> <p><strong>What We Do:</strong></p> <p>Cybercrime is growing, and more businesses are getting hit by threats that used to target only the biggest organizations. That pushes defenders like us to operate at the highest level, and it deepens our need for good people who want to make a meaningful impact.</p> <p>Founded in 2015 by former NSA cyber operators, Huntress is a remote-first team working to make enterprise-grade cybersecurity accessible to businesses of all sizes. We work closely with security teams and service providers protecting complex environments, often without the time or headcount to handle it all. That’s why we build our technology in-house and back it with a 24/7 human-led Security Operations Center (SOC). As a result, our platform is never disconnected from the experts who manage it, ensuring our customers' protection.</p> <p>Huntress now secures more than 5M endpoints and 16M identities worldwide. Those numbers keep growing because more businesses rely on us to help carry the load and operate with more confidence. Every day, you can see that commitment in how we stand with our customers and how we show up for each other.</p> <p></p></div><p><strong>Reports to: Director of Detection Engineering and Threat Hunting&nbsp;</strong></p> <p><strong>Location: Remote, US</strong></p> <p><strong>Compensation: $220,000 to $240,000 base plus bonus and equity</strong></p> <p><strong>What You’ll Do:</strong></p> <p>We are seeking an experienced leader to own the strategy, execution, and growth of our <strong>North American</strong> Detection Engineering &amp; Threat Hunting (DE&amp;TH) operations.</p> <p>While you will align with the DE&amp;TH Director on the overarching 18-month vision, you will have autonomy to drive the operational tempo and outcomes for your region. You will provide weekly supervision to focus on scaling the team, managing regional hiring/budgeting, and serving as a strategic partner to Product and Engineering.</p> <p>You will manage a team of technical practitioners. Your mission is to operationalize our \"hunt-to-detect\" feedback loop at scale, ensuring that our detection portfolio matures in lock-step with our platform's growth, while collaborating with your counterparts in other regions to ensure a seamless, 24/7 global defense.</p> <h4><strong>Responsibilities:</strong></h4> <ul> <li><strong>Regional Operational Leadership:</strong> Own the execution of the DE&amp;TH mission for the North America region. You will translate global strategic goals into actionable regional roadmaps, ensuring that our NA-based hunters and engineers are focused on the highest-value threats.</li> <li><strong>Team Scaling &amp; Talent Strategy:</strong> Manage and grow a team of practitioners. You are responsible for the region's hiring strategy, capacity modeling, and performance management. You will mentor up to Staff and Principal practitioners, helping them navigate technical leadership paths.</li> <li><",
+      "source": {
+        "id": "huntress-greenhouse",
+        "name": "Greenhouse",
+        "kind": "ats-public-feed",
+        "url": "https://www.huntress.com/company/careers"
+      },
+      "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7728615003",
+      "dateImported": "2026-10-14T23:59:54.663Z",
+      "expiresAt": null,
+      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "isDemo": false,
+      "extensions": {
+        "adapter": "greenhouse-job-board",
+        "boardToken": "huntress",
+        "requisitionId": "100163",
+        "sourceCategories": [
+          "DE&TH"
+        ],
+        "relevance": {
+          "reason": "Matched source title.",
+          "matchedSignals": [
+            "threat-detection"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "huntress-greenhouse-8015561003",
+      "externalId": "8015561003",
+      "title": "Senior Software Engineer- Agentic SOC",
+      "employer": "Huntress",
+      "location": {
+        "display": "United States of America",
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "workplace": "unspecified",
+      "employmentType": "unspecified",
+      "experienceLevel": "unspecified",
+      "categories": [],
+      "salaryRange": null,
+      "datePosted": "2026-10-07",
+      "skills": [],
+      "description": "<div class=\"content-intro\"><p></p> <p><strong>What We Do:</strong></p> <p>Cybercrime is growing, and more businesses are getting hit by threats that used to target only the biggest organizations. That pushes defenders like us to operate at the highest level, and it deepens our need for good people who want to make a meaningful impact.</p> <p>Founded in 2015 by former NSA cyber operators, Huntress is a remote-first team working to make enterprise-grade cybersecurity accessible to businesses of all sizes. We work closely with security teams and service providers protecting complex environments, often without the time or headcount to handle it all. That’s why we build our technology in-house and back it with a 24/7 human-led Security Operations Center (SOC). As a result, our platform is never disconnected from the experts who manage it, ensuring our customers' protection.</p> <p>Huntress now secures more than 5M endpoints and 16M identities worldwide. Those numbers keep growing because more businesses rely on us to help carry the load and operate with more confidence. Every day, you can see that commitment in how we stand with our customers and how we show up for each other.</p> <p></p></div><p><strong>Reports to: Director, Engineering </strong><br><strong>Location: Remote US, Only</strong><br><strong>Compensation:</strong> <strong>$165,000 to $190,000 base plus bonus and equity</strong></p> <p><strong>What You’ll Do:</strong></p> <p>Huntress is building an Agentic SOC. When our detection pipeline raises a signal, an LLM-based agent picks it up and investigates it end-to-end. It gathers telemetry across our products, reconstructs what happened, and makes a well-documented determination about whether the activity is malicious. Over time, it will take on more of the work itself, growing from resolving routine cases to acting fast when it finds an attack and handing analysts cases with the evidence already assembled.&nbsp;</p> <p>This system is meant to augment our analysts, not replace them. It takes the high-volume, repetitive work off their plates so they can focus on complex cases and hands-on keyboard intrusions where human expertise matters most. It also reduces toil in the rest of their day by using LLMs to pre-process the output of the tools analysts use constantly, so they start from a clear picture instead of raw telemetry.</p> <p>This isn’t a chatbot bolted onto a dashboard. The system investigates a large volume of signals a day across thousands of customer organizations. Many signals are benign, but some are live intrusions where minutes matter. The telemetry the system reads comes from environments where attackers are actively operating. Because the system makes real decisions, like closing an investigation or isolating a host, it has to be right, it has to show its work, and it has to know when to hand off to a person.</p> <p>As a Senior Software Engineer on the Agentic SOC team, you’ll build and ship core parts of this system. You’ll wo",
+      "source": {
+        "id": "huntress-greenhouse",
+        "name": "Greenhouse",
+        "kind": "ats-public-feed",
+        "url": "https://www.huntress.com/company/careers"
+      },
+      "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/8015561003",
+      "dateImported": "2026-10-14T23:59:54.663Z",
+      "expiresAt": null,
+      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "isDemo": false,
+      "extensions": {
+        "adapter": "greenhouse-job-board",
+        "boardToken": "huntress",
+        "requisitionId": "100372",
+        "sourceCategories": [
+          "Platform Engineering"
+        ],
+        "relevance": {
+          "reason": "Matched source title.",
+          "matchedSignals": [
+            "security-operations"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "huntress-greenhouse-7991918003",
+      "externalId": "7991918003",
+      "title": "Staff CSIRT Analyst",
+      "employer": "Huntress",
+      "location": {
+        "display": "United States of America",
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "workplace": "unspecified",
+      "employmentType": "unspecified",
+      "experienceLevel": "unspecified",
+      "categories": [],
+      "salaryRange": null,
+      "datePosted": "2026-09-16",
+      "skills": [],
+      "description": "<div class=\"content-intro\"><p></p> <p><strong>What We Do:</strong></p> <p>Cybercrime is growing, and more businesses are getting hit by threats that used to target only the biggest organizations. That pushes defenders like us to operate at the highest level, and it deepens our need for good people who want to make a meaningful impact.</p> <p>Founded in 2015 by former NSA cyber operators, Huntress is a remote-first team working to make enterprise-grade cybersecurity accessible to businesses of all sizes. We work closely with security teams and service providers protecting complex environments, often without the time or headcount to handle it all. That’s why we build our technology in-house and back it with a 24/7 human-led Security Operations Center (SOC). As a result, our platform is never disconnected from the experts who manage it, ensuring our customers' protection.</p> <p>Huntress now secures more than 5M endpoints and 16M identities worldwide. Those numbers keep growing because more businesses rely on us to help carry the load and operate with more confidence. Every day, you can see that commitment in how we stand with our customers and how we show up for each other.</p> <p></p></div><p><strong>Reports to:</strong> Director of Product Security and Incident Response</p> <p><strong>Location:</strong> Remote US&nbsp;</p> <p><strong>Compensation Range:</strong> $200,000.00 to $210,000.00 plus bonus and equity</p> <p><strong>What You’ll Do:&nbsp;</strong></p> <p>As a Staff CSIRT Analyst, you will be the cornerstone of Huntress’ internal security resilience. You will act as the primary internal escalation point from our SOC, ensuring we protect ourselves with the same rigor and products we use for our customers. In this role, you will strategize with leaders across multiple functions to identify work streams and own the end-to-end incident response lifecycle. You will guide teams, determine key milestones, and proactively anticipate blockers that could hinder our response capabilities.</p> <p><strong>Responsibilities:&nbsp;</strong></p> <ul> <li><strong>Incident Response &amp; Triage:</strong> Lead the identification, triage, and validation of security incidents through various telemetry sources, acting as the ultimate escalation point for the SOC.</li> <li><strong>Strategic Preparedness:</strong> Drive organizational incident readiness by designing and executing practical response exercises (tabletops and purple teaming) to ensure first responders are prepared at all levels of our organization.</li> <li><strong>Telemetry Optimization:</strong> Partner with engineering, product security, and detection engineering teams to tune existing telemetry sources to a high true-positive rate, reducing noise and increasing detection efficacy.</li> <li><strong>Offensive Security Partnership:</strong> Collaborate closely with the Offensive Security team to identify visibility gaps and ensure proper coverage against modern threat actor TTPs. Partner with produc",
+      "source": {
+        "id": "huntress-greenhouse",
+        "name": "Greenhouse",
+        "kind": "ats-public-feed",
+        "url": "https://www.huntress.com/company/careers"
+      },
+      "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7991918003",
+      "dateImported": "2026-10-14T23:59:54.663Z",
+      "expiresAt": null,
+      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "isDemo": false,
+      "extensions": {
+        "adapter": "greenhouse-job-board",
+        "boardToken": "huntress",
+        "requisitionId": "100314",
+        "sourceCategories": [
+          "Adversary Informed Defense"
+        ],
+        "relevance": {
+          "reason": "Matched source title.",
+          "matchedSignals": [
+            "incident-response"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "huntress-greenhouse-7977228003",
+      "externalId": "7977228003",
+      "title": "Staff Software Engineer - Detection Platform (GoLang)",
+      "employer": "Huntress",
+      "location": {
+        "display": "United States of America",
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "workplace": "unspecified",
+      "employmentType": "unspecified",
+      "experienceLevel": "unspecified",
+      "categories": [],
+      "salaryRange": null,
+      "datePosted": "2026-09-03",
+      "skills": [],
+      "description": "<div class=\"content-intro\"><p></p> <p><strong>What We Do:</strong></p> <p>Cybercrime is growing, and more businesses are getting hit by threats that used to target only the biggest organizations. That pushes defenders like us to operate at the highest level, and it deepens our need for good people who want to make a meaningful impact.</p> <p>Founded in 2015 by former NSA cyber operators, Huntress is a remote-first team working to make enterprise-grade cybersecurity accessible to businesses of all sizes. We work closely with security teams and service providers protecting complex environments, often without the time or headcount to handle it all. That’s why we build our technology in-house and back it with a 24/7 human-led Security Operations Center (SOC). As a result, our platform is never disconnected from the experts who manage it, ensuring our customers' protection.</p> <p>Huntress now secures more than 5M endpoints and 16M identities worldwide. Those numbers keep growing because more businesses rely on us to help carry the load and operate with more confidence. Every day, you can see that commitment in how we stand with our customers and how we show up for each other.</p> <p></p></div><p><strong>Reports to: Engineering Manager</strong></p> <p><strong>Location: Remote US</strong></p> <p><strong>Compensation Range: $200,000 - $220,000 base plus bonus and equity </strong></p> <p><strong>About the Team</strong></p> <p>Huntress protects the small and mid-sized businesses that attackers assume can't afford a security team. The Detection Platform team builds the engines and pipelines that turn billions of raw telemetry events into the signals our 24/7 SOC acts on. Every detection Huntress ships, across endpoint, identity, SIEM, and third-party EDR, runs through systems this team owns. We measure ourselves on two things: time to detection and detection engine uptime.</p> <p><strong>About the Role</strong></p> <p>We're hiring a Staff Software Engineer to help build and rebuild these systems without disrupting the SOC that depends on them, and to make their behavior predictable under load. This is a hands-on technical leadership role: you'll lead major workstreams, set direction that other engineering teams build against, and write and review production code every week.</p> <p><strong>What You'll Own</strong></p> <ul> <li><strong>Detection engine and pipeline modernization. </strong>We're rewriting our detection engine to support the full Sigma v2 specification, including stateful correlation of patterns across many events over time. In parallel, we're reworking several existing detection pipelines and building new ones, moving off the bespoke per-product detectors we've accumulated and onto a common platform. You'll lead major workstreams across both and own the validation approach that proves a reworked pipeline still behaves like the one it replaces, so we can turn old paths off knowing we haven't lost anything.</li> <li><strong>Reliability and beha",
+      "source": {
+        "id": "huntress-greenhouse",
+        "name": "Greenhouse",
+        "kind": "ats-public-feed",
+        "url": "https://www.huntress.com/company/careers"
+      },
+      "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7977228003",
+      "dateImported": "2026-10-14T23:59:54.663Z",
+      "expiresAt": null,
+      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "isDemo": false,
+      "extensions": {
+        "adapter": "greenhouse-job-board",
+        "boardToken": "huntress",
+        "requisitionId": "100295",
+        "sourceCategories": [
+          "Platform Engineering"
+        ],
+        "relevance": {
+          "reason": "Matched source title.",
+          "matchedSignals": [
+            "threat-detection"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "huntress-greenhouse-7998709003",
+      "externalId": "7998709003",
+      "title": "Staff Software Engineer - SOC Platform (Ruby/Rails)",
+      "employer": "Huntress",
+      "location": {
+        "display": "United States of America",
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "workplace": "unspecified",
+      "employmentType": "unspecified",
+      "experienceLevel": "unspecified",
+      "categories": [],
+      "salaryRange": null,
+      "datePosted": "2026-10-06",
+      "skills": [],
+      "description": "<div class=\"content-intro\"><p></p> <p><strong>What We Do:</strong></p> <p>Cybercrime is growing, and more businesses are getting hit by threats that used to target only the biggest organizations. That pushes defenders like us to operate at the highest level, and it deepens our need for good people who want to make a meaningful impact.</p> <p>Founded in 2015 by former NSA cyber operators, Huntress is a remote-first team working to make enterprise-grade cybersecurity accessible to businesses of all sizes. We work closely with security teams and service providers protecting complex environments, often without the time or headcount to handle it all. That’s why we build our technology in-house and back it with a 24/7 human-led Security Operations Center (SOC). As a result, our platform is never disconnected from the experts who manage it, ensuring our customers' protection.</p> <p>Huntress now secures more than 5M endpoints and 16M identities worldwide. Those numbers keep growing because more businesses rely on us to help carry the load and operate with more confidence. Every day, you can see that commitment in how we stand with our customers and how we show up for each other.</p> <p></p></div><p><strong>Reports to: Engineering Manager</strong></p> <p><strong>Location: Remote US</strong></p> <p><strong>Compensation Range: $200,000 - $220,000 base plus bonus and equity</strong><strong>&nbsp; </strong><strong>&nbsp;</strong></p> <p>&nbsp;</p> <p><strong>What We Do:&nbsp;</strong></p> <p>Cybercrime is growing, and more businesses are getting hit by threats that used to target only the biggest organizations. That pushes defenders like us to operate at the highest level, and it deepens our need for good people who want to make a meaningful impact.</p> <p>Founded in 2015 by former NSA cyber operators, Huntress is a remote-first team working to make enterprise-grade cybersecurity accessible to businesses of all sizes. We work closely with security teams and service providers protecting complex environments, often without the time or headcount to handle it all. That’s why we build our technology in-house and back it with a 24/7 human-led Security Operations Center (SOC). As a result, our platform is never disconnected from the experts who manage it, ensuring our customers' protection.</p> <p>Huntress now secures more than 5M endpoints and 11M identities worldwide. Those numbers keep growing because more businesses rely on us to help carry the load and operate with more confidence. Every day, you can see that commitment in how we stand with our customers and how we show up for each other.</p> <p><strong>What You’ll Do:</strong></p> <p>The Huntress team seeks a Staff Software Engineer to join our SOC Experience team. This team builds the human-analyst side of Huntress’ SOC platform: the investigation and triage experience analysts use to work a case, the remediation actions they take, the queues that route and prioritize incoming work, and the customer-facing r",
+      "source": {
+        "id": "huntress-greenhouse",
+        "name": "Greenhouse",
+        "kind": "ats-public-feed",
+        "url": "https://www.huntress.com/company/careers"
+      },
+      "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7998709003",
+      "dateImported": "2026-10-14T23:59:54.663Z",
+      "expiresAt": null,
+      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "isDemo": false,
+      "extensions": {
+        "adapter": "greenhouse-job-board",
+        "boardToken": "huntress",
+        "requisitionId": "100344",
+        "sourceCategories": [
+          "Platform Engineering"
+        ],
+        "relevance": {
+          "reason": "Matched source title.",
+          "matchedSignals": [
+            "security-operations"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "censys-greenhouse-8541287002",
+      "externalId": "8541287002",
+      "title": "Security Engineer",
+      "employer": "Censys",
+      "location": {
+        "display": "Remote",
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "workplace": "unspecified",
+      "employmentType": "unspecified",
+      "experienceLevel": "unspecified",
+      "categories": [],
+      "salaryRange": null,
+      "datePosted": "2026-09-22",
+      "skills": [],
+      "description": "<div class=\"content-intro\"><h3>Company Background</h3> <p>Censys’ mission is to be the one place to understand everything on the internet. Frustrated by the lack of trustworthy Internet intelligence, we set out to create the industry’s most comprehensive, accurate, and up-to-date map of the Internet. Today, Censys delivers real-time Internet intelligence and actionable threat insights to global governments, over 50% of the Fortune 500, and leading threat intelligence providers worldwide.</p></div><p>Censys maps the internet. Our customers rely on us for the exposure and threat intelligence that shapes their security programs — which means the bar for our own security is not theoretical. You'll help set it.</p> <p>This is a senior, high-ownership role on a small team. You will own the identity program, cloud security posture, and vulnerability management end to end, serve as a core incident responder, and build the automation — increasingly agentic — that enables our team to operate at the scale of a much larger one. You'll also be one of our most direct users of our own product: monitoring Censys's external attack surface with Censys is part of the job.</p> <p>We're looking for someone well-rounded rather than narrowly specialized, who is energized by AI and wants to build with it, and who is comfortable deciding what matters most when everything looks urgent.</p> <p><strong>What You’ll Do:</strong></p> <ul> <li>Identity &amp; Access Management Own identity as a program, not a ticket queue. Drive down standing access and manual provisioning over time for joiner-mover-leaver changes and non-human identity management.</li> <li>Cloud Security (GCP-first) Harden and continuously improve our cloud-native environment: organization policy, IAM least privilege, service account and workload identity hygiene, network segmentation, secrets management, and posture monitoring. Partner with SRE on infrastructure-as-code guardrails so security is enforced at build time, not discovered later.</li> <li>Vulnerability Management Own the program: asset coverage, risk-based prioritization that weighs real exploitability and exposure rather than raw CVSS, defensible SLAs, hands-on partnership with engineering on remediation, and reporting leadership can act on. Use Censys to keep an outside-in view of our own attack surface.</li> <li>Detection &amp; Incident Response Build detection coverage for identity, cloud, and SaaS. Share in the security escalation rotation, lead or co-lead high-severity incidents, run blameless post-incident reviews, and turn findings into durable fixes. Maintain runbooks and run tabletops that are actually exercised.</li> <li>AI and Agentic Security Two halves, both yours:</li> <ul> <li>Securing our AI footprint. Non-human and agent identity, MCP server and tool-permission scoping, secrets handling for autonomous workflows, data-flow review for AI-enabled features, untrusted-input and prompt-injection boundaries, and security review of AI tool",
+      "source": {
+        "id": "censys-greenhouse",
+        "name": "Greenhouse",
+        "kind": "ats-public-feed",
+        "url": "https://censys.com/careers"
+      },
+      "applicationUrl": "https://job-boards.greenhouse.io/censys/jobs/8541287002",
+      "dateImported": "2026-10-14T23:59:54.663Z",
+      "expiresAt": null,
+      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "isDemo": false,
+      "extensions": {
+        "adapter": "greenhouse-job-board",
+        "boardToken": "censys",
+        "requisitionId": "PID100390",
+        "sourceCategories": [
+          "IT/Security"
+        ],
+        "relevance": {
+          "reason": "Matched source title.",
+          "matchedSignals": [
+            "security-role"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "censys-greenhouse-8647822002",
+      "externalId": "8647822002",
+      "title": "Senior Security Researcher",
+      "employer": "Censys",
+      "location": {
+        "display": "Remote",
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "workplace": "unspecified",
+      "employmentType": "unspecified",
+      "experienceLevel": "unspecified",
+      "categories": [],
+      "salaryRange": null,
+      "datePosted": "2026-07-23",
+      "skills": [],
+      "description": "<div class=\"content-intro\"><h3>Company Background</h3> <p>Censys’ mission is to be the one place to understand everything on the internet. Frustrated by the lack of trustworthy Internet intelligence, we set out to create the industry’s most comprehensive, accurate, and up-to-date map of the Internet. Today, Censys delivers real-time Internet intelligence and actionable threat insights to global governments, over 50% of the Fortune 500, and leading threat intelligence providers worldwide.</p></div><p>As a Security Security Researcher, you’ll have the opportunity to work at the intersection of large-scale internet measurement, advanced threat research, and real-world cybersecurity events. Our research doesn't just advance academic knowledge—it’s leveraged to directly protect enterprise customers and support critical national security initiatives. You'll collaborate with world-class researchers, engineers, and product teams while having the freedom to pursue ambitious research projects that push the boundaries of what's possible in cybersecurity. With our strong partnerships across government and commercial sectors, your work will have immediate real-world application and visibility at the highest levels of the security community.</p> <p>We're looking for a Security Researcher with deep, hands-on offensive security experience — penetration testing, red teaming, adversary emulation, CNO — to join our Research team, known as ARC. This is a role that generates original, attacker's-eye insight and turns it into both product capability and public research.You'll work at the intersection of three things: how real attackers operate, what that means for how Censys should scan, fingerprint, and characterize the Internet, and how to communicate that to both engineering teams and the broader security community.</p> <p>This position is located remotely with no expectation to work from a Censys office.&nbsp; This position is also expected to travel once per quarter for industry events and team onsites.&nbsp;</p> <p>&nbsp;</p> <p><strong>What you’ll do:</strong></p> <ul> <li>Drive product capability. Bring an offensive practitioner's perspective to Censys's scanning, fingerprinting, and attack surface data. Identify gaps in detection logic, protocol coverage, and vulnerability signals that only someone who has actually broken into networks would notice.</li> <li>Conduct original research. Investigate emerging attack techniques, exploitation trends, C2 infrastructure, and adversary tradecraft using Internet-wide scan data and your own testing methodology.</li> <li>Publish seminal work. Produce research reports, technical blog posts, and conference-caliber material (DEF CON, Black Hat, BSides, etc.) that establishes Censys as an authoritative voice in offensive security.</li> <li>Collaborate cross-functionally. Partner with Engineering and Product to translate research findings into new scanning modules, fingerprints, risk indicators, and detection features.</li> <",
+      "source": {
+        "id": "censys-greenhouse",
+        "name": "Greenhouse",
+        "kind": "ats-public-feed",
+        "url": "https://censys.com/careers"
+      },
+      "applicationUrl": "https://job-boards.greenhouse.io/censys/jobs/8647822002",
+      "dateImported": "2026-10-14T23:59:54.663Z",
+      "expiresAt": null,
+      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "isDemo": false,
+      "extensions": {
+        "adapter": "greenhouse-job-board",
+        "boardToken": "censys",
+        "requisitionId": "PID100412",
+        "sourceCategories": [
+          "Research"
+        ],
+        "relevance": {
+          "reason": "Matched source title.",
+          "matchedSignals": [
+            "security-role"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "censys-greenhouse-8527413002",
+      "externalId": "8527413002",
+      "title": "Staff Backend Engineer, SOC & Threat Hunting",
+      "employer": "Censys",
+      "location": {
+        "display": "Ann Arbor, MI",
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "workplace": "unspecified",
+      "employmentType": "unspecified",
+      "experienceLevel": "unspecified",
+      "categories": [],
+      "salaryRange": null,
+      "datePosted": "2026-05-08",
+      "skills": [],
+      "description": "<div class=\"content-intro\"><h3>Company Background</h3> <p>Censys’ mission is to be the one place to understand everything on the internet. Frustrated by the lack of trustworthy Internet intelligence, we set out to create the industry’s most comprehensive, accurate, and up-to-date map of the Internet. Today, Censys delivers real-time Internet intelligence and actionable threat insights to global governments, over 50% of the Fortune 500, and leading threat intelligence providers worldwide.</p></div><div class=\"bb-jobs-posting__content\"> <div class=\"bb-rich-text-editor__content ptor-job-view-description public-job-description\"> <p><strong>Location:&nbsp;</strong></p> <p>This is a fully remote position within the United States or Canada.</p> <p><strong>Role Summary:</strong></p> <p>We’re looking to hire a <strong>Staff Backend Software Engineer </strong>to join our team. In this capacity, you will contribute to the development of specialized tools for threat hunters, SOC analysts, and incident response professionals within the Censys Platform. Your responsibilities will involve advancing our Adversary Investigation module by architecting resilient APIs and scalable microservices for our SaaS infrastructure. By collaborating with engineering and product partners, you will transform intricate needs into sustainable software that delivers vital security intelligence. Your work will empower users to navigate the global Internet, identify emerging threats, and strengthen their organizational defenses.</p> <h4><strong>What You’ll Do:</strong></h4> <ul> <li>Architect and refine robust backend services to drive the capabilities of the Adversary Investigation module</li> <li>Collaborate cross-functionally with Product, Design, and Frontend teams to create high-impact solutions for our customers</li> <li>Maintain end-to-end ownership of the development cycle, from automating builds and testing to deployment and ongoing monitoring</li> <li>Facilitate data-intensive user experiences by integrating both internal systems and external APIs</li> <li>Engage in a fast-paced, iterative environment focused on technical excellence and proactive feedback loops</li> </ul> <h4><strong>What You’ll Bring:</strong></h4> <ul> <li>10+ years of professional experience building distributed web applications and APIs</li> <li>Experience with building microservices.</li> <li>Experience with Go, Java, Python, or Scala&nbsp; AND a desire to work with Go in this role.</li> <li>Experience with at least one cloud provider, like GCP, AWS, or Azure</li> <li>Familiarity with Docker and interest in improving our CI/CD deployment process</li> <li>Desire to improve test coverage and increase code maintainability</li> <li>The ability to thoughtfully participate in technical discussions and drive towards data-driven decisions amidst ambiguity and competing priorities.</li> <li>Strong communication and documentation skills. Explaining complex technical concepts to other engineers, designers, sales",
+      "source": {
+        "id": "censys-greenhouse",
+        "name": "Greenhouse",
+        "kind": "ats-public-feed",
+        "url": "https://censys.com/careers"
+      },
+      "applicationUrl": "https://job-boards.greenhouse.io/censys/jobs/8527413002",
+      "dateImported": "2026-10-14T23:59:54.663Z",
+      "expiresAt": null,
+      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "isDemo": false,
+      "extensions": {
+        "adapter": "greenhouse-job-board",
+        "boardToken": "censys",
+        "requisitionId": "PID100379",
+        "sourceCategories": [
+          "Engineering"
+        ],
+        "relevance": {
+          "reason": "Matched source title.",
+          "matchedSignals": [
+            "security-operations",
+            "threat-detection"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "relay-greenhouse-8180077",
+      "externalId": "8180077",
+      "title": "GRC Administrator",
+      "employer": "Relay",
+      "location": {
+        "display": "Raleigh, NC",
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "workplace": "unspecified",
+      "employmentType": "unspecified",
+      "experienceLevel": "unspecified",
+      "categories": [],
+      "salaryRange": null,
+      "datePosted": "2026-09-15",
+      "skills": [],
+      "description": "<p><a href=\"https://relaypro.com/\"><strong>Relay</strong></a> is the Intelligent System of Action for the physical economy. While the digital revolution has often left the deskless workforce behind, we are closing that gap by transforming analog frontline operations into a data-rich, AI-powered ecosystem. We aren't just selling radios, we’re building the digital foundation for the 80% of the global workforce that doesn't work at a desk.</p> <p><strong>Why Join Relay?</strong></p> <ul> <li><strong>A Proven Winner: </strong>Join a hyper-growth company trusted by over 10% of the Fortune 500, continuing to move upmarket with massive impact.</li> <li><strong>High Value, High Impact: </strong>With 47% of our revenue from $100K+ ARR customers and 135% Net Revenue Retention (NRR), you'll be joining a company rooted in value creation.</li> <li><strong>Market-Leading Innovation:</strong> The Relay platform captures 1 billion new data points weekly and features award-winning AI tools like TeamTranslate™, with 500% YoY growth.</li> <li><strong>World-Class Leadership: </strong>Our stellar leadership team is built to help us scale toward our next major milestones.</li> <li><strong>The Relay Culture: </strong>We’re dedicated to helping you do the best work of your life (BWIML), investing in your growth through L.I.T., living our CHASE values, and learning from incredibly talented, supportive teammates who make the work (and the wins) better every day.</li> </ul> <p><strong>Now, here’s what we’re building, and where you come in.</strong></p> <h3>About the Role</h3> <p>Relay is hiring a GRC Administrator to own our compliance program end-to-end. Reporting to the Sr. Manager of IT &amp; Security and working closely with the SVP of IT &amp; Security, you will run our active certification portfolio — SOC 2 Type II + HIPAA, ISO 27001:2022, and PCI DSS — and serve as our Drata expert, the GRC platform at the center of everything we do. You'll manage our external auditors directly from within Drata, keeping evidence, controls, and audit workflows moving so certifications land on schedule, every time.</p> <p>This is an ownership role, not a coordination role. The certification calendar, internal audit program, control library, policy lifecycle, and third-party vendor risk program will all be yours. And because compliance at Relay is a company-wide effort, your success depends on how well you work with department leaders across the entire organization — earning their trust, making their obligations clear and achievable, and holding the line on deadlines and requirements with professionalism and tact. If you can make compliance feel like a shared win rather than a burden, this role is built for you.</p> <h3>About the Team</h3> <p>You'll join a small, high-leverage IT &amp; Security team responsible for protecting a fast-growing, cloud-first company. We manage a broad technology stack — from identity and device management to SaaS administration and enterprise automation —",
+      "source": {
+        "id": "relay-greenhouse",
+        "name": "Greenhouse",
+        "kind": "ats-public-feed",
+        "url": "https://relaypro.com/careers"
+      },
+      "applicationUrl": "https://job-boards.greenhouse.io/relaypro/jobs/8180077",
+      "dateImported": "2026-10-14T23:59:54.663Z",
+      "expiresAt": null,
+      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "isDemo": false,
+      "extensions": {
+        "adapter": "greenhouse-job-board",
+        "boardToken": "relaypro",
+        "requisitionId": "460",
+        "sourceCategories": [
+          "IT & Security"
+        ],
+        "relevance": {
+          "reason": "Matched source title.",
+          "matchedSignals": [
+            "security-compliance"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "relay-greenhouse-8179795",
+      "externalId": "8179795",
+      "title": "Senior Cybersecurity Analyst",
+      "employer": "Relay",
+      "location": {
+        "display": "Raleigh, NC",
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "workplace": "unspecified",
+      "employmentType": "unspecified",
+      "experienceLevel": "unspecified",
+      "categories": [],
+      "salaryRange": null,
+      "datePosted": "2026-09-15",
+      "skills": [],
+      "description": "<p><a href=\"https://relaypro.com/\"><strong>Relay</strong></a> is the Intelligent System of Action for the physical economy. While the digital revolution has often left the deskless workforce behind, we are closing that gap by transforming analog frontline operations into a data-rich, AI-powered ecosystem. We aren't just selling radios, we’re building the digital foundation for the 80% of the global workforce that doesn't work at a desk.</p> <p><strong>Why Join Relay?</strong></p> <ul> <li><strong>A Proven Winner: </strong>Join a hyper-growth company trusted by over 10% of the Fortune 500, continuing to move upmarket with massive impact.</li> <li><strong>High Value, High Impact: </strong>With 47% of our revenue from $100K+ ARR customers and 135% Net Revenue Retention (NRR), you'll be joining a company rooted in value creation.</li> <li><strong>Market-Leading Innovation:</strong> The Relay platform captures 1 billion new data points weekly and features award-winning AI tools like TeamTranslate™, with 500% YoY growth.</li> <li><strong>World-Class Leadership: </strong>Our stellar leadership team is built to help us scale toward our next major milestones.</li> <li><strong>The Relay Culture: </strong>We’re dedicated to helping you do the best work of your life (BWIML), investing in your growth through L.I.T., living our CHASE values, and learning from incredibly talented, supportive teammates who make the work (and the wins) better every day.</li> </ul> <p><strong>Now, here’s what we’re building, and where you come in.</strong></p> <h3>About the Role</h3> <p>Relay is hiring a Senior Cybersecurity Analyst to serve as the technical backbone of our security operations. Reporting to the Sr. Manager of IT &amp; Security and working closely with the SVP of IT &amp; Security, you will be the owner and subject matter expert for our core security platform — Palo Alto Cortex XDR and the day-to-day manager of our relationship with Palo Alto Unit 42, and various outside cybersecurity partners.</p> <p>This role is equal parts technical depth and organizational trust. You'll be the person every department at Relay works with when a security finding lands on their desk — which means your ability to communicate clearly, build relationships, and set the right tone matters as much as your ability to hunt threats, build tools and manage the tools. You'll need to be firm on what security requires while remaining a partner people genuinely want to work with. If you can hold that line with empathy and credibility, you'll thrive here. We especially value candidates who bring an offensive security mindset — the ability to think like an attacker in order to build stronger defenses, anticipate attack vectors, and design systems that are genuinely difficult to compromise.</p> <h3>About the Team</h3> <p>You'll join a small, high-leverage IT &amp; Security team responsible for protecting a fast-growing, cloud-first company. We manage a broad technology stack — from identity and de",
+      "source": {
+        "id": "relay-greenhouse",
+        "name": "Greenhouse",
+        "kind": "ats-public-feed",
+        "url": "https://relaypro.com/careers"
+      },
+      "applicationUrl": "https://job-boards.greenhouse.io/relaypro/jobs/8179795",
+      "dateImported": "2026-10-14T23:59:54.663Z",
+      "expiresAt": null,
+      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "isDemo": false,
+      "extensions": {
+        "adapter": "greenhouse-job-board",
+        "boardToken": "relaypro",
+        "requisitionId": "459",
+        "sourceCategories": [
+          "IT & Security"
+        ],
+        "relevance": {
+          "reason": "Matched source title.",
+          "matchedSignals": [
+            "cybersecurity"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "brightedge-lever-4184f981-746e-45f2-811d-6f3a23ba52f4",
+      "externalId": "4184f981-746e-45f2-811d-6f3a23ba52f4",
+      "title": "IT Support Specialist",
+      "employer": "BrightEdge",
+      "location": {
+        "display": "San Mateo, California",
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "workplace": "unspecified",
+      "employmentType": "unspecified",
+      "experienceLevel": "unspecified",
+      "categories": [],
+      "salaryRange": null,
+      "datePosted": "2026-10-13",
+      "skills": [],
+      "description": "Shape the future of Search. About BrightEdge BrightEdge is a leading SEO, search, and brand visibility platform helping companies understand how their digital presence drives real business results. Founded in 2007, we’re trusted by thousands of organizations across more than 80 countries, including brands like Microsoft and Visa. Our platform combines powerful data with AI-driven insights to help customers plan, optimize, and measure their digital marketing strategies and understand how their brand is showing up across an evolving search landscape. What sets BrightEdge apart is our people. With 400+ employees across 7 global offices, we foster a collaborative, curious, and supportive environment where smart ideas are encouraged, and impact is visible. If you enjoy solving meaningful problems, working with data and technology, learning new things, and helping shape the future of digital marketing, BrightEdge is a great place to build your career. About the Role This role requires reliable transportation and ability to commute from our San Mateo Office to our Data Center in the San Jose area as needed. We are seeking an IT Support Specialist to provide hands-on technical support, troubleshoot hardware and software issues, and ensure reliable day-to-day IT operations. This role will split time between our San Mateo headquarters and our data center in the San Jose area, supporting employees, IT infrastructure, and equipment across both locations. Responsibilities include supporting Windows and macOS environments, Microsoft 365 applications, user accounts, network connectivity, endpoint security, and IT asset management. The ideal candidate is a proactive problem-solver with strong technical, communication, and customer service skills who is comfortable working in both an office and data center environment.",
+      "source": {
+        "id": "brightedge-lever",
+        "name": "Lever",
+        "kind": "ats-public-feed",
+        "url": "https://www.brightedge.com/careers"
+      },
+      "applicationUrl": "https://jobs.lever.co/brightedge/4184f981-746e-45f2-811d-6f3a23ba52f4/apply",
+      "dateImported": "2026-10-14T23:59:54.663Z",
+      "expiresAt": null,
+      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "isDemo": false,
+      "extensions": {
+        "adapter": "lever-postings",
+        "site": "brightedge",
+        "team": "IT Security",
+        "department": "General and Administrative",
+        "commitment": "Full-Time",
+        "level": null,
+        "sourceCategories": [
+          "IT Security",
+          "General and Administrative",
+          "Full-Time"
+        ],
+        "relevance": {
+          "reason": "Matched source title.",
+          "matchedSignals": [
+            "it-support-pathway",
+            "description-confirmed-security-support"
+          ]
+        }
+      }
+    }
+  ],
   "duplicateCount": 0,
   "rejectedCount": 0,
-  "diagnostics": []
+  "relevanceRejectedCount": 98,
+  "unsafeUrlRejectedCount": 0,
+  "incompleteRejectedCount": 0,
+  "diagnostics": [
+    {
+      "sourceId": "volexity-greenhouse",
+      "status": "ok",
+      "recordsReceived": 7,
+      "relevanceRejected": 4,
+      "candidatesAccepted": 3,
+      "unsafeUrlRejected": 0,
+      "incompleteRejected": 0
+    },
+    {
+      "sourceId": "huntress-greenhouse",
+      "status": "ok",
+      "recordsReceived": 35,
+      "relevanceRejected": 21,
+      "candidatesAccepted": 14,
+      "unsafeUrlRejected": 0,
+      "incompleteRejected": 0
+    },
+    {
+      "sourceId": "censys-greenhouse",
+      "status": "ok",
+      "recordsReceived": 26,
+      "relevanceRejected": 23,
+      "candidatesAccepted": 3,
+      "unsafeUrlRejected": 0,
+      "incompleteRejected": 0
+    },
+    {
+      "sourceId": "relay-greenhouse",
+      "status": "ok",
+      "recordsReceived": 27,
+      "relevanceRejected": 25,
+      "candidatesAccepted": 2,
+      "unsafeUrlRejected": 0,
+      "incompleteRejected": 0
+    },
+    {
+      "sourceId": "brightedge-lever",
+      "status": "ok",
+      "recordsReceived": 26,
+      "relevanceRejected": 25,
+      "candidatesAccepted": 1,
+      "unsafeUrlRejected": 0,
+      "incompleteRejected": 0
+    }
+  ]
 }
