@@ -45,7 +45,7 @@ Changing activities clears stale activity details so guidance from one exercise 
 
 ## Learner Portfolio
 
-The Learner Portfolio reuses existing completion evidence rather than introducing another progress counter. Completed practical lessons (Networking through Security Testing), all four guided labs, all seven defensive investigations, eligible Daily Practice activities, and completed Attack Box simulations become eligible for optional documentation. Learners choose what to add; repeated selections resolve to the same stable activity ID.
+The Learner Portfolio reuses existing completion evidence rather than introducing another progress counter. Completed practical lessons (Networking through Security Testing), supplemental Hands-On Practice, all four guided labs, all seven defensive investigations, eligible Daily Practice activities, and completed Attack Box simulations become eligible for optional documentation. Learners choose what to add; repeated selections resolve to the same stable activity ID.
 
 Each builder separates Better Hacker-authored context—objective, skills, tools, and the related activity—from learner-authored commands, work performed, findings, learning, challenges, and solutions. **Draft**, **Almost Ready**, and **Portfolio Ready** explain which of the three essential learner-evidence areas are missing: work performed, findings, and what was learned. Incomplete projects always remain viewable and editable.
 
@@ -217,6 +217,12 @@ The frontend fetches only the same-origin `jobs-live.json`, accepts records mark
 `jobs-skill-mapping.js` applies explicit deterministic phrases to source listing titles, categories, and descriptions. It stores controlled skill IDs and an audit record (`matchedPhrase` and source `field`) under `extensions.skillMappings`; original listing fields and source-provided `skills` remain unchanged. Windows terms require an operating-system context and physical-building context suppresses those matches. Unsupported or ambiguous wording remains unmapped. The current rules live in `jobs-skill-mapping.js` and are regression-tested.
 
 `jobs-matching.js` reads only the authored `BetterHackerPortfolio.ACTIVITIES` registry and local completion/project activity IDs. It compares mapped job skill IDs with skills and tools declared by completed activities. Portfolio project titles and learner-written project fields are not inspected; project evidence is tied to its fixed authored activity ID. Matching runs in this browser and does not transmit learner progress, portfolio details, or match results to employers, ATS providers, application URLs, analytics, or ingestion infrastructure. The card explains overlap as educational evidence only, offers existing learning activities for mapped gaps, and does not assess eligibility or hiring decisions. Demo records remain excluded from these live comparisons.
+
+### Job-linked skill practice
+
+The Hands-On Practice section includes focused, browser-only simulations for Python log filtering, PowerShell event review, general cloud shared responsibility, separate AWS/Azure/GCP evidence, EDR triage, IDS/IPS, firewall rule review, vulnerability prioritization, and digital-forensics evidence handling. Each activity requires all of its authored decisions to be correct before its dedicated local completion key is saved. Incomplete or wrong attempts are not evidence and do not change Core progress or XP. The portfolio registry links those keys to their authored skills and internal learning anchors; jobs offer direct links only for skills the activity actually practices.
+
+Cloud Shared Responsibility awards only general Cloud Security/IAM evidence. AWS, Azure, and GCP are earned only by their distinct provider-specific simulations. Byte receives the active activity's authored hint and stronger clue, and withholds the explanation until submission. All scenarios are fictional; code and commands are text examples and are never executed or sent to a service. This material is supplemental Hands-On Practice; the Core lessons, guided lab sequence, Attack Box, and investigations remain focused on their existing objectives.
 
 ### Future authentication and Pro entitlement requirements
 
