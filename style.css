@@ -1429,6 +1429,10 @@ footer p {
 .extension-lesson dd { margin: 0; color: #cbd5e1; }
 .extension-check fieldset { display: grid; gap: 12px; margin: 0 0 18px; padding: 18px; border: 1px solid #475569; border-radius: 9px; }
 .extension-check label { display: flex; align-items: flex-start; gap: 9px; cursor: pointer; }
+.extension-lesson .practice-check fieldset { display: grid; gap: 12px; margin: 0 0 18px; padding: 18px; border: 1px solid #475569; border-radius: 9px; }
+.extension-lesson .practice-check label { display: flex; align-items: flex-start; gap: 9px; cursor: pointer; }
+.extension-lesson .practice-check input[type="radio"] { flex: 0 0 auto; margin-top: 4px; }
+.extension-lesson .practice-check button { margin-right: 12px; }
 .extension-feedback { min-height: 1.6em; margin-top: 14px; font-weight: 700; color: #e2e8f0; }
 .topic-link-card .lesson-link { display: block; margin-top: 12px; }
 @media (max-width: 600px) { .extension-lesson dl { grid-template-columns: 1fr; gap: 4px; } .extension-lesson dd { margin-bottom: 10px; } }

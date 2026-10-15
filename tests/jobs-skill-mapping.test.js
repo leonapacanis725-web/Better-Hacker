@@ -88,10 +88,34 @@ test('missing skills only link to authored existing activities with taxonomy evi
   const linux = match.gaps.find(item => item.id === 'linux-basics');
   const python = match.gaps.find(item => item.id === 'python');
   assert.ok(linux.activities.some(item => item.href === '#linux-lesson' || item.href === '#practice-linux-challenges'));
-  assert.deepEqual(python.activities, []);
+  assert.ok(python.activities.some(item => item.href === '#practice-python-log-review'));
   const windows = Matching.matchJobSkills({ skills: [], extensions: { skillMappings: [{ id: 'windows-platform' }] } }, { skills: [] }, Portfolio).gaps[0];
   assert.ok(windows.activities.some(item => item.href === '#investigation-windows'));
   assert.ok(match.gaps.every(item => item.activities.every(activity => Portfolio.ACTIVITIES.some(authored => authored.id === activity.id && authored.href === activity.href))));
+});
+
+test('every current uncovered live-job skill has a direct evidence-gated learning destination', () => {
+  const live = JSON.parse(fs.readFileSync('jobs-live.json', 'utf8'));
+  const gapIds = new Set();
+  for (const job of live.jobs) for (const skill of Matching.jobSkills(job)) gapIds.add(skill.id);
+  for (const id of ['endpoint-security','gcp','aws','azure','python','powershell','ids-ips','firewalls','vulnerability-management','cloud-security','digital-forensics']) {
+    assert.ok(gapIds.has(id), `expected current mapped gap ${id}`);
+    const activities = Matching.learningActivities(id, Portfolio);
+    assert.ok(activities.length > 0, `${id} should link to authored learning`);
+    for (const activity of activities) {
+      assert.ok(Portfolio.ACTIVITIES.some(authored => authored.id === activity.id && authored.href === activity.href));
+      assert.match(activity.href, /^#[a-z0-9-]+$/);
+      assert.ok(activity.href.slice(1).length > 0);
+    }
+  }
+  const storageWithGeneralCloud = storage({ betterHackerPracticeCloudResponsibilityComplete: 'true' });
+  const general = Matching.deriveLocalEvidence(Portfolio, storageWithGeneralCloud);
+  assert.ok(general.skills.some(skill => skill.id === 'cloud-security'));
+  assert.equal(general.skills.some(skill => skill.id === 'aws' || skill.id === 'azure' || skill.id === 'gcp'), false);
+  const storageWithAws = storage({ betterHackerPracticeAwsIamReviewComplete: 'true' });
+  const aws = Matching.deriveLocalEvidence(Portfolio, storageWithAws);
+  assert.ok(aws.skills.some(skill => skill.id === 'aws'));
+  assert.equal(aws.skills.some(skill => skill.id === 'azure' || skill.id === 'gcp'), false);
 });
 
 test('live and demo jobs stay separate, and malicious descriptions are inserted only as text', () => {

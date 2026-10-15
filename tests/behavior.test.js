@@ -520,10 +520,10 @@ test('supplemental practice validates every decision, persists idempotently, and
   const { context, localStorage } = boot({ seed: { betterHackerWaitlistEmail: 'saved@example.test', unrelated: 'keep' } });
   const app = context.__app;
   const baseline = JSON.stringify(app.getDashboardState());
-  assert.equal(app.PRACTICE_LESSONS.length, 4);
+  assert.equal(app.PRACTICE_LESSONS.length, 15);
   for (const lesson of app.PRACTICE_LESSONS) {
     assert.equal(app.checkPracticeAnswers(lesson.id, []).correct, false);
-    const wrong = [...lesson.answers]; wrong[0] = '1';
+    const wrong = [...lesson.answers]; wrong[0] = lesson.answers[0] === '1' ? '0' : '1';
     assert.equal(app.checkPracticeAnswers(lesson.id, wrong).correct, false);
     assert.equal(localStorage.getItem(lesson.key), null);
     assert.equal(app.checkPracticeAnswers(lesson.id, [...lesson.answers]).newlyCompleted, true);
@@ -539,6 +539,27 @@ test('supplemental practice validates every decision, persists idempotently, and
   for (const lesson of restored.PRACTICE_LESSONS) assert.equal(restored.checkPracticeAnswers(lesson.id, [...lesson.answers]).newlyCompleted, false);
   assert.equal(localStorage.getItem('unrelated'), 'keep');
   assert.equal(localStorage.getItem('betterHackerWaitlistEmail'), 'saved@example.test');
+});
+
+test('new job-gap practice checks persist only verified completions and guide Byte with authored context', () => {
+  const { context, localStorage } = boot();
+  const app = context.__app;
+  const ids = ['python-log-review','powershell-event-review','cloud-responsibility-review','aws-iam-review','azure-signin-review','gcp-audit-review','edr-process-review','ids-ips-review','firewall-rule-review','vulnerability-queue-review','forensics-evidence-review'];
+  for (const id of ids) {
+    const lesson = app.PRACTICE_LESSONS.find(item => item.id === id);
+    assert.ok(lesson, id);
+    assert.ok(lesson.questions.length >= 2, id);
+    assert.ok(lesson.questions.every(q => q.options.length >= 3), id);
+    assert.equal(app.checkPracticeAnswers(id, []).correct, false);
+    const wrong = [...lesson.answers]; wrong[0] = String((Number(wrong[0]) + 1) % lesson.questions[0].options.length);
+    assert.equal(app.checkPracticeAnswers(id, wrong).correct, false);
+    assert.equal(localStorage.getItem(lesson.key), null);
+    assert.equal(app.checkPracticeAnswers(id, [...lesson.answers]).newlyCompleted, true);
+    assert.equal(localStorage.getItem(lesson.key), 'true');
+    context.location.hash = lesson.target; app.handleNavigation();
+    assert.equal(app.companion.getContext().activityId, id);
+    assert.equal(app.companion.getContext().hint, lesson.hint);
+  }
 });
 
 test('Daily Practice credit leaves Core 8/8, guided-lab and investigation evidence intact', () => {
@@ -620,14 +641,14 @@ test('optional dashboard summaries reuse saved evidence without changing Core or
   context.__app.completeAssistantTopic('networking',0);
   BetterHackerState.completeLibraryPractice(localStorage,'2026-10-12','daily-dns');
   context.__app.renderDashboard();
-  assert.equal(elements['#dashboard-hands-on'].textContent,'4 / 4 completed');
+  assert.equal(elements['#dashboard-hands-on'].textContent,'15 / 15 completed');
   assert.equal(elements['#dashboard-library'].textContent,'1 / 14 practiced');
   assert.equal(elements['#dashboard-topics'].textContent,'1 / 9 completed');
   assert.equal(JSON.stringify(context.__app.getDashboardState()),before);
   assert.equal(BetterHackerState.deriveXp(context.__app.getDashboardState(),BetterHackerState.readDailyState(localStorage)),xp);
   const reloaded=boot({seed:Object.fromEntries(Object.keys(localStorage).map(key=>[key,localStorage.getItem(key)])),elements});
   reloaded.context.__app.renderDashboard();
-  assert.equal(elements['#dashboard-hands-on'].textContent,'4 / 4 completed');
+  assert.equal(elements['#dashboard-hands-on'].textContent,'15 / 15 completed');
   assert.equal(elements['#dashboard-library'].textContent,'1 / 14 practiced');
   assert.equal(elements['#dashboard-topics'].textContent,'1 / 9 completed');
 });

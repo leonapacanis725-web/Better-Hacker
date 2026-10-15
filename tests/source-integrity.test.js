@@ -2,6 +2,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const test = require('node:test');
 const vm = require('node:vm');
+const Portfolio = require('../portfolio.js');
 
 const script = fs.readFileSync('script.js', 'utf8');
 const html = fs.readFileSync('index.html', 'utf8');
@@ -234,6 +235,30 @@ test('Hands-On Practice cards expose four distinct accessible supplemental simul
     assert.match(activity, new RegExp(`data-practice-help="${id}" href="#coach"`));
   }
   assert.doesNotMatch(script, /existingCards\.hidden = true|oldHelpLink\.hidden = true/);
+});
+
+test('job-gap skill practice has authored anchors, safe rendering, separate provider evidence, and portfolio keys', () => {
+  const ids = ['python-log-review','powershell-event-review','cloud-responsibility-review','aws-iam-review','azure-signin-review','gcp-audit-review','edr-process-review','ids-ips-review','firewall-rule-review','vulnerability-queue-review','forensics-evidence-review'];
+  assert.match(html, /id="skill-practice-cards"/);
+  assert.match(html, /id="skill-practice-sections"/);
+  assert.match(html, /id="dashboard-hands-on">0 \/ 15 completed/);
+  assert.match(script, /function renderSkillPractice\(\)/);
+  assert.doesNotMatch(script, /renderSkillPractice[\s\S]{0,8000}innerHTML\s*=/);
+  assert.match(script, /cardTitle\.textContent = lesson\.name/);
+  assert.match(script, /evidence\.textContent = lesson\.evidence/);
+  for (const id of ids) {
+    const activity = Portfolio.ACTIVITIES.find(item => item.id === `practice-${id}`);
+    assert.ok(activity, id);
+    assert.equal(activity.href, `#practice-${id}`);
+    assert.match(script, new RegExp(`id:"${id}"`));
+    assert.match(script, new RegExp(`key:"${activity.key}"`));
+  }
+  const genericCloud = Portfolio.ACTIVITIES.find(item => item.id === 'practice-cloud-responsibility-review');
+  assert.ok(genericCloud.skills.includes('Cloud security'));
+  assert.equal(genericCloud.skills.some(value => ['AWS','Azure','GCP'].includes(value)), false);
+  for (const [id, provider] of [['aws-iam-review','AWS'],['azure-signin-review','Azure'],['gcp-audit-review','GCP']]) {
+    assert.ok(Portfolio.ACTIVITIES.find(item => item.id === `practice-${id}`).skills.includes(provider));
+  }
 });
 
 test('Why Better Hacker cards provide accessible links to existing learning and safe practice sections', () => {

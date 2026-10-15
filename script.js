@@ -98,6 +98,138 @@ document.addEventListener("DOMContentLoaded", function () {
       "hint": "Order the records, then correlate the repeated account and source with the later changes.",
       "lookFor": "E103 follows the failures; E104 and E105 create and elevate backup-helper.",
       "explanation": "The timeline links demo-admin at 192.0.2.44 to later creation and elevation of backup-helper. Unscheduled changes following failures merit investigation. Preserve event IDs and timestamps, verify ownership/authorization, and use approved containment; the logs alone do not prove who operated the account."
+    },
+    {
+      id:"python-log-review", key:"betterHackerPracticePythonLogReviewComplete", target:"#practice-python-log-review", name:"Python Log Review",
+      answer:"complete", answers:["0","1"], skills:["Python","Log analysis","Evidence correlation"], tools:["Python","CSV log parsing"],
+      intro:"Practice reading a small Python log-filtering example. The code and records are simulated; nothing is executed.",
+      evidence:'SIMULATED CSV rows\ntime,user,result\n09:01,alex,success\n09:02,alex,failed\n09:03,sam,failed\n\nPython example: failed = [row for row in rows if row["result"] == "failed"]',
+      questions:[
+        {prompt:"Which rows does the filter select?",options:["Rows whose result is failed","Every row from alex","Only rows after 09:02"]},
+        {prompt:"What is the safest conclusion from two failed rows?",options:["Two failures are evidence to review, not proof of compromise","The accounts are compromised","Delete the failed records"]}
+      ],
+      hint:"Read the field named in the condition, then separate the count from any unsupported conclusion.", lookFor:"The condition checks result, and the records show two failures.",
+      explanation:"The example selects rows whose result equals failed. Two failed rows are observations to correlate with other evidence; they do not prove compromise. This is a reading exercise, not a Python runtime."
+    },
+    {
+      id:"powershell-event-review", key:"betterHackerPracticePowerShellEventReviewComplete", target:"#practice-powershell-event-review", name:"PowerShell Event Review",
+      answer:"complete", answers:["1","0"], skills:["PowerShell","Windows event logs","Alert triage"], tools:["PowerShell","Get-WinEvent"],
+      intro:"Read a defensive PowerShell query and its supplied output. No command runs on a device.",
+      evidence:'SIMULATED read-only example: Get-WinEvent -FilterHashtable @{LogName="Security"; Id=4625} -MaxEvents 20\nSIMULATED result: 3 records, all failed logon events, from two source addresses.',
+      questions:[
+        {prompt:"What does this query request?",options:["Delete failed logons","Read up to 20 Security log events with ID 4625","Reset the accounts"]},
+        {prompt:"What should an analyst do next?",options:["Correlate time, accounts, source addresses, and expected activity","Assume an attacker succeeded","Erase the log"]}
+      ],
+      hint:"The cmdlet name and filter describe a read. The returned failures still need context.", lookFor:"Get-WinEvent reads matching events; failed logons need correlation.",
+      explanation:"Get-WinEvent reads records matching the supplied log and event ID. Validate the time, account, source, and surrounding activity before drawing a conclusion. The command is presented only as text."
+    },
+    {
+      id:"cloud-responsibility-review", key:"betterHackerPracticeCloudResponsibilityComplete", target:"#practice-cloud-responsibility-review", name:"Cloud Shared Responsibility",
+      answer:"complete", answers:["0","1"], skills:["Cloud security","IAM","Least privilege"], tools:["Shared responsibility model"],
+      intro:"Separate provider responsibilities from customer configuration and access decisions. This general exercise does not grant AWS, Azure, or GCP platform evidence.",
+      evidence:"SIMULATED scenario: A cloud-hosted application has a public storage setting and a user account with broad administrator access. The provider operates the underlying physical data center.",
+      questions:[
+        {prompt:"Who is responsible for correcting the application's public storage setting?",options:["The customer or workload owner","Only the physical data-center operator","No one; cloud storage is always public"]},
+        {prompt:"Which access change best follows least privilege?",options:["Keep permanent administrator access","Grant the specific role needed for the task","Share a root credential"]}
+      ],
+      hint:"The provider secures parts of the cloud service; customers still configure their workloads and identities.", lookFor:"Workload settings and user permissions remain customer-controlled responsibilities.",
+      explanation:"Cloud responsibility is shared and depends on the service. The workload owner must review its storage exposure and grant only task-specific access. This general concept does not count as experience with any specific cloud platform."
+    },
+    {
+      id:"aws-iam-review", key:"betterHackerPracticeAwsIamReviewComplete", target:"#practice-aws-iam-review", name:"AWS IAM Policy Review",
+      answer:"complete", answers:["1","0"], skills:["AWS","IAM","Least privilege"], tools:["AWS IAM policy review"],
+      intro:"Review a fictional AWS IAM request without signing in or changing any cloud resource.",
+      evidence:"SIMULATED AWS request: A reporting task needs read access to one named S3 bucket. The draft policy grants s3:* on Resource: *.",
+      questions:[
+        {prompt:"What is the main concern?",options:["The policy is too narrow","Wildcard resource and broad actions exceed the stated task","S3 cannot have access policies"]},
+        {prompt:"What is the safer review recommendation?",options:["Scope required read actions to the named bucket and have the owner validate","Keep all actions on every resource","Publish access keys in a ticket"]}
+      ],
+      hint:"Compare the requested task with both the action scope and resource scope.", lookFor:"The request is bucket-specific read access, while the draft uses all actions and all resources.",
+      explanation:"The draft exceeds the stated reporting need. Recommend task-specific read actions and the named resource, then have the authorized owner validate the policy. This is simulated AWS policy review only."
+    },
+    {
+      id:"azure-signin-review", key:"betterHackerPracticeAzureSigninReviewComplete", target:"#practice-azure-signin-review", name:"Azure Sign-in Review",
+      answer:"complete", answers:["0","1"], skills:["Azure","IAM","Alert triage"], tools:["Microsoft Entra sign-in logs"],
+      intro:"Interpret supplied Microsoft Azure sign-in evidence. No account or tenant is accessed.",
+      evidence:"SIMULATED sign-in records: user pat@example.test; 08:10 success from usual office location; 08:14 MFA denied from a new location; no successful sign-in after the denial.",
+      questions:[
+        {prompt:"Which event deserves follow-up?",options:["The denied MFA attempt from a new location","The routine success by itself","Neither event can be reviewed"]},
+        {prompt:"What conclusion is supported now?",options:["The account is definitely taken over","A denied attempt is a signal to correlate, not proof of access","MFA should be disabled"]}
+      ],
+      hint:"A denied attempt is important context, but the records show no later successful sign-in.", lookFor:"The unusual denied attempt is observed; account compromise is not established.",
+      explanation:"Review the new-location MFA denial with related identity and endpoint evidence. The supplied records show no subsequent success, so they do not establish account takeover. This is simulated Azure identity-log analysis."
+    },
+    {
+      id:"gcp-audit-review", key:"betterHackerPracticeGcpAuditReviewComplete", target:"#practice-gcp-audit-review", name:"Google Cloud Audit Review",
+      answer:"complete", answers:["1","0"], skills:["GCP","Cloud security","IAM"], tools:["Google Cloud Audit Logs"],
+      intro:"Review fictional Google Cloud audit evidence and choose a safe follow-up. No project is accessed.",
+      evidence:"SIMULATED Cloud Audit Log: service account key created for reporting-svc at 14:02 UTC by analyst-7. Change ticket field is empty; owner is listed as Data Reporting.",
+      questions:[
+        {prompt:"Which detail makes this change worth validating?",options:["A service account key was created without a linked ticket","The log has a timestamp","The service account has an owner"]},
+        {prompt:"What is a proportionate next step?",options:["Immediately delete every service account","Confirm the change with the owner and review approved key-handling procedures","Share the key to identify its user"]}
+      ],
+      hint:"A missing change reference is a validation gap. Confirm ownership before proposing action.", lookFor:"The event is observable, but authorization and business context are not supplied.",
+      explanation:"Validate the key creation with the named owner and approved change process. Preserve the event and avoid exposing or deleting credentials without authorization. This is simulated GCP audit-log review."
+    },
+    {
+      id:"edr-process-review", key:"betterHackerPracticeEdrProcessReviewComplete", target:"#practice-edr-process-review", name:"EDR Process-chain Triage",
+      answer:"complete", answers:["0","1"], skills:["Endpoint security / EDR","Threat detection","Incident response"], tools:["EDR process telemetry"],
+      intro:"Triage fictional endpoint detection and response (EDR) process evidence without interacting with an endpoint.",
+      evidence:"SIMULATED EDR alert: workstation W-12; office macro-enabled document opened; child process launched a command interpreter; outbound connection was blocked; no file hash reputation result is available.",
+      questions:[
+        {prompt:"Which combination is the strongest investigation lead?",options:["Document-to-interpreter process chain plus blocked connection","Workstation name alone","The missing reputation result proves malware"]},
+        {prompt:"What is the safest next step?",options:["Declare confirmed malware and wipe the workstation","Preserve alert and process details, then validate with approved endpoint procedures","Ignore the alert because the connection was blocked"]}
+      ],
+      hint:"Correlate the parent-child process context and connection outcome; a detection is not a verdict.", lookFor:"A suspicious process chain and blocked connection merit validation; the hash is unknown.",
+      explanation:"The process chain and blocked connection support investigation, but the supplied data do not confirm malware. Preserve the telemetry and validate using authorized EDR procedures."
+    },
+    {
+      id:"ids-ips-review", key:"betterHackerPracticeIdsIpsReviewComplete", target:"#practice-ids-ips-review", name:"IDS and IPS Alert Review",
+      answer:"complete", answers:["1","0"], skills:["IDS / IPS","Network analysis","Threat detection"], tools:["Intrusion detection system","Intrusion prevention system"],
+      intro:"Distinguish network detection from prevention and interpret one fictional alert safely.",
+      evidence:"SIMULATED network security event: signature matched a known test pattern; sensor mode is IDS; action is alert-only; destination host is a training server.",
+      questions:[
+        {prompt:"What does the supplied IDS mode tell you?",options:["The connection was automatically blocked","The event was detected and alerted; blocking is not shown","The host is compromised"]},
+        {prompt:"What does IPS commonly add when configured to prevent?",options:["Automatic evidence deletion","A prevention action such as blocking matching traffic","A guarantee of zero false positives"]}
+      ],
+      hint:"Read the sensor mode and recorded action separately from the signature match.", lookFor:"IDS plus alert-only indicates detection; prevention requires an enabled blocking action.",
+      explanation:"The supplied IDS event was detected and alerted but not shown as blocked. An IPS can take a configured prevention action, though alerts still need validation and controls can have false positives."
+    },
+    {
+      id:"firewall-rule-review", key:"betterHackerPracticeFirewallRuleReviewComplete", target:"#practice-firewall-rule-review", name:"Firewall Rule Review",
+      answer:"complete", answers:["0","1"], skills:["Firewalls","Network fundamentals","Least privilege"], tools:["Firewall rule review"],
+      intro:"Review a fictional firewall change request against its business need. Do not change any real firewall.",
+      evidence:"SIMULATED request: allow inbound TCP/22 from 0.0.0.0/0 to all production servers, permanently. Stated need: one administrator needs temporary maintenance access to host app-17.",
+      questions:[
+        {prompt:"Which risk is most apparent?",options:["The rule permits broad sources and destinations beyond the stated need","The rule names a protocol","The request has a business purpose"]},
+        {prompt:"What is the safer recommendation?",options:["Keep the permanent all-host rule","Limit source, destination, duration, and approval to the documented maintenance need","Disable logging for the rule"]}
+      ],
+      hint:"Compare source, destination, time limit, and service in the rule with the task.", lookFor:"The need is one administrator, one host, and temporary maintenance.",
+      explanation:"The proposed source and destination scope is much broader and longer-lived than requested. Recommend a time-bound, approved rule limited to the necessary source, host, and service, with normal logging."
+    },
+    {
+      id:"vulnerability-queue-review", key:"betterHackerPracticeVulnerabilityQueueReviewComplete", target:"#practice-vulnerability-queue-review", name:"Vulnerability Queue Prioritization",
+      answer:"complete", answers:["1","0"], skills:["Vulnerability management","Risk prioritization","Evidence correlation"], tools:["Asset inventory","Patch management concepts"],
+      intro:"Prioritize a fictional remediation queue using severity, exposure, asset importance, and available evidence.",
+      evidence:"SIMULATED queue: A) critical issue on an internet-facing customer gateway with vendor fix available; B) high issue on an isolated test image, no known exposure; C) medium issue on a routine workstation. No exploit evidence is supplied.",
+      questions:[
+        {prompt:"Which item is the strongest initial remediation priority?",options:["B, because its label says high","A, because critical severity, internet exposure, asset role, and a fix align","C, because workstations are common"]},
+        {prompt:"What should the priority statement avoid claiming?",options:["The gateway is internet-facing","The issue is confirmed exploited, since no exploit evidence was supplied","A vendor fix is available"]}
+      ],
+      hint:"Combine severity with exposure and business context. Do not add exploit evidence that is absent.", lookFor:"A combines critical severity, internet exposure, important function, and an available fix.",
+      explanation:"The gateway is the strongest initial priority based on supplied severity, exposure, role, and remediation availability. The evidence does not show exploitation; keep that uncertainty explicit and follow the owner’s SLA and change process."
+    },
+    {
+      id:"forensics-evidence-review", key:"betterHackerPracticeForensicsEvidenceReviewComplete", target:"#practice-forensics-evidence-review", name:"Digital Forensics Evidence Handling",
+      answer:"complete", answers:["0","1"], skills:["Digital forensics","Evidence preservation","Incident response"], tools:["Forensic image","Cryptographic hash","Chain of custody"],
+      intro:"Choose evidence-preserving actions for a fictional incident. This exercise does not access or acquire any real device.",
+      evidence:"SIMULATED request: A laptop may contain relevant logs. It is powered on and assigned to its user. The incident lead has not yet approved collection steps or identified the evidence custodian.",
+      questions:[
+        {prompt:"What should happen before collection?",options:["Confirm authority, scope, trained custodian, and the approved preservation procedure","Let several people browse the laptop","Shut it down immediately without recording context"]},
+        {prompt:"What helps document evidence integrity after authorized acquisition?",options:["Rename the source files","Record custody and handling, and verify hashes according to procedure","Email an unprotected copy to the team"]}
+      ],
+      hint:"Preserve current context and establish an authorized, documented handling plan before touching evidence.", lookFor:"Authority and a trained custodian come before collection; custody and hashes support integrity records.",
+      explanation:"Confirm scope and authority and use the trained custodian’s procedure to preserve volatile context. Document custody and verify integrity as directed. No collection action is authorized by the scenario as written."
     }
   ]);
 
@@ -2845,6 +2977,55 @@ function checkPracticeAnswers(id, answers) {
 function setPracticeContext(lesson, submitted, explanation) {
   companion.setContext({ type: "activity", activityId: lesson.id, topic: lesson.name, hint: lesson.hint, lookFor: lesson.lookFor, submitted: submitted, explanation: explanation || "" });
 }
+function renderSkillPractice() {
+  const cards = document.querySelector("#skill-practice-cards");
+  const sections = document.querySelector("#skill-practice-sections");
+  if (!cards || !sections) return;
+  PRACTICE_LESSONS.filter(function (lesson) { return Array.isArray(lesson.questions); }).forEach(function (lesson) {
+    const card = document.createElement("a");
+    card.className = "card platform-entry-card";
+    card.dataset.practiceId = lesson.id;
+    card.href = lesson.target;
+    const cardTitle = document.createElement("h3"); cardTitle.textContent = lesson.name;
+    const cardCopy = document.createElement("p"); cardCopy.textContent = lesson.intro;
+    const action = document.createElement("span"); action.className = "platform-entry-action"; action.textContent = "Start Practice →";
+    const cardStatus = document.createElement("span"); cardStatus.className = "practice-status"; cardStatus.textContent = "Not completed";
+    card.append(cardTitle, cardCopy, action, cardStatus); cards.appendChild(card);
+
+    const section = document.createElement("section"); section.id = lesson.target.slice(1); section.className = "section extension-lesson";
+    section.setAttribute("aria-labelledby", lesson.id + "-title");
+    const label = document.createElement("p"); label.className = "section-label"; label.textContent = "SUPPLEMENTAL HANDS-ON PRACTICE — NO CORE XP";
+    const title = document.createElement("h2"); title.id = lesson.id + "-title"; title.tabIndex = -1; title.textContent = lesson.name;
+    const intro = document.createElement("p"); intro.textContent = lesson.intro;
+    const status = document.createElement("p"); status.className = "practice-status"; status.setAttribute("role", "status"); status.textContent = "Not completed";
+    const evidenceBlock = document.createElement("div"); evidenceBlock.className = "lesson-block";
+    const evidenceTitle = document.createElement("h3"); evidenceTitle.textContent = "Supplied simulated evidence";
+    const evidence = document.createElement("pre"); evidence.textContent = lesson.evidence;
+    evidenceBlock.append(evidenceTitle, evidence);
+    const hintDetails = document.createElement("details"); hintDetails.className = "lesson-block";
+    const summary = document.createElement("summary"); summary.textContent = "Reasoning hint";
+    const hint = document.createElement("p"); hint.textContent = lesson.hint;
+    const clue = document.createElement("p"); clue.textContent = lesson.lookFor;
+    hintDetails.append(summary, hint, clue);
+    const form = document.createElement("form"); form.className = "lesson-block practice-check"; form.dataset.practiceId = lesson.id;
+    lesson.questions.forEach(function (question, index) {
+      const fieldset = document.createElement("fieldset");
+      const legend = document.createElement("legend"); legend.textContent = question.prompt; fieldset.appendChild(legend);
+      question.options.forEach(function (option, optionIndex) {
+        const input = document.createElement("input"); input.type = "radio"; input.name = lesson.id + "-" + index; input.id = lesson.id + "-" + index + "-" + optionIndex; input.value = String(optionIndex);
+        const optionLabel = document.createElement("label"); optionLabel.htmlFor = input.id; optionLabel.append(input, document.createTextNode(" " + option)); fieldset.appendChild(optionLabel);
+      });
+      form.appendChild(fieldset);
+    });
+    const submit = document.createElement("button"); submit.type = "submit"; submit.className = "primary-button"; submit.textContent = "Check Practice";
+    const feedback = document.createElement("p"); feedback.className = "practice-feedback"; feedback.setAttribute("role", "status"); feedback.setAttribute("aria-live", "polite");
+    const help = document.createElement("a"); help.className = "secondary-button"; help.href = "#coach"; help.dataset.practiceHelp = lesson.id; help.textContent = "Get Help With This Practice";
+    const back = document.createElement("a"); back.href = "#labs"; back.textContent = "Return to Hands-On Practice";
+    form.append(submit, feedback, help, document.createTextNode(" "), back);
+    section.append(label, title, intro, status, evidenceBlock, hintDetails, form); sections.appendChild(section);
+  });
+}
+renderSkillPractice();
 function renderPracticeProgress() {
   PRACTICE_LESSONS.forEach(function (lesson) {
     const complete = localStorage.getItem(lesson.key) === "true";
