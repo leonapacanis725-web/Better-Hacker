@@ -117,6 +117,7 @@ Progress is stored only in browser `localStorage`. Existing keys remain the sour
 - Free Practice Library status: `betterHackerPracticeLibraryState` (versioned activity ID and first completion date).
 - Confirmed waitlist email: `betterHackerWaitlistEmail`.
 - Supplemental lessons: `betterHackerComputerToolsLessonComplete` and `betterHackerIncidentResponseLessonComplete`.
+- Supplemental Hands-On Practice: `betterHackerPracticeReconnaissanceComplete`, `betterHackerPracticeNetworkAnalysisComplete`, `betterHackerPracticeLinuxChallengesComplete`, `betterHackerPracticeDefensiveSecurityComplete`, `betterHackerPracticePythonLogReviewComplete`, `betterHackerPracticePowerShellEventReviewComplete`, `betterHackerPracticeCloudResponsibilityComplete`, `betterHackerPracticeAwsIamReviewComplete`, `betterHackerPracticeAzureSigninReviewComplete`, `betterHackerPracticeGcpAuditReviewComplete`, `betterHackerPracticeEdrProcessReviewComplete`, `betterHackerPracticeIdsIpsReviewComplete`, `betterHackerPracticeFirewallRuleReviewComplete`, `betterHackerPracticeVulnerabilityQueueReviewComplete`, and `betterHackerPracticeForensicsEvidenceReviewComplete`.
 - Learning Assistant topics: `betterHackerLearningAssistantTopics` (versioned JSON containing completed topic IDs).
 - Learner Portfolio: `betterHackerPortfolioProjects` (versioned JSON containing one editable project per stable eligible activity ID).
 
