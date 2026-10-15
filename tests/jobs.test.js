@@ -33,7 +33,7 @@ class FakeElement {
 }
 function fakeDocument() {
   const elements = {
-    'pro-jobs-experience': new FakeElement('SECTION'), 'pro-jobs-search': new FakeElement('INPUT'),
+    'pro-cybersecurity-jobs': new FakeElement('SECTION'), 'pro-jobs-search': new FakeElement('INPUT'),
     'pro-jobs-category': new FakeElement('SELECT'), 'pro-jobs-workplace': new FakeElement('SELECT'),
     'pro-jobs-type': new FakeElement('SELECT'), 'pro-jobs-level': new FakeElement('SELECT'),
     'pro-jobs-location': new FakeElement('INPUT'), 'pro-jobs-skill': new FakeElement('INPUT'),
