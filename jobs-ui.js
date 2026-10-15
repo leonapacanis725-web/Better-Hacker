@@ -61,15 +61,50 @@
     if (meta) article.append(text(documentRef, "p", meta, "jobs-meta"));
     if (job.salaryRange) article.append(text(documentRef, "p", formatSalary(job.salaryRange), "jobs-salary"));
     if (job.description) article.append(text(documentRef, "p", job.description, "jobs-description"));
-    if (job.skills.length) {
+    const mappedSkills = job.isDemo ? [] : Matching.jobSkills(job);
+    if (!job.isDemo && mappedSkills.length) {
       const list = documentRef.createElement("ul");
       list.className = "jobs-skill-list";
-      list.setAttribute("aria-label", "Skills and technologies listed for this role");
-      job.skills.forEach(skill => list.append(text(documentRef, "li", skill.label)));
+      list.setAttribute("aria-label", "Skills shown in this job");
+      article.append(text(documentRef, "h5", "Skills shown in this job", "jobs-match-subheading"));
+      mappedSkills.forEach(skill => list.append(text(documentRef, "li", skill.label)));
       article.append(list);
+      article.append(text(documentRef, "h5", "Your Better Hacker evidence", "jobs-match-heading"));
+      const match = Matching.matchJobSkills(job, evidence, Portfolio);
+      article.append(text(documentRef, "p", match.message, "jobs-match-summary"));
+      if (match.noEvidenceMessage) article.append(text(documentRef, "p", match.noEvidenceMessage, "jobs-evidence-empty"));
+      if (match.matchedEvidence.length) {
+        const matched = documentRef.createElement("ul");
+        matched.className = "jobs-evidence-list jobs-evidence-matched";
+        matched.setAttribute("aria-label", "Matched skills shown in Better Hacker evidence");
+        match.matchedEvidence.forEach(skill => {
+          const activity = skill.evidence[0];
+          matched.append(text(documentRef, "li", `✓ ${skill.label}${activity ? ` — Evidence: ${activity.activityTitle}${activity.source === "structured-portfolio" ? " (portfolio)" : ""}` : ""}`));
+        });
+        article.append(text(documentRef, "h5", "Matched skills", "jobs-match-subheading"), matched);
+      }
+      if (match.gaps.length) {
+        const missing = documentRef.createElement("ul");
+        missing.className = "jobs-evidence-list jobs-evidence-missing";
+        missing.setAttribute("aria-label", "Skills not yet shown in Better Hacker evidence");
+        match.gaps.forEach(skill => {
+          const item = documentRef.createElement("li");
+          item.append(text(documentRef, "span", `○ ${skill.label}`));
+          skill.activities.forEach(activity => {
+            const link = documentRef.createElement("a");
+            link.href = activity.href;
+            link.textContent = `Practice ${skill.label}: ${activity.title}`;
+            link.setAttribute("aria-label", `Build evidence for ${skill.label}: open ${activity.title}`);
+            item.append(documentRef.createElement("br"), link);
+          });
+          missing.append(item);
+        });
+        article.append(text(documentRef, "h5", "Not yet shown in your Better Hacker evidence", "jobs-match-subheading"), missing);
+      }
+      article.append(text(documentRef, "p", match.disclaimer, "jobs-match-disclaimer"));
+    } else if (!job.isDemo) {
+      article.append(text(documentRef, "p", Matching.NO_SKILLS, "jobs-evidence-empty"));
     }
-    const match = Matching.matchJobSkills(job, evidence);
-    article.append(text(documentRef, "p", match.message, "jobs-match-summary"));
     if (job.isDemo) article.append(text(documentRef, "p", "Sample only. There is no real employer or application available.", "jobs-demo-card-note"));
     else if (job.applicationUrl) article.append(applicationLink(documentRef, job));
     else article.append(text(documentRef, "p", "No application URL was provided by the source.", "jobs-no-application"));
@@ -121,6 +156,7 @@
       const liveStatus = liveCount ? `${liveCount} real ${liveCount === 1 ? "listing" : "listings"} shown` : visibleLive ? "No current listings match these filters." : liveFeedLoaded ? "No current cybersecurity listings were found from the connected sources. Check back as employer feeds update." : "Sample roles shown separately. These are not current vacancies.";
       controls.status.textContent = [liveStatus, demoCount ? `${demoCount} demo ${demoCount === 1 ? "role" : "roles"} shown separately` : ""].filter(Boolean).join(" · ") + (liveCount ? ". Verify current availability and details at the source." : "");
     }
+    function refreshEvidence() { evidence = Matching.deriveLocalEvidence(Portfolio, storage); render(); }
     [controls.query, controls.location, controls.skill].forEach(element => element.addEventListener("input", render));
     [controls.category, controls.workplace, controls.employmentType, controls.experienceLevel].forEach(element => element.addEventListener("change", render));
     controls.clear.addEventListener("click", () => {
@@ -152,7 +188,8 @@
     }
     render();
     refreshLiveJobs();
-    return { get jobs() { return jobs; }, render, refreshLiveJobs, refreshEvidence() { evidence = Matching.deriveLocalEvidence(Portfolio, storage); render(); }, applicationLink: job => applicationLink(documentRef, job) };
+    if (typeof root.addEventListener === "function") root.addEventListener("hashchange", refreshEvidence);
+    return { get jobs() { return jobs; }, render, refreshLiveJobs, refreshEvidence, applicationLink: job => applicationLink(documentRef, job) };
   }
   return { applicationLink, trustedApplicationUrl, renderJob, mount, formatSalary };
 });

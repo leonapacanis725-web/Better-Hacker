@@ -3,6 +3,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const Jobs = require("../jobs.js");
+const SkillMapping = require("../jobs-skill-mapping.js");
 const file = path.resolve(process.argv[2] || path.resolve(__dirname, "../jobs-live.json"));
 
 function fail(message) { throw new Error(message); }
@@ -16,6 +17,9 @@ function validate(dataset) {
     if (!job.title || !job.employer || !job.externalId || !job.dateImported || !job.lastObservedAt) fail(`${prefix} is missing a required source fact or timestamp.`);
     if (!job.source || job.source.kind !== "ats-public-feed" || !job.source.name || !Jobs.canonicalApplicationUrl(job.source.url)) fail(`${prefix} has invalid source attribution.`);
     if (!job.extensions || !job.extensions.relevance || !Array.isArray(job.extensions.relevance.matchedSignals) || !job.extensions.relevance.matchedSignals.length) fail(`${prefix} has no relevance evidence.`);
+    if (job.extensions.skillMappingVersion !== 1 || !Array.isArray(job.extensions.skillMappings)) fail(`${prefix} has no versioned skill mapping audit.`);
+    const expectedMappings = SkillMapping.mapListing(job);
+    if (JSON.stringify(job.extensions.skillMappings) !== JSON.stringify(expectedMappings)) fail(`${prefix} has skill mappings that do not match the source fields and current rules.`);
     const app = Jobs.canonicalApplicationUrl(job.applicationUrl);
     if (!app) fail(`${prefix} has an invalid application URL.`);
     const url = new URL(app);

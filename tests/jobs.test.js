@@ -145,8 +145,8 @@ test('local evidence matching is deterministic, uses completed records, and avoi
   const match = Matching.matchJobSkills(job, evidence);
   assert.equal(match.matchedCount, 3);
   assert.equal(match.totalCount, 3);
-  assert.equal(match.message, '3 of 3 listed skills appear in saved Better Hacker evidence.');
-  assert.match(match.disclaimer, /not a qualification/i);
+  assert.equal(match.message, 'Your Better Hacker evidence: 3 of 3 mapped skills.');
+  assert.match(match.disclaimer, /does not determine eligibility or hiring decisions/i);
   assert.ok(evidence.activities.some(item => item.id.startsWith('investigation-')));
   assert.ok(evidence.activities.some(item => item.id.startsWith('practice-')));
   assert.ok(!JSON.stringify(evidence).includes('password'));

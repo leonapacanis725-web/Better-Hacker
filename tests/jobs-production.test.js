@@ -50,29 +50,32 @@ test('unknown source experience stays unknown; explicit source levels are retain
 
 test('ingestion keeps source attribution, metadata, allowed application hosts, and rejects irrelevant or unsafe records', async () => {
   const data = await Ingestion.buildDataset({ sources: [greenhouse] }, { importedAt, delayMs: 0, fetch: async () => response({ jobs: [
-    { id: 1, title: 'Security Analyst', absolute_url: 'https://job-boards.greenhouse.io/acme/jobs/1', location: { name: 'Remote' }, first_published: '2026-10-10', content: '<p>Investigate security alerts</p>' },
+    { id: 1, title: 'SOC Analyst', absolute_url: 'https://job-boards.greenhouse.io/acme/jobs/1', location: { name: 'Remote' }, first_published: '2026-10-10', content: '<p>Investigate Linux alerts and SIEM events.</p>' },
     { id: 2, title: 'Marketing Manager', absolute_url: 'https://job-boards.greenhouse.io/acme/jobs/2' },
     { id: 3, title: 'SOC Analyst', absolute_url: 'https://attacker.example/acme/jobs/3' },
     { id: 1, title: 'Security Analyst', absolute_url: 'https://job-boards.greenhouse.io/acme/jobs/1' }
   ] }) });
   assert.equal(data.jobs.length, 1);
   const job = data.jobs[0];
-  assert.equal(job.title, 'Security Analyst');
+  assert.equal(job.title, 'SOC Analyst');
   assert.equal(job.employer, 'Acme Security');
   assert.equal(job.source.name, 'Greenhouse');
   assert.equal(job.source.id, 'acme-gh');
   assert.equal(job.externalId, '1');
   assert.equal(job.location.display, 'Remote');
-  assert.equal(job.description, 'Investigate security alerts');
+  assert.equal(job.description, 'Investigate Linux alerts and SIEM events.');
   assert.equal(job.datePosted, '2026-10-10');
   assert.equal(job.dateImported, importedAt);
   assert.equal(job.lastObservedAt, importedAt);
   assert.equal(job.expiresAt, null);
   assert.equal(job.isDemo, false);
+  assert.equal(job.description, 'Investigate Linux alerts and SIEM events.');
+  assert.deepEqual(job.extensions.skillMappings.map(item => item.id), ['linux-basics', 'siem', 'alert-triage']);
+  assert.ok(job.extensions.skillMappings.every(item => item.matchedPhrase && item.field));
   assert.equal(data.duplicateCount, 1);
   assert.equal(data.relevanceRejectedCount, 1);
   assert.equal(data.unsafeUrlRejectedCount, 1);
-  assert.equal(job.extensions.relevance.matchedSignals.includes('security-role'), true);
+  assert.equal(job.extensions.relevance.matchedSignals.includes('security-operations'), true);
 });
 
 test('Lever records require the configured employer ATS path and preserve source facts', async () => {
@@ -84,6 +87,7 @@ test('Lever records require the configured employer ATS path and preserve source
   assert.equal(data.jobs[0].source.name, 'Lever');
   assert.equal(data.jobs[0].applicationUrl, 'https://jobs.lever.co/acme/good-1/apply');
   assert.equal(data.jobs[0].datePosted, '2026-10-12');
+  assert.ok(data.jobs[0].extensions.skillMappings.some(item => item.id === 'endpoint-security'));
   assert.equal(data.unsafeUrlRejectedCount, 1);
 });
 

@@ -15,16 +15,16 @@
   const EMPLOYMENT_TYPES = Object.freeze(["full-time", "part-time", "contract", "internship", "apprenticeship", "temporary", "unspecified"]);
   const EXPERIENCE_LEVELS = Object.freeze(["entry-level", "junior", "internship", "mid-level", "senior", "unspecified"]);
   const SKILLS = Object.freeze({
-    "alert-triage": ["alert triage"],
+    "alert-triage": ["alert triage", "soc", "security operations center"],
     "log-analysis": ["log analysis", "log correlation"],
     "evidence-correlation": ["evidence correlation", "indicator correlation"],
     "siem": ["siem"],
     "authentication-logs": ["authentication logs"],
-    "linux-basics": ["linux"],
+    "linux-basics": ["linux", "linux basics"],
     "command-line-navigation": ["command-line navigation"],
     "file-permission-analysis": ["file and permission analysis"],
     "evidence-preservation": ["evidence preservation"],
-    "network-fundamentals": ["tcp/ip fundamentals", "ports and protocols"],
+    "network-fundamentals": ["tcp/ip fundamentals", "tcp/ip", "tcp ip", "dns", "ports and protocols"],
     "network-analysis": ["network analysis", "traffic investigation", "network investigation"],
     "phishing-analysis": ["email analysis", "phishing analysis"],
     "safe-escalation": ["safe escalation", "escalation decisions"],
@@ -33,10 +33,48 @@
     "sql-injection-prevention": ["sql injection prevention"],
     "identity-analysis": ["identity analysis", "identity investigation"],
     "least-privilege": ["least privilege"],
-    "windows-event-logs": ["windows event logs"]
+    "windows-event-logs": ["windows event logs", "windows security logs"],
+    "networking-fundamentals": ["networking", "network fundamentals", "tcp ip", "dns", "ports and protocols"],
+    "web-security": ["web security", "application security", "appsec", "owasp"],
+    "incident-response": ["incident response", "incident handling"],
+    "vulnerability-management": ["vulnerability management", "vulnerability assessment"],
+    "threat-detection": ["threat detection", "security monitoring"],
+    "iam": ["iam", "identity and access management"],
+    "cloud-security": ["cloud security"],
+    "aws": ["aws", "amazon web services"],
+    "azure": ["azure", "microsoft azure"],
+    "gcp": ["gcp", "google cloud platform"],
+    "python": ["python"],
+    "powershell": ["powershell", "power shell"],
+    "bash": ["bash"],
+    "sql": ["sql"],
+    "firewalls": ["firewall", "firewalls"],
+    "endpoint-security": ["endpoint security", "endpoint detection and response", "edr"],
+    "ids-ips": ["ids", "ips", "intrusion detection", "intrusion prevention"],
+    "malware-analysis": ["malware analysis"],
+    "digital-forensics": ["digital forensics", "computer forensics"],
+    "nmap": ["nmap"],
+    "windows-platform": ["windows platform", "microsoft windows"]
   });
   const SKILL_ALIASES = Object.freeze(Object.fromEntries(Object.entries(SKILLS).flatMap(([id, aliases]) =>
     aliases.map(alias => [normalizeLabel(alias), id]))));
+  const SKILL_LABELS = Object.freeze({
+    "alert-triage": "Alert Triage", "log-analysis": "Log Analysis", "evidence-correlation": "Evidence Correlation",
+    "siem": "SIEM", "authentication-logs": "Authentication Logs", "linux-basics": "Linux",
+    "command-line-navigation": "Command Line", "file-permission-analysis": "File and Permission Analysis",
+    "evidence-preservation": "Evidence Preservation", "network-fundamentals": "TCP/IP and DNS",
+    "network-analysis": "Network Analysis", "phishing-analysis": "Phishing Analysis", "safe-escalation": "Safe Escalation",
+    "web-request-analysis": "Web Request Analysis", "input-validation": "Input Validation",
+    "sql-injection-prevention": "SQL Injection Prevention", "identity-analysis": "Identity Analysis",
+    "least-privilege": "Least Privilege", "windows-event-logs": "Windows Event Logs",
+    "networking-fundamentals": "Networking", "web-security": "Web and Application Security",
+    "incident-response": "Incident Response", "vulnerability-management": "Vulnerability Management",
+    "threat-detection": "Threat Detection", "iam": "IAM", "cloud-security": "Cloud Security",
+    "aws": "AWS", "azure": "Azure", "gcp": "GCP", "python": "Python", "powershell": "PowerShell",
+    "bash": "Bash", "sql": "SQL", "firewalls": "Firewalls", "endpoint-security": "Endpoint Security / EDR",
+    "ids-ips": "IDS / IPS", "malware-analysis": "Malware Analysis", "digital-forensics": "Digital Forensics",
+    "nmap": "Nmap", "windows-platform": "Windows"
+  });
 
   function normalizeLabel(value) {
     return typeof value === "string" ? value.trim().toLocaleLowerCase("en-US").replace(/[^a-z0-9]+/g, " ").trim() : "";
@@ -45,6 +83,7 @@
     const normalized = normalizeLabel(value);
     return SKILL_ALIASES[normalized] || null;
   }
+  function skillLabel(id) { return Object.prototype.hasOwnProperty.call(SKILL_LABELS, id) ? SKILL_LABELS[id] : null; }
   function slug(value) {
     return normalizeLabel(value).replace(/\s+/g, "-").slice(0, 100);
   }
@@ -262,17 +301,19 @@
       const state = freshness(job, today, f.staleDays);
       if ((state === "expired" && f.includeExpired !== true) || state === "removed") return false;
       if (f.includeDemo === false && job.isDemo) return false;
-      if (terms.length && !terms.every(term => searchText(job).includes(term))) return false;
+      const mappedEntries = Array.isArray(job.extensions && job.extensions.skillMappings) ? job.extensions.skillMappings.filter(item => item && Object.prototype.hasOwnProperty.call(SKILLS, item.id)) : [];
+      const mappedLabels = mappedEntries.flatMap(item => [SKILLS[item.id][0], typeof item.matchedPhrase === "string" ? item.matchedPhrase : ""]);
+      if (terms.length && !terms.every(term => (searchText(job) + " " + mappedLabels.join(" ")).includes(term))) return false;
       if (f.category && f.category !== "all" && !(job.categories || []).includes(f.category)) return false;
       if (f.workplace && f.workplace !== "all" && job.workplace !== f.workplace) return false;
       if (f.employmentType && f.employmentType !== "all" && job.employmentType !== f.employmentType) return false;
       if (f.experienceLevel && f.experienceLevel !== "all" && job.experienceLevel !== f.experienceLevel) return false;
       if (location && !normalizeLabel(job.location && job.location.display).includes(location)) return false;
-      if (skill && !(job.skills || []).some(item => normalizeLabel(item.label).includes(skill) || (item.id || "").includes(slug(skill)))) return false;
+      if (skill && !(job.skills || []).some(item => normalizeLabel(item.label).includes(skill) || (item.id || "").includes(slug(skill))) && !mappedLabels.some(item => normalizeLabel(item).includes(skill))) return false;
       return true;
     });
   }
 
   return { SCHEMA_VERSION, DEFAULT_STALE_DAYS, MAX_LIVE_OBSERVATION_AGE_DAYS, CATEGORIES, WORKPLACE_TYPES, EMPLOYMENT_TYPES, EXPERIENCE_LEVELS,
-    SKILLS, normalizeLabel, skillId, normalizeJob, canonicalApplicationUrl, duplicateKey, ingestRecords, freshness, filterJobs };
+    SKILLS, SKILL_LABELS, normalizeLabel, skillId, skillLabel, normalizeJob, canonicalApplicationUrl, duplicateKey, ingestRecords, freshness, filterJobs };
 });

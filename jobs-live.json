@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "kind": "live-job-feed",
-  "generatedAt": "2026-10-14T23:59:54.663Z",
+  "generatedAt": "2026-10-15T00:16:54.068Z",
   "sourceCount": 5,
   "jobs": [
     {
@@ -31,9 +31,9 @@
         "url": "https://www.volexity.com/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/volexity/jobs/4320640009",
-      "dateImported": "2026-10-14T23:59:54.663Z",
+      "dateImported": "2026-10-15T00:16:54.068Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "lastObservedAt": "2026-10-15T00:16:54.068Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -47,7 +47,28 @@
           "matchedSignals": [
             "incident-response"
           ]
-        }
+        },
+        "skillMappingVersion": 1,
+        "skillMappings": [
+          {
+            "id": "incident-response",
+            "label": "Incident Response",
+            "matchedPhrase": "Incident Response",
+            "field": "title"
+          },
+          {
+            "id": "threat-detection",
+            "label": "Threat Detection",
+            "matchedPhrase": "Security Monitoring",
+            "field": "description"
+          },
+          {
+            "id": "digital-forensics",
+            "label": "Digital Forensics",
+            "matchedPhrase": "Digital Forensics",
+            "field": "description"
+          }
+        ]
       }
     },
     {
@@ -77,9 +98,9 @@
         "url": "https://www.volexity.com/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/volexity/jobs/4323123009",
-      "dateImported": "2026-10-14T23:59:54.663Z",
+      "dateImported": "2026-10-15T00:16:54.068Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "lastObservedAt": "2026-10-15T00:16:54.068Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -93,7 +114,40 @@
           "matchedSignals": [
             "security-operations"
           ]
-        }
+        },
+        "skillMappingVersion": 1,
+        "skillMappings": [
+          {
+            "id": "alert-triage",
+            "label": "Alert Triage",
+            "matchedPhrase": "SOC Analyst",
+            "field": "title"
+          },
+          {
+            "id": "incident-response",
+            "label": "Incident Response",
+            "matchedPhrase": "Incident Response",
+            "field": "description"
+          },
+          {
+            "id": "threat-detection",
+            "label": "Threat Detection",
+            "matchedPhrase": "security monitoring",
+            "field": "description"
+          },
+          {
+            "id": "endpoint-security",
+            "label": "Endpoint Security / EDR",
+            "matchedPhrase": "EDR",
+            "field": "description"
+          },
+          {
+            "id": "ids-ips",
+            "label": "IDS / IPS",
+            "matchedPhrase": "intrusion detection",
+            "field": "description"
+          }
+        ]
       }
     },
     {
@@ -123,9 +177,9 @@
         "url": "https://www.volexity.com/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/volexity/jobs/4328838009",
-      "dateImported": "2026-10-14T23:59:54.663Z",
+      "dateImported": "2026-10-15T00:16:54.068Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "lastObservedAt": "2026-10-15T00:16:54.068Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -139,7 +193,82 @@
           "matchedSignals": [
             "description-confirmed-security-support"
           ]
-        }
+        },
+        "skillMappingVersion": 1,
+        "skillMappings": [
+          {
+            "id": "linux-basics",
+            "label": "Linux",
+            "matchedPhrase": "Linux",
+            "field": "description"
+          },
+          {
+            "id": "network-fundamentals",
+            "label": "TCP/IP and DNS",
+            "matchedPhrase": "DNS",
+            "field": "description"
+          },
+          {
+            "id": "networking-fundamentals",
+            "label": "Networking",
+            "matchedPhrase": "Networking",
+            "field": "description"
+          },
+          {
+            "id": "incident-response",
+            "label": "Incident Response",
+            "matchedPhrase": "incident response",
+            "field": "description"
+          },
+          {
+            "id": "aws",
+            "label": "AWS",
+            "matchedPhrase": "AWS",
+            "field": "description"
+          },
+          {
+            "id": "azure",
+            "label": "Azure",
+            "matchedPhrase": "Azure",
+            "field": "description"
+          },
+          {
+            "id": "gcp",
+            "label": "GCP",
+            "matchedPhrase": "GCP",
+            "field": "description"
+          },
+          {
+            "id": "python",
+            "label": "Python",
+            "matchedPhrase": "Python",
+            "field": "description"
+          },
+          {
+            "id": "powershell",
+            "label": "PowerShell",
+            "matchedPhrase": "PowerShell",
+            "field": "description"
+          },
+          {
+            "id": "firewalls",
+            "label": "Firewalls",
+            "matchedPhrase": "firewalls",
+            "field": "description"
+          },
+          {
+            "id": "digital-forensics",
+            "label": "Digital Forensics",
+            "matchedPhrase": "digital forensics",
+            "field": "description"
+          },
+          {
+            "id": "windows-platform",
+            "label": "Windows",
+            "matchedPhrase": "Windows",
+            "field": "description"
+          }
+        ]
       }
     },
     {
@@ -169,9 +298,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/8014350003",
-      "dateImported": "2026-10-14T23:59:54.663Z",
+      "dateImported": "2026-10-15T00:16:54.068Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "lastObservedAt": "2026-10-15T00:16:54.068Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -185,7 +314,22 @@
           "matchedSignals": [
             "security-role"
           ]
-        }
+        },
+        "skillMappingVersion": 1,
+        "skillMappings": [
+          {
+            "id": "alert-triage",
+            "label": "Alert Triage",
+            "matchedPhrase": "Security Operations Center",
+            "field": "description"
+          },
+          {
+            "id": "endpoint-security",
+            "label": "Endpoint Security / EDR",
+            "matchedPhrase": "Endpoint Security",
+            "field": "description"
+          }
+        ]
       }
     },
     {
@@ -215,9 +359,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7807467003",
-      "dateImported": "2026-10-14T23:59:54.663Z",
+      "dateImported": "2026-10-15T00:16:54.068Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "lastObservedAt": "2026-10-15T00:16:54.068Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -231,7 +375,28 @@
           "matchedSignals": [
             "security-role"
           ]
-        }
+        },
+        "skillMappingVersion": 1,
+        "skillMappings": [
+          {
+            "id": "alert-triage",
+            "label": "Alert Triage",
+            "matchedPhrase": "Security Operations Center",
+            "field": "description"
+          },
+          {
+            "id": "incident-response",
+            "label": "Incident Response",
+            "matchedPhrase": "incident response",
+            "field": "description"
+          },
+          {
+            "id": "endpoint-security",
+            "label": "Endpoint Security / EDR",
+            "matchedPhrase": "EDR",
+            "field": "title"
+          }
+        ]
       }
     },
     {
@@ -261,9 +426,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/8014855003",
-      "dateImported": "2026-10-14T23:59:54.663Z",
+      "dateImported": "2026-10-15T00:16:54.068Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "lastObservedAt": "2026-10-15T00:16:54.068Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -277,7 +442,16 @@
           "matchedSignals": [
             "security-operations"
           ]
-        }
+        },
+        "skillMappingVersion": 1,
+        "skillMappings": [
+          {
+            "id": "alert-triage",
+            "label": "Alert Triage",
+            "matchedPhrase": "SOC",
+            "field": "title"
+          }
+        ]
       }
     },
     {
@@ -307,9 +481,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7998473003",
-      "dateImported": "2026-10-14T23:59:54.663Z",
+      "dateImported": "2026-10-15T00:16:54.068Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "lastObservedAt": "2026-10-15T00:16:54.068Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -324,7 +498,22 @@
             "security-operations",
             "security-role"
           ]
-        }
+        },
+        "skillMappingVersion": 1,
+        "skillMappings": [
+          {
+            "id": "alert-triage",
+            "label": "Alert Triage",
+            "matchedPhrase": "alert triage",
+            "field": "description"
+          },
+          {
+            "id": "incident-response",
+            "label": "Incident Response",
+            "matchedPhrase": "Incident Response",
+            "field": "description"
+          }
+        ]
       }
     },
     {
@@ -354,9 +543,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7835871003",
-      "dateImported": "2026-10-14T23:59:54.663Z",
+      "dateImported": "2026-10-15T00:16:54.068Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "lastObservedAt": "2026-10-15T00:16:54.068Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -371,7 +560,28 @@
             "security-operations",
             "security-role"
           ]
-        }
+        },
+        "skillMappingVersion": 1,
+        "skillMappings": [
+          {
+            "id": "alert-triage",
+            "label": "Alert Triage",
+            "matchedPhrase": "Security Operations Center",
+            "field": "description"
+          },
+          {
+            "id": "endpoint-security",
+            "label": "Endpoint Security / EDR",
+            "matchedPhrase": "EDR",
+            "field": "description"
+          },
+          {
+            "id": "malware-analysis",
+            "label": "Malware Analysis",
+            "matchedPhrase": "malware analysis",
+            "field": "description"
+          }
+        ]
       }
     },
     {
@@ -401,9 +611,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7835873003",
-      "dateImported": "2026-10-14T23:59:54.663Z",
+      "dateImported": "2026-10-15T00:16:54.068Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "lastObservedAt": "2026-10-15T00:16:54.068Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -418,7 +628,28 @@
             "security-operations",
             "security-role"
           ]
-        }
+        },
+        "skillMappingVersion": 1,
+        "skillMappings": [
+          {
+            "id": "alert-triage",
+            "label": "Alert Triage",
+            "matchedPhrase": "Security Operations Center",
+            "field": "description"
+          },
+          {
+            "id": "endpoint-security",
+            "label": "Endpoint Security / EDR",
+            "matchedPhrase": "EDR",
+            "field": "description"
+          },
+          {
+            "id": "malware-analysis",
+            "label": "Malware Analysis",
+            "matchedPhrase": "malware analysis",
+            "field": "description"
+          }
+        ]
       }
     },
     {
@@ -448,9 +679,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7743188003",
-      "dateImported": "2026-10-14T23:59:54.663Z",
+      "dateImported": "2026-10-15T00:16:54.068Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "lastObservedAt": "2026-10-15T00:16:54.068Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -465,7 +696,28 @@
             "security-operations",
             "security-role"
           ]
-        }
+        },
+        "skillMappingVersion": 1,
+        "skillMappings": [
+          {
+            "id": "alert-triage",
+            "label": "Alert Triage",
+            "matchedPhrase": "Security Operations Center",
+            "field": "description"
+          },
+          {
+            "id": "endpoint-security",
+            "label": "Endpoint Security / EDR",
+            "matchedPhrase": "EDR",
+            "field": "description"
+          },
+          {
+            "id": "malware-analysis",
+            "label": "Malware Analysis",
+            "matchedPhrase": "malware analysis",
+            "field": "description"
+          }
+        ]
       }
     },
     {
@@ -495,9 +747,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7998317003",
-      "dateImported": "2026-10-14T23:59:54.663Z",
+      "dateImported": "2026-10-15T00:16:54.068Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "lastObservedAt": "2026-10-15T00:16:54.068Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -511,7 +763,16 @@
           "matchedSignals": [
             "threat-detection"
           ]
-        }
+        },
+        "skillMappingVersion": 1,
+        "skillMappings": [
+          {
+            "id": "alert-triage",
+            "label": "Alert Triage",
+            "matchedPhrase": "Security Operations Center",
+            "field": "description"
+          }
+        ]
       }
     },
     {
@@ -541,9 +802,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7998321003",
-      "dateImported": "2026-10-14T23:59:54.663Z",
+      "dateImported": "2026-10-15T00:16:54.068Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "lastObservedAt": "2026-10-15T00:16:54.068Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -557,7 +818,16 @@
           "matchedSignals": [
             "threat-detection"
           ]
-        }
+        },
+        "skillMappingVersion": 1,
+        "skillMappings": [
+          {
+            "id": "alert-triage",
+            "label": "Alert Triage",
+            "matchedPhrase": "Security Operations Center",
+            "field": "description"
+          }
+        ]
       }
     },
     {
@@ -587,9 +857,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7728615003",
-      "dateImported": "2026-10-14T23:59:54.663Z",
+      "dateImported": "2026-10-15T00:16:54.068Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "lastObservedAt": "2026-10-15T00:16:54.068Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -603,7 +873,16 @@
           "matchedSignals": [
             "threat-detection"
           ]
-        }
+        },
+        "skillMappingVersion": 1,
+        "skillMappings": [
+          {
+            "id": "alert-triage",
+            "label": "Alert Triage",
+            "matchedPhrase": "Security Operations Center",
+            "field": "description"
+          }
+        ]
       }
     },
     {
@@ -633,9 +912,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/8015561003",
-      "dateImported": "2026-10-14T23:59:54.663Z",
+      "dateImported": "2026-10-15T00:16:54.068Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "lastObservedAt": "2026-10-15T00:16:54.068Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -649,7 +928,16 @@
           "matchedSignals": [
             "security-operations"
           ]
-        }
+        },
+        "skillMappingVersion": 1,
+        "skillMappings": [
+          {
+            "id": "alert-triage",
+            "label": "Alert Triage",
+            "matchedPhrase": "SOC",
+            "field": "title"
+          }
+        ]
       }
     },
     {
@@ -679,9 +967,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7991918003",
-      "dateImported": "2026-10-14T23:59:54.663Z",
+      "dateImported": "2026-10-15T00:16:54.068Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "lastObservedAt": "2026-10-15T00:16:54.068Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -695,7 +983,22 @@
           "matchedSignals": [
             "incident-response"
           ]
-        }
+        },
+        "skillMappingVersion": 1,
+        "skillMappings": [
+          {
+            "id": "alert-triage",
+            "label": "Alert Triage",
+            "matchedPhrase": "Security Operations Center",
+            "field": "description"
+          },
+          {
+            "id": "incident-response",
+            "label": "Incident Response",
+            "matchedPhrase": "Incident Response",
+            "field": "description"
+          }
+        ]
       }
     },
     {
@@ -725,9 +1028,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7977228003",
-      "dateImported": "2026-10-14T23:59:54.663Z",
+      "dateImported": "2026-10-15T00:16:54.068Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "lastObservedAt": "2026-10-15T00:16:54.068Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -741,7 +1044,28 @@
           "matchedSignals": [
             "threat-detection"
           ]
-        }
+        },
+        "skillMappingVersion": 1,
+        "skillMappings": [
+          {
+            "id": "siem",
+            "label": "SIEM",
+            "matchedPhrase": "SIEM",
+            "field": "description"
+          },
+          {
+            "id": "alert-triage",
+            "label": "Alert Triage",
+            "matchedPhrase": "Security Operations Center",
+            "field": "description"
+          },
+          {
+            "id": "endpoint-security",
+            "label": "Endpoint Security / EDR",
+            "matchedPhrase": "EDR",
+            "field": "description"
+          }
+        ]
       }
     },
     {
@@ -771,9 +1095,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7998709003",
-      "dateImported": "2026-10-14T23:59:54.663Z",
+      "dateImported": "2026-10-15T00:16:54.068Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "lastObservedAt": "2026-10-15T00:16:54.068Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -787,7 +1111,16 @@
           "matchedSignals": [
             "security-operations"
           ]
-        }
+        },
+        "skillMappingVersion": 1,
+        "skillMappings": [
+          {
+            "id": "alert-triage",
+            "label": "Alert Triage",
+            "matchedPhrase": "SOC",
+            "field": "title"
+          }
+        ]
       }
     },
     {
@@ -817,9 +1150,9 @@
         "url": "https://censys.com/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/censys/jobs/8541287002",
-      "dateImported": "2026-10-14T23:59:54.663Z",
+      "dateImported": "2026-10-15T00:16:54.068Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "lastObservedAt": "2026-10-15T00:16:54.068Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -833,7 +1166,46 @@
           "matchedSignals": [
             "security-role"
           ]
-        }
+        },
+        "skillMappingVersion": 1,
+        "skillMappings": [
+          {
+            "id": "least-privilege",
+            "label": "Least Privilege",
+            "matchedPhrase": "least privilege",
+            "field": "description"
+          },
+          {
+            "id": "iam",
+            "label": "IAM",
+            "matchedPhrase": "IAM",
+            "field": "description"
+          },
+          {
+            "id": "incident-response",
+            "label": "Incident Response",
+            "matchedPhrase": "Incident Response",
+            "field": "description"
+          },
+          {
+            "id": "vulnerability-management",
+            "label": "Vulnerability Management",
+            "matchedPhrase": "vulnerability management",
+            "field": "description"
+          },
+          {
+            "id": "cloud-security",
+            "label": "Cloud Security",
+            "matchedPhrase": "cloud security",
+            "field": "description"
+          },
+          {
+            "id": "gcp",
+            "label": "GCP",
+            "matchedPhrase": "GCP",
+            "field": "description"
+          }
+        ]
       }
     },
     {
@@ -863,9 +1235,9 @@
         "url": "https://censys.com/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/censys/jobs/8647822002",
-      "dateImported": "2026-10-14T23:59:54.663Z",
+      "dateImported": "2026-10-15T00:16:54.068Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "lastObservedAt": "2026-10-15T00:16:54.068Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -879,7 +1251,9 @@
           "matchedSignals": [
             "security-role"
           ]
-        }
+        },
+        "skillMappingVersion": 1,
+        "skillMappings": []
       }
     },
     {
@@ -909,9 +1283,9 @@
         "url": "https://censys.com/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/censys/jobs/8527413002",
-      "dateImported": "2026-10-14T23:59:54.663Z",
+      "dateImported": "2026-10-15T00:16:54.068Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "lastObservedAt": "2026-10-15T00:16:54.068Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -926,7 +1300,46 @@
             "security-operations",
             "threat-detection"
           ]
-        }
+        },
+        "skillMappingVersion": 1,
+        "skillMappings": [
+          {
+            "id": "alert-triage",
+            "label": "Alert Triage",
+            "matchedPhrase": "SOC",
+            "field": "title"
+          },
+          {
+            "id": "incident-response",
+            "label": "Incident Response",
+            "matchedPhrase": "incident response",
+            "field": "description"
+          },
+          {
+            "id": "aws",
+            "label": "AWS",
+            "matchedPhrase": "AWS",
+            "field": "description"
+          },
+          {
+            "id": "azure",
+            "label": "Azure",
+            "matchedPhrase": "Azure",
+            "field": "description"
+          },
+          {
+            "id": "gcp",
+            "label": "GCP",
+            "matchedPhrase": "GCP",
+            "field": "description"
+          },
+          {
+            "id": "python",
+            "label": "Python",
+            "matchedPhrase": "Python",
+            "field": "description"
+          }
+        ]
       }
     },
     {
@@ -956,9 +1369,9 @@
         "url": "https://relaypro.com/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/relaypro/jobs/8180077",
-      "dateImported": "2026-10-14T23:59:54.663Z",
+      "dateImported": "2026-10-15T00:16:54.068Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "lastObservedAt": "2026-10-15T00:16:54.068Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -972,7 +1385,9 @@
           "matchedSignals": [
             "security-compliance"
           ]
-        }
+        },
+        "skillMappingVersion": 1,
+        "skillMappings": []
       }
     },
     {
@@ -1002,9 +1417,9 @@
         "url": "https://relaypro.com/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/relaypro/jobs/8179795",
-      "dateImported": "2026-10-14T23:59:54.663Z",
+      "dateImported": "2026-10-15T00:16:54.068Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "lastObservedAt": "2026-10-15T00:16:54.068Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -1018,7 +1433,9 @@
           "matchedSignals": [
             "cybersecurity"
           ]
-        }
+        },
+        "skillMappingVersion": 1,
+        "skillMappings": []
       }
     },
     {
@@ -1048,9 +1465,9 @@
         "url": "https://www.brightedge.com/careers"
       },
       "applicationUrl": "https://jobs.lever.co/brightedge/4184f981-746e-45f2-811d-6f3a23ba52f4/apply",
-      "dateImported": "2026-10-14T23:59:54.663Z",
+      "dateImported": "2026-10-15T00:16:54.068Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-14T23:59:54.663Z",
+      "lastObservedAt": "2026-10-15T00:16:54.068Z",
       "isDemo": false,
       "extensions": {
         "adapter": "lever-postings",
@@ -1070,7 +1487,16 @@
             "it-support-pathway",
             "description-confirmed-security-support"
           ]
-        }
+        },
+        "skillMappingVersion": 1,
+        "skillMappings": [
+          {
+            "id": "endpoint-security",
+            "label": "Endpoint Security / EDR",
+            "matchedPhrase": "endpoint security",
+            "field": "description"
+          }
+        ]
       }
     }
   ],

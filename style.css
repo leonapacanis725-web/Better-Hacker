@@ -273,6 +273,11 @@ button.card:hover {
 .jobs-skill-list { display: flex; flex-wrap: wrap; gap: 7px; margin: 4px 0 12px; padding: 0; list-style: none; }
 .jobs-skill-list li { padding: 4px 8px; border: 1px solid #334155; border-radius: 999px; color: #e0f2fe; font-size: .86rem; }
 .jobs-match-summary { margin-top: auto; padding-top: 10px; color: #bae6fd; font-weight: 700; }
+.jobs-match-heading, .jobs-match-subheading { margin: 12px 0 6px; color: #e0f2fe; }
+.jobs-evidence-empty, .jobs-match-disclaimer { color: #cbd5e1; font-size: .93rem; }
+.jobs-evidence-list { margin: 4px 0 8px; padding-left: 1.4rem; color: #e2e8f0; }
+.jobs-evidence-list li { margin: 5px 0; overflow-wrap: anywhere; }
+.jobs-evidence-list a { display: inline-block; min-height: 36px; padding: 6px 0; color: #7dd3fc; text-decoration: underline; text-underline-offset: 3px; }
 .jobs-demo-card-note, .jobs-no-application { color: #fde68a; }
 .jobs-apply-link { align-self: flex-start; min-height: 44px; margin: 6px 0; }
 .jobs-empty-state { grid-column: 1 / -1; padding: 18px; border: 1px dashed #64748b; border-radius: 10px; color: #e2e8f0; }

@@ -1,0 +1,124 @@
+const assert = require('node:assert/strict');
+const test = require('node:test');
+const fs = require('node:fs');
+const Jobs = require('../jobs.js');
+const Mapping = require('../jobs-skill-mapping.js');
+const Matching = require('../jobs-matching.js');
+const Portfolio = require('../portfolio.js');
+const Demo = require('../jobs-demo.js');
+const JobsUI = require('../jobs-ui.js');
+
+function mappedJob(title, description = '', categories = []) {
+  return { title, description, categories, skills: [], extensions: { skillMappings: Mapping.mapListing({ title, description, categories }) } };
+}
+function storage(values = {}) {
+  const records = new Map(Object.entries(values));
+  return { getItem(key) { return records.has(key) ? records.get(key) : null; }, setItem(key, value) { records.set(key, value); } };
+}
+
+test('explicit phrases map exact skills and common aliases to controlled taxonomy IDs', () => {
+  const result = Mapping.mapListing({ title: 'SOC Analyst', categories: ['Information Security'], description: 'Use TCP/IP, Microsoft Sentinel, AWS, and PowerShell.' });
+  const ids = result.map(item => item.id);
+  for (const id of ['alert-triage', 'network-fundamentals', 'siem', 'aws', 'powershell']) assert.ok(ids.includes(id), id);
+  assert.equal(result.find(item => item.id === 'siem').matchedPhrase, 'Microsoft Sentinel');
+  assert.equal(result.find(item => item.id === 'siem').field, 'description');
+  assert.ok(result.every(item => Object.hasOwn(Jobs.SKILLS, item.id)));
+});
+
+test('word boundaries and context guards prevent obvious substring and physical-window false positives', () => {
+  assert.equal(Mapping.mapListing({ title: 'SOC 2 Compliance Manager', description: 'Worked at a computer company called Cpython Tools.' }).length, 0);
+  const physical = Mapping.mapListing({ title: 'Facilities Security Coordinator', description: 'Maintain glass windows in the office building.' });
+  assert.equal(physical.some(item => item.id.startsWith('windows-')), false);
+  const operatingSystem = Mapping.mapListing({ title: 'Windows Endpoint Security Analyst' });
+  assert.ok(operatingSystem.some(item => item.id === 'windows-platform'));
+  const logs = Mapping.mapListing({ title: 'Windows Event Logs Analyst' });
+  assert.ok(logs.some(item => item.id === 'windows-event-logs'));
+});
+
+test('multiple distinct concepts are mapped once and unrecognized terms remain unmapped', () => {
+  const mapped = Mapping.mapListing({ title: 'Security Engineer', description: 'Linux, DNS, Wireshark, Python, incident response, and quantum key orchestration.' });
+  const ids = mapped.map(item => item.id);
+  assert.equal(new Set(ids).size, ids.length);
+  for (const id of ['linux-basics', 'network-fundamentals', 'network-analysis', 'python', 'incident-response']) assert.ok(ids.includes(id), id);
+  assert.equal(mapped.some(item => item.matchedPhrase.toLowerCase().includes('quantum')), false);
+});
+
+test('partial, full, and zero local evidence are expressed as educational overlap states', () => {
+  const portfolio = { skills: [
+    { id: 'linux-basics', evidence: [{ activityTitle: 'Linux Fundamentals', source: 'completed-activity' }] },
+    { id: 'siem', evidence: [{ activityTitle: 'SOC & SIEM Fundamentals', source: 'structured-portfolio' }] }
+  ] };
+  const job = { skills: [], extensions: { skillMappings: [{ id: 'linux-basics' }, { id: 'siem' }, { id: 'python' }] } };
+  const partial = Matching.matchJobSkills(job, portfolio, Portfolio);
+  assert.equal(partial.message, 'Your Better Hacker evidence: 2 of 3 mapped skills.');
+  assert.deepEqual(partial.missingSkillIds, ['python']);
+  assert.match(partial.disclaimer, /does not determine eligibility or hiring decisions/);
+  const full = Matching.matchJobSkills(job, { skills: job.extensions.skillMappings }, Portfolio);
+  assert.equal(full.matchedCount, 3);
+  assert.equal(full.missing.length, 0);
+  const zero = Matching.matchJobSkills(job, { skills: [] }, Portfolio);
+  assert.equal(zero.noEvidenceMessage, Matching.NO_EVIDENCE);
+});
+
+test('unmapped listings have the exact no-comparison state and no fabricated gaps', () => {
+  const match = Matching.matchJobSkills({ skills: [], extensions: { skillMappings: [] } }, { skills: [] }, Portfolio);
+  assert.equal(match.message, "Better Hacker couldn't identify enough structured skills in this listing for an evidence comparison.");
+  assert.equal(match.gaps.length, 0);
+  const rejected = mappedJob('Security Analyst', 'Experience with an unlisted quantum orchestration platform.');
+  assert.deepEqual(Matching.jobSkills(rejected), []);
+});
+
+test('only completed authored activities and structured activity IDs produce local evidence', () => {
+  const local = storage({ betterHackerLinuxComplete: 'true', betterHackerPortfolioProjects: JSON.stringify({ version: 1, projects: [
+    { activityId: 'lesson-networking', title: 'Typed: expert Wireshark operator', findings: 'I know AWS and Python' },
+    { activityId: 'unknown-freeform-project', title: 'SIEM Python expert' }
+  ] }) });
+  const evidence = Matching.deriveLocalEvidence(Portfolio, local);
+  const ids = evidence.skills.map(item => item.id);
+  assert.ok(ids.includes('linux-basics'));
+  assert.equal(ids.includes('aws'), false);
+  assert.equal(ids.includes('python'), false);
+  assert.ok(evidence.skills.find(item => item.id === 'linux-basics').evidence.some(item => item.activityTitle === 'Linux Fundamentals'));
+  assert.ok(!JSON.stringify(evidence).includes('Typed: expert'));
+});
+
+test('missing skills only link to authored existing activities with taxonomy evidence', () => {
+  const skills = Mapping.mapListing({ title: 'Security Analyst', description: 'Linux and Python required.' });
+  const match = Matching.matchJobSkills({ skills: [], extensions: { skillMappings: skills } }, { skills: [] }, Portfolio);
+  const linux = match.gaps.find(item => item.id === 'linux-basics');
+  const python = match.gaps.find(item => item.id === 'python');
+  assert.ok(linux.activities.some(item => item.href === '#linux-lesson' || item.href === '#practice-linux-challenges'));
+  assert.deepEqual(python.activities, []);
+  assert.ok(match.gaps.every(item => item.activities.every(activity => Portfolio.ACTIVITIES.some(authored => authored.id === activity.id && authored.href === activity.href))));
+});
+
+test('live and demo jobs stay separate, and malicious descriptions are inserted only as text', () => {
+  const demo = Demo.createDemoJobs(Jobs)[0];
+  assert.equal(Matching.jobSkills(demo).length, 0);
+  const source = '<img src=x onerror=alert(1)> Linux';
+  const live = mappedJob('Security Analyst', source);
+  assert.equal(live.description, source);
+  assert.deepEqual(Matching.jobSkills(live).map(item => item.id), ['linux-basics']);
+  const uiSource = fs.readFileSync('jobs-ui.js', 'utf8');
+  assert.match(uiSource, /element\.textContent = value/);
+  assert.doesNotMatch(uiSource, /innerHTML\s*=/);
+  assert.match(uiSource, /job\.isDemo \? \[\] : Matching\.jobSkills/);
+});
+
+test('mapping search remains available to existing jobs filters without changing application URL handling', () => {
+  const job = mappedJob('Security Analyst', 'Microsoft Sentinel and Linux');
+  const normalized = Jobs.normalizeJob({ title: job.title, employer: 'Verified Co', skills: [], source: { name: 'Greenhouse', id: 'verified', kind: 'ats-public-feed' }, applicationUrl: 'https://job-boards.greenhouse.io/verified/jobs/81', externalId: '81', extensions: { adapter: 'greenhouse-job-board', boardToken: 'verified', skillMappings: job.extensions.skillMappings } });
+  assert.equal(normalized.ok, true);
+  assert.equal(Jobs.filterJobs([normalized.job], { skill: 'sentinel' }).length, 1);
+  assert.equal(Jobs.filterJobs([normalized.job], { query: 'linux' }).length, 1);
+  assert.equal(JobsUI.trustedApplicationUrl(normalized.job), true);
+  const page = fs.readFileSync('index.html', 'utf8');
+  assert.match(page, /pro-jobs-results.*jobs-results/);
+  assert.match(page, /pro-jobs-status.*role="status" aria-live="polite"/);
+});
+
+test('privacy documentation describes local matching and application-link separation', () => {
+  const privacy = fs.readFileSync('privacy.html', 'utf8');
+  assert.match(privacy, /not sent to Greenhouse, Lever, employers, analytics providers, or application sites/);
+  assert.match(privacy, /not added to application links/);
+});
