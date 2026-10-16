@@ -7,6 +7,7 @@ const Matching = require('../jobs-matching.js');
 const Portfolio = require('../portfolio.js');
 const Demo = require('../jobs-demo.js');
 const JobsUI = require('../jobs-ui.js');
+const Progress = require('../jobs-readiness-progress.js');
 
 function mappedJob(title, description = '', categories = []) {
   return { title, description, categories, skills: [], extensions: { skillMappings: Mapping.mapListing({ title, description, categories }) } };
@@ -43,6 +44,12 @@ test('multiple distinct concepts are mapped once and unrecognized terms remain u
   assert.equal(mapped.some(item => item.matchedPhrase.toLowerCase().includes('quantum')), false);
 });
 
+test('job skill mapping covers the requested beginner cybersecurity technologies', () => {
+  const mapped = Mapping.mapListing({ title: 'SOC Security Analyst', description: 'Linux, Windows, networking, TCP/IP, SIEM, SOC, Python, PowerShell, AWS, Azure, GCP, cloud security, EDR, IDS/IPS, firewalls, vulnerability management, digital forensics, web security, Active Directory, and incident response.' });
+  const ids = new Set(mapped.map(item => item.id));
+  for (const id of ['linux-basics', 'windows-platform', 'networking-fundamentals', 'network-fundamentals', 'siem', 'alert-triage', 'python', 'powershell', 'aws', 'azure', 'gcp', 'cloud-security', 'endpoint-security', 'ids-ips', 'firewalls', 'vulnerability-management', 'digital-forensics', 'web-security', 'identity-analysis', 'incident-response']) assert.ok(ids.has(id), id);
+});
+
 test('partial, full, and zero local evidence are expressed as educational overlap states', () => {
   const portfolio = { skills: [
     { id: 'linux-basics', evidence: [{ activityTitle: 'Linux Fundamentals', source: 'completed-activity' }] },
@@ -50,14 +57,14 @@ test('partial, full, and zero local evidence are expressed as educational overla
   ] };
   const job = { skills: [], extensions: { skillMappings: [{ id: 'linux-basics' }, { id: 'siem' }, { id: 'python' }] } };
   const partial = Matching.matchJobSkills(job, portfolio, Portfolio);
-  assert.equal(partial.message, 'Your Better Hacker evidence: 2 of 3 mapped skills.');
+  assert.equal(partial.message, 'Demonstrated: 2 skills · Developing: 0 skills · Skill gaps: 1 skills');
   assert.deepEqual(partial.missingSkillIds, ['python']);
-  assert.match(partial.disclaimer, /does not determine eligibility or hiring decisions/);
+  assert.match(partial.disclaimer, /does not determine eligibility, hiring decisions/);
   const full = Matching.matchJobSkills(job, { skills: job.extensions.skillMappings }, Portfolio);
   assert.equal(full.matchedCount, 3);
   assert.equal(full.missing.length, 0);
   const zero = Matching.matchJobSkills(job, { skills: [] }, Portfolio);
-  assert.equal(zero.noEvidenceMessage, Matching.NO_EVIDENCE);
+  assert.equal(zero.gapCount, 3);
 });
 
 test('unmapped listings have the exact no-comparison state and no fabricated gaps', () => {
@@ -79,7 +86,7 @@ test('only completed authored activities and structured activity IDs produce loc
   assert.equal(ids.includes('aws'), false);
   assert.equal(ids.includes('python'), false);
   assert.ok(evidence.skills.find(item => item.id === 'linux-basics').evidence.some(item => item.activityTitle === 'Linux Fundamentals'));
-  assert.ok(!JSON.stringify(evidence).includes('Typed: expert'));
+  assert.ok(evidence.activities.some(activity => activity.id === 'lesson-networking' && activity.portfolioSaved));
 });
 
 test('missing skills only link to authored existing activities with taxonomy evidence', () => {
@@ -92,6 +99,8 @@ test('missing skills only link to authored existing activities with taxonomy evi
   const windows = Matching.matchJobSkills({ skills: [], extensions: { skillMappings: [{ id: 'windows-platform' }] } }, { skills: [] }, Portfolio).gaps[0];
   assert.ok(windows.activities.some(item => item.href === '#investigation-windows'));
   assert.ok(match.gaps.every(item => item.activities.every(activity => Portfolio.ACTIVITIES.some(authored => authored.id === activity.id && authored.href === activity.href))));
+  const sql = Matching.learningActivities('sql-injection-prevention', Portfolio);
+  assert.ok(sql.some(activity => activity.href === '#lab-web-security'));
 });
 
 test('every current uncovered live-job skill has a direct evidence-gated learning destination', () => {
@@ -147,4 +156,58 @@ test('privacy documentation describes local matching and application-link separa
   const privacy = fs.readFileSync('privacy.html', 'utf8');
   assert.match(privacy, /not sent to Greenhouse, Lever, employers, analytics providers, or application sites/);
   assert.match(privacy, /not added to application links/);
+});
+
+test('meaningful answer interactions create local developing markers, not completion evidence', () => {
+  const values = new Map();
+  const local = { getItem: key => values.get(key) || null, setItem(key, value) { values.set(key, value); return true; } };
+  assert.equal(Progress.markStarted('practice-linux-challenges', local), true);
+  assert.equal(Progress.markStarted('unknown-freeform-project', local), false);
+  assert.deepEqual(Progress.read(local).started, ['practice-linux-challenges']);
+  const evidence = Matching.deriveLocalEvidence(Portfolio, local, Progress);
+  assert.equal(evidence.skills.some(skill => skill.id === 'linux-basics'), false);
+  assert.ok(evidence.developingSkills.some(skill => skill.id === 'linux-basics'));
+  const job = { skills: [], extensions: { skillMappings: [{ id: 'linux-basics' }, { id: 'python' }] } };
+  const match = Matching.matchJobSkills(job, evidence, Portfolio);
+  assert.equal(match.skills.find(skill => skill.id === 'linux-basics').status, 'developing');
+  assert.equal(match.skills.find(skill => skill.id === 'python').status, 'gap');
+  assert.equal(match.developingCount, 1);
+  assert.equal(match.gapCount, 1);
+  assert.equal(values.has('betterHackerPracticeLinuxChallengesComplete'), false);
+});
+
+test('only actual learner interaction marks an authored activity as developing', () => {
+  const handlers = {};
+  const target = { closest: selector => selector === '[data-answer]' ? null : null };
+  const section = { contains: value => value === target };
+  const doc = { addEventListener(type, callback) { handlers[type] = callback; }, getElementById: id => id === 'practice-linux-challenges' ? section : null };
+  const values = new Map();
+  const local = { getItem: key => values.get(key) || null, setItem(key, value) { values.set(key, value); return true; } };
+  Progress.observe(doc, local);
+  assert.deepEqual(Progress.read(local).started, []); // Loading/opening the page does not mark anything.
+  handlers.input({ target });
+  assert.deepEqual(Progress.read(local).started, ['practice-linux-challenges']);
+});
+
+test('job readiness supports portfolio evidence, real learning links, and unavailable content', () => {
+  const values = new Map([['betterHackerPracticeNetworkAnalysisComplete', 'true']]);
+  const local = { getItem: key => values.get(key) || null, setItem(key, value) { values.set(key, value); return true; } };
+  Portfolio.createProject(local, 'practice-network-analysis');
+  const evidence = Matching.deriveLocalEvidence(Portfolio, local);
+  const job = { title: 'Security Analyst', description: 'Network analysis and Nmap', skills: [], extensions: { skillMappings: [{ id: 'network-analysis' }, { id: 'nmap' }] } };
+  const before = JSON.stringify(job);
+  const match = Matching.matchJobSkills(job, evidence, Portfolio);
+  assert.equal(match.skills.find(skill => skill.id === 'network-analysis').status, 'demonstrated');
+  assert.equal(match.skills.find(skill => skill.id === 'nmap').status, 'gap');
+  assert.deepEqual(match.portfolioEvidence.map(item => [item.skillId, item.activityId]), [['network-analysis', 'practice-network-analysis']]);
+  assert.ok(match.gaps.find(item => item.id === 'nmap').activities.length === 0);
+  assert.equal(JSON.stringify(job), before);
+});
+
+test('a listing with no recognized job skills has no fabricated skill gaps', () => {
+  const job = { title: 'Security Analyst', skills: [{ id: null, label: 'Quantum risk orchestration' }], extensions: { skillMappings: [] } };
+  const match = Matching.matchJobSkills(job, { skills: [] }, Portfolio);
+  assert.equal(match.totalCount, 0);
+  assert.equal(match.gapCount, 0);
+  assert.equal(match.message, Matching.NO_SKILLS);
 });
