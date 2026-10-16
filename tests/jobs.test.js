@@ -21,7 +21,7 @@ function record(overrides = {}) {
 }
 
 class FakeElement {
-  constructor(tagName = 'DIV') { this.tagName = tagName; this.children = []; this.attributes = {}; this.listeners = {}; this.dataset = {}; this.value = ''; this.className = ''; this._text = ''; }
+  constructor(tagName = 'DIV') { this.tagName = tagName; this.children = []; this.attributes = {}; this.listeners = {}; this.dataset = {}; this.value = ''; this.className = ''; this._text = ''; this.hidden = false; }
   append(...elements) { this.children.push(...elements); }
   replaceChildren(...elements) { this.children = elements; }
   setAttribute(name, value) { this.attributes[name] = String(value); }
@@ -37,10 +37,13 @@ function fakeDocument() {
     'pro-jobs-category': new FakeElement('SELECT'), 'pro-jobs-workplace': new FakeElement('SELECT'),
     'pro-jobs-type': new FakeElement('SELECT'), 'pro-jobs-level': new FakeElement('SELECT'),
     'pro-jobs-location': new FakeElement('INPUT'), 'pro-jobs-skill': new FakeElement('INPUT'),
+    'pro-jobs-posted': new FakeElement('SELECT'), 'pro-jobs-freshness': new FakeElement('SELECT'),
+    'pro-jobs-sort': new FakeElement('SELECT'), 'pro-jobs-retry': new FakeElement('BUTTON'),
     'pro-jobs-clear': new FakeElement('BUTTON'), 'pro-jobs-results': new FakeElement('DIV'),
     'pro-jobs-status': new FakeElement('P')
   };
-  for (const id of ['pro-jobs-category', 'pro-jobs-workplace', 'pro-jobs-type', 'pro-jobs-level']) elements[id].value = 'all';
+  for (const id of ['pro-jobs-category', 'pro-jobs-workplace', 'pro-jobs-type', 'pro-jobs-level', 'pro-jobs-posted', 'pro-jobs-freshness']) elements[id].value = 'all';
+  elements['pro-jobs-sort'].value = 'newest';
   return { elements, createElement: tag => new FakeElement(tag.toUpperCase()), getElementById: id => elements[id] || null };
 }
 function descendants(element) { return [element, ...element.children.flatMap(descendants)]; }
@@ -102,6 +105,18 @@ test('deduplicates across tracking variants, repeated source IDs, and same-batch
   assert.equal(againstExisting.duplicates.length, 1);
 });
 
+test('deduplicates cross-feed records by the exact canonical application URL, not similar titles', () => {
+  const first = Jobs.normalizeJob(record({ externalId: 'gh-1', applicationUrl: 'https://jobs.example/roles/1?utm_source=feed' }), { importedAt: fixedImport }).job;
+  const sameDestination = Jobs.normalizeJob(record({ externalId: 'lever-77', source: { id: 'other-source', name: 'Other Source', kind: 'api' }, applicationUrl: 'https://jobs.example/roles/1' }), { importedAt: fixedImport }).job;
+  const distinctOpening = Jobs.normalizeJob(record({ externalId: 'gh-2', applicationUrl: 'https://jobs.example/roles/2' }), { importedAt: fixedImport }).job;
+  const report = Jobs.ingestRecords([first, sameDestination, distinctOpening], { importedAt: fixedImport });
+  assert.equal(report.jobs.length, 2);
+  assert.equal(report.duplicates.length, 1);
+  assert.equal(report.duplicates[0].duplicateOf, first.id);
+  const indistinguishableWithoutSourceIds = Jobs.normalizeJob(record({ externalId: null, applicationUrl: null }), { importedAt: fixedImport }).job;
+  assert.deepEqual(Jobs.duplicateKeys(indistinguishableWithoutSourceIds), []);
+});
+
 test('search and role filters cover categories, remote arrangements, location, and skills', () => {
   const jobs = Demo.createDemoJobs(Jobs, fixedImport);
   assert.equal(Jobs.filterJobs(jobs, { query: 'SOC Analyst' }).length, 1);
@@ -113,13 +128,49 @@ test('search and role filters cover categories, remote arrangements, location, a
   assert.equal(Jobs.filterJobs(jobs, { query: 'quantum pineapple' }).length, 0);
 });
 
+test('filters preserve unknown source data and support posting windows and listing status', () => {
+  const unknown = Jobs.normalizeJob(record({ workplace: null, employmentType: null, experienceLevel: null, datePosted: null }), { importedAt: fixedImport }).job;
+  const recent = Jobs.normalizeJob(record({ externalId: 'recent', datePosted: '2026-10-10' }), { importedAt: fixedImport }).job;
+  const old = Jobs.normalizeJob(record({ externalId: 'old', datePosted: '2026-09-01' }), { importedAt: fixedImport }).job;
+  assert.equal(unknown.workplace, 'unspecified');
+  assert.equal(Jobs.filterJobs([unknown, recent, old], { workplace: 'unspecified' }, '2026-10-14').length, 1);
+  assert.equal(Jobs.filterJobs([unknown, recent, old], { employmentType: 'unspecified' }, '2026-10-14').length, 1);
+  assert.deepEqual(Jobs.filterJobs([unknown, recent, old], { postedWithinDays: '7' }, '2026-10-14'), [recent]);
+  assert.deepEqual(Jobs.filterJobs([unknown, recent, old], { freshness: 'unknown' }, '2026-10-14'), [unknown]);
+  assert.deepEqual(Jobs.filterJobs([unknown, recent, old], { freshness: 'stale' }, '2026-10-14'), [old]);
+});
+
+test('readiness sorting compares mapped local evidence only and leaves unknown-skill jobs after mapped jobs', () => {
+  const manyDemonstrated = Jobs.normalizeJob(record({ externalId: 'most', datePosted: '2026-10-09', skills: [], extensions: { skillMappings: [{ id: 'siem' }, { id: 'linux-basics' }] } }), { importedAt: fixedImport }).job;
+  const oneDemonstrated = Jobs.normalizeJob(record({ externalId: 'some', datePosted: '2026-10-12', skills: [], extensions: { skillMappings: [{ id: 'siem' }] } }), { importedAt: fixedImport }).job;
+  const unknown = Jobs.normalizeJob(record({ externalId: 'unknown', datePosted: null, extensions: { skillMappings: [] } }), { importedAt: fixedImport }).job;
+  const evidence = { skills: [{ id: 'siem', evidence: [{ activityTitle: 'SIEM lab' }] }, { id: 'linux-basics', evidence: [{ activityTitle: 'Linux lab' }] }], developingSkills: [] };
+  assert.deepEqual(JobsUI.sortJobs([oneDemonstrated, unknown, manyDemonstrated], 'demonstrated', evidence).map(job => job.externalId), ['most', 'some', 'unknown']);
+  const fewGaps = Jobs.normalizeJob(record({ externalId: 'few', datePosted: '2026-10-09', skills: [], extensions: { skillMappings: [{ id: 'siem' }] } }), { importedAt: fixedImport }).job;
+  const moreGaps = Jobs.normalizeJob(record({ externalId: 'gaps', datePosted: '2026-10-12', skills: [], extensions: { skillMappings: [{ id: 'siem' }, { id: 'linux-basics' }, { id: 'windows-platform' }] } }), { importedAt: fixedImport }).job;
+  assert.deepEqual(JobsUI.sortJobs([moreGaps, fewGaps], 'fewest-gaps', { skills: [{ id: 'siem', evidence: [] }], developingSkills: [] }).map(job => job.externalId), ['few', 'gaps']);
+  assert.deepEqual(JobsUI.sortJobs([manyDemonstrated, oneDemonstrated], 'oldest').map(job => job.externalId), ['most', 'some']);
+});
+
+test('rejects impossible date ordering rather than normalizing it into a plausible listing', () => {
+  const futurePosted = Jobs.normalizeJob(record({ datePosted: '2026-10-16' }), { importedAt: fixedImport });
+  const expiresBeforePosted = Jobs.normalizeJob(record({ datePosted: '2026-10-10', expiresAt: '2026-10-09' }), { importedAt: fixedImport });
+  const observedAfterImport = Jobs.normalizeJob(record({ lastObservedAt: '2026-10-16T00:00:00.000Z' }), { importedAt: fixedImport });
+  assert.equal(futurePosted.ok, false);
+  assert.match(futurePosted.errors.join(' '), /cannot be after the import date/i);
+  assert.equal(expiresBeforePosted.ok, false);
+  assert.match(expiresBeforePosted.errors.join(' '), /before the posting date/i);
+  assert.equal(observedAfterImport.ok, false);
+  assert.match(observedAfterImport.errors.join(' '), /last observed date cannot be after/i);
+});
+
 test('freshness distinguishes demo, unknown, stale and expired postings without inventing dates', () => {
   const jobs = Demo.createDemoJobs(Jobs, fixedImport);
   assert.ok(jobs.every(job => job.isDemo && job.datePosted === null && job.salaryRange === null && !job.applicationUrl));
   assert.equal(Jobs.freshness(jobs[0], '2026-10-14'), 'demo');
   assert.equal(Jobs.freshness(Jobs.normalizeJob(record({ datePosted: null }), { importedAt: fixedImport }).job, '2026-10-14'), 'unknown');
   const stale = Jobs.normalizeJob(record({ datePosted: '2026-08-01' }), { importedAt: fixedImport }).job;
-  const expired = Jobs.normalizeJob(record({ expiresAt: '2026-10-01' }), { importedAt: fixedImport }).job;
+  const expired = Jobs.normalizeJob(record({ expiresAt: '2026-10-12' }), { importedAt: fixedImport }).job;
   assert.equal(Jobs.freshness(stale, '2026-10-14'), 'stale');
   assert.equal(Jobs.freshness(expired, '2026-10-14'), 'expired');
   assert.equal(Jobs.filterJobs([expired], {}).length, 0);
@@ -176,11 +227,11 @@ test('demo jobs are isolated, explicitly labeled, and provide honest empty state
   const documentRef = fakeDocument();
   const ui = JobsUI.mount(documentRef, null);
   assert.equal(ui.jobs.length, 3);
-  assert.match(documentRef.elements['pro-jobs-status'].textContent, /not current vacancies/i);
+  assert.match(documentRef.elements['pro-jobs-status'].textContent, /Live job data could not be loaded|Loading connected job sources/i);
   assert.ok(documentRef.elements['pro-jobs-results'].children.every(card => descendants(card).some(node => /DEMO · NOT A CURRENT OPENING/.test(node.textContent))));
   documentRef.elements['pro-jobs-search'].value = 'no such job';
   ui.render();
-  assert.match(documentRef.elements['pro-jobs-results'].textContent, /No sample roles match/i);
+  assert.match(documentRef.elements['pro-jobs-results'].textContent, /Live listings could not be loaded/i);
   documentRef.elements['pro-jobs-clear'].dispatch('click');
   assert.match(documentRef.elements['pro-jobs-status'].textContent, /3 demo roles shown/);
   assert.equal(documentRef.elements['pro-jobs-search'].focused, true);
@@ -194,8 +245,9 @@ test('jobs UI loads only same-origin validated live data and keeps it separate f
   globalThis.fetch = async url => {
     fetchedUrl = url;
     assert.equal(url, 'https://betterhacker.example/jobs-live.json');
-    return { ok: true, json: async () => ({ schemaVersion: 1, kind: 'live-job-feed', jobs: [record({
+    return { ok: true, json: async () => ({ schemaVersion: 1, kind: 'live-job-feed', sourceCount: 5, jobs: [record({
       externalId: '123', applicationUrl: 'https://job-boards.greenhouse.io/example/jobs/123',
+      isDemo: false, dateImported: fixedImport,
       source: { id: 'approved-feed', name: 'Greenhouse', kind: 'ats-public-feed', url: 'https://careers.example/' },
       lastObservedAt: fixedImport, extensions: { adapter: 'greenhouse-job-board', boardToken: 'example' }
     })] }) };
@@ -209,8 +261,8 @@ test('jobs UI loads only same-origin validated live data and keeps it separate f
     assert.equal(fetchedUrl, 'https://betterhacker.example/jobs-live.json');
     assert.equal(ui.jobs.length, 4);
     assert.equal(ui.jobs.filter(job => !job.isDemo).length, 1);
-    assert.match(documentRef.elements['pro-jobs-status'].textContent, /1 real listing shown/);
-    assert.match(documentRef.elements['pro-jobs-results'].textContent, /LIVE · CURRENT LISTING/);
+    assert.match(documentRef.elements['pro-jobs-status'].textContent, /1 connected-source listing shown/);
+    assert.match(documentRef.elements['pro-jobs-results'].textContent, /IN CURRENT FEED · POSTED WITHIN 30 DAYS/);
     assert.match(documentRef.elements['pro-jobs-results'].textContent, /DEMO · NOT A CURRENT OPENING/);
   } finally {
     globalThis.fetch = previousFetch;
@@ -223,7 +275,7 @@ test('a verified empty live dataset states that no current cybersecurity listing
   const previousLocation = Object.getOwnPropertyDescriptor(globalThis, 'location');
   const previousFetch = globalThis.fetch;
   Object.defineProperty(globalThis, 'location', { configurable: true, value: { href: 'https://betterhacker.example/', origin: 'https://betterhacker.example' } });
-  globalThis.fetch = async () => ({ ok: true, json: async () => ({ schemaVersion: 1, kind: 'live-job-feed', jobs: [] }) });
+  globalThis.fetch = async () => ({ ok: true, json: async () => ({ schemaVersion: 1, kind: 'live-job-feed', sourceCount: 5, jobs: [] }) });
   try {
     const documentRef = fakeDocument();
     const ui = JobsUI.mount(documentRef, null);
@@ -249,15 +301,21 @@ test('external application links clearly leave Better Hacker and are omitted fro
   assert.equal(anchor.href, 'https://job-boards.greenhouse.io/example/jobs/123');
   assert.equal(anchor.target, '_blank');
   assert.equal(anchor.rel, 'noopener noreferrer');
-  assert.match(anchor.textContent, /Apply at Source/);
+  assert.match(anchor.textContent, /Open Greenhouse application/);
   assert.match(anchor.attributes['aria-label'], /leaves Better Hacker/);
+  const unsafe = { ...normalized, applicationUrl: 'https://jobs.lever.co:8443/example/123/apply' };
+  assert.equal(JobsUI.applicationLink(documentRef, unsafe), null);
+  assert.equal(JobsUI.applicationLink(documentRef, { ...normalized, applicationUrl: 'https://job-boards.greenhouse.io/example/jobs/123?redirect=https%3A%2F%2Fevil.example' }), null);
+  const unsafeCard = JobsUI.renderJob(documentRef, { ...normalized, applicationUrl: 'https://job-boards.greenhouse.io/example/jobs/123?url=https%3A%2F%2Fevil.example' }, { skills: [], developingSkills: [] });
+  assert.equal(descendants(unsafeCard).some(node => node.tagName === 'A' && node.className.includes('jobs-apply-link')), false);
+  assert.match(unsafeCard.textContent, /did not pass the safety checks/i);
 });
 
 test('jobs interface has labeled controls, keyboard focus styling, and no remote tracking requests', () => {
   const html = fs.readFileSync('index.html', 'utf8');
   const css = fs.readFileSync('style.css', 'utf8');
   const ui = fs.readFileSync('jobs-ui.js', 'utf8');
-  for (const id of ['pro-jobs-search', 'pro-jobs-category', 'pro-jobs-workplace', 'pro-jobs-type', 'pro-jobs-level', 'pro-jobs-location', 'pro-jobs-skill']) {
+  for (const id of ['pro-jobs-search', 'pro-jobs-category', 'pro-jobs-workplace', 'pro-jobs-type', 'pro-jobs-level', 'pro-jobs-location', 'pro-jobs-skill', 'pro-jobs-posted', 'pro-jobs-freshness', 'pro-jobs-sort']) {
     assert.match(html, new RegExp(`for="${id}"`));
     assert.match(html, new RegExp(`id="${id}"`));
   }
@@ -268,4 +326,33 @@ test('jobs interface has labeled controls, keyboard focus styling, and no remote
   assert.match(ui, /datasetUrl\.origin !== root\.location\.origin/);
   assert.doesNotMatch(ui, /XMLHttpRequest|sendBeacon/);
   assert.match(css, /prefers-reduced-motion/);
+  assert.match(html, /Most demonstrated mapped skills/);
+  assert.match(html, /Any current status/);
+  assert.match(html, /Apply|application page/);
+});
+
+test('job UI keeps load failures and malformed records distinct from an empty successful feed', async () => {
+  const previousLocation = Object.getOwnPropertyDescriptor(globalThis, 'location');
+  const previousFetch = globalThis.fetch;
+  Object.defineProperty(globalThis, 'location', { configurable: true, value: { href: 'https://betterhacker.example/', origin: 'https://betterhacker.example' } });
+  try {
+    globalThis.fetch = async () => { throw new Error('offline'); };
+    const failedDocument = fakeDocument();
+    const failedUI = JobsUI.mount(failedDocument, null);
+    await failedUI.refreshLiveJobs();
+    assert.match(failedDocument.elements['pro-jobs-status'].textContent, /could not be loaded/i);
+    assert.equal(failedDocument.elements['pro-jobs-retry'].hidden, false);
+
+    globalThis.fetch = async () => ({ ok: true, json: async () => ({ schemaVersion: 1, kind: 'live-job-feed', sourceCount: 5, jobs: [record({ isDemo: true })] }) });
+    const malformedDocument = fakeDocument();
+    const malformedUI = JobsUI.mount(malformedDocument, null);
+    await malformedUI.refreshLiveJobs();
+    assert.equal(malformedUI.jobs.filter(job => !job.isDemo).length, 0);
+    assert.match(malformedDocument.elements['pro-jobs-status'].textContent, /did not pass validation/i);
+    assert.doesNotMatch(malformedDocument.elements['pro-jobs-status'].textContent, /No current cybersecurity listings/);
+  } finally {
+    globalThis.fetch = previousFetch;
+    if (previousLocation) Object.defineProperty(globalThis, 'location', previousLocation);
+    else delete globalThis.location;
+  }
 });

@@ -328,22 +328,32 @@
       <p class="jobs-demo-notice" role="note"><strong>REAL LISTINGS ARE SOURCE-VERIFIED.</strong> Current openings come from connected public employer feeds. Fictional examples are labeled separately and are not current vacancies.</p>
       <p class="jobs-entitlement-note">Better Hacker Pro is planned at the prices shown on this page. Subscriptions and entitlement checks are not active, so this preview is available without a paywall.</p>
       <fieldset class="jobs-filter-group">
-        <legend>Search and filter sample roles</legend>
+        <legend>Find cybersecurity and technology pathway jobs</legend>
         <div class="jobs-filter-grid">
           <label for="pro-jobs-search">Search by title, employer, skill, or keyword<input id="pro-jobs-search" type="search" autocomplete="off" placeholder="Try SOC, analyst, or Linux"></label>
           <label for="pro-jobs-category">Role area<select id="pro-jobs-category">
             <option value="all">All role areas</option><option value="entry-level">Entry-level</option><option value="soc">SOC / Security Operations</option><option value="cybersecurity-analyst">Cybersecurity Analyst</option><option value="security-analyst">Security Analyst</option><option value="junior-security">Junior security roles</option><option value="help-desk-it">Help Desk / IT pathway</option><option value="internship">Internship</option>
           </select></label>
-          <label for="pro-jobs-workplace">Work arrangement<select id="pro-jobs-workplace"><option value="all">Any arrangement</option><option value="remote">Remote</option><option value="hybrid">Hybrid</option><option value="onsite">Onsite</option></select></label>
-          <label for="pro-jobs-type">Employment type<select id="pro-jobs-type"><option value="all">Any type</option><option value="full-time">Full-time</option><option value="part-time">Part-time</option><option value="contract">Contract</option><option value="internship">Internship</option><option value="apprenticeship">Apprenticeship</option><option value="temporary">Temporary</option></select></label>
-          <label for="pro-jobs-level">Experience level<select id="pro-jobs-level"><option value="all">Any level</option><option value="entry-level">Entry-level</option><option value="junior">Junior</option><option value="internship">Internship</option><option value="mid-level">Mid-level</option><option value="senior">Senior</option></select></label>
+          <label for="pro-jobs-workplace">Work arrangement<select id="pro-jobs-workplace"><option value="all">Any arrangement</option><option value="remote">Remote</option><option value="hybrid">Hybrid</option><option value="onsite">Onsite</option><option value="unspecified">Not provided</option></select></label>
+          <label for="pro-jobs-type">Employment type<select id="pro-jobs-type"><option value="all">Any type</option><option value="full-time">Full-time</option><option value="part-time">Part-time</option><option value="contract">Contract</option><option value="internship">Internship</option><option value="apprenticeship">Apprenticeship</option><option value="temporary">Temporary</option><option value="unspecified">Not provided</option></select></label>
+          <label for="pro-jobs-level">Experience level<select id="pro-jobs-level"><option value="all">Any level</option><option value="entry-level">Entry-level</option><option value="junior">Junior</option><option value="internship">Internship</option><option value="mid-level">Mid-level</option><option value="senior">Senior</option><option value="unspecified">Not provided</option></select></label>
           <label for="pro-jobs-location">Location<input id="pro-jobs-location" type="search" autocomplete="off" placeholder="City, region, or remote"></label>
           <label for="pro-jobs-skill">Skills or tools<input id="pro-jobs-skill" type="search" autocomplete="off" placeholder="Try SIEM or log analysis"></label>
+          <label for="pro-jobs-posted">Posted<select id="pro-jobs-posted"><option value="all">Any date</option><option value="7">Past 7 days</option><option value="30">Past 30 days</option></select></label>
+          <label for="pro-jobs-freshness">Listing status<select id="pro-jobs-freshness"><option value="all">Any current status</option><option value="current">In current feed · date known</option><option value="stale">Possibly stale</option><option value="unknown">Posting date unknown</option></select></label>
+          <label for="pro-jobs-sort">Sort listings<select id="pro-jobs-sort"><option value="newest">Newest posted</option><option value="oldest">Oldest posted</option><option value="demonstrated">Most demonstrated mapped skills</option><option value="fewest-gaps">Fewest mapped skill gaps</option></select></label>
         </div>
         <button id="pro-jobs-clear" class="secondary-button" type="button">Clear filters</button>
       </fieldset>
+      <p class="jobs-freshness-note">“Possibly stale” means the source posting date is more than 30 days old; it does not mean the employer confirmed the job is closed. Check every opening on its source page before applying.</p>
+      <p class="jobs-freshness-note">Skill-based sorts use only mapped listing skills and your completed Better Hacker evidence in this browser. They are learning guidance, not a hiring or acceptance prediction.</p>
       <p id="pro-jobs-status" class="jobs-results-status" role="status" aria-live="polite"></p>
+      <button id="pro-jobs-retry" class="secondary-button jobs-retry" type="button" hidden>Try loading live listings again</button>
       <div id="pro-jobs-results" class="jobs-results" aria-label="Cybersecurity job listings and samples"></div>
+      <details class="jobs-matching-help">
+        <summary>How listing status and source checks work</summary>
+        <p>Current-feed listings appeared in the latest successful public feed refresh. A posting older than 30 days is marked possibly stale, not closed. A listing with no source posting date keeps an unknown date status. Source-expired roles are hidden, and a complete successful feed refresh removes roles no longer present. If a role has not been observed for more than seven days because feeds are failing, Better Hacker hides it until a successful refresh. Always verify availability and application details with the employer or job source.</p>
+      </details>
       <details class="jobs-matching-help">
         <summary>How Better Hacker skill matching works</summary>
         <p>Better Hacker identifies skills from phrases in the employer listing and maps them to a controlled learning taxonomy. The employer's listing stays intact; phrases that cannot be mapped confidently are left out of the comparison. <strong>Demonstrated</strong> means completed authored Better Hacker work supports that skill. <strong>Developing</strong> means you have interacted with a related activity that is not yet complete. <strong>Skill Gap</strong> means this browser has no completed or started related activity. Merely opening an activity does not count. This guidance runs locally and is not visible to employers; it does not predict hiring decisions.</p>
