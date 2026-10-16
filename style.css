@@ -269,7 +269,16 @@ button.card:hover {
 .jobs-status-badge { align-self: flex-start; margin: 0 0 10px; padding: 4px 8px; border-radius: 5px; background: #43320c; color: #fde68a; font-size: .78rem; font-weight: 800; letter-spacing: .025em; }
 .jobs-card-title { margin: 0 0 7px; overflow-wrap: anywhere; color: #fff; }
 .jobs-employer-location, .jobs-meta, .jobs-source { color: #cbd5e1; overflow-wrap: anywhere; }
-.jobs-description { color: #e2e8f0; }
+.jobs-description, .jobs-description-missing, .jobs-portfolio-empty, .jobs-freshness-note { color: #cbd5e1; overflow-wrap: anywhere; }
+.jobs-freshness-note { margin: 8px 0; font-size: .94rem; }
+.jobs-status-current { border-left: 4px solid #86efac; }
+.jobs-status-stale { border-left: 4px solid #fde68a; }
+.jobs-status-unknown { border-left: 4px solid #93c5fd; }
+.jobs-status-expired, .jobs-status-removed { border-left: 4px solid #fca5a5; }
+.jobs-mapped-skill-summary { color: #cbd5e1; overflow-wrap: anywhere; }
+.jobs-details { min-width: 0; margin: 8px 0 12px; }
+.jobs-details summary { display: flex; align-items: center; min-height: 44px; color: #7dd3fc; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; overflow-wrap: anywhere; }
+.jobs-details > * { min-width: 0; overflow-wrap: anywhere; }
 .jobs-skill-list { display: flex; flex-wrap: wrap; gap: 7px; margin: 4px 0 12px; padding: 0; list-style: none; }
 .jobs-skill-list li { padding: 4px 8px; border: 1px solid #334155; border-radius: 999px; color: #e0f2fe; font-size: .86rem; }
 .jobs-match-summary { margin-top: auto; padding-top: 10px; color: #bae6fd; font-weight: 700; }
@@ -288,7 +297,8 @@ button.card:hover {
 .jobs-portfolio-evidence li { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
 .jobs-portfolio-view { min-height: 36px; color: #7dd3fc; background: transparent; border: 1px solid #45627d; border-radius: 6px; padding: 6px 10px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .jobs-demo-card-note, .jobs-no-application { color: #fde68a; }
-.jobs-apply-link { align-self: flex-start; min-height: 44px; margin: 6px 0; }
+.jobs-apply-link { align-self: flex-start; min-height: 44px; margin: 6px 0; white-space: normal; overflow-wrap: anywhere; }
+.jobs-retry { min-height: 44px; margin-bottom: 14px; }
 .jobs-empty-state { grid-column: 1 / -1; padding: 18px; border: 1px dashed #64748b; border-radius: 10px; color: #e2e8f0; }
 .jobs-matching-help { margin-top: 22px; }
 .jobs-matching-help summary { min-height: 44px; display: flex; align-items: center; color: #7dd3fc; font-weight: 700; cursor: pointer; }

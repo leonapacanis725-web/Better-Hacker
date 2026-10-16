@@ -9,6 +9,7 @@ const Relevance = require('../jobs-relevance.js');
 const Ingestion = require('../jobs-server/ingest.js');
 const Demo = require('../jobs-demo.js');
 const configuredSources = require('../jobs-sources.json').sources;
+const liveDataset = require('../jobs-live.json');
 
 const importedAt = '2026-10-14T12:00:00.000Z';
 const greenhouse = { type: 'greenhouse', id: 'acme-gh', name: 'Greenhouse', employerName: 'Acme Security', sourceUrl: 'https://acme.example/careers', boardToken: 'acme' };
@@ -28,6 +29,27 @@ test('the reviewed production config has four Greenhouse employers and one Lever
   assert.equal(configuredSources.filter(source => source.type === 'greenhouse').length, 4);
   assert.equal(configuredSources.filter(source => source.type === 'lever').length, 1);
   for (const source of configuredSources) assert.match(source.sourceUrl, /^https:\/\//);
+});
+
+test('the committed live dataset contains unique source-attributed plain-text records with safe destinations', () => {
+  assert.equal(liveDataset.kind, 'live-job-feed');
+  assert.ok(liveDataset.jobs.length > 0);
+  const seen = new Set();
+  for (const job of liveDataset.jobs) {
+    assert.equal(job.isDemo, false);
+    assert.ok(job.title && job.employer && job.externalId);
+    assert.ok(job.source.id && job.source.name && job.source.kind === 'ats-public-feed');
+    assert.ok(Number.isFinite(Date.parse(job.dateImported)) && Number.isFinite(Date.parse(job.lastObservedAt)));
+    assert.ok(Jobs.canonicalApplicationUrl(job.applicationUrl));
+    assert.ok(!new URL(job.applicationUrl).port);
+    assert.doesNotMatch(job.description || '', /<\/?(?:script|style|iframe|img|svg|[a-z][\w:-]*)(?:\s|\/?>)/i);
+    if (job.datePosted) assert.ok(Date.parse(job.datePosted) <= Date.parse(job.dateImported));
+    if (job.expiresAt && job.datePosted) assert.ok(Date.parse(job.expiresAt) >= Date.parse(job.datePosted));
+    for (const key of Jobs.duplicateKeys(job)) {
+      assert.ok(!seen.has(key), `duplicate job key ${key}`);
+      seen.add(key);
+    }
+  }
 });
 
 test('relevance rules include named cyber functions and IT support while rejecting unrelated roles', () => {

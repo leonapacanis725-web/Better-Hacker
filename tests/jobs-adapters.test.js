@@ -51,10 +51,18 @@ test('Lever adapter maps published postings and source-provided level without in
   assert.equal(job.extensions.level, 'Junior');
 });
 
+test('description cleanup strips raw and entity-encoded markup before publishing plain text', () => {
+  const source = '&lt;p&gt;Review &amp; investigate&lt;/p&gt;&lt;script&gt;alert(1)&lt;/script&gt;';
+  assert.equal(Adapters.descriptionText(source), 'Review & investigate');
+  assert.equal(Adapters.descriptionText('<style>body{display:none}</style><p>Safe <strong>text</strong></p>'), 'Safe text');
+});
+
 test('source endpoints are fixed HTTPS hosts and malformed configs or payloads fail closed', () => {
   assert.equal(Adapters.endpoint(greenhouse), 'https://boards-api.greenhouse.io/v1/boards/example-board/jobs?content=true');
   assert.equal(Adapters.endpoint(lever), 'https://api.lever.co/v0/postings/example?mode=json');
   assert.throws(() => Adapters.endpoint({ ...lever, site: '../evil' }), /simple public board identifier/i);
+  assert.equal(Ingestion.expectedApplicationUrl({ externalId: 'job-55', applicationUrl: 'https://jobs.lever.co/example/job-55/apply?redirect=https%3A%2F%2Fevil.example' }, lever), false);
+  assert.equal(Ingestion.expectedApplicationUrl({ externalId: 'job-55', applicationUrl: 'https://jobs.lever.co:8443/example/job-55/apply' }, lever), false);
   assert.throws(() => Adapters.adapt({ ...greenhouse, sourceUrl: 'javascript:alert(1)' }, { jobs: [] }, importedAt), /HTTPS employer career-page URL/i);
   assert.throws(() => Adapters.adapt(greenhouse, {}, importedAt), /jobs array/i);
   const malformed = Jobs.ingestRecords(Adapters.adapt(greenhouse, { jobs: [{ id: 2, title: 'Broken', absolute_url: 'javascript:alert(1)' }] }, importedAt), { importedAt });

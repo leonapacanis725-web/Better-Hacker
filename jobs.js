@@ -122,6 +122,15 @@
       return url.toString();
     } catch (_) { return null; }
   }
+  function hasUnsafeRedirectParameter(value) {
+    try {
+      const url = new URL(value);
+      return [...url.searchParams.entries()].some(([name, content]) =>
+        /^(?:redirect|redirect_uri|return|return_to|next|continue|dest|destination|target|url|uri)$/i.test(name) ||
+        /^(?:[a-z][a-z\d+.-]*:|\/\/)/i.test(content.trim())
+      );
+    } catch (_) { return true; }
+  }
   function pick(record, names) {
     for (const name of names) if (record[name] !== undefined && record[name] !== null && record[name] !== "") return record[name];
     return undefined;
@@ -244,14 +253,25 @@
       isDemo: opts.demo === true,
       extensions
     };
+    const postedDay = job.datePosted && job.datePosted.slice(0, 10);
+    const importedDay = validDate(importedAt, true) ? importedAt.slice(0, 10) : null;
+    const expiresDay = job.expiresAt && job.expiresAt.slice(0, 10);
+    const observedDay = job.lastObservedAt && job.lastObservedAt.slice(0, 10);
+    if (postedDay && importedDay && postedDay > importedDay) errors.push("Date posted cannot be after the import date.");
+    if (postedDay && expiresDay && expiresDay < postedDay) errors.push("Expiration date cannot be before the posting date.");
+    if (observedDay && importedDay && observedDay > importedDay) errors.push("Last observed date cannot be after the import date.");
     return { ok: errors.length === 0, job: errors.length ? null : job, errors, warnings };
   }
-  function duplicateKey(job) {
-    if (!job) return null;
-    if (job.externalId) return `external:${normalizeLabel(job.source && job.source.id)}:${normalizeLabel(job.externalId)}`;
+  function duplicateKeys(job) {
+    if (!job) return [];
+    const keys = [];
+    if (job.externalId) keys.push(`external:${normalizeLabel(job.source && job.source.id)}:${normalizeLabel(job.externalId)}`);
     const url = canonicalApplicationUrl(job.applicationUrl);
-    if (url) return `url:${url}`;
-    return `fingerprint:${normalizeLabel(job.title)}|${normalizeLabel(job.employer || "")}|${normalizeLabel(job.location && job.location.display || "")}`;
+    if (url) keys.push(`url:${url}`);
+    return keys;
+  }
+  function duplicateKey(job) {
+    return duplicateKeys(job)[0] || null;
   }
   function ingestRecords(records, options) {
     const opts = options || {};
@@ -259,16 +279,16 @@
     const jobs = [], duplicates = [], rejected = [], warnings = [];
     const seen = new Map();
     for (const existing of (Array.isArray(opts.existingJobs) ? opts.existingJobs : [])) {
-      const key = duplicateKey(existing);
-      if (key && !seen.has(key)) seen.set(key, existing.id || "existing record");
+      for (const key of duplicateKeys(existing)) if (!seen.has(key)) seen.set(key, existing.id || "existing record");
     }
     records.forEach((record, index) => {
       const result = normalizeJob(record, opts);
       warnings.push(...result.warnings.map(message => ({ index, message })));
       if (!result.ok) { rejected.push({ index, record, errors: result.errors, warnings: result.warnings }); return; }
-      const key = duplicateKey(result.job);
-      if (seen.has(key)) { duplicates.push({ index, id: result.job.id, key, duplicateOf: seen.get(key), record }); return; }
-      seen.set(key, result.job.id);
+      const keys = duplicateKeys(result.job);
+      const duplicate = keys.map(key => [key, seen.get(key)]).find(([, id]) => id);
+      if (duplicate) { duplicates.push({ index, id: result.job.id, key: duplicate[0], duplicateOf: duplicate[1], record }); return; }
+      for (const key of keys) seen.set(key, result.job.id);
       jobs.push(result.job);
     });
     return { jobs, duplicates, rejected, warnings };
@@ -293,14 +313,16 @@
   }
   function filterJobs(jobs, filters, today) {
     const f = filters || {};
+    const currentDay = today || new Date().toISOString().slice(0, 10);
     const query = normalizeLabel(f.query || "");
     const terms = query ? query.split(/\s+/).filter(Boolean) : [];
     const location = normalizeLabel(f.location || "");
     const skill = normalizeLabel(f.skill || "");
     return (Array.isArray(jobs) ? jobs : []).filter(job => {
-      const state = freshness(job, today, f.staleDays);
+      const state = freshness(job, currentDay, f.staleDays);
       if ((state === "expired" && f.includeExpired !== true) || state === "removed") return false;
       if (f.includeDemo === false && job.isDemo) return false;
+      if (f.freshness && f.freshness !== "all" && state !== f.freshness) return false;
       const mappedEntries = Array.isArray(job.extensions && job.extensions.skillMappings) ? job.extensions.skillMappings.filter(item => item && Object.prototype.hasOwnProperty.call(SKILLS, item.id)) : [];
       const mappedLabels = mappedEntries.flatMap(item => [SKILLS[item.id][0], typeof item.matchedPhrase === "string" ? item.matchedPhrase : ""]);
       if (terms.length && !terms.every(term => (searchText(job) + " " + mappedLabels.join(" ")).includes(term))) return false;
@@ -310,10 +332,16 @@
       if (f.experienceLevel && f.experienceLevel !== "all" && job.experienceLevel !== f.experienceLevel) return false;
       if (location && !normalizeLabel(job.location && job.location.display).includes(location)) return false;
       if (skill && !(job.skills || []).some(item => normalizeLabel(item.label).includes(skill) || (item.id || "").includes(slug(skill))) && !mappedLabels.some(item => normalizeLabel(item).includes(skill))) return false;
+      if (f.postedWithinDays && f.postedWithinDays !== "all") {
+        const posted = job.datePosted && Date.parse(job.datePosted);
+        const now = Date.parse(`${currentDay}T23:59:59.999Z`);
+        const age = Number.isFinite(posted) ? Math.floor((now - posted) / 86400000) : NaN;
+        if (!Number.isFinite(age) || age < 0 || age > Number(f.postedWithinDays)) return false;
+      }
       return true;
     });
   }
 
   return { SCHEMA_VERSION, DEFAULT_STALE_DAYS, MAX_LIVE_OBSERVATION_AGE_DAYS, CATEGORIES, WORKPLACE_TYPES, EMPLOYMENT_TYPES, EXPERIENCE_LEVELS,
-    SKILLS, SKILL_LABELS, normalizeLabel, skillId, skillLabel, normalizeJob, canonicalApplicationUrl, duplicateKey, ingestRecords, freshness, filterJobs };
+    SKILLS, SKILL_LABELS, normalizeLabel, skillId, skillLabel, normalizeJob, canonicalApplicationUrl, hasUnsafeRedirectParameter, duplicateKey, duplicateKeys, ingestRecords, freshness, filterJobs };
 });

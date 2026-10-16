@@ -15,14 +15,17 @@ function validate(dataset) {
     const prefix = `Live job ${index + 1}`;
     if (!job || job.isDemo !== false) fail(`${prefix} is not explicitly marked live.`);
     if (!job.title || !job.employer || !job.externalId || !job.dateImported || !job.lastObservedAt) fail(`${prefix} is missing a required source fact or timestamp.`);
-    if (!job.source || job.source.kind !== "ats-public-feed" || !job.source.name || !Jobs.canonicalApplicationUrl(job.source.url)) fail(`${prefix} has invalid source attribution.`);
+    if (!job.source || !job.source.id || job.source.kind !== "ats-public-feed" || !job.source.name || !Jobs.canonicalApplicationUrl(job.source.url)) fail(`${prefix} has invalid source attribution.`);
+    const normalized = Jobs.normalizeJob(job, { importedAt: job.dateImported });
+    if (!normalized.ok) fail(`${prefix} failed canonical field validation: ${normalized.errors.join(" ")}`);
     if (!job.extensions || !job.extensions.relevance || !Array.isArray(job.extensions.relevance.matchedSignals) || !job.extensions.relevance.matchedSignals.length) fail(`${prefix} has no relevance evidence.`);
     if (job.extensions.skillMappingVersion !== 1 || !Array.isArray(job.extensions.skillMappings)) fail(`${prefix} has no versioned skill mapping audit.`);
     const expectedMappings = SkillMapping.mapListing(job);
     if (JSON.stringify(job.extensions.skillMappings) !== JSON.stringify(expectedMappings)) fail(`${prefix} has skill mappings that do not match the source fields and current rules.`);
     const app = Jobs.canonicalApplicationUrl(job.applicationUrl);
-    if (!app) fail(`${prefix} has an invalid application URL.`);
+    if (!app || Jobs.hasUnsafeRedirectParameter(app)) fail(`${prefix} has an invalid or redirect-style application URL.`);
     const url = new URL(app);
+    if (url.port) fail(`${prefix} uses a non-standard application URL port.`);
     const parts = url.pathname.split("/").filter(Boolean);
     if (job.extensions.adapter === "greenhouse-job-board") {
       const board = job.extensions.boardToken;
@@ -31,10 +34,10 @@ function validate(dataset) {
       const site = job.extensions.site;
       if (url.hostname !== "jobs.lever.co" || typeof site !== "string" || parts.length < 2 || parts.length > 3 || parts[0].toLowerCase() !== site.toLowerCase() || parts[1] !== String(job.externalId) || (parts.length === 3 && parts[2] !== "apply")) fail(`${prefix} has an unexpected Lever application destination.`);
     } else fail(`${prefix} does not use a supported ATS adapter.`);
-    const key = Jobs.duplicateKey(job);
-    if (!key || seen.has(key)) fail(`${prefix} duplicates another live listing.`);
-    seen.add(key);
-    if (job.description && typeof job.description !== "string") fail(`${prefix} description is not plain text.`);
+    const keys = Jobs.duplicateKeys(job);
+    if (!keys.length || keys.some(key => seen.has(key))) fail(`${prefix} duplicates another live listing or has no stable source/application identifier.`);
+    keys.forEach(key => seen.add(key));
+    if (job.description && (typeof job.description !== "string" || job.description.length > 3000 || /<\/?(?:script|style|iframe|img|svg|[a-z][\w:-]*)(?:\s|\/?>)/i.test(job.description))) fail(`${prefix} description is not bounded plain text.`);
   }
   return { count: dataset.jobs.length, sources: dataset.sourceCount };
 }

@@ -23,8 +23,11 @@ function requireSource(config, type) {
 }
 function descriptionText(value) {
   if (typeof value !== "string") return "";
-  return value.replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, " ").replace(/<[^>]*>/g, " ").replace(/&nbsp;/gi, " ").replace(/&amp;/gi, "&")
-    .replace(/&lt;/gi, "<").replace(/&gt;/gi, ">").replace(/&#39;|&apos;/gi, "'").replace(/&quot;/gi, '"')
+  return value.replace(/&nbsp;/gi, " ").replace(/&lt;/gi, "<").replace(/&gt;/gi, ">").replace(/&amp;/gi, "&")
+    .replace(/&#39;|&apos;|&#x27;/gi, "'").replace(/&quot;|&#34;|&#x22;/gi, '"')
+    .replace(/&#(\d+);/g, (_, code) => { const value = Number(code); return value > 0 && value <= 0x10ffff ? String.fromCodePoint(value) : " "; })
+    .replace(/&#x([\da-f]+);/gi, (_, code) => { const value = parseInt(code, 16); return value > 0 && value <= 0x10ffff ? String.fromCodePoint(value) : " "; })
+    .replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, " ").replace(/<[^>]*>/g, " ")
     .replace(/\s+/g, " ").trim().slice(0, 3000);
 }
 function locationText(value) {

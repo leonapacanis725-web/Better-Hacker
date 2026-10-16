@@ -73,8 +73,9 @@ async function loadFeed(source, fetchImpl) {
 }
 function expectedApplicationUrl(record, source) {
   const value = Jobs.canonicalApplicationUrl(record && record.applicationUrl);
-  if (!value || !record.externalId) return false;
+  if (!value || !record.externalId || Jobs.hasUnsafeRedirectParameter(value)) return false;
   const url = new URL(value);
+  if (url.port) return false;
   if (source.type === "greenhouse") {
     const board = String(source.boardToken).toLowerCase();
     const parts = url.pathname.split("/").filter(Boolean);
