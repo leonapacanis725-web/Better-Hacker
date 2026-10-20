@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "kind": "live-job-feed",
-  "generatedAt": "2026-10-19T13:24:50.182Z",
+  "generatedAt": "2026-10-20T11:44:15.820Z",
   "sourceCount": 5,
   "jobs": [
     {
@@ -31,9 +31,9 @@
         "url": "https://www.volexity.com/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/volexity/jobs/4320640009",
-      "dateImported": "2026-10-19T13:24:50.182Z",
+      "dateImported": "2026-10-20T11:44:15.820Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-19T13:24:50.182Z",
+      "lastObservedAt": "2026-10-20T11:44:15.820Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -110,9 +110,9 @@
         "url": "https://www.volexity.com/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/volexity/jobs/4323123009",
-      "dateImported": "2026-10-19T13:24:50.182Z",
+      "dateImported": "2026-10-20T11:44:15.820Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-19T13:24:50.182Z",
+      "lastObservedAt": "2026-10-20T11:44:15.820Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -189,9 +189,9 @@
         "url": "https://www.volexity.com/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/volexity/jobs/4328838009",
-      "dateImported": "2026-10-19T13:24:50.182Z",
+      "dateImported": "2026-10-20T11:44:15.820Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-19T13:24:50.182Z",
+      "lastObservedAt": "2026-10-20T11:44:15.820Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -285,6 +285,80 @@
     },
     {
       "schemaVersion": 1,
+      "id": "huntress-greenhouse-8008358003",
+      "externalId": "8008358003",
+      "title": "Manager, Security Operations Center",
+      "employer": "Huntress",
+      "location": {
+        "display": "United States of America",
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "workplace": "unspecified",
+      "employmentType": "unspecified",
+      "experienceLevel": "unspecified",
+      "categories": [],
+      "salaryRange": null,
+      "datePosted": "2026-10-19",
+      "skills": [],
+      "description": "What We Do: Cybercrime is growing, and more businesses are getting hit by threats that used to target only the biggest organizations. That pushes defenders like us to operate at the highest level, and it deepens our need for good people who want to make a meaningful impact. Founded in 2015 by former NSA cyber operators, Huntress is a remote-first team working to make enterprise-grade cybersecurity accessible to businesses of all sizes. We work closely with security teams and service providers protecting complex environments, often without the time or headcount to handle it all. That’s why we build our technology in-house and back it with a 24/7 human-led Security Operations Center (SOC). As a result, our platform is never disconnected from the experts who manage it, ensuring our customers' protection. Huntress now secures more than 5M endpoints and 16M identities worldwide. Those numbers keep growing because more businesses rely on us to help carry the load and operate with more confidence. Every day, you can see that commitment in how we stand with our customers and how we show up for each other. Reports to: Director, Security Operations Center&nbsp; Location: Remote US Compensation: $165,000-$185,000&nbsp; base plus bonus and equity What You’ll Do:&nbsp; The Huntress Security Operations Center is a global team of security analysts dedicated to investigating and responding to incidents on our partners’ networks 24/7, 365 days a year. Daily activities consist of providing investigation, containment, and response actions across millions of endpoints. This role is accountable for defining and streamlining processes, workflows, and playbooks that enable effective day-to-day operations. As Huntress continues to grow, we are laser-focused on scaling our operations and force-multiplying our human analysts by 10X. This position is responsible for enabling analysts to meet our mission and achieve internal Service Level Objectives for response times. The Security Operations Manager will work with their peer regional managers to ensure consistent global operations while providing our analyst team with training opportunities and career growth.&nbsp; Responsibilities:&nbsp; Design, implement, and enforce internal processes to reduce burnout and increase the productivity of the operations center against a global set of expectations and standards Manage and enforce local/global shift coverage to ensure 24/7 operations are maintained 365 days a year Meet with analysts in a 1:1 setting weekly to socialize focus initiatives, gather feedback, provide feedback, and enable analysts to progress rapidly in their career Contribute to the development and implementation of analyst training programs designed to streamline onboarding and advance analyst skill sets in Digital Forensics, Incident Response, Malware Analysis, Detection Engineering, Threat Hunting, and Automation Work with the Product organizations to prioritize the creation of new capabilities designed to augm",
+      "source": {
+        "id": "huntress-greenhouse",
+        "name": "Greenhouse",
+        "kind": "ats-public-feed",
+        "url": "https://www.huntress.com/company/careers"
+      },
+      "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/8008358003",
+      "dateImported": "2026-10-20T11:44:15.820Z",
+      "expiresAt": null,
+      "lastObservedAt": "2026-10-20T11:44:15.820Z",
+      "isDemo": false,
+      "extensions": {
+        "adapter": "greenhouse-job-board",
+        "boardToken": "huntress",
+        "requisitionId": "100354",
+        "sourceCategories": [
+          "Security Analysis"
+        ],
+        "relevance": {
+          "reason": "Matched source title.",
+          "matchedSignals": [
+            "security-operations",
+            "security-role"
+          ]
+        },
+        "skillMappingVersion": 1,
+        "skillMappings": [
+          {
+            "id": "alert-triage",
+            "label": "Alert Triage",
+            "matchedPhrase": "Security Operations Center",
+            "field": "title"
+          },
+          {
+            "id": "incident-response",
+            "label": "Incident Response",
+            "matchedPhrase": "Incident Response",
+            "field": "description"
+          },
+          {
+            "id": "malware-analysis",
+            "label": "Malware Analysis",
+            "matchedPhrase": "Malware Analysis",
+            "field": "description"
+          },
+          {
+            "id": "digital-forensics",
+            "label": "Digital Forensics",
+            "matchedPhrase": "Digital Forensics",
+            "field": "description"
+          }
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
       "id": "huntress-greenhouse-8014350003",
       "externalId": "8014350003",
       "title": "Principal macOS Security Researcher",
@@ -310,9 +384,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/8014350003",
-      "dateImported": "2026-10-19T13:24:50.182Z",
+      "dateImported": "2026-10-20T11:44:15.820Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-19T13:24:50.182Z",
+      "lastObservedAt": "2026-10-20T11:44:15.820Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -377,9 +451,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7807467003",
-      "dateImported": "2026-10-19T13:24:50.182Z",
+      "dateImported": "2026-10-20T11:44:15.820Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-19T13:24:50.182Z",
+      "lastObservedAt": "2026-10-20T11:44:15.820Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -444,9 +518,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/8014855003",
-      "dateImported": "2026-10-19T13:24:50.182Z",
+      "dateImported": "2026-10-20T11:44:15.820Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-19T13:24:50.182Z",
+      "lastObservedAt": "2026-10-20T11:44:15.820Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -499,9 +573,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7998473003",
-      "dateImported": "2026-10-19T13:24:50.182Z",
+      "dateImported": "2026-10-20T11:44:15.820Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-19T13:24:50.182Z",
+      "lastObservedAt": "2026-10-20T11:44:15.820Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -573,9 +647,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7835871003",
-      "dateImported": "2026-10-19T13:24:50.182Z",
+      "dateImported": "2026-10-20T11:44:15.820Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-19T13:24:50.182Z",
+      "lastObservedAt": "2026-10-20T11:44:15.820Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -653,9 +727,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7835873003",
-      "dateImported": "2026-10-19T13:24:50.182Z",
+      "dateImported": "2026-10-20T11:44:15.820Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-19T13:24:50.182Z",
+      "lastObservedAt": "2026-10-20T11:44:15.820Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -733,9 +807,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7743188003",
-      "dateImported": "2026-10-19T13:24:50.182Z",
+      "dateImported": "2026-10-20T11:44:15.820Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-19T13:24:50.182Z",
+      "lastObservedAt": "2026-10-20T11:44:15.820Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -776,61 +850,6 @@
     },
     {
       "schemaVersion": 1,
-      "id": "huntress-greenhouse-7998321003",
-      "externalId": "7998321003",
-      "title": "Senior Detection Engineering & Threat Hunting Analyst",
-      "employer": "Huntress",
-      "location": {
-        "display": "Australia",
-        "city": null,
-        "region": null,
-        "country": null
-      },
-      "workplace": "unspecified",
-      "employmentType": "unspecified",
-      "experienceLevel": "unspecified",
-      "categories": [],
-      "salaryRange": null,
-      "datePosted": "2026-09-23",
-      "skills": [],
-      "description": "What We Do: Cybercrime is growing, and more businesses are getting hit by threats that used to target only the biggest organizations. That pushes defenders like us to operate at the highest level, and it deepens our need for good people who want to make a meaningful impact. Founded in 2015 by former NSA cyber operators, Huntress is a remote-first team working to make enterprise-grade cybersecurity accessible to businesses of all sizes. We work closely with security teams and service providers protecting complex environments, often without the time or headcount to handle it all. That’s why we build our technology in-house and back it with a 24/7 human-led Security Operations Center (SOC). As a result, our platform is never disconnected from the experts who manage it, ensuring our customers' protection. Huntress now secures more than 5M endpoints and 16M identities worldwide. Those numbers keep growing because more businesses rely on us to help carry the load and operate with more confidence. Every day, you can see that commitment in how we stand with our customers and how we show up for each other. Reports to: Senior Manager, Detection Engineering &amp; Threat Hunting Location: Remote Australia Compensation Range: $150,000 to $170,000 AUD base plus bonus and equity What You’ll Do:&nbsp; Members of the Huntress DE&amp;TH team wake up every morning with the honor of impeding threat actors through a combination of detection engineering and threat hunting. This team sits alongside our 24x7 Security Operations Center, and our Adversary Tactics &amp; Tactical Response function, and plays a pivotal role in detecting threats actors before they get a chance to impact our partner environments.&nbsp; As a Senior Detection Engineering and Threat Hunting (DE&amp;TH) Analyst you should be drawn to the hard problems: detecting stealthy intrusions, managing false positives and false negatives at scale, and uncovering clues that may expose an evolving campaign across Huntress partners. In this role you will turn threat intelligence, or a hypothesis, into detections that help the SOC find real intrusions faster. While the SOC is responding to alerts within minutes, this team is developing detections and reviewing more ambiguous signs of attacker activity on a daily &amp; weekly basis. On the Detection Engineering side of the role, you will play a part in designing, building, and maintaining a resilient, scalable, and high-fidelity detection portfolio that enables the SOC to rapidly identify and respond to adversary activity. This will involve working with engineering and other adjacent teams to achieve a shared goal across multiple domains which includes identities and endpoints. On the Threat Hunting side of the role, you will get to research new attacker tradecraft, test new theories, and review hunting data at scale for millions of endpoints to proactively hunt for, and disrupt, stealthy threat actor techniques that evade initial defenses. If you love Detection",
-      "source": {
-        "id": "huntress-greenhouse",
-        "name": "Greenhouse",
-        "kind": "ats-public-feed",
-        "url": "https://www.huntress.com/company/careers"
-      },
-      "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7998321003",
-      "dateImported": "2026-10-19T13:24:50.182Z",
-      "expiresAt": null,
-      "lastObservedAt": "2026-10-19T13:24:50.182Z",
-      "isDemo": false,
-      "extensions": {
-        "adapter": "greenhouse-job-board",
-        "boardToken": "huntress",
-        "requisitionId": "100329",
-        "sourceCategories": [
-          "DE&TH"
-        ],
-        "relevance": {
-          "reason": "Matched source title.",
-          "matchedSignals": [
-            "threat-detection"
-          ]
-        },
-        "skillMappingVersion": 1,
-        "skillMappings": [
-          {
-            "id": "alert-triage",
-            "label": "Alert Triage",
-            "matchedPhrase": "Security Operations Center",
-            "field": "description"
-          }
-        ]
-      }
-    },
-    {
-      "schemaVersion": 1,
       "id": "huntress-greenhouse-7998317003",
       "externalId": "7998317003",
       "title": "Senior Detection Engineering & Threat Hunting Analyst",
@@ -856,14 +875,69 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7998317003",
-      "dateImported": "2026-10-19T13:24:50.182Z",
+      "dateImported": "2026-10-20T11:44:15.820Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-19T13:24:50.182Z",
+      "lastObservedAt": "2026-10-20T11:44:15.820Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
         "boardToken": "huntress",
         "requisitionId": "100326",
+        "sourceCategories": [
+          "DE&TH"
+        ],
+        "relevance": {
+          "reason": "Matched source title.",
+          "matchedSignals": [
+            "threat-detection"
+          ]
+        },
+        "skillMappingVersion": 1,
+        "skillMappings": [
+          {
+            "id": "alert-triage",
+            "label": "Alert Triage",
+            "matchedPhrase": "Security Operations Center",
+            "field": "description"
+          }
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "huntress-greenhouse-7998321003",
+      "externalId": "7998321003",
+      "title": "Senior Detection Engineering & Threat Hunting Analyst",
+      "employer": "Huntress",
+      "location": {
+        "display": "Australia",
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "workplace": "unspecified",
+      "employmentType": "unspecified",
+      "experienceLevel": "unspecified",
+      "categories": [],
+      "salaryRange": null,
+      "datePosted": "2026-09-23",
+      "skills": [],
+      "description": "What We Do: Cybercrime is growing, and more businesses are getting hit by threats that used to target only the biggest organizations. That pushes defenders like us to operate at the highest level, and it deepens our need for good people who want to make a meaningful impact. Founded in 2015 by former NSA cyber operators, Huntress is a remote-first team working to make enterprise-grade cybersecurity accessible to businesses of all sizes. We work closely with security teams and service providers protecting complex environments, often without the time or headcount to handle it all. That’s why we build our technology in-house and back it with a 24/7 human-led Security Operations Center (SOC). As a result, our platform is never disconnected from the experts who manage it, ensuring our customers' protection. Huntress now secures more than 5M endpoints and 16M identities worldwide. Those numbers keep growing because more businesses rely on us to help carry the load and operate with more confidence. Every day, you can see that commitment in how we stand with our customers and how we show up for each other. Reports to: Senior Manager, Detection Engineering &amp; Threat Hunting Location: Remote Australia Compensation Range: $150,000 to $170,000 AUD base plus bonus and equity What You’ll Do:&nbsp; Members of the Huntress DE&amp;TH team wake up every morning with the honor of impeding threat actors through a combination of detection engineering and threat hunting. This team sits alongside our 24x7 Security Operations Center, and our Adversary Tactics &amp; Tactical Response function, and plays a pivotal role in detecting threats actors before they get a chance to impact our partner environments.&nbsp; As a Senior Detection Engineering and Threat Hunting (DE&amp;TH) Analyst you should be drawn to the hard problems: detecting stealthy intrusions, managing false positives and false negatives at scale, and uncovering clues that may expose an evolving campaign across Huntress partners. In this role you will turn threat intelligence, or a hypothesis, into detections that help the SOC find real intrusions faster. While the SOC is responding to alerts within minutes, this team is developing detections and reviewing more ambiguous signs of attacker activity on a daily &amp; weekly basis. On the Detection Engineering side of the role, you will play a part in designing, building, and maintaining a resilient, scalable, and high-fidelity detection portfolio that enables the SOC to rapidly identify and respond to adversary activity. This will involve working with engineering and other adjacent teams to achieve a shared goal across multiple domains which includes identities and endpoints. On the Threat Hunting side of the role, you will get to research new attacker tradecraft, test new theories, and review hunting data at scale for millions of endpoints to proactively hunt for, and disrupt, stealthy threat actor techniques that evade initial defenses. If you love Detection",
+      "source": {
+        "id": "huntress-greenhouse",
+        "name": "Greenhouse",
+        "kind": "ats-public-feed",
+        "url": "https://www.huntress.com/company/careers"
+      },
+      "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7998321003",
+      "dateImported": "2026-10-20T11:44:15.820Z",
+      "expiresAt": null,
+      "lastObservedAt": "2026-10-20T11:44:15.820Z",
+      "isDemo": false,
+      "extensions": {
+        "adapter": "greenhouse-job-board",
+        "boardToken": "huntress",
+        "requisitionId": "100329",
         "sourceCategories": [
           "DE&TH"
         ],
@@ -911,9 +985,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7728615003",
-      "dateImported": "2026-10-19T13:24:50.182Z",
+      "dateImported": "2026-10-20T11:44:15.820Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-19T13:24:50.182Z",
+      "lastObservedAt": "2026-10-20T11:44:15.820Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -966,9 +1040,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/8015561003",
-      "dateImported": "2026-10-19T13:24:50.182Z",
+      "dateImported": "2026-10-20T11:44:15.820Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-19T13:24:50.182Z",
+      "lastObservedAt": "2026-10-20T11:44:15.820Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -1021,9 +1095,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7991918003",
-      "dateImported": "2026-10-19T13:24:50.182Z",
+      "dateImported": "2026-10-20T11:44:15.820Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-19T13:24:50.182Z",
+      "lastObservedAt": "2026-10-20T11:44:15.820Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -1082,9 +1156,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7977228003",
-      "dateImported": "2026-10-19T13:24:50.182Z",
+      "dateImported": "2026-10-20T11:44:15.820Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-19T13:24:50.182Z",
+      "lastObservedAt": "2026-10-20T11:44:15.820Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -1149,9 +1223,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7998709003",
-      "dateImported": "2026-10-19T13:24:50.182Z",
+      "dateImported": "2026-10-20T11:44:15.820Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-19T13:24:50.182Z",
+      "lastObservedAt": "2026-10-20T11:44:15.820Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -1204,9 +1278,9 @@
         "url": "https://censys.com/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/censys/jobs/8541287002",
-      "dateImported": "2026-10-19T13:24:50.182Z",
+      "dateImported": "2026-10-20T11:44:15.820Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-19T13:24:50.182Z",
+      "lastObservedAt": "2026-10-20T11:44:15.820Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -1295,9 +1369,9 @@
         "url": "https://censys.com/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/censys/jobs/8647822002",
-      "dateImported": "2026-10-19T13:24:50.182Z",
+      "dateImported": "2026-10-20T11:44:15.820Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-19T13:24:50.182Z",
+      "lastObservedAt": "2026-10-20T11:44:15.820Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -1343,9 +1417,9 @@
         "url": "https://censys.com/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/censys/jobs/8527413002",
-      "dateImported": "2026-10-19T13:24:50.182Z",
+      "dateImported": "2026-10-20T11:44:15.820Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-19T13:24:50.182Z",
+      "lastObservedAt": "2026-10-20T11:44:15.820Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -1429,9 +1503,9 @@
         "url": "https://relaypro.com/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/relaypro/jobs/8180077",
-      "dateImported": "2026-10-19T13:24:50.182Z",
+      "dateImported": "2026-10-20T11:44:15.820Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-19T13:24:50.182Z",
+      "lastObservedAt": "2026-10-20T11:44:15.820Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -1477,9 +1551,9 @@
         "url": "https://relaypro.com/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/relaypro/jobs/8179795",
-      "dateImported": "2026-10-19T13:24:50.182Z",
+      "dateImported": "2026-10-20T11:44:15.820Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-19T13:24:50.182Z",
+      "lastObservedAt": "2026-10-20T11:44:15.820Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -1525,9 +1599,9 @@
         "url": "https://www.brightedge.com/careers"
       },
       "applicationUrl": "https://jobs.lever.co/brightedge/4184f981-746e-45f2-811d-6f3a23ba52f4/apply",
-      "dateImported": "2026-10-19T13:24:50.182Z",
+      "dateImported": "2026-10-20T11:44:15.820Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-10-19T13:24:50.182Z",
+      "lastObservedAt": "2026-10-20T11:44:15.820Z",
       "isDemo": false,
       "extensions": {
         "adapter": "lever-postings",
@@ -1578,17 +1652,17 @@
     {
       "sourceId": "huntress-greenhouse",
       "status": "ok",
-      "recordsReceived": 35,
+      "recordsReceived": 36,
       "relevanceRejected": 21,
-      "candidatesAccepted": 14,
+      "candidatesAccepted": 15,
       "unsafeUrlRejected": 0,
       "incompleteRejected": 0
     },
     {
       "sourceId": "censys-greenhouse",
       "status": "ok",
-      "recordsReceived": 26,
-      "relevanceRejected": 23,
+      "recordsReceived": 27,
+      "relevanceRejected": 24,
       "candidatesAccepted": 3,
       "unsafeUrlRejected": 0,
       "incompleteRejected": 0
@@ -1596,8 +1670,8 @@
     {
       "sourceId": "relay-greenhouse",
       "status": "ok",
-      "recordsReceived": 26,
-      "relevanceRejected": 24,
+      "recordsReceived": 25,
+      "relevanceRejected": 23,
       "candidatesAccepted": 2,
       "unsafeUrlRejected": 0,
       "incompleteRejected": 0
