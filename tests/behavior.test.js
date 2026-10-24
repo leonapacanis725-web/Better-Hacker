@@ -98,11 +98,12 @@ test('Fundamentals completes through click and Enter event paths and updates pro
   for (const submission of ['click', 'Enter']) {
     const elements = fundamentalElements();
     const { localStorage } = boot({ elements });
+    assert.equal(elements['#course-progress-text'].textContent, '0/8 Lessons Completed');
     elements['#fundamentals-check-answer'].value = submission === 'click' ? 'least privilege' : 'The principle of least privilege';
     if (submission === 'click') await elements['#fundamentals-check-button'].dispatch('click');
     else await elements['#fundamentals-check-answer'].dispatch('keydown', { key: 'Enter' });
     assert.equal(localStorage.getItem('betterHackerFundamentalsComplete'), 'true');
-    assert.equal(elements['#course-progress-text'].textContent, '1 / 8 Lessons Completed');
+    assert.equal(elements['#course-progress-text'].textContent, '1/8 Lessons Completed');
     assert.match(elements['#fundamentals-check-result'].textContent, /Correct/);
   }
 });
@@ -127,7 +128,7 @@ test('a new learner completes all eight lessons through knowledge-check interact
     assert.equal(localStorage.getItem(`betterHacker${storageName}Complete`), 'true');
     assert.equal(context.__app.getDashboardState().lessonsCompleted, index + 1);
   }
-  assert.equal(elements['#course-progress-text'].textContent, '8 / 8 Lessons Completed');
+  assert.equal(elements['#course-progress-text'].textContent, '8/8 Lessons Completed');
   assert.equal(context.__app.getDashboardState().recommendation.type, 'Guided Lab');
 });
 
