@@ -2647,7 +2647,7 @@ function renderRetentionSummary() {
   const achievementList=document.querySelector("#achievements-list");
   if (achievementList) achievementList.innerHTML=achievements.map(function (a) { return '<article class="milestone ' + (a.earned?'earned':'locked') + '"><strong>' + a.name + '</strong><span>' + (a.earned?'Earned':'Locked') + '</span><p>' + a.description + '</p></article>'; }).join("");
   const badgeList=document.querySelector("#skill-badges-list");
-  if (badgeList) badgeList.innerHTML=badges.map(function (b) { return '<article class="milestone ' + (b.earned?'earned':'locked') + '"><strong>' + b.name + '</strong><span>' + (b.earned?'Earned':'In progress — '+b.completed+'/'+b.total+' requirements') + '</span><p>' + b.requirement + '</p><ul>' + b.evidence.map(function(e){return '<li>'+e+'</li>';}).join('') + '</ul></article>'; }).join("");
+  if (badgeList) badgeList.innerHTML=badges.map(function (b) { const status=b.earned?'Earned':b.completed===0?'Not started':'In progress — '+b.completed+'/'+b.total+' requirements'; return '<article class="milestone ' + (b.earned?'earned':'locked') + '"><strong>' + b.name + '</strong><span>' + status + '</span><p>' + b.requirement + '</p><ul>' + b.evidence.map(function(e){return '<li>'+e+'</li>';}).join('') + '</ul></article>'; }).join("");
   const skillsSummary=document.querySelector("#skills-summary");
   if (skillsSummary) skillsSummary.textContent=achievements.filter(function(a){return a.earned;}).length + " of " + achievements.length + " achievements and " + badges.filter(function(b){return b.earned;}).length + " of " + badges.length + " skill badges earned.";
   return { snapshot:snapshot, xp:xp, level:level, achievements:achievements, badges:badges };

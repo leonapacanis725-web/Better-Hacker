@@ -134,7 +134,8 @@ test('a new learner completes all eight lessons through knowledge-check interact
 test('dashboard recommendation follows all learning phases using existing keys', () => {
   const todayAction = new FakeElement();
   const dashboardNext = new FakeElement();
-  const { context, localStorage } = boot({ elements: { '#today-action': todayAction, '#dashboard-next': dashboardNext } });
+  const badgeList = new FakeElement();
+  const { context, localStorage } = boot({ elements: { '#today-action': todayAction, '#dashboard-next': dashboardNext, '#skill-badges-list': badgeList } });
   const firstVisit = context.__app.getDashboardState();
   assert.equal(firstVisit.completedActivities, 0);
   assert.equal(firstVisit.recommendation.label, 'Start Learning: Cybersecurity Fundamentals');
@@ -142,6 +143,8 @@ test('dashboard recommendation follows all learning phases using existing keys',
   assert.equal(todayAction.textContent, 'Start first lesson');
   assert.match(dashboardNext.innerHTML, /Start first lesson/);
   assert.match(htmlSource, /id="today-action"[^>]*>Start first lesson<\/a>/);
+  assert.match(badgeList.innerHTML, /Not started/);
+  assert.doesNotMatch(badgeList.innerHTML, /In progress — 0\//);
   assert.equal(localStorage.getItem('betterHackerFundamentalsComplete'), null);
   localStorage.setItem('betterHackerFundamentalsComplete', 'true');
   const returningLearner = context.__app.getDashboardState();
@@ -150,6 +153,7 @@ test('dashboard recommendation follows all learning phases using existing keys',
   assert.equal(returningLearner.recommendation.action, 'Continue lesson');
   context.__app.renderDashboard();
   assert.equal(todayAction.textContent, 'Continue lesson');
+  assert.match(badgeList.innerHTML, /In progress — 1\/2 requirements/);
   const lessons = ['Fundamentals','Networking','Linux','WebSecurity','Cryptography','ActiveDirectory','Soc','SecurityTesting'];
   lessons.forEach(name => localStorage.setItem(`betterHacker${name}Complete`, 'true'));
   assert.equal(context.__app.getDashboardState().recommendation.type, 'Guided Lab');
