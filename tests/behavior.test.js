@@ -143,6 +143,9 @@ test('dashboard recommendation follows all learning phases using existing keys',
   assert.equal(todayAction.textContent, 'Start first lesson');
   assert.match(dashboardNext.innerHTML, /Start first lesson/);
   assert.match(htmlSource, /id="today-action"[^>]*>Start first lesson<\/a>/);
+  assert.match(htmlSource, /Explore Hands-On Practice/);
+  assert.match(htmlSource, /Open Daily Practice/);
+  assert.match(htmlSource, /Explore Your Learning Path/);
   assert.match(badgeList.innerHTML, /Not started/);
   assert.doesNotMatch(badgeList.innerHTML, /In progress — 0\//);
   assert.equal(localStorage.getItem('betterHackerFundamentalsComplete'), null);
