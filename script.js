@@ -632,7 +632,7 @@ function updateCourseProgress() {
 
   if (progressText) {
     progressText.textContent =
-      `${completedLessons} / ${LESSON_PROGRESS.length} Lessons Completed`;
+      `${completedLessons}/${LESSON_PROGRESS.length} Lessons Completed`;
   }
 
   if (progressFill) {
