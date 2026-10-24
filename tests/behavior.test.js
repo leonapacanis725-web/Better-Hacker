@@ -4,6 +4,7 @@ const test = require('node:test');
 const vm = require('node:vm');
 
 const source = fs.readFileSync('script.js', 'utf8');
+const htmlSource = fs.readFileSync('index.html', 'utf8');
 const BetterHackerState = require('../learner-state.js');
 const BetterHackerStorage = require('../storage.js');
 const BetterHackerChallenges = require('../challenges.js');
@@ -131,8 +132,24 @@ test('a new learner completes all eight lessons through knowledge-check interact
 });
 
 test('dashboard recommendation follows all learning phases using existing keys', () => {
-  const { context, localStorage } = boot();
-  assert.match(context.__app.getDashboardState().recommendation.label, /Cybersecurity Fundamentals/);
+  const todayAction = new FakeElement();
+  const dashboardNext = new FakeElement();
+  const { context, localStorage } = boot({ elements: { '#today-action': todayAction, '#dashboard-next': dashboardNext } });
+  const firstVisit = context.__app.getDashboardState();
+  assert.equal(firstVisit.completedActivities, 0);
+  assert.equal(firstVisit.recommendation.label, 'Start Learning: Cybersecurity Fundamentals');
+  assert.equal(firstVisit.recommendation.action, 'Start first lesson');
+  assert.equal(todayAction.textContent, 'Start first lesson');
+  assert.match(dashboardNext.innerHTML, /Start first lesson/);
+  assert.match(htmlSource, /id="today-action"[^>]*>Start first lesson<\/a>/);
+  assert.equal(localStorage.getItem('betterHackerFundamentalsComplete'), null);
+  localStorage.setItem('betterHackerFundamentalsComplete', 'true');
+  const returningLearner = context.__app.getDashboardState();
+  assert.equal(returningLearner.completedActivities, 1);
+  assert.equal(returningLearner.recommendation.label, 'Continue Learning: Networking');
+  assert.equal(returningLearner.recommendation.action, 'Continue lesson');
+  context.__app.renderDashboard();
+  assert.equal(todayAction.textContent, 'Continue lesson');
   const lessons = ['Fundamentals','Networking','Linux','WebSecurity','Cryptography','ActiveDirectory','Soc','SecurityTesting'];
   lessons.forEach(name => localStorage.setItem(`betterHacker${name}Complete`, 'true'));
   assert.equal(context.__app.getDashboardState().recommendation.type, 'Guided Lab');
