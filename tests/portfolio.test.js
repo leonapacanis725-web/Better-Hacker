@@ -69,7 +69,10 @@ test('GitHub preparation previews a professional file set without publishing or 
   const prepared=Portfolio.githubPackage(project);
   assert.equal(prepared.repositoryName,'linux-fundamentals');
   assert.match(prepared.description,/Linux Fundamentals/);
-  assert.deepEqual(Object.keys(prepared.files),['README.md','findings.md']);
+  assert.deepEqual(Object.keys(prepared.files),['README.md','findings.md','REPORT_TEMPLATE.md']);
+  assert.match(prepared.files['REPORT_TEMPLATE.md'],/Executive Summary/);
+  assert.match(prepared.files['REPORT_TEMPLATE.md'],/Baseline and Alternative Explanations/);
+  assert.match(prepared.files['REPORT_TEMPLATE.md'],/Timeline/);
   assert.match(prepared.files['README.md'],/Educational work completed through Better Hacker/);
   assert.match(prepared.files['README.md'],/Commands Used/);
   assert.match(prepared.files['findings.md'],/Inspected the supplied training directory/);

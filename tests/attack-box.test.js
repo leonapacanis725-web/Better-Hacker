@@ -60,7 +60,7 @@ test('storage failures report a session-only completion without claiming it was 
 
 test('Attack Box uses the explicit safe command allowlist and no host or network execution APIs',()=>{
   const fs=require('node:fs');const source=fs.readFileSync(require.resolve('../attack-box.js'),'utf8');
-  assert.deepEqual([...Box.COMMANDS],['pwd','ls','cd','cat','whoami','id','grep','find','ip','ping','curl','ss','ps']);
+  assert.deepEqual([...Box.COMMANDS],['help','pwd','ls','cd','cat','whoami','id','grep','find','ip','ping','curl','ss','ps']);
   assert.doesNotMatch(source,/\beval\s*\(|new Function|child_process|execSync|spawnSync|fetch\s*\(|XMLHttpRequest|WebSocket/);
   assert.match(fs.readFileSync(require.resolve('../attack-box-ui.js'),'utf8'),/No real shell, operating system, or network is connected/);
 });

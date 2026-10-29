@@ -16,7 +16,7 @@
     { id:"web-response-review", title:"Web Security: Review a safe response", track:"OWASP / Web Security", objective:"Inspect a fictional HTTP response and find its status code and a security header.", hint:"curl https://training.local displays a fixed response. Then use grep X-Frame-Options /tmp/response.txt.", lesson:"#web-security-lesson", required:["curl https://training.local","grep X-Frame-Options /tmp/response.txt"], dirs:["/","/tmp","/home","/home/learner"], files:{"/tmp/response.txt":"HTTP/1.1 200 OK\nContent-Type: text/plain\nX-Frame-Options: SAMEORIGIN\nReferrer-Policy: same-origin\n\nTraining response only."} }
   ].map(function (challenge) { return Object.freeze(challenge); }));
 
-  const COMMANDS = Object.freeze(["pwd","ls","cd","cat","whoami","id","grep","find","ip","ping","curl","ss","ps"]);
+  const COMMANDS = Object.freeze(["help","pwd","ls","cd","cat","whoami","id","grep","find","ip","ping","curl","ss","ps"]);
   const challengeById = id => CHALLENGES.find(item => item.id === id) || null;
   function emptyState() { return { version:VERSION, completed:[] }; }
   function validateState(value) {
@@ -51,7 +51,7 @@
     if (!challenge) return fail("Challenge not found.", "/home/learner");
     if (!command || command.length > 180 || /[;|&><`$\\\n\r\u0000-\u001f]/.test(command) || !/^[A-Za-z0-9_./:\-]+(?:\s+[A-Za-z0-9_./:\-]+)*$/.test(command)) return fail("Input not recognized. Enter one supported command with simple arguments.");
     const parts=command.split(/\s+/), name=parts[0], args=parts.slice(1), working=challenge.dirs.includes(cwd) ? cwd : "/home/learner";
-    if (!COMMANDS.includes(name)) return fail("Command not supported in this simulated Attack Box. Try help.", working);
+    if (!COMMANDS.includes(name)) return fail("Command not supported in this simulated Attack Box. Run help to see the available commands; this is not a full Linux shell.", working);
     const path=arg => normalizePath(arg, working);
     const directoryContents=target => {
       if (!challenge.dirs.includes(target)) return null;
@@ -60,13 +60,14 @@
       Object.keys(challenge.files).forEach(file => { if (file.startsWith(target === "/" ? "/" : target + "/")) { const rest=file.slice(target === "/" ? 1 : target.length+1); if (rest) children.add(rest.split("/")[0] + (rest.includes("/") ? "/" : "")); } });
       return Array.from(children).sort();
     };
+    if (name === "help") return args.length ? fail("Usage: help",working) : {command,output:"Supported simulated commands: "+COMMANDS.filter(item=>item!=="help").join(", ")+"\nTroubleshooting: use pwd to check your location; ls to inspect available paths; paths and grep text are case-sensitive; use the exact file path shown by ls. This sandbox does not support sudo or permission changes.",cwd:working,ok:true};
     if (name === "pwd") return args.length ? fail("Usage: pwd",working) : {command,output:working,cwd:working,ok:true};
     if (name === "ls") { if (args.length>1) return fail("Usage: ls [simulated-path]",working); const target=path(args[0]); const items=directoryContents(target); return items ? {command,output:items.join("  ") || "(empty directory)",cwd:working,ok:true} : fail("ls: path not found in this challenge.",working); }
-    if (name === "cd") { if (args.length!==1) return fail("Usage: cd simulated-directory",working); const target=path(args[0]); return challenge.dirs.includes(target) ? {command,output:"Current simulated directory: "+target,cwd:target,ok:true} : fail("cd: directory not found in this challenge.",working); }
+    if (name === "cd") { if (args.length!==1) return fail("Usage: cd simulated-directory",working); const target=path(args[0]); return challenge.dirs.includes(target) ? {command,output:"Current simulated directory: "+target,cwd:target,ok:true} : fail("cd: directory not found in this challenge. Check spelling and capitalization; run pwd, then ls to inspect available directories.",working); }
     if (name === "whoami") return args.length ? fail("Usage: whoami",working) : {command,output:"learner",cwd:working,ok:true};
     if (name === "id") return args.length ? fail("Usage: id",working) : {command,output:"uid=1000(learner) gid=1000(learner) groups=1000(learner)",cwd:working,ok:true};
-    if (name === "cat") { if (args.length!==1) return fail("Usage: cat simulated-file",working); const content=challenge.files[path(args[0])]; return typeof content === "string" ? {command,output:content,cwd:working,ok:true} : fail("cat: file not found in this challenge.",working); }
-    if (name === "grep") { if (args.length!==2) return fail("Usage: grep search-text simulated-file",working); const content=challenge.files[path(args[1])]; if (typeof content!=="string") return fail("grep: file not found in this challenge.",working); const matches=content.split("\n").filter(line=>line.includes(args[0])); return {command,output:matches.length?matches.join("\n"):"No matching lines.",cwd:working,ok:true}; }
+    if (name === "cat") { if (args.length!==1) return fail("Usage: cat simulated-file",working); const content=challenge.files[path(args[0])]; return typeof content === "string" ? {command,output:content,cwd:working,ok:true} : fail("cat: file not found in this challenge. Check the full path and capitalization with pwd and ls; only supplied training files are available.",working); }
+    if (name === "grep") { if (args.length!==2) return fail("Usage: grep search-text simulated-file",working); const content=challenge.files[path(args[1])]; if (typeof content!=="string") return fail("grep: file not found in this challenge. Check the path and capitalization with ls; use grep TEXT /path/to/file.",working); const matches=content.split("\n").filter(line=>line.includes(args[0])); return {command,output:matches.length?matches.join("\n"):"No matching lines. grep is case-sensitive; check the exact text and consider searching a shorter term.",cwd:working,ok:true}; }
     if (name === "find") { if (args.length>1) return fail("Usage: find [simulated-directory]",working); const target=path(args[0] || "."); if (!challenge.dirs.includes(target)) return fail("find: start directory not found in this challenge.",working); return {command,output:Object.keys(challenge.files).filter(file=>file===target||file.startsWith(target==="/"?"/":target+"/")).sort().join("\n") || "No files in this challenge directory.",cwd:working,ok:true}; }
     if (name === "ip") return args.length===1 && args[0]==="addr" ? {command,output:"1: lo: <LOOPBACK,UP>\n    inet 127.0.0.1/8\n2: eth0: <BROADCAST,UP>\n    inet 192.0.2.20/24",cwd:working,ok:true} : fail("Supported form: ip addr",working);
     if (name === "ss") return args.length===1 && args[0]==="-tuln" ? {command,output:"Netid State  Local Address:Port\ntcp   LISTEN 0.0.0.0:22\ntcp   LISTEN 127.0.0.1:8080",cwd:working,ok:true} : fail("Supported form: ss -tuln",working);

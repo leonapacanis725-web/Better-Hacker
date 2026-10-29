@@ -145,9 +145,24 @@
       "## Educational Use\n\nThis is a simulated educational exercise completed through Better Hacker. It is not professional work experience, certification, or a claim that a real system was tested. Use only authorized, fictional evidence." ];
     return items.join("\n\n")+"\n";
   }
+  function reportTemplate(project) {
+    const activity=activityById(project.activityId); if(!activity)return "";
+    return "# Incident / Investigation Report Template\n\n"+
+      "> Educational template for simulated practice. Do not enter real personal data, credentials, or confidential organizational information. Clearly label fictional exercise evidence.\n\n"+
+      "## 1. Executive Summary\n\n- **Status:** [New / Investigating / Benign explanation / Escalated / Closed]\n- **What happened:** [One or two factual sentences]\n- **Confidence:** [Low / Medium / High, with reason]\n\n"+
+      "## 2. Scope and Authorization\n\n- **Systems / accounts in scope:** [List only authorized training assets]\n- **Evidence reviewed:** [Logs, timestamps, alerts, supplied files]\n- **Limitations:** [Missing records, time range, assumptions]\n\n"+
+      "## 3. Timeline (UTC or stated timezone)\n\n| Time | Source / Event ID | Observed fact |\n|---|---|---|\n| [time] | [source] | [what the record shows] |\n\n"+
+      "## 4. Findings and Evidence\n\nFor each finding, record the source, exact observation, and what it supports. Separate observed facts from interpretation.\n\n- **Finding:** [ ]\n- **Evidence source:** [ ]\n- **Interpretation:** [ ]\n- **Confidence / uncertainty:** [ ]\n\n"+
+      "## 5. Baseline and Alternative Explanations\n\n- **Expected baseline:** [Normal behavior for a comparable period / asset]\n- **Observed deviation:** [Specific difference]\n- **Benign explanations checked:** [Approved change, known device, user action, maintenance]\n- **Evidence still needed:** [ ]\n\n"+
+      "## 6. Impact and Risk\n\n[State confirmed impact only. If impact is unknown, say so.]\n\n"+
+      "## 7. Recommended Next Steps\n\n[Proportionate, authorized actions; identify the owner and any approval needed.]\n\n"+
+      "## 8. Closure / Handoff Notes\n\n[Reason for closure or escalation, outstanding questions, and next owner.]\n\n"+
+      "## 9. Analyst Reflection\n\n[What you learned, what you would verify next, and what limitations remain.]\n\n"+
+      "## Activity Context\n\n- **Better Hacker activity:** "+markdownText(activity.title)+"\n- **Objective:** "+markdownText(activity.objective)+"\n";
+  }
   function githubPackage(project) {
     const activity=activityById(project.activityId); if(!activity)return null;
-    const files={"README.md":markdown(project),"findings.md":findingsMarkdown(project)};
+    const files={"README.md":markdown(project),"findings.md":findingsMarkdown(project),"REPORT_TEMPLATE.md":reportTemplate(project)};
     const challenge=activity.dailyId && DailyLibrary.activityById ? DailyLibrary.activityById(activity.dailyId) : null;
     if(challenge && clean(challenge.evidence)) files["sample-evidence.md"]="# Supplied Sample Evidence\n\n"+markdownText(challenge.evidence)+"\n\nThis fictional evidence was supplied by Better Hacker for educational practice. Review it as exercise data; do not treat it as a real organization record.\n";
     const attackChallenge=activity.attackBoxId && AttackBox ? AttackBox.CHALLENGES.find(item=>item.id===activity.attackBoxId) : null;
@@ -156,6 +171,6 @@
   }
   function stats(storage) { const projects=read(storage).projects; return { total:projects.length, ready:projects.filter(function(p){return readiness(p).status === "Portfolio Ready";}).length, drafts:projects.filter(function(p){return readiness(p).status !== "Portfolio Ready";}).length }; }
   function suggestion(storage) { return ACTIVITIES.find(function(a){return isComplete(a,storage) && !read(storage).projects.some(function(p){return p.activityId===a.id;});}) || null; }
-  return { STORAGE_KEY, VERSION, ACTIVITIES, LEARNER_FIELDS, activityById, isComplete, emptyState, validateState, read, save, createProject, updateProject, removeProject, readiness, markdown, repositoryName, repositoryDescription, findingsMarkdown, githubPackage, stats, suggestion };
+  return { STORAGE_KEY, VERSION, ACTIVITIES, LEARNER_FIELDS, activityById, isComplete, emptyState, validateState, read, save, createProject, updateProject, removeProject, readiness, markdown, repositoryName, repositoryDescription, findingsMarkdown, reportTemplate, githubPackage, stats, suggestion };
 });
 
