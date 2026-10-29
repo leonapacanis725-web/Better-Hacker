@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free Beginner OWASP &amp; Web Security Practice | Better Hacker</title>
+  <meta name="description" content="Learn beginner web application security with OWASP concepts, safe vulnerability examples, guided practice, and portfolio evidence. Free learning on Better Hacker.">
+  <link rel="canonical" href="https://betterhacker.org/labs/owasp-web-security/">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    .web-hero { min-height: 420px; padding: 76px 7%; }
+    .web-hero h1 { max-width: 920px; margin: 0 auto 22px; font-size: clamp(2.35rem, 6vw, 4.4rem); line-height: 1.08; }
+    .web-hero .hero-text { margin-bottom: 22px; }
+    .web-page { text-align: left; }
+    .web-page > h2, .web-page > .section-label, .web-page > .section-intro { text-align: center; }
+    .web-content { max-width: 980px; margin: 0 auto; display: grid; gap: 22px; }
+    .web-content .lesson-block { text-align: left; }
+    .web-content h2 { font-size: clamp(1.5rem, 3vw, 2rem); margin-bottom: 12px; }
+    .web-content h3 { color: #fff; margin-bottom: 10px; font-size: 1.2rem; }
+    .web-content p, .web-content li { color: #cbd5e1; }
+    .web-content ul, .web-content ol { padding-left: 1.4rem; margin: 12px 0; }
+    .web-content li + li { margin-top: 7px; }
+    .web-note { border-left: 3px solid #38bdf8; padding: 14px 18px; background: #0d1a2c; border-radius: 0 8px 8px 0; }
+    .web-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 26px; }
+    .web-footer { text-align: center; }
+    @media (max-width: 600px) {
+      .web-hero { min-height: auto; padding: 56px 6%; }
+      .web-page { padding: 64px 6%; }
+      .web-content .lesson-block { padding: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <nav class="navbar" aria-label="Main navigation">
+    <a href="/" class="logo" aria-label="Better Hacker home">Better <span>Hacker</span></a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/#learn">Lessons</a></li>
+      <li><a href="/#labs">Labs</a></li>
+      <li><a href="/#practice-library">Practice</a></li>
+      <li><a href="/#portfolio">Portfolio</a></li>
+    </ul>
+  </nav>
+
+  <main id="main-content" tabindex="-1">
+    <header class="hero web-hero">
+      <div class="hero-content">
+        <p class="eyebrow">BEGINNER WEB APPLICATION SECURITY</p>
+        <h1>Learn OWASP &amp; Web Security with Free Beginner Practice</h1>
+        <p class="hero-text">Understand common web application risks, recognize unsafe patterns, and build a careful, evidence-based approach to defensive web security.</p>
+        <p>Better Hacker's guided activities use educational examples and fictional evidence. They do not test real websites, connect to external targets, or require an account or virtual machine.</p>
+        <div class="hero-buttons">
+          <a class="primary-button" href="/#web-security-lesson">Start the Web Security lesson</a>
+          <a class="secondary-button" href="/#practice-track-web">Explore Web Security practice</a>
+        </div>
+      </div>
+    </header>
+
+    <section class="section web-page">
+      <p class="section-label">OWASP &amp; WEB SECURITY LEARNING PATH</p>
+      <h2>What Is OWASP and Why Does It Matter?</h2>
+      <p class="section-intro">OWASP—the Open Worldwide Application Security Project—is a community-led nonprofit that publishes resources to help people understand and improve application security. Its OWASP Top 10 is a widely used awareness resource for important web application security risks.</p>
+      <div class="web-content">
+        <article class="lesson-block">
+          <h3>Think like a defensive web security analyst</h3>
+          <p>Web security work starts by understanding how an application is expected to behave. Analysts review requests, inputs, authentication, permissions, and responses to identify where data or actions may be exposed.</p>
+          <ul>
+            <li><strong>Understand:</strong> learn how browsers, servers, APIs, and databases exchange information.</li>
+            <li><strong>Recognize:</strong> identify patterns associated with common vulnerability classes.</li>
+            <li><strong>Validate:</strong> distinguish an observed behavior from an assumption about its cause or impact.</li>
+            <li><strong>Recommend:</strong> explain a proportionate defensive improvement and the evidence supporting it.</li>
+          </ul>
+        </article>
+
+        <article class="lesson-block">
+          <h3>Beginner concepts covered in the learning path</h3>
+          <p>Start with these foundational web application security concepts. They are useful examples of the kinds of weaknesses discussed in OWASP learning resources; this page is an introduction, not a complete or version-specific reproduction of the OWASP Top 10.</p>
+          <ul>
+            <li><strong>Injection:</strong> untrusted input is handled in a way that can alter a command or database query. Parameterized queries help keep data separate from SQL instructions.</li>
+            <li><strong>Cross-site scripting (XSS):</strong> unsafe handling of untrusted content can cause script execution in a user's browser. Context-aware output encoding and safe content handling are important defenses.</li>
+            <li><strong>Broken access control:</strong> an application fails to enforce what an authenticated user is allowed to view or do. Authorization checks should be enforced server-side for each protected action.</li>
+            <li><strong>Authentication and session handling:</strong> weak identity or session controls can expose accounts. Applications should use secure authentication practices and protect session tokens.</li>
+          </ul>
+        </article>
+
+        <article class="lesson-block">
+          <h3>Safe beginner lab: review a fictional web request</h3>
+          <p><strong>Scenario:</strong> A fictional training application has a search form. A developer's notes say the search value is joined directly into a database query. No real application or database is involved.</p>
+          <ol>
+            <li>Identify which part of the request is controlled by the user.</li>
+            <li>Explain why mixing user input with SQL instructions can create an injection risk.</li>
+            <li>Recommend using a parameterized query so the search value is treated as data.</li>
+            <li>Record what the scenario demonstrates and what it does not prove about any real system.</li>
+          </ol>
+          <div class="web-note">
+            <p><strong>Practice question:</strong> What design change would reduce the risk, and what additional evidence would you need before claiming that a real application is vulnerable?</p>
+          </div>
+        </article>
+
+        <article class="lesson-block">
+          <h3>A safe web security review checklist</h3>
+          <ol>
+            <li><strong>Confirm scope:</strong> review only systems and materials you are explicitly authorized to assess.</li>
+            <li><strong>Map the behavior:</strong> identify the request, input, response, account role, and expected result.</li>
+            <li><strong>Check controls:</strong> consider input handling, output encoding, authentication, and server-side authorization.</li>
+            <li><strong>Document evidence:</strong> separate observed facts, possible explanations, impact, and uncertainty.</li>
+            <li><strong>Recommend carefully:</strong> suggest a defensive fix and verification plan without disrupting a real service.</li>
+          </ol>
+          <p>Do not probe public websites or submit test payloads to systems without explicit authorization and an agreed scope. The Better Hacker examples on this page are educational simulations only.</p>
+        </article>
+
+        <article class="lesson-block">
+          <h3>Continue with the existing Better Hacker lesson and practice</h3>
+          <p>This landing page helps you find the existing learning activities. The lesson, practice track, and daily challenge remain in the Better Hacker learning workspace, where your browser-based progress is tracked.</p>
+          <ul>
+            <li><a href="/#web-security-lesson">Web Security Fundamentals lesson</a> — HTTP and HTTPS, common vulnerabilities, input handling, and a knowledge check.</li>
+            <li><a href="/#practice-track-web">Web Security practice track</a> — open the existing guided practice collection.</li>
+            <li><a href="/#daily-practice-daily-web-input">Daily web input practice</a> — continue with the existing short practice activity.</li>
+            <li><a href="/#labs">Hands-On Practice workspace</a> — find the current guided simulations.</li>
+          </ul>
+        </article>
+
+        <article class="lesson-block">
+          <h3>Build honest portfolio evidence</h3>
+          <p>A useful beginner write-up explains the scenario, the behavior reviewed, the security concept, the recommended defense, and the limits of the evidence. Do not include real credentials, personal data, private source code, or confidential employer information.</p>
+          <ul>
+            <li><strong>Scenario:</strong> describe the fictional request or application behavior.</li>
+            <li><strong>Observation:</strong> record only what the supplied evidence shows.</li>
+            <li><strong>Assessment:</strong> explain the possible risk and what remains unknown.</li>
+            <li><strong>Recommendation:</strong> describe a defensive design improvement and how it could be verified safely.</li>
+          </ul>
+          <p>Use the Better Hacker portfolio workspace to document eligible completed practice. Clearly label simulated work as educational practice, not professional testing experience.</p>
+        </article>
+      </div>
+      <div class="web-actions">
+        <a class="primary-button" href="/#web-security-lesson">Open the Web Security lesson</a>
+        <a class="secondary-button" href="/#practice-track-web">Try Web Security practice</a>
+        <a class="secondary-button" href="/#portfolio">Visit your portfolio workspace</a>
+      </div>
+    </section>
+
+    <section class="section dark-section web-footer">
+      <p class="section-label">KEEP LEARNING</p>
+      <h2>Build secure web application thinking, one concept at a time.</h2>
+      <p class="section-intro">Learn the fundamentals, review the fictional scenario, and explain your reasoning clearly.</p>
+      <a class="primary-button" href="/">Return to Better Hacker</a>
+    </section>
+  </main>
+</body>
+</html>
