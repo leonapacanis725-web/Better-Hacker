@@ -426,6 +426,67 @@
       "hint": "Separate observed records from unsupported claims and untrusted instructions.",
       "xp": 50
     }
+    ,
+    {
+      "track": "Networking",
+      "assistantTopic": "networking",
+      "nextHref": "#networking-lesson",
+      "portfolio": true,
+      "title": "Baseline vs. Unusual Network Activity",
+      "evidence": "SIMULATED BASELINE (10-minute window)\n10.0.0.20 → 10.0.0.53 UDP/53: 18 DNS queries\n10.0.0.20 → 10.0.0.80 TCP/443: 24 HTTPS connections\n\nSIMULATED OBSERVATION (same-length window)\n10.0.0.20 → 10.0.0.53 UDP/53: 20 DNS queries\n10.0.0.20 → 10.0.0.99 TCP/445: 620 connection attempts\nApproved file-share maintenance: none recorded.",
+      "task": "Which difference deserves investigation first?",
+      "evidenceChoices": [
+        "The small change from 18 to 20 DNS queries",
+        "The new high-volume TCP/445 activity without a recorded maintenance window",
+        "All HTTPS connections, because encryption is suspicious"
+      ],
+      "evidenceIndex": 1,
+      "evidenceExplanation": "Compare like-for-like time windows. The new high-volume SMB activity differs materially from the supplied baseline and lacks an approved maintenance explanation; it is a lead to validate, not proof of malicious activity.",
+      "difficulty": "Beginner",
+      "minutes": "5–10 minutes",
+      "id": "daily-network-baseline",
+      "topic": "Network Baselines",
+      "scenario": "A host's current traffic differs from its normal 10-minute baseline. What should an analyst compare?",
+      "choices": [
+        "The size, destination, timing, and approved purpose of the deviation",
+        "Only whether the protocol name looks unfamiliar",
+        "Assume every increase is an attack"
+      ],
+      "correctIndex": 0,
+      "explanation": "A useful baseline comparison uses equivalent time windows and considers volume, destination, timing, asset role, and approved changes. A deviation prioritizes investigation but does not establish intent.",
+      "hint": "Compare the same duration, then look for a new destination and an unusually large change.",
+      "xp": 50
+    },
+    {
+      "track": "SOC / SIEM",
+      "assistantTopic": "soc",
+      "nextHref": "#soc-siem-lesson",
+      "portfolio": true,
+      "title": "Triage a Benign Login Alert",
+      "evidence": "FICTIONAL ALERT\nRule: 8 failed sign-ins in 5 minutes.\nAccount: demo-user.\nDevice: KIOSK-04 (known shared training kiosk).\nContext: approved password-reset exercise, ticket CHG-204, 09:00–09:15.\nNo successful sign-in or unusual access event is supplied.",
+      "task": "What is the most defensible triage decision?",
+      "evidenceChoices": [
+        "Confirmed account compromise because the rule fired",
+        "Likely expected activity based on the matching approved change; document and verify closure context",
+        "Delete the alert because it is inconvenient"
+      ],
+      "evidenceIndex": 1,
+      "evidenceExplanation": "The alert is a detection signal. The matching change ticket and time window support a benign explanation, but the analyst should verify the account/device context and document why the alert can be closed under local procedure.",
+      "difficulty": "Beginner",
+      "minutes": "5–10 minutes",
+      "id": "daily-siem-false-positive",
+      "topic": "SOC Alert Triage",
+      "scenario": "A repeated-failure alert overlaps an approved password-reset exercise. What should an analyst do?",
+      "choices": [
+        "Correlate the alert with the change ticket and document the rationale",
+        "Automatically declare compromise",
+        "Close it without checking any context"
+      ],
+      "correctIndex": 0,
+      "explanation": "A benign explanation should be supported by matching evidence, such as the approved ticket, expected device, and time window. Record the basis for closure and note any remaining uncertainty.",
+      "hint": "Check whether the account, device, and alert time match the approved change.",
+      "xp": 50
+    }
   ];
   const CHALLENGES = Object.freeze(entries.map(activity => Object.freeze({
     ...activity, choices: Object.freeze(activity.choices), evidenceChoices: Object.freeze(activity.evidenceChoices)
