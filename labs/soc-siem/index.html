@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Free Beginner SOC &amp; SIEM Practice | Better Hacker</title>
-  <meta name="description" content="Learn SOC and SIEM fundamentals with free beginner lessons, practical security investigations, and hands-on exercises. No account or virtual machine required.">
+  <title>SOC &amp; SIEM Analyst Lab for Beginners | Better Hacker</title>
+  <meta name="description" content="Practice beginner SOC analyst skills with free guided exercises. Review authentication logs, connect related events, and investigate suspicious activity using simulated evidence.">
   <link rel="canonical" href="https://betterhacker.org/labs/soc-siem/">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/style.css">
@@ -50,7 +50,7 @@
       <div class="hero-content">
         <p class="eyebrow">BEGINNER DEFENSIVE SECURITY</p>
         <h1>Learn SOC &amp; SIEM Fundamentals with Free Beginner Practice</h1>
-        <p class="hero-text">Understand how security teams review logs, validate alerts, and investigate suspicious activity using guided lessons and clearly labeled simulated evidence.</p>
+        <p class="hero-text">Step into the role of a Security Operations Center analyst: review authentication logs, connect related events, and investigate suspicious activity using simulated evidence.</p>
         <p>No account or virtual machine is required for the guided learning activities on Better Hacker. Examples on this page are educational simulations, not live monitoring of real systems.</p>
         <div class="hero-buttons">
           <a class="primary-button" href="/#soc-siem-lesson">Start the SOC &amp; SIEM lesson</a>
@@ -62,8 +62,18 @@
     <section class="section soc-page">
       <p class="section-label">SOC &amp; SIEM LEARNING PATH</p>
       <h2>What Is a SOC and What Does a SOC Analyst Do?</h2>
-      <p class="section-intro">A Security Operations Center (SOC) helps an organization monitor systems, assess security alerts, investigate potential threats, and coordinate an appropriate response.</p>
+      <p class="section-intro">A Security Operations Center (SOC) is a team that monitors an organization's technology, investigates potential threats, and coordinates an appropriate response.</p>
       <div class="soc-content">
+        <article class="lesson-block" aria-labelledby="soc-key-terms">
+          <h3 id="soc-key-terms">Key SOC and SIEM terms, in plain English</h3>
+          <ul>
+            <li><strong>SOC (Security Operations Center):</strong> The people and processes responsible for monitoring an organization's systems, investigating suspicious activity, and responding to security incidents. Teams and coverage hours vary by organization.</li>
+            <li><strong>SIEM (Security Information and Event Management):</strong> Software that collects and organizes activity records from different systems so analysts can search events, connect related activity, and investigate alerts.</li>
+            <li><strong>Log correlation:</strong> Comparing related records—such as sign-in attempts, timestamps, and device details—to see whether they form a meaningful sequence. It helps build a timeline; it does not by itself prove an attack.</li>
+            <li><strong>Authentication logs:</strong> Records of sign-in activity, such as successful or failed login attempts, account names, timestamps, and other details when available.</li>
+            <li><strong>Telemetry:</strong> Data that systems automatically produce about their activity and behavior. Logs are one common form of this data.</li>
+          </ul>
+        </article>
         <article class="lesson-block">
           <h3>From alert to evidence-based decision</h3>
           <p>SOC analysts review signals from computers, user accounts, applications, and network devices. They gather context, check whether an alert is supported by evidence, record what they found, and escalate or recommend a response according to the organization's procedures.</p>

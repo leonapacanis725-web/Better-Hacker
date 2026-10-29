@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Free Beginner OWASP &amp; Web Security Practice | Better Hacker</title>
-  <meta name="description" content="Learn beginner web application security with OWASP concepts, safe vulnerability examples, guided practice, and portfolio evidence. Free learning on Better Hacker.">
+  <title>OWASP Web Security Lab for Beginners | Better Hacker</title>
+  <meta name="description" content="Learn web security basics with free beginner practice. Identify risks like SQL injection and cross-site scripting (XSS), and explore safer ways to defend web applications.">
   <link rel="canonical" href="https://betterhacker.org/labs/owasp-web-security/">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/style.css">
@@ -49,7 +49,7 @@
       <div class="hero-content">
         <p class="eyebrow">BEGINNER WEB APPLICATION SECURITY</p>
         <h1>Learn OWASP &amp; Web Security with Free Beginner Practice</h1>
-        <p class="hero-text">Understand common web application risks, recognize unsafe patterns, and build a careful, evidence-based approach to defensive web security.</p>
+        <p class="hero-text">Learn how web application flaws work, recognize risks such as SQL injection and cross-site scripting (XSS), and explore safer ways to protect applications.</p>
         <p>Better Hacker's guided activities use educational examples and fictional evidence. They do not test real websites, connect to external targets, or require an account or virtual machine.</p>
         <div class="hero-buttons">
           <a class="primary-button" href="/#web-security-lesson">Start the Web Security lesson</a>
@@ -63,6 +63,16 @@
       <h2>What Is OWASP and Why Does It Matter?</h2>
       <p class="section-intro">OWASP—the Open Worldwide Application Security Project—is a community-led nonprofit that publishes resources to help people understand and improve application security. Its OWASP Top 10 is a widely used awareness resource for important web application security risks.</p>
       <div class="web-content">
+        <article class="lesson-block" aria-labelledby="web-key-terms">
+          <h3 id="web-key-terms">Key web security terms, in plain English</h3>
+          <ul>
+            <li><strong>OWASP Top 10:</strong> A regularly updated awareness list of important web application security risk categories. It is not a list of exactly ten attacks that every website will experience.</li>
+            <li><strong>SQL Injection (SQLi):</strong> A weakness that can let specially crafted input change how an application sends a database query. Depending on the flaw and permissions, information could be exposed, changed, or deleted.</li>
+            <li><strong>Cross-Site Scripting (XSS):</strong> A weakness that can cause untrusted content to run as script in another visitor's browser, potentially affecting that visitor or their account.</li>
+            <li><strong>Broken Access Control:</strong> A weakness where an application does not properly check what a user is allowed to view or do, potentially exposing another user's information or restricted actions.</li>
+            <li><strong>Sanitization:</strong> Processing or validating input to reduce unsafe content. The right defense depends on where the data is used; sanitization alone is not a substitute for context-aware output encoding or parameterized queries.</li>
+          </ul>
+        </article>
         <article class="lesson-block">
           <h3>Think like a defensive web security analyst</h3>
           <p>Web security work starts by understanding how an application is expected to behave. Analysts review requests, inputs, authentication, permissions, and responses to identify where data or actions may be exposed.</p>
