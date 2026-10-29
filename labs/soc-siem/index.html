@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free Beginner SOC &amp; SIEM Practice | Better Hacker</title>
+  <meta name="description" content="Learn SOC and SIEM fundamentals with free beginner lessons, practical security investigations, and hands-on exercises. No account or virtual machine required.">
+  <link rel="canonical" href="https://betterhacker.org/labs/soc-siem/">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    .soc-hero { min-height: 420px; padding: 76px 7%; }
+    .soc-hero h1 { max-width: 900px; margin: 0 auto 22px; font-size: clamp(2.4rem, 6vw, 4.5rem); line-height: 1.08; }
+    .soc-hero .hero-text { margin-bottom: 22px; }
+    .soc-page { text-align: left; }
+    .soc-page > h2, .soc-page > .section-label, .soc-page > .section-intro { text-align: center; }
+    .soc-content { max-width: 980px; margin: 0 auto; display: grid; gap: 22px; }
+    .soc-content .lesson-block { text-align: left; }
+    .soc-content h2 { font-size: clamp(1.5rem, 3vw, 2rem); margin-bottom: 12px; }
+    .soc-content h3 { color: #fff; margin-bottom: 10px; font-size: 1.2rem; }
+    .soc-content p, .soc-content li { color: #cbd5e1; }
+    .soc-content ul, .soc-content ol { padding-left: 1.4rem; margin: 12px 0; }
+    .soc-content li + li { margin-top: 7px; }
+    .soc-content code { color: #7dd3fc; overflow-wrap: anywhere; }
+    .soc-note { border-left: 3px solid #38bdf8; padding: 14px 18px; background: #0d1a2c; border-radius: 0 8px 8px 0; }
+    .soc-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 26px; }
+    .soc-footer { text-align: center; }
+    @media (max-width: 600px) {
+      .soc-hero { min-height: auto; padding: 56px 6%; }
+      .soc-page { padding: 64px 6%; }
+      .soc-content .lesson-block { padding: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <nav class="navbar" aria-label="Main navigation">
+    <a href="/" class="logo" aria-label="Better Hacker home">Better <span>Hacker</span></a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/#learn">Lessons</a></li>
+      <li><a href="/#labs">Labs</a></li>
+      <li><a href="/#practice-library">Practice</a></li>
+      <li><a href="/#portfolio">Portfolio</a></li>
+    </ul>
+  </nav>
+
+  <main id="main-content" tabindex="-1">
+    <header class="hero soc-hero">
+      <div class="hero-content">
+        <p class="eyebrow">BEGINNER DEFENSIVE SECURITY</p>
+        <h1>Learn SOC &amp; SIEM Fundamentals with Free Beginner Practice</h1>
+        <p class="hero-text">Understand how security teams review logs, validate alerts, and investigate suspicious activity using guided lessons and clearly labeled simulated evidence.</p>
+        <p>No account or virtual machine is required for the guided learning activities on Better Hacker. Examples on this page are educational simulations, not live monitoring of real systems.</p>
+        <div class="hero-buttons">
+          <a class="primary-button" href="/#soc-siem-lesson">Start the SOC &amp; SIEM lesson</a>
+          <a class="secondary-button" href="/#practice-track-soc">Explore SOC practice</a>
+        </div>
+      </div>
+    </header>
+
+    <section class="section soc-page">
+      <p class="section-label">SOC &amp; SIEM LEARNING PATH</p>
+      <h2>What Is a SOC and What Does a SOC Analyst Do?</h2>
+      <p class="section-intro">A Security Operations Center (SOC) helps an organization monitor systems, assess security alerts, investigate potential threats, and coordinate an appropriate response.</p>
+      <div class="soc-content">
+        <article class="lesson-block">
+          <h3>From alert to evidence-based decision</h3>
+          <p>SOC analysts review signals from computers, user accounts, applications, and network devices. They gather context, check whether an alert is supported by evidence, record what they found, and escalate or recommend a response according to the organization's procedures.</p>
+          <ul>
+            <li><strong>Monitor:</strong> review alerts and relevant security events.</li>
+            <li><strong>Triage:</strong> assess urgency, scope, and available evidence.</li>
+            <li><strong>Investigate:</strong> correlate related activity and look for alternative explanations.</li>
+            <li><strong>Document:</strong> record facts, uncertainty, and recommended next steps.</li>
+          </ul>
+        </article>
+
+        <article class="lesson-block">
+          <h3>Understanding SIEM and security logs</h3>
+          <p>Security Information and Event Management (SIEM) systems bring together logs and events from multiple sources so analysts can search activity, correlate events, and create alerts. A SIEM alert is a lead to investigate—not automatic proof that an incident occurred.</p>
+          <ul>
+            <li><strong>Authentication logs:</strong> successful and failed sign-ins, account names, timestamps, and source details when available.</li>
+            <li><strong>Windows event logs:</strong> operating-system and security events that help explain account and system activity.</li>
+            <li><strong>Linux system and authentication logs:</strong> service events, sign-in activity, and system messages.</li>
+            <li><strong>Network, firewall, and web logs:</strong> connection decisions, requests, source addresses, timestamps, and response codes.</li>
+          </ul>
+          <p>Useful fields often include time, user or account, source address or device, action, outcome, and event source. Field names and availability vary by system.</p>
+        </article>
+
+        <article class="lesson-block">
+          <h3>Beginner SOC analyst practice: investigate a simulated alert</h3>
+          <p><strong>Scenario:</strong> A training alert reports 14 failed sign-in attempts followed by one successful sign-in from an unfamiliar device. This is fictional evidence for practice.</p>
+          <ol>
+            <li>Identify the account, timestamps, device or source details, and the outcome of each event.</li>
+            <li>Check the sequence and time window. Determine whether the successful sign-in followed the failures closely.</li>
+            <li>Look for related authentication events and available context, such as whether the device or location is expected.</li>
+            <li>Write a short finding that separates observed facts from assumptions.</li>
+            <li>Recommend a proportionate next step under an authorized response process. Do not declare a confirmed compromise based on this single alert alone.</li>
+          </ol>
+          <div class="soc-note">
+            <p><strong>Practice prompt:</strong> What evidence would you gather next, and what additional fact would help you decide whether the activity is suspicious? There may be more than one defensible answer when evidence is incomplete.</p>
+          </div>
+        </article>
+
+        <article class="lesson-block">
+          <h3>A safe alert-triage checklist</h3>
+          <ol>
+            <li><strong>Validate:</strong> confirm the alert's source, timestamp, and triggering condition.</li>
+            <li><strong>Scope:</strong> identify the account, host, service, and time range involved.</li>
+            <li><strong>Correlate:</strong> compare related records from relevant log sources.</li>
+            <li><strong>Assess:</strong> document impact, confidence, missing evidence, and plausible benign explanations.</li>
+            <li><strong>Escalate and document:</strong> follow authorized procedures and preserve the evidence needed for review.</li>
+          </ol>
+          <p>Keep conclusions proportional to the evidence. Avoid making disruptive changes to real accounts or systems unless you have the appropriate authorization and follow the organization's process.</p>
+        </article>
+
+        <article class="lesson-block">
+          <h3>Learn the fundamentals before investigating alerts</h3>
+          <p>Understanding operating systems and network behavior helps analysts recognize what a log entry means and what context is missing. Continue with these existing Better Hacker lessons:</p>
+          <ul>
+            <li><a href="/#networking-lesson">Networking Fundamentals</a> — IP addresses, ports, protocols, and traffic flow.</li>
+            <li><a href="/#linux-lesson">Linux Fundamentals for Security</a> — command-line concepts and operating-system basics.</li>
+            <li><a href="/#active-directory-lesson">Active Directory Fundamentals</a> — users, groups, permissions, and Windows domains.</li>
+            <li><a href="/#web-security-lesson">Web Security Fundamentals</a> — web requests and common application security concepts.</li>
+          </ul>
+        </article>
+
+        <article class="lesson-block">
+          <h3>Build cybersecurity skills and portfolio evidence</h3>
+          <p>A useful investigation record explains the question, the evidence reviewed, the observations, the conclusion and confidence level, and the next step. Never include real secrets, personal data, or confidential employer information in a public portfolio.</p>
+          <p>For a practice portfolio entry, record:</p>
+          <ul>
+            <li><strong>Scenario:</strong> the simulated alert and investigation question.</li>
+            <li><strong>Evidence:</strong> relevant fictional log fields and the time sequence.</li>
+            <li><strong>Assessment:</strong> what the evidence supports and what remains unknown.</li>
+            <li><strong>Next step:</strong> a proportionate action or additional evidence to request.</li>
+          </ul>
+          <p>Use the Better Hacker learning workspace and portfolio area to continue documenting eligible practice work.</p>
+        </article>
+      </div>
+      <div class="soc-actions">
+        <a class="primary-button" href="/#soc-siem-lesson">Open the full SOC &amp; SIEM lesson</a>
+        <a class="secondary-button" href="/#daily-practice-daily-siem">Try the SIEM daily practice</a>
+        <a class="secondary-button" href="/#portfolio">Visit your portfolio workspace</a>
+      </div>
+    </section>
+
+    <section class="section dark-section soc-footer">
+      <p class="section-label">KEEP LEARNING</p>
+      <h2>Practice the investigation process, one step at a time.</h2>
+      <p class="section-intro">Start with the fundamentals, examine the simulated evidence, and explain your reasoning clearly.</p>
+      <a class="primary-button" href="/">Return to Better Hacker</a>
+    </section>
+  </main>
+</body>
+</html>
