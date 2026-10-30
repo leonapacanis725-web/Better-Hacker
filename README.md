@@ -1,5 +1,28 @@
 # Better Hacker
 
+**Free, beginner-first cybersecurity learning in your browser.** Start with the fundamentals, practise with guided labs and fictional defensive scenarios, then document eligible work in a learner-controlled portfolio.
+
+[**Open Better Hacker →**](https://betterhacker.org/) · [Start Lesson 1: Fundamentals](https://betterhacker.org/#fundamentals-lesson)
+
+## Try it
+
+1. Open [betterhacker.org](https://betterhacker.org/).
+2. Choose **Start Free Lesson 1 — Fundamentals**.
+3. Work through the lesson and its knowledge check, then continue to guided practice.
+
+No account, virtual machine, or paid subscription is required for the published beginner learning path. Practice uses authored simulations and fictional evidence; it does not connect to real targets or execute learner commands on a host system.
+
+## What learners get
+
+- Eight core lessons covering cybersecurity fundamentals, networking, Linux, web security, cryptography, Active Directory, SOC / SIEM, and security testing.
+- Guided labs, defensive investigations, Daily Practice, and a simulated beginner Attack Box.
+- Optional portfolio exports that learners review and publish themselves.
+
+**Progress and privacy:** learning progress and portfolio projects are stored in the current browser when storage is available. They do not automatically sync across browsers or devices. Portfolio files are not published automatically, and learner evidence is not sent to employers.
+
+---
+
+
 Better Hacker is a static, dependency-light cybersecurity learning platform for beginners. It runs in the browser without a build step or account and connects lessons, guided practice, defensive investigations, review, daily recall, and progress-derived rewards into one recommended path.
 
 The extended learner journey is **Learn → Practice → Complete → Document → Portfolio → Career Evidence**. Better Hacker helps learners describe completed educational work clearly; a portfolio project is not a claim of professional work experience, employment, certification, or independent verification.
