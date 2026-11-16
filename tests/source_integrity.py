@@ -30,7 +30,10 @@ for filename in ("index.html", "privacy.html", "terms.html"):
     assert not set(parser.hash_links) - set(parser.ids), f"broken hash links in {filename}"
     for link in parser.local_links:
         if link:
-            assert Path(link).exists(), f"missing local page {link} from {filename}"
+            # Site-root URLs (for example, /favicon.svg) are relative to the repository root,
+            # not the runner operating system root.
+            local_path = link.lstrip("/") if link.startswith("/") else link
+            assert Path(local_path).exists(), f"missing local page {link} from {filename}"
 
 index = Path("index.html").read_text()
 script = Path("script.js").read_text()
