@@ -86,6 +86,8 @@ function expectedApplicationUrl(record, source) {
   return url.hostname === "jobs.lever.co" && parts.length >= 2 && parts.length <= 3 && parts[0].toLowerCase() === String(source.site).toLowerCase() &&
     parts[1] === String(record.externalId) && (parts.length === 2 || parts[2] === "apply");
 }
+const MAX_STALE_SOURCE_AGE_MS = 30 * 24 * 60 * 60 * 1000;
+
 async function buildDataset(config, options = {}) {
   const sources = validateConfig(config);
   const fetchImpl = options.fetch || globalThis.fetch;
@@ -120,18 +122,37 @@ async function buildDataset(config, options = {}) {
     if (index < sources.length - 1) await boundedDelay(options.delayMs === undefined ? 1000 : options.delayMs);
   }
   const failed = diagnostics.filter(item => item.status === "error");
-  if (failed.length) {
+  if (failed.length === sources.length && sources.length > 0) {
     const error = new Error(`${failed.length} configured job feed(s) failed; refusing to replace the last known dataset.`);
     error.diagnostics = diagnostics;
     throw error;
   }
+
   const report = Jobs.ingestRecords(records, { importedAt });
+  const failedSourceIds = new Set(failed.map(item => item.sourceId));
+  const previousJobs = options.previousDataset && Array.isArray(options.previousDataset.jobs)
+    ? options.previousDataset.jobs : [];
+  const retained = previousJobs.filter(job => {
+    if (!job || !job.source || !failedSourceIds.has(job.source.id)) return false;
+    const observedAt = Date.parse(job.lastObservedAt || "");
+    return Number.isFinite(observedAt) && observedAt <= Date.parse(importedAt) &&
+      Date.parse(importedAt) - observedAt <= MAX_STALE_SOURCE_AGE_MS;
+  });
+  const mergedJobs = [...report.jobs];
+  const seenKeys = new Set(mergedJobs.flatMap(job => Jobs.duplicateKeys(job)));
+  for (const job of retained) {
+    const keys = Jobs.duplicateKeys(job);
+    if (keys.length && !keys.some(key => seenKeys.has(key))) {
+      mergedJobs.push(job);
+      keys.forEach(key => seenKeys.add(key));
+    }
+  }
   const dataset = {
     schemaVersion: 1,
     kind: "live-job-feed",
     generatedAt: importedAt,
     sourceCount: sources.length,
-    jobs: report.jobs,
+    jobs: mergedJobs,
     ...(sources.length ? {} : { note: "No approved employer feed is configured." }),
     duplicateCount: report.duplicates.length,
     rejectedCount: report.rejected.length,
@@ -150,7 +171,10 @@ async function run(options = {}) {
   catch (error) {
     if (error.code !== "ENOENT") throw new Error("Source configuration file is unreadable or invalid JSON.");
   }
-  const dataset = await buildDataset(config, options);
+  let previousDataset = null;
+  try { previousDataset = JSON.parse(await fs.readFile(outputPath, "utf8")); }
+  catch (error) { if (error.code !== "ENOENT") previousDataset = null; }
+  const dataset = await buildDataset(config, { ...options, previousDataset });
   const temporaryPath = `${outputPath}.tmp-${process.pid}`;
   try {
     await fs.writeFile(temporaryPath, `${JSON.stringify(dataset, null, 2)}\n`, { mode: 0o644 });
@@ -172,4 +196,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { MAX_RESPONSE_BYTES, MAX_SOURCES, validateConfig, readJsonResponse, loadFeed, expectedApplicationUrl, buildDataset, run };
+module.exports = { MAX_RESPONSE_BYTES, MAX_SOURCES, MAX_STALE_SOURCE_AGE_MS, validateConfig, readJsonResponse, loadFeed, expectedApplicationUrl, buildDataset, run };
