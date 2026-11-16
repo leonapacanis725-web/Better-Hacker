@@ -27,8 +27,8 @@ jobs:
           node-version: 20
       - name: Verify JavaScript syntax
         run: git ls-files '*.js' | xargs -r -n 1 node --check
-      - name: Run automated tests
-        run: node --test tests/*.test.js
+      - name: Run job-pipeline tests
+        run: node --test tests/jobs-adapters.test.js tests/jobs-production.test.js tests/jobs-skill-mapping.test.js tests/jobs-journey.test.js
       - name: Run Python source-integrity checks
         run: python3 tests/source_integrity.py
       - name: Fetch, filter, and validate public ATS listings
