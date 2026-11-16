@@ -113,6 +113,30 @@ test('Lever records require the configured employer ATS path and preserve source
   assert.equal(data.unsafeUrlRejectedCount, 1);
 });
 
+test('a failed employer feed does not block successful sources and retains recent last-known-good listings', async () => {
+  const second = { ...greenhouse, id: 'acme-gh-second', employerName: 'Second Security', boardToken: 'second' };
+  const previous = await Ingestion.buildDataset({ sources: [second] }, {
+    importedAt: '2026-10-10T12:00:00.000Z', delayMs: 0,
+    fetch: async () => response({ jobs: [
+      { id: 22, title: 'SOC Analyst', absolute_url: 'https://job-boards.greenhouse.io/second/jobs/22' }
+    ] })
+  });
+  const refreshed = await Ingestion.buildDataset({ sources: [greenhouse, second] }, {
+    importedAt, delayMs: 0, previousDataset: previous,
+    fetch: async url => url.includes('/second/')
+      ? response({}, 503)
+      : response({ jobs: [
+          { id: 11, title: 'Incident Response Analyst', absolute_url: 'https://job-boards.greenhouse.io/acme/jobs/11' }
+        ] })
+  });
+  assert.equal(refreshed.jobs.length, 2);
+  assert.ok(refreshed.jobs.some(job => job.source.id === greenhouse.id && job.externalId === '11'));
+  const retained = refreshed.jobs.find(job => job.source.id === second.id && job.externalId === '22');
+  assert.ok(retained);
+  assert.equal(retained.lastObservedAt, '2026-10-10T12:00:00.000Z');
+  assert.equal(refreshed.diagnostics.find(item => item.sourceId === second.id).status, 'error');
+});
+
 test('successful empty feeds clear removed jobs; failed feeds do not replace the previous dataset', async () => {
   const one = { jobs: [{ id: 4, title: 'SOC Analyst', absolute_url: 'https://job-boards.greenhouse.io/acme/jobs/4' }] };
   const present = await Ingestion.buildDataset({ sources: [greenhouse] }, { importedAt, delayMs: 0, fetch: async () => response(one) });
