@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "kind": "live-job-feed",
-  "generatedAt": "2026-11-18T01:39:36.496Z",
+  "generatedAt": "2026-11-18T15:43:52.813Z",
   "sourceCount": 5,
   "jobs": [
     {
@@ -31,9 +31,9 @@
         "url": "https://www.volexity.com/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/volexity/jobs/4320640009",
-      "dateImported": "2026-11-18T01:39:36.496Z",
+      "dateImported": "2026-11-18T15:43:52.813Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-11-18T01:39:36.496Z",
+      "lastObservedAt": "2026-11-18T15:43:52.813Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -110,9 +110,9 @@
         "url": "https://www.volexity.com/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/volexity/jobs/4323123009",
-      "dateImported": "2026-11-18T01:39:36.496Z",
+      "dateImported": "2026-11-18T15:43:52.813Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-11-18T01:39:36.496Z",
+      "lastObservedAt": "2026-11-18T15:43:52.813Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -189,9 +189,9 @@
         "url": "https://www.volexity.com/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/volexity/jobs/4328838009",
-      "dateImported": "2026-11-18T01:39:36.496Z",
+      "dateImported": "2026-11-18T15:43:52.813Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-11-18T01:39:36.496Z",
+      "lastObservedAt": "2026-11-18T15:43:52.813Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -310,9 +310,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/8074058003",
-      "dateImported": "2026-11-18T01:39:36.496Z",
+      "dateImported": "2026-11-18T15:43:52.813Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-11-18T01:39:36.496Z",
+      "lastObservedAt": "2026-11-18T15:43:52.813Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -335,6 +335,174 @@
             "label": "Alert Triage",
             "matchedPhrase": "Security Operations Center",
             "field": "title"
+          }
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "huntress-greenhouse-8206921003",
+      "externalId": "8206921003",
+      "title": "Principal Security Operations Analyst",
+      "employer": "Huntress",
+      "location": {
+        "display": "Remote Ireland",
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "workplace": "unspecified",
+      "employmentType": "unspecified",
+      "experienceLevel": "unspecified",
+      "categories": [],
+      "salaryRange": null,
+      "datePosted": "2026-11-18",
+      "skills": [],
+      "description": "&nbsp; What We Do: Cybercrime is growing, and more businesses are getting hit by threats that used to target only the biggest organizations. That pushes defenders like us to operate at the highest level, and it deepens our need for good people who want to make a meaningful impact. Founded in 2015 by former NSA cyber operators, Huntress is a remote-first team working to make enterprise-grade cybersecurity accessible to businesses of all sizes. We work closely with security teams and service providers protecting complex environments, often without the time or headcount to handle it all. That’s why we build our technology in-house and back it with a 24/7 human-led Security Operations Center (SOC). As a result, our platform is never disconnected from the experts who manage it, ensuring our customers' protection. Huntress now secures more than 6M endpoints and 17M identities worldwide. Those numbers keep growing because more businesses rely on us to help carry the load and operate with more confidence. Every day, you can see that commitment in how we stand with our customers and how we show up for each other. &nbsp; Reports to: Manager, Security Operations Center Location: Remote Ireland Compensation Range: €108,000 to €140,000 base plus bonus and equity What You’ll Do: Huntress is looking for a Principal Security Operations Center Analyst based in the EMEA region to join our quickly growing team. In this role, you will triage, investigate, respond to, and remediate intrusions daily. You’ll be surrounded by passionate individuals who are mission-driven to help protect companies worldwide from cyber-attacks. This person will also mentor junior team members, allowing them to grow individually and as a team. The Huntress Security Operations Center is an elite team that wakes up daily to combat threat actors. You will have daily opportunities to progress your analysis skills while being at the forefront of what’s happening in the wild. With the chance to work on various incidents alongside a skilled team, you’ll have the opportunity to accelerate your career and skills, too.&nbsp; Responsibilities: Function as the lead liaison between the SOC and other Product and Research teams, influencing Product capabilities and ensuring they can be optimally operationalized Advocate for analyst and operational needs to SOC Leadership, ensuring SOC process and technology allow Huntress to deliver exceptional partner outcomes Aid in efforts to build and assure the quality of agentic workflows and investigations Own and complete investigative objectives associated with multi-host intrusions without assistance Triage, investigate, and respond to alerts coming in from the Huntress platform Perform tactical forensic timelining and analysis to determine the root cause of attacks, where possible, and provide remediations needed to remove the threat Investigate suspicious Microsoft M365 and Google Workspace activity Assist in escalations from the product support team for thre",
+      "source": {
+        "id": "huntress-greenhouse",
+        "name": "Greenhouse",
+        "kind": "ats-public-feed",
+        "url": "https://www.huntress.com/company/careers"
+      },
+      "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/8206921003",
+      "dateImported": "2026-11-18T15:43:52.813Z",
+      "expiresAt": null,
+      "lastObservedAt": "2026-11-18T15:43:52.813Z",
+      "isDemo": false,
+      "extensions": {
+        "adapter": "greenhouse-job-board",
+        "boardToken": "huntress",
+        "requisitionId": "100440",
+        "sourceCategories": [
+          "Security Analysis"
+        ],
+        "relevance": {
+          "reason": "Matched source title.",
+          "matchedSignals": [
+            "security-operations",
+            "security-role"
+          ]
+        },
+        "skillMappingVersion": 1,
+        "skillMappings": [
+          {
+            "id": "alert-triage",
+            "label": "Alert Triage",
+            "matchedPhrase": "Security Operations Center",
+            "field": "description"
+          }
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "huntress-greenhouse-8206919003",
+      "externalId": "8206919003",
+      "title": "Principal Security Operations Analyst",
+      "employer": "Huntress",
+      "location": {
+        "display": "United Kingdom",
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "workplace": "unspecified",
+      "employmentType": "unspecified",
+      "experienceLevel": "unspecified",
+      "categories": [],
+      "salaryRange": null,
+      "datePosted": "2026-11-18",
+      "skills": [],
+      "description": "&nbsp; What We Do: Cybercrime is growing, and more businesses are getting hit by threats that used to target only the biggest organizations. That pushes defenders like us to operate at the highest level, and it deepens our need for good people who want to make a meaningful impact. Founded in 2015 by former NSA cyber operators, Huntress is a remote-first team working to make enterprise-grade cybersecurity accessible to businesses of all sizes. We work closely with security teams and service providers protecting complex environments, often without the time or headcount to handle it all. That’s why we build our technology in-house and back it with a 24/7 human-led Security Operations Center (SOC). As a result, our platform is never disconnected from the experts who manage it, ensuring our customers' protection. Huntress now secures more than 6M endpoints and 17M identities worldwide. Those numbers keep growing because more businesses rely on us to help carry the load and operate with more confidence. Every day, you can see that commitment in how we stand with our customers and how we show up for each other. &nbsp; Reports to: Manager, Security Operations Center Location: Remote UK Compensation Range: £96,300 to £120,400 base plus bonus and equity What You’ll Do: Huntress is looking for a Principal Security Operations Center Analyst based in EMEA to join our rapidly growing team. In this role, you will triage, investigate, respond to, and remediate intrusions daily. You’ll be surrounded by passionate individuals who are mission-driven to help protect companies worldwide from cyber-attacks. This person will also mentor junior team members, allowing them to grow individually and as a team. The Huntress Security Operations Center is an elite team that wakes up daily to combat threat actors. You will have daily opportunities to progress your analysis skills while being at the forefront of what’s happening in the wild. With the chance to work on various incidents alongside a skilled team, you’ll have the opportunity to accelerate your career and skills, too.&nbsp; Responsibilities: Function as the lead liaison between the SOC and other Product and Research teams, influencing Product capabilities and ensuring they can be optimally operationalized Advocate for analyst and operational needs to SOC Leadership, ensuring SOC process and technology allow Huntress to deliver exceptional partner outcomes Aid in efforts to build and assure the quality of agentic workflows and investigations Own and complete investigative objectives associated with multi-host intrusions without assistance Triage, investigate, and respond to alerts coming in from the Huntress platform Perform tactical forensic timelining and analysis to determine the root cause of attacks, where possible, and provide remediations needed to remove the threat Investigate suspicious Microsoft M365 and Google Workspace activity Assist in escalations from the product support team for threat-related and SO",
+      "source": {
+        "id": "huntress-greenhouse",
+        "name": "Greenhouse",
+        "kind": "ats-public-feed",
+        "url": "https://www.huntress.com/company/careers"
+      },
+      "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/8206919003",
+      "dateImported": "2026-11-18T15:43:52.813Z",
+      "expiresAt": null,
+      "lastObservedAt": "2026-11-18T15:43:52.813Z",
+      "isDemo": false,
+      "extensions": {
+        "adapter": "greenhouse-job-board",
+        "boardToken": "huntress",
+        "requisitionId": "100440",
+        "sourceCategories": [
+          "Security Analysis"
+        ],
+        "relevance": {
+          "reason": "Matched source title.",
+          "matchedSignals": [
+            "security-operations",
+            "security-role"
+          ]
+        },
+        "skillMappingVersion": 1,
+        "skillMappings": [
+          {
+            "id": "alert-triage",
+            "label": "Alert Triage",
+            "matchedPhrase": "Security Operations Center",
+            "field": "description"
+          }
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "huntress-greenhouse-8206907003",
+      "externalId": "8206907003",
+      "title": "Principal Security Operations Analyst",
+      "employer": "Huntress",
+      "location": {
+        "display": "United States of America",
+        "city": null,
+        "region": null,
+        "country": null
+      },
+      "workplace": "unspecified",
+      "employmentType": "unspecified",
+      "experienceLevel": "unspecified",
+      "categories": [],
+      "salaryRange": null,
+      "datePosted": "2026-11-18",
+      "skills": [],
+      "description": "&nbsp; What We Do: Cybercrime is growing, and more businesses are getting hit by threats that used to target only the biggest organizations. That pushes defenders like us to operate at the highest level, and it deepens our need for good people who want to make a meaningful impact. Founded in 2015 by former NSA cyber operators, Huntress is a remote-first team working to make enterprise-grade cybersecurity accessible to businesses of all sizes. We work closely with security teams and service providers protecting complex environments, often without the time or headcount to handle it all. That’s why we build our technology in-house and back it with a 24/7 human-led Security Operations Center (SOC). As a result, our platform is never disconnected from the experts who manage it, ensuring our customers' protection. Huntress now secures more than 6M endpoints and 17M identities worldwide. Those numbers keep growing because more businesses rely on us to help carry the load and operate with more confidence. Every day, you can see that commitment in how we stand with our customers and how we show up for each other. &nbsp; Reports to: Manager, Security Operations&nbsp; Location: Remote US&nbsp; Compensation Range: $185,000 to $220,000 base plus bonus and equity What You’ll Do:&nbsp; Huntress is looking for a Principal Security Operations Center Analyst to join our quickly growing team. In this role, you will triage, investigate, respond to, and remediate intrusions daily. You’ll be surrounded by passionate individuals who are mission-driven to help protect companies worldwide from cyber-attacks. This person will also mentor junior team members, allowing them to grow individually and as a team. The Huntress Security Operations Center is an elite team that wakes up daily to combat threat actors. You will have daily opportunities to progress your analysis skills while being at the forefront of what’s happening in the wild. With the chance to work on various incidents alongside a skilled team, you’ll have the opportunity to accelerate your career and skills, too. Responsibilities:&nbsp; Function as the lead liaison between the SOC and other Product and Research teams, influencing Product capabilities and ensuring they can be optimally operationalized Advocate for analyst and operational needs to SOC Leadership, ensuring SOC process and technology allow Huntress to deliver exceptional partner outcomes Aid in efforts to build and assure the quality of agentic workflows and investigations Own and complete investigative objectives associated with multi-host intrusions without assistance Triage, investigate, and respond to alerts coming in from the Huntress platform Perform tactical forensic timelining and analysis to determine the root cause of attacks, where possible, and provide remediations needed to remove the threat Investigate suspicious Microsoft M365 and Google Workspace activity Assist in escalations from the product support team for threat-related and SOC-",
+      "source": {
+        "id": "huntress-greenhouse",
+        "name": "Greenhouse",
+        "kind": "ats-public-feed",
+        "url": "https://www.huntress.com/company/careers"
+      },
+      "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/8206907003",
+      "dateImported": "2026-11-18T15:43:52.813Z",
+      "expiresAt": null,
+      "lastObservedAt": "2026-11-18T15:43:52.813Z",
+      "isDemo": false,
+      "extensions": {
+        "adapter": "greenhouse-job-board",
+        "boardToken": "huntress",
+        "requisitionId": "100442",
+        "sourceCategories": [
+          "Security Analysis"
+        ],
+        "relevance": {
+          "reason": "Matched source title.",
+          "matchedSignals": [
+            "security-operations",
+            "security-role"
+          ]
+        },
+        "skillMappingVersion": 1,
+        "skillMappings": [
+          {
+            "id": "alert-triage",
+            "label": "Alert Triage",
+            "matchedPhrase": "Security Operations Center",
+            "field": "description"
           }
         ]
       }
@@ -366,9 +534,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/8199536003",
-      "dateImported": "2026-11-18T01:39:36.496Z",
+      "dateImported": "2026-11-18T15:43:52.813Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-11-18T01:39:36.496Z",
+      "lastObservedAt": "2026-11-18T15:43:52.813Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -434,9 +602,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7807467003",
-      "dateImported": "2026-11-18T01:39:36.496Z",
+      "dateImported": "2026-11-18T15:43:52.813Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-11-18T01:39:36.496Z",
+      "lastObservedAt": "2026-11-18T15:43:52.813Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -501,9 +669,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/8014855003",
-      "dateImported": "2026-11-18T01:39:36.496Z",
+      "dateImported": "2026-11-18T15:43:52.813Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-11-18T01:39:36.496Z",
+      "lastObservedAt": "2026-11-18T15:43:52.813Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -556,9 +724,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/8039749003",
-      "dateImported": "2026-11-18T01:39:36.496Z",
+      "dateImported": "2026-11-18T15:43:52.813Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-11-18T01:39:36.496Z",
+      "lastObservedAt": "2026-11-18T15:43:52.813Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -630,9 +798,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7835871003",
-      "dateImported": "2026-11-18T01:39:36.496Z",
+      "dateImported": "2026-11-18T15:43:52.813Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-11-18T01:39:36.496Z",
+      "lastObservedAt": "2026-11-18T15:43:52.813Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -710,9 +878,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7835873003",
-      "dateImported": "2026-11-18T01:39:36.496Z",
+      "dateImported": "2026-11-18T15:43:52.813Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-11-18T01:39:36.496Z",
+      "lastObservedAt": "2026-11-18T15:43:52.813Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -790,9 +958,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7743188003",
-      "dateImported": "2026-11-18T01:39:36.496Z",
+      "dateImported": "2026-11-18T15:43:52.813Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-11-18T01:39:36.496Z",
+      "lastObservedAt": "2026-11-18T15:43:52.813Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -858,9 +1026,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/8015561003",
-      "dateImported": "2026-11-18T01:39:36.496Z",
+      "dateImported": "2026-11-18T15:43:52.813Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-11-18T01:39:36.496Z",
+      "lastObservedAt": "2026-11-18T15:43:52.813Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -913,9 +1081,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7991918003",
-      "dateImported": "2026-11-18T01:39:36.496Z",
+      "dateImported": "2026-11-18T15:43:52.813Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-11-18T01:39:36.496Z",
+      "lastObservedAt": "2026-11-18T15:43:52.813Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -974,9 +1142,9 @@
         "url": "https://www.huntress.com/company/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/huntress/jobs/7998709003",
-      "dateImported": "2026-11-18T01:39:36.496Z",
+      "dateImported": "2026-11-18T15:43:52.813Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-11-18T01:39:36.496Z",
+      "lastObservedAt": "2026-11-18T15:43:52.813Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -1029,9 +1197,9 @@
         "url": "https://censys.com/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/censys/jobs/8527413002",
-      "dateImported": "2026-11-18T01:39:36.496Z",
+      "dateImported": "2026-11-18T15:43:52.813Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-11-18T01:39:36.496Z",
+      "lastObservedAt": "2026-11-18T15:43:52.813Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -1115,9 +1283,9 @@
         "url": "https://relaypro.com/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/relaypro/jobs/8180077",
-      "dateImported": "2026-11-18T01:39:36.496Z",
+      "dateImported": "2026-11-18T15:43:52.813Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-11-18T01:39:36.496Z",
+      "lastObservedAt": "2026-11-18T15:43:52.813Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -1163,9 +1331,9 @@
         "url": "https://relaypro.com/careers"
       },
       "applicationUrl": "https://job-boards.greenhouse.io/relaypro/jobs/8179795",
-      "dateImported": "2026-11-18T01:39:36.496Z",
+      "dateImported": "2026-11-18T15:43:52.813Z",
       "expiresAt": null,
-      "lastObservedAt": "2026-11-18T01:39:36.496Z",
+      "lastObservedAt": "2026-11-18T15:43:52.813Z",
       "isDemo": false,
       "extensions": {
         "adapter": "greenhouse-job-board",
@@ -1187,7 +1355,7 @@
   ],
   "duplicateCount": 0,
   "rejectedCount": 0,
-  "relevanceRejectedCount": 113,
+  "relevanceRejectedCount": 111,
   "unsafeUrlRejectedCount": 0,
   "incompleteRejectedCount": 0,
   "diagnostics": [
@@ -1203,9 +1371,9 @@
     {
       "sourceId": "huntress-greenhouse",
       "status": "ok",
-      "recordsReceived": 51,
-      "relevanceRejected": 40,
-      "candidatesAccepted": 11,
+      "recordsReceived": 52,
+      "relevanceRejected": 38,
+      "candidatesAccepted": 14,
       "unsafeUrlRejected": 0,
       "incompleteRejected": 0
     },
