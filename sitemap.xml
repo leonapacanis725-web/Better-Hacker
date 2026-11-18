@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- List only real, publicly accessible standalone pages. Interactive lessons are part of the homepage. -->
-  <url>
-    <loc>https://betterhacker.org/</loc>
-  </url>
-  <url>
-    <loc>https://betterhacker.org/labs/soc-siem/</loc>
-  </url>
-  <url>
-    <loc>https://betterhacker.org/labs/owasp-web-security/</loc>
-  </url>
-  <url>
-    <loc>https://betterhacker.org/privacy.html</loc>
-  </url>
-  <url>
-    <loc>https://betterhacker.org/terms.html</loc>
-  </url>
+  <url><loc>https://betterhacker.org/</loc></url>
+  <url><loc>https://betterhacker.org/labs/soc-siem/</loc></url>
+  <url><loc>https://betterhacker.org/labs/owasp-web-security/</loc></url>
+  <url><loc>https://betterhacker.org/guides/ssh-failed-login-auth-log.html</loc></url>
+  <url><loc>https://betterhacker.org/guides/windows-security-event-ids-4624-4625-1102.html</loc></url>
+  <url><loc>https://betterhacker.org/guides/linux-file-permissions-0644-vs-0600.html</loc></url>
+  <url><loc>https://betterhacker.org/guides/wireshark-icmp-traffic-analysis.html</loc></url>
+  <url><loc>https://betterhacker.org/guides/curl-tls-security-headers.html</loc></url>
+  <url><loc>https://betterhacker.org/privacy.html</loc></url>
+  <url><loc>https://betterhacker.org/terms.html</loc></url>
 </urlset>
