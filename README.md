@@ -283,11 +283,21 @@ The tests cover all eight knowledge checks, persistence and recommendations, gui
 
 There is no authentication, cloud sync, database, live AI, direct GitHub publishing, public portfolio hosting, server-side validation, formal grading, or certification. Browser data may be edited or cleared through developer/browser controls and does not synchronize across devices. Downloaded READMEs are learner-controlled, unverified educational records. The simulations teach safe decision-making; they are not substitutes for an organization's procedures or authorization requirements.
 
-## Launch verification still required
+## Public deployment
 
-No verified public deployment URL is configured in this repository. The official public contact email is [betterhackerteam@gmail.com](mailto:betterhackerteam@gmail.com); confirm that the inbox is monitored and has a deletion-request process. Do not derive or publish a production URL solely from the GitHub repository name. The configured signup endpoint is `https://formspree.io/f/xdeobdjl`; mocks verify browser behavior, not service ownership or delivery. No real signup is sent by the test suites.
+**Live site:** [https://betterhacker.org/](https://betterhacker.org/)
 
-Before a publicly invited beta, confirm the public contact inbox is monitored and can handle deletion requests; verify the HTTPS deployment and deployed revision/assets/legal links/deep links, and verify Formspree ownership, delivery, limits/abuse controls and an unsubscribe process. Have the current privacy and terms reviewed for the intended audience and jurisdiction. A real signup test requires explicit authorization. Browser-local progress and portfolio exports are not accounts, cloud sync or independent credentials.
+The public GitHub Pages deployment completed successfully for the current main revision on November 18, 2026. The deployed site uses the custom HTTPS domain above. The latest verified job-feed dataset was generated on November 18, 2026 from five configured public ATS sources.
+
+## Remaining operational checks
+
+The following checks require access to external service accounts and are not represented as completed by repository tests:
+
+- Confirm the public contact inbox [betterhackerteam@gmail.com](mailto:betterhackerteam@gmail.com) is monitored and has a deletion-request handling process.
+- Confirm Formspree form `xdeobdjl` is active and routed to the intended inbox. Automated tests mock the endpoint and do not verify live delivery, quota, spam controls, or unsubscribe handling. A live signup test must be explicitly authorized.
+- Run the local Node/Python and optional Playwright/axe-core browser suites from the repository root before a formal release. Browser tests that mock Formspree do not send a real signup.
+
+Browser-local progress and portfolio exports are not accounts, cloud sync, or independently verified credentials. The paid Pro plans remain marked Coming Soon and checkout is not active.
 
 The focused launch-readiness Chromium runner additionally uses development-only `axe-core` and `marked` alongside Playwright. These are not shipped to learners. With those modules available to Node, run:
 
