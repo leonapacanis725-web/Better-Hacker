@@ -103,12 +103,27 @@ test('missing skills only link to authored existing activities with taxonomy evi
   assert.ok(sql.some(activity => activity.href === '#lab-web-security'));
 });
 
-test('every current uncovered live-job skill has a direct evidence-gated learning destination', () => {
+test('current live-job skill gaps link only to authored learning destinations', () => {
   const live = JSON.parse(fs.readFileSync('jobs-live.json', 'utf8'));
-  const gapIds = new Set();
-  for (const job of live.jobs) for (const skill of Matching.jobSkills(job)) gapIds.add(skill.id);
-  for (const id of ['endpoint-security','gcp','aws','azure','python','powershell','ids-ips','firewalls','vulnerability-management','cloud-security','digital-forensics']) {
-    assert.ok(gapIds.has(id), `expected current mapped gap ${id}`);
+  const liveGapIds = new Set();
+  for (const job of live.jobs) for (const skill of Matching.jobSkills(job)) liveGapIds.add(skill.id);
+  for (const id of liveGapIds) {
+    const activities = Matching.learningActivities(id, Portfolio);
+    assert.ok(activities.length > 0, `${id} should link to authored learning`);
+    for (const activity of activities) {
+      assert.ok(Portfolio.ACTIVITIES.some(authored => authored.id === activity.id && authored.href === activity.href));
+      assert.match(activity.href, /^#[a-z0-9-]+$/);
+      assert.ok(activity.href.slice(1).length > 0);
+    }
+  }
+});
+
+test('the required cybersecurity skill set has authored learning destinations independent of live listings', () => {
+  const requiredIds = ['endpoint-security','gcp','aws','azure','python','powershell','ids-ips','firewalls','vulnerability-management','cloud-security','digital-forensics'];
+  const controlledJob = { skills: [], extensions: { skillMappings: requiredIds.map(id => ({ id })) } };
+  const requiredGapIds = new Set(Matching.jobSkills(controlledJob).map(skill => skill.id));
+  for (const id of requiredIds) {
+    assert.ok(requiredGapIds.has(id), `controlled fixture should include ${id}`);
     const activities = Matching.learningActivities(id, Portfolio);
     assert.ok(activities.length > 0, `${id} should link to authored learning`);
     for (const activity of activities) {
