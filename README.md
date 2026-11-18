@@ -12,6 +12,16 @@
 
 No account, virtual machine, or paid subscription is required for the published beginner learning path. Practice uses authored simulations and fictional evidence; it does not connect to real targets or execute learner commands on a host system.
 
+## Free cybersecurity field guides
+
+These beginner guides answer focused questions and link back to the relevant lessons and practice:
+
+- [Find failed SSH logins in Linux auth.log](https://betterhacker.org/guides/ssh-failed-login-auth-log.html)
+- [Windows Security Event IDs 4624, 4625, and 1102](https://betterhacker.org/guides/windows-security-event-ids-4624-4625-1102.html)
+- [Linux file permissions 0644 vs 0600](https://betterhacker.org/guides/linux-file-permissions-0644-vs-0600.html)
+- [Wireshark ICMP traffic analysis](https://betterhacker.org/guides/wireshark-icmp-traffic-analysis.html)
+- [Inspect TLS and security headers with curl](https://betterhacker.org/guides/curl-tls-security-headers.html)
+
 ## What learners get
 
 - Eight core lessons covering cybersecurity fundamentals, networking, Linux, web security, cryptography, Active Directory, SOC / SIEM, and security testing.
