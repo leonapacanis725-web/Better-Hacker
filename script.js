@@ -534,6 +534,8 @@ if (coachSection) {
       });
     }
 
+    globalThis.BetterHackerRefreshAssistantProgress = renderAssistantProgress;
+
     function openAssistantTopic(id, moveFocus) {
       const topic = ASSISTANT_TOPICS.find(function (item) { return item.id === id; });
       if (!topic) return;
@@ -2765,17 +2767,20 @@ let reviewAnswered = false;
 function showStoredReviewResult() {
   const result = readReviewResult();
   const previous = document.querySelector("#review-previous-result");
-  if (previous && result) {
-    previous.textContent = "Most recent result: " + result.score + " / " + result.total + " (" + result.percentage + "%).";
-    const details = document.querySelector("#review-previous-topics");
-    if (details) {
-      details.innerHTML = "<h4>Most recent topic review</h4><ul>" + Object.keys(result.topics).map(function (topic) {
-        const value = result.topics[topic];
-        return '<li><a href="' + value.lesson + '">' + topic + '</a>: ' + value.correct + ' / ' + value.total + ' answered correctly</li>';
-      }).join("") + "</ul>";
-    }
+  const details = document.querySelector("#review-previous-topics");
+  if (previous) previous.textContent = result
+    ? "Most recent result: " + result.score + " / " + result.total + " (" + result.percentage + "%)."
+    : "No course review completed yet.";
+  if (details) {
+    details.innerHTML = result
+      ? "<h4>Most recent topic review</h4><ul>" + Object.keys(result.topics).map(function (topic) {
+          const value = result.topics[topic];
+          return '<li><a href="' + value.lesson + '">' + topic + '</a>: ' + value.correct + ' / ' + value.total + ' answered correctly</li>';
+        }).join("") + "</ul>"
+      : "";
   }
 }
+globalThis.BetterHackerRefreshCourseReview = showStoredReviewResult;
 
 function renderReviewQuestion() {
   const question = COURSE_REVIEW_QUESTIONS[reviewIndex];
@@ -3220,13 +3225,19 @@ if (waitlistForm && waitlistButton && waitlistEmail && waitlistResult) {
 // Keep open tabs in sync when another tab changes saved learning progress.
 window.addEventListener("storage", function (event) {
   if (event.storageArea !== window.localStorage) return;
-  if (event.key !== null && !event.key.startsWith("betterHacker")) return;
+  // Any same-origin storage change may affect a visible learning summary.
   refreshLearningUI();
   renderDailyChallenge();
   renderExtensionLessonProgress();
   renderPracticeProgress();
   if (typeof globalThis.BetterHackerRefreshLabCards === "function") {
     globalThis.BetterHackerRefreshLabCards();
+  }
+  if (typeof globalThis.BetterHackerRefreshAssistantProgress === "function") {
+    globalThis.BetterHackerRefreshAssistantProgress();
+  }
+  if (typeof globalThis.BetterHackerRefreshCourseReview === "function") {
+    globalThis.BetterHackerRefreshCourseReview();
   }
 });
 
