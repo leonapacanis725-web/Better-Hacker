@@ -388,6 +388,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }).join("") + '</div>';
     }
 
+    // Expose the renderer so saved progress changes in another tab can redraw lab cards.
+    globalThis.BetterHackerRefreshLabCards = renderLabCards;
+
     function setLabHash(lab) {
       if (typeof history !== "undefined" && history.pushState) history.pushState(null, "", "#lab-" + lab.id);
       else if (typeof location !== "undefined") location.hash = "lab-" + lab.id;
@@ -3221,6 +3224,9 @@ window.addEventListener("storage", function (event) {
   renderDailyChallenge();
   renderExtensionLessonProgress();
   renderPracticeProgress();
+  if (typeof globalThis.BetterHackerRefreshLabCards === "function") {
+    globalThis.BetterHackerRefreshLabCards();
+  }
 });
 
 });
