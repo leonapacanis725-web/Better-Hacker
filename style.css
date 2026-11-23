@@ -1533,3 +1533,24 @@ footer p {
   .attack-output { height: 220px; padding: 11px; font-size: 13px; }
 }
 
+/* Pro plan review and secure checkout panel */
+.checkout-panel {
+  max-width: 760px;
+  margin: 30px auto 0;
+  padding: clamp(20px, 4vw, 30px);
+  border: 1px solid #38bdf8;
+  border-radius: 14px;
+  background: #081422;
+  color: #e2e8f0;
+  text-align: left;
+  scroll-margin-top: var(--navigation-offset, 96px);
+}
+.checkout-panel h3 { color: #7dd3fc; margin-top: 0; }
+.checkout-panel[hidden], #checkout-return-status[hidden] { display: none; }
+.checkout-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
+.checkout-actions button { cursor: pointer; }
+#checkout-status { min-height: 1.5em; color: #bae6fd; }
+@media (max-width: 600px) {
+  .checkout-actions { flex-direction: column; }
+  .checkout-actions button { width: 100%; }
+}
