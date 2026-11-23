@@ -2919,7 +2919,7 @@ const dailyPracticeUI = dailyCard ? globalThis.BetterHackerDailyPracticeUI.creat
   root: document.querySelector("#daily-challenge"), storage: localStorage, companion: companion,
   onComplete: function () { renderDashboard(); }
 }) : null;
-function renderDailyChallenge() { if (dailyPracticeUI) dailyPracticeUI.summary(); }
+function renderDailyChallenge() { if (dailyPracticeUI) dailyPracticeUI.refresh(); }
 NAVIGATION_HANDLERS.push(function () { if (dailyPracticeUI) dailyPracticeUI.navigate(location.hash || ""); });
 renderDailyChallenge();
 
@@ -3157,6 +3157,8 @@ if (learnSection) {
       else {
         refreshLearningUI(); renderDailyChallenge(); renderExtensionLessonProgress();
         if (typeof globalThis.BetterHackerRefreshLabCards === "function") globalThis.BetterHackerRefreshLabCards();
+        if (typeof globalThis.BetterHackerRefreshAssistantProgress === "function") globalThis.BetterHackerRefreshAssistantProgress();
+        if (typeof globalThis.BetterHackerRefreshCourseReview === "function") globalThis.BetterHackerRefreshCourseReview();
         document.dispatchEvent(new Event("daily-practice-completed"));
       }
     }
