@@ -2884,6 +2884,7 @@ function finishCourseReview() {
   const percentage = Math.round((reviewScore / total) * 100);
   const result = { completed: true, score: reviewScore, total: total, percentage: percentage, completedAt: new Date().toISOString(), topics: reviewTopicResults };
   localStorage.setItem(COURSE_REVIEW_STORAGE_KEY, JSON.stringify(result));
+  showStoredReviewResult();
   reviewForm.hidden = true;
   reviewResults.hidden = false;
   const strong = [];
