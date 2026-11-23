@@ -9,10 +9,15 @@ One Stripe product named **Better Hacker Pro** should contain two recurring pric
 
 The monthly and annual Price IDs must be created in the same Stripe mode as the secret key configured on the server.
 
-## What the site code does
+## Current public-beta status
 
-- The Pro Monthly and Pro Annual buttons open a plan review panel.
-- The browser sends only the selected plan name (`monthly` or `annual`) to `/api/create-checkout-session`.
+The public GitHub Pages site does **not** currently connect its Pro buttons to Stripe. Both Pro plans are labeled **Coming Soon**, and the page explicitly states that visitors cannot purchase a subscription or be charged. The checkout client script and review panel are intentionally not loaded on the public site.
+
+The server endpoint below is staged for a future serverless deployment. It is not a working purchase flow on GitHub Pages. Do not describe Pro checkout as available until the serverless host, verified subscription lifecycle, and access controls have been implemented and tested.
+
+## Planned checkout behavior (not active on the public site)
+
+- When the future checkout UI is deliberately enabled, the browser will send only the selected plan name (`monthly` or `annual`) to `/api/create-checkout-session`.
 - The server chooses the matching Stripe Price ID from server-side environment variables.
 - Stripe hosts the payment form; Better Hacker does not collect or store card details.
 - The endpoint currently accepts **test-mode secret keys only**. Live checkout is intentionally blocked.

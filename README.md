@@ -332,7 +332,7 @@ The following checks require access to external service accounts and are not rep
 - Run the local Node/Python and optional Playwright/axe-core browser suites from the repository root, then manually smoke-test learner progress after reload, all portfolio export files, and the mobile navigation/content at narrow widths. Browser tests that mock Formspree do not send a real signup.
 - Review the submitted sitemap and critical indexing/canonical issues in Google Search Console; this account-only check is not visible from the public site.
 
-Browser-local progress and portfolio exports are not accounts, cloud sync, or independently verified credentials. Pro selection buttons open a transparent checkout preview, but paid features and live payment processing are not active.
+Browser-local progress and portfolio exports are not accounts, cloud sync, or independently verified credentials. Pro plans are displayed for transparency and are labeled Coming Soon; paid checkout and paid features are not active, and visitors cannot purchase or be charged.
 
 The focused launch-readiness Chromium runner additionally uses development-only `axe-core` and `marked` alongside Playwright. These are not shipped to learners. With those modules available to Node, run:
 
