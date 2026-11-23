@@ -3212,5 +3212,16 @@ if (waitlistForm && waitlistButton && waitlistEmail && waitlistResult) {
   });
 }
 
+
+// Keep open tabs in sync when another tab changes saved learning progress.
+window.addEventListener("storage", function (event) {
+  if (event.storageArea !== window.localStorage) return;
+  if (event.key !== null && !event.key.startsWith("betterHacker")) return;
+  refreshLearningUI();
+  renderDailyChallenge();
+  renderExtensionLessonProgress();
+  renderPracticeProgress();
+});
+
 });
 
