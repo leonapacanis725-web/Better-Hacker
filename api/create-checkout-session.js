@@ -40,8 +40,8 @@ export default async function handler(req, res) {
   if (!priceId || !/^price_[A-Za-z0-9]+$/.test(priceId)) {
     return res.status(400).json({ error: "That plan is not configured yet." });
   }
-  if (!/^sk_(test|live)_/.test(secretKey)) {
-    return res.status(500).json({ error: "Stripe secret key configuration is invalid." });
+  if (!/^sk_test_/.test(secretKey)) {
+    return res.status(503).json({ error: "Live checkout is disabled until subscription verification and Pro access controls are ready." });
   }
 
   const params = new URLSearchParams({
