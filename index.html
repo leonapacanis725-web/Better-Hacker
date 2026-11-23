@@ -37,7 +37,7 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
   <link rel="stylesheet" href="style.css">
-  <meta name="better-hacker-checkout-endpoint" content="/api/create-checkout-session">
+
 </head>
 
 <body>
@@ -2403,9 +2403,9 @@ Baseline: no approved account/privilege changes during this period.</pre></div><
 <section id="pricing" class="section dark-section pricing-section" aria-labelledby="pricing-title">
   <p class="section-label">BETTER HACKER PLANS</p>
   <h2 id="pricing-title">Learn at your pace</h2>
-  <p class="section-intro">Start free and use every feature currently published in the beta. Pro is a planned upgrade for learners who want deeper career-focused practice; its additional features are not available yet.</p>
+  <p class="section-intro">Start free and use every feature currently published in the Better Hacker beta.</p>
 
-  <div class="pricing-grid" aria-label="Better Hacker plan options">
+  <div class="pricing-grid" aria-label="Better Hacker free plan">
     <article class="card pricing-card" aria-labelledby="plan-free-name">
       <h3 id="plan-free-name">Free</h3>
       <p class="plan-price"><span class="sr-only">Price:</span>$0<span class="plan-period"> no cost</span></p>
@@ -2418,40 +2418,9 @@ Baseline: no approved account/privilege changes during this period.</pre></div><
       <a href="#learn" class="primary-button">Start Learning Free</a>
     </article>
 
-    <article class="card pricing-card" aria-labelledby="plan-monthly-name">
-      <h3 id="plan-monthly-name">Better Hacker Pro</h3>
-      <p class="plan-price"><span class="sr-only">Price:</span>$7.99<span class="plan-period"> / month</span></p>
-      <p>Everything currently in the free beta, plus planned advanced learning and career tools when Pro launches.</p>
-      <ul class="plan-features"><li>All current free lessons, labs, investigations, and progress tools</li><li>Multi-stage incident-response scenarios (planned)</li><li>Recruiter-ready report templates and assessment rubrics (planned)</li><li>Curated job-feed alerts and an application tracker (planned)</li></ul>
-      <p class="plan-note">Cancel anytime once paid subscriptions are available.</p>
-      <button type="button" class="primary-button" data-checkout-plan="monthly">Continue with Pro Monthly</button>
-    </article>
-
-    <article class="card pricing-card pricing-card-best" aria-labelledby="plan-annual-name">
-      <p class="best-value-label">Best value</p>
-      <h3 id="plan-annual-name">Better Hacker Pro Annual</h3>
-      <p class="plan-price"><span class="sr-only">Price:</span>$69<span class="plan-period"> / year</span></p>
-      <p>About $5.75 per month, billed yearly.</p>
-      <ul class="plan-features"><li>All current free lessons, labs, investigations, and progress tools</li><li>Multi-stage incident-response scenarios (planned)</li><li>Recruiter-ready report templates and assessment rubrics (planned)</li><li>Curated job-feed alerts and an application tracker (planned)</li></ul>
-      <p class="plan-note">About 28% savings compared with 12 monthly payments. Renews yearly once paid subscriptions are available.</p>
-      <button type="button" class="primary-button" data-checkout-plan="annual">Continue with Pro Annual</button>
-    </article>
   </div>
   <p class="pricing-transparency">Choose a Pro plan to begin the secure checkout flow. Checkout requires the hosted payment service to be deployed and configured before a subscription can be purchased. All features currently published in the beta remain available to everyone.</p>
 </section>
-
-<section id="checkout-panel" class="section checkout-panel" aria-labelledby="checkout-title" hidden>
-  <div class="review-panel">
-    <h2 id="checkout-title" tabindex="-1">Continue to secure checkout</h2>
-    <p id="checkout-plan-name"></p>
-    <p><strong id="checkout-plan-price"></strong> · <span id="checkout-plan-frequency"></span></p>
-    <p id="checkout-renewal-note"></p>
-    <p id="checkout-status" role="status" aria-live="polite"></p>
-    <button id="checkout-continue" type="button" class="primary-button">Continue to Stripe Checkout</button>
-    <button type="button" class="secondary-button checkout-back">Back to plans</button>
-  </div>
-</section>
-<p id="checkout-return-status" class="review-panel" role="status" aria-live="polite" hidden></p>
 
   <!-- Call To Action -->
   <section class="section cta-section">
@@ -2511,7 +2480,7 @@ Baseline: no approved account/privilege changes during this period.</pre></div><
 <script src="jobs-ingest.js"></script>
 <script src="daily-practice-ui.js?v=20261123-full-refresh"></script>
 <script src="script.js?v=20261123-review-summary"></script>
-<script src="checkout.js"></script>
+
 <script src="jobs-readiness-progress.js"></script>
 <script src="jobs-matching.js"></script>
 <script src="portfolio-ui.js"></script>
