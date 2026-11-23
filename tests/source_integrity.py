@@ -8,10 +8,13 @@ class Parser(HTMLParser):
         self.ids = []
         self.hash_links = []
         self.local_links = []
+        self.script_sources = []
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
         if "id" in attrs:
             self.ids.append(attrs["id"])
+        if tag == "script" and "src" in attrs:
+            self.script_sources.append(attrs["src"])
         for attribute in ("href", "src"):
             if attribute not in attrs:
                 continue
@@ -44,4 +47,8 @@ assert index.count('id="course-review"') == 1
 assert 'https://formspree.io/f/xdeobdjl' in script
 assert 'querySelector(".lab-challenge")' not in script
 assert index.index('src="learner-state.js"') < index.index('src="challenges.js"') < index.index('src="achievements.js"') < index.index('src="companion.js"') < index.index('src="script.js"')
+index_parser = Parser()
+index_parser.feed(index)
+assert len(index_parser.script_sources) == len(set(index_parser.script_sources)), f"duplicate script includes: {index_parser.script_sources}"
+assert 'checkout.js' not in index_parser.script_sources, "inactive checkout script must not load on the public beta"
 print("HTML parsed; IDs, links, legal pages, curriculum, endpoint, and Course Review integrity checks passed.")
