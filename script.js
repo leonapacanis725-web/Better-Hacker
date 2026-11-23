@@ -3151,6 +3151,7 @@ if (learnSection) {
       if (!localStorage.hasFailures()) location.reload();
       else {
         refreshLearningUI(); renderDailyChallenge(); renderExtensionLessonProgress();
+        if (typeof globalThis.BetterHackerRefreshLabCards === "function") globalThis.BetterHackerRefreshLabCards();
         document.dispatchEvent(new Event("daily-practice-completed"));
       }
     }
