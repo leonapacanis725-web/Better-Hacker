@@ -689,8 +689,7 @@ function refreshLearningUI() {
   updateCourseProgress();
   renderLessonCompletionStates();
   if (typeof renderDashboard === "function") renderDashboard();
-  if (typeof updateInvestigationProgress === "function") updateInvestigationProgress();
-  if (typeof renderInvestigationCompletionStates === "function") renderInvestigationCompletionStates();
+  if (typeof globalThis.BetterHackerRefreshInvestigations === "function") globalThis.BetterHackerRefreshInvestigations();
 }
 
 renderLessonCompletionStates();
@@ -1607,6 +1606,12 @@ if (investigationSection) {
       } else if (!complete && badge) badge.remove();
     });
   }
+
+  // Keep the block-scoped investigation renderers available to shared refresh paths.
+  globalThis.BetterHackerRefreshInvestigations = function () {
+    updateInvestigationProgress();
+    renderInvestigationCompletionStates();
+  };
 
   updateInvestigationProgress();
   renderInvestigationCompletionStates();
