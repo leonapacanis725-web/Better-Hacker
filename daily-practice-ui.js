@@ -145,7 +145,12 @@
     // Short poll handles a tab left open across local midnight without rerandomizing it.
     window.setInterval(refreshDate, 60000);
     summary();
-    return { navigate, summary, refreshDate };
+    function refresh() {
+      summary();
+      const hash = typeof location !== "undefined" ? location.hash : "";
+      if (hash.startsWith('#practice-track-')) openTrack(hash.slice('#practice-track-'.length), false);
+    }
+    return { navigate, summary, refresh, refreshDate };
   }
   return { create, historyHtml, submitPractice, submitLibraryPractice, trackCardsHtml, trackActivitiesHtml };
 });
