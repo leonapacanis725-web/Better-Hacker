@@ -168,7 +168,38 @@ Learner-entered portfolio titles, dates and evidence are assigned using DOM `.va
 
 ## Run and test
 
-Open `index.html` directly or serve the directory with a static HTTP server. There are no package dependencies or build commands.
+### Technology stack
+
+- Semantic HTML5 and CSS for the responsive interface.
+- Vanilla JavaScript for lessons, practice, browser-local progress, portfolio exports, and the jobs interface.
+- Browser `localStorage` / session-only fallback for learner state; no account or cloud database.
+- GitHub Pages for static hosting and the custom domain.
+- Node.js 20 for the public ATS job-feed ingestion and JavaScript test suites; Python 3 for source-integrity checks.
+- Optional Playwright + Chromium (development only) for browser and responsive-layout regression checks.
+
+There is no frontend build step and no runtime package dependency.
+
+### Local setup
+
+From the repository root, start a local static server:
+
+```sh
+python3 -m http.server 8000
+```
+
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000) in a browser. Stop the server with `Ctrl+C`.
+
+Run the automated checks from the repository root:
+
+```sh
+node --test tests/*.test.js
+python3 tests/source_integrity.py
+node --check script.js
+node --check companion.js
+node --check checkout.js
+```
+
+The optional Playwright/Chromium browser checks are documented below.
 
 ```sh
 node --test tests/*.test.js
@@ -287,15 +318,19 @@ There is no authentication, cloud sync, database, live AI, direct GitHub publish
 
 **Live site:** [https://betterhacker.org/](https://betterhacker.org/)
 
-The public GitHub Pages deployment completed successfully for the current main revision on November 18, 2026. The deployed site uses the custom HTTPS domain above. The latest verified job-feed dataset was generated on November 18, 2026 from five configured public ATS sources.
+The public GitHub Pages deployment completed successfully for the current `main` revision on November 23, 2026. The deployed site uses the custom HTTPS domain above. The verified job-feed dataset was refreshed successfully on November 23, 2026 from five configured public ATS feeds and contained 17 accepted listings at that refresh. Listing availability changes as employers update their feeds.
+
+**Release status (November 23, 2026):** the public beta is deployed; the latest Pages deployment and scheduled job-refresh workflow both completed successfully. The repository currently has no open pull requests or open issues. The `v1.0.0` GitHub Release has not yet been created.
 
 ## Remaining operational checks
 
 The following checks require access to external service accounts and are not represented as completed by repository tests:
 
 - Confirm the public contact inbox [betterhackerteam@gmail.com](mailto:betterhackerteam@gmail.com) is monitored and has a deletion-request handling process.
-- Confirm Formspree form `xdeobdjl` is active and routed to the intended inbox. Automated tests mock the endpoint and do not verify live delivery, quota, spam controls, or unsubscribe handling. A live signup test must be explicitly authorized.
-- Run the local Node/Python and optional Playwright/axe-core browser suites from the repository root before a formal release. Browser tests that mock Formspree do not send a real signup.
+- Submit one controlled test signup to Formspree form `xdeobdjl` and confirm delivery in the Formspree dashboard. Automated tests mock the endpoint and do not verify live delivery, quota, spam controls, or unsubscribe handling. Confirm the on-device success state after Formspree responds.
+- Verify the apex-to-`www` redirect (or the configured canonical direction), DNS resolution, and certificate validity in a normal browser. A search-engine crawl of the apex page is not a substitute for checking the redirect and certificate details.
+- Run the local Node/Python and optional Playwright/axe-core browser suites from the repository root, then manually smoke-test learner progress after reload, all portfolio export files, and the mobile navigation/content at narrow widths. Browser tests that mock Formspree do not send a real signup.
+- Review the submitted sitemap and critical indexing/canonical issues in Google Search Console; this account-only check is not visible from the public site.
 
 Browser-local progress and portfolio exports are not accounts, cloud sync, or independently verified credentials. Pro selection buttons open a transparent checkout preview, but paid features and live payment processing are not active.
 
