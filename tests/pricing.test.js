@@ -5,7 +5,9 @@ const test = require('node:test');
 const html = fs.readFileSync('index.html', 'utf8');
 const style = fs.readFileSync('style.css', 'utf8');
 const checkout = fs.readFileSync('checkout.js', 'utf8');
-const pricingSection = html.match(/<section id="pricing"[\s\S]*?<\/section>/)?.[0] || '';
+const pricingStart = html.indexOf('<section id="pricing"');
+const pricingEnd = html.indexOf('<!-- Call To Action -->', pricingStart);
+const pricingSection = pricingStart >= 0 && pricingEnd > pricingStart ? html.slice(pricingStart, pricingEnd) : '';
 
 test('pricing publishes Free, Pro Monthly, and Pro Annual plans with the established prices', () => {
   assert.match(pricingSection, /id="plan-free-name">Free/);
