@@ -8,6 +8,7 @@
   
   <meta name="description" content="Start learning cybersecurity with free beginner lessons, hands-on labs, SOC practice, and portfolio exercises. No account or virtual machine required.">
   <link rel="canonical" href="https://betterhacker.org/">
+  <meta name="better-hacker-checkout-endpoint" content="/api/create-checkout-session">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -2402,24 +2403,69 @@ Baseline: no approved account/privilege changes during this period.</pre></div><
   <!-- Pricing Section -->
 <section id="pricing" class="section dark-section pricing-section" aria-labelledby="pricing-title">
   <p class="section-label">BETTER HACKER PLANS</p>
-  <h2 id="pricing-title">Learn at your pace</h2>
-  <p class="section-intro">Start free and use every feature currently published in the Better Hacker beta.</p>
+  <h2 id="pricing-title">Choose Your Learning Plan</h2>
+  <p class="section-intro">Start with the free learning path, or choose Better Hacker Pro to support the platform and receive premium learning releases as they become available.</p>
 
-  <div class="pricing-grid" aria-label="Better Hacker free plan">
+  <div class="pricing-grid" aria-label="Better Hacker subscription plans">
     <article class="card pricing-card" aria-labelledby="plan-free-name">
       <h3 id="plan-free-name">Free</h3>
       <p class="plan-price"><span class="sr-only">Price:</span>$0<span class="plan-period"> no cost</span></p>
-      <p>Try cybersecurity learning with the current Better Hacker beta.</p>
+      <p>Build your cybersecurity foundation at no cost.</p>
       <ul class="plan-features">
-        <li>Guided beginner lessons</li><li>Hands-on practice and investigations</li>
-        <li>Daily Practice and progress tracking</li><li>Learning Assistant guidance</li>
+        <li>Guided beginner lessons</li>
+        <li>Hands-on practice and investigations</li>
+        <li>Daily Practice and progress tracking</li>
+        <li>Learning Assistant guidance</li>
         <li>Portfolio-building tools</li>
       </ul>
       <a href="#learn" class="primary-button">Start Learning Free</a>
     </article>
 
+    <article class="card pricing-card" aria-labelledby="plan-monthly-name">
+      <h3 id="plan-monthly-name">Better Hacker Pro</h3>
+      <p class="plan-price"><span class="sr-only">Price:</span>$7.99<span class="plan-period"> / month</span></p>
+      <p>Monthly Pro membership.</p>
+      <ul class="plan-features">
+        <li>Everything in the free learning path</li>
+        <li>Access to premium lessons and advanced practice as released</li>
+        <li>New Pro learning resources as they launch</li>
+        <li>Support continued Better Hacker development</li>
+      </ul>
+      <button class="primary-button" type="button" data-checkout-plan="monthly">Choose Pro Monthly</button>
+      <p class="plan-note">Recurring monthly subscription. Review the plan before continuing to secure checkout.</p>
+    </article>
+
+    <article class="card pricing-card pricing-card-best" aria-labelledby="plan-annual-name">
+      <span class="best-value-label">Best value</span>
+      <h3 id="plan-annual-name">Better Hacker Pro Annual</h3>
+      <p class="plan-price"><span class="sr-only">Price:</span>$69<span class="plan-period"> / year</span></p>
+      <p>One year of Pro membership at a lower monthly equivalent.</p>
+      <ul class="plan-features">
+        <li>Everything in the free learning path</li>
+        <li>Access to premium lessons and advanced practice as released</li>
+        <li>New Pro learning resources as they launch</li>
+        <li>Support continued Better Hacker development</li>
+      </ul>
+      <button class="primary-button" type="button" data-checkout-plan="annual">Choose Pro Annual</button>
+      <p class="plan-note">Recurring yearly subscription. About $5.75 per month, billed yearly — about 28% less than 12 monthly payments.</p>
+    </article>
   </div>
-  <p class="pricing-transparency">Choose a Pro plan to begin the secure checkout flow. Checkout requires the hosted payment service to be deployed and configured before a subscription can be purchased. All features currently published in the beta remain available to everyone.</p>
+
+  <section id="checkout-panel" class="checkout-panel" aria-labelledby="checkout-title" hidden>
+    <h3 id="checkout-title" tabindex="-1">Review your Pro plan</h3>
+    <p><strong id="checkout-plan-name"></strong></p>
+    <p><strong id="checkout-plan-price"></strong></p>
+    <p id="checkout-plan-frequency"></p>
+    <p id="checkout-renewal-note"></p>
+    <p>Payment details are entered only on Stripe's secure checkout page. Better Hacker does not store card details.</p>
+    <div class="checkout-actions">
+      <button id="checkout-continue" class="primary-button" type="button">Continue to secure checkout</button>
+      <button class="secondary-button checkout-back" type="button">Back to plans</button>
+    </div>
+    <p id="checkout-status" role="status" aria-live="polite"></p>
+  </section>
+  <p id="checkout-return-status" class="pricing-transparency" role="status" aria-live="polite" hidden></p>
+  <p class="pricing-transparency">The current published beta learning path remains free. Premium-only lessons and advanced practice will be clearly identified when released. Subscription checkout requires the secure hosted payment service and Pro access system to be configured before real payments are enabled.</p>
 </section>
 
   <!-- Call To Action -->
@@ -2489,6 +2535,7 @@ Baseline: no approved account/privilege changes during this period.</pre></div><
 <script src="attack-box.js"></script>
 <script src="attack-box-ui.js"></script>
 
+  <script src="checkout.js" defer></script>
 </body>
 </html>
 
