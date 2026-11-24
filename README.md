@@ -18,9 +18,12 @@ These beginner guides answer focused questions and link back to the relevant les
 
 - [Find failed SSH logins in Linux auth.log](https://betterhacker.org/guides/ssh-failed-login-auth-log.html)
 - [Windows Security Event IDs 4624, 4625, and 1102](https://betterhacker.org/guides/windows-security-event-ids-4624-4625-1102.html)
+- [Common cybersecurity mistakes beginners should avoid](https://betterhacker.org/guides/common-cybersecurity-mistakes-beginners-should-avoid.html)
 - [Linux file permissions 0644 vs 0600](https://betterhacker.org/guides/linux-file-permissions-0644-vs-0600.html)
 - [Wireshark ICMP traffic analysis](https://betterhacker.org/guides/wireshark-icmp-traffic-analysis.html)
 - [Inspect TLS and security headers with curl](https://betterhacker.org/guides/curl-tls-security-headers.html)
+- [Build a beginner cybersecurity portfolio](https://betterhacker.org/guides/beginner-cybersecurity-portfolio-projects.html)
+- [Write a cybersecurity investigation report](https://betterhacker.org/guides/how-to-write-cybersecurity-investigation-report.html)
 
 ## What learners get
 
