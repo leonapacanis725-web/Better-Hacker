@@ -44,6 +44,14 @@ function contrast(a,b){
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
       assert.deepEqual(errors,[]);await page.close();console.log(`${width}px: normal/hover/focus/disabled contrast, navigation-card names/keyboard, dynamic daily next steps and axe scan passed (${a11y.manual} rule types need manual review)`);
     }
+    const freshTab=await browser.newPage({reducedMotion:'reduce'});
+    await freshTab.addInitScript(()=>localStorage.setItem('betterHackerCompletedLabs','1'));
+    await freshTab.goto(url + '#lab-linux');
+    await freshTab.waitForSelector('#lab-overview');
+    assert.equal(await freshTab.locator('#lab-workspace').isHidden(),true);
+    assert.equal(new URL(freshTab.url()).hash,'');
+    assert.match(await freshTab.locator('.lab-card').first().innerText(),/Status: Completed/);
+    await freshTab.close();
     const page=await browser.newPage({reducedMotion:'reduce'}),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto(url);
     let requests=0,status=503;await page.route('https://formspree.io/**',async route=>{requests++;await route.fulfill({status,contentType:'application/json',body:'{}'});});
     await page.locator('#waitlist-email').fill('not-an-email');await page.locator('#waitlist-button').click();assert.equal(requests,0);assert.match(await page.locator('#waitlist-result').innerText(),/complete email/);
