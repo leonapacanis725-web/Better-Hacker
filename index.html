@@ -8,6 +8,7 @@
   
   <meta name="description" content="Start learning cybersecurity with free beginner lessons, hands-on labs, SOC practice, and portfolio exercises. No account or virtual machine required.">
   <link rel="canonical" href="https://betterhacker.org/">
+  <meta name="better-hacker-checkout-endpoint" content="/api/create-checkout-session">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -2424,7 +2425,7 @@ Baseline: no approved account/privilege changes during this period.</pre></div><
       <p>Pro membership for the Better Hacker learning platform.</p>
       <ul class="plan-features"><li>Guided cybersecurity learning</li><li>Practice, investigations, and Daily Practice</li><li>Progress, Learning Assistant guidance, and portfolio tools</li><li>Cybersecurity Jobs experience (planned Pro feature)</li></ul>
       <p class="plan-note">Cancel anytime once paid subscriptions are available.</p>
-      <span class="plan-coming-soon" role="status" aria-label="Better Hacker Pro monthly plan coming soon">Coming Soon</span>
+      <button type="button" class="primary-button" data-checkout-plan="monthly" aria-label="Subscribe to Better Hacker Pro monthly">Subscribe</button>
     </article>
 
     <article class="card pricing-card pricing-card-best" aria-labelledby="plan-annual-name">
@@ -2434,10 +2435,22 @@ Baseline: no approved account/privilege changes during this period.</pre></div><
       <p>About $5.75 per month, billed yearly.</p>
       <ul class="plan-features"><li>Guided cybersecurity learning</li><li>Practice, investigations, and Daily Practice</li><li>Progress, Learning Assistant guidance, and portfolio tools</li><li>Cybersecurity Jobs experience (planned Pro feature)</li></ul>
       <p class="plan-note">About 28% savings compared with 12 monthly payments. Renews yearly once paid subscriptions are available.</p>
-      <span class="plan-coming-soon" role="status" aria-label="Better Hacker Pro Annual plan coming soon">Coming Soon</span>
+      <button type="button" class="primary-button" data-checkout-plan="annual" aria-label="Subscribe to Better Hacker Pro Annual">Subscribe</button>
     </article>
   </div>
-  <p class="pricing-transparency" role="note">Paid plans are coming soon. You cannot purchase a subscription or be charged from this site today.</p>
+  <section id="checkout-panel" class="checkout-panel review-panel" aria-labelledby="checkout-title" hidden>
+    <h3 id="checkout-title" tabindex="-1">Review your Better Hacker Pro plan</h3>
+    <p><strong id="checkout-plan-name"></strong> — <span id="checkout-plan-price"></span></p>
+    <p id="checkout-plan-frequency"></p>
+    <p id="checkout-renewal-note"></p>
+    <p>You'll complete payment on Stripe's secure checkout page. Better Hacker does not store card details.</p>
+    <div class="checkout-actions">
+      <button id="checkout-continue" type="button" class="primary-button">Continue to secure Stripe checkout</button>
+      <button type="button" class="secondary-button checkout-back">Go Back</button>
+    </div>
+    <p id="checkout-status" role="status" aria-live="polite"></p>
+  </section>
+  <p id="checkout-return-status" class="review-panel" role="status" aria-live="polite" hidden></p>
 </section>
   <!-- Call To Action -->
   <section class="section cta-section">
@@ -2485,6 +2498,7 @@ Baseline: no approved account/privilege changes during this period.</pre></div><
   <div id="companion-response" role="status" aria-live="polite"></div>
 </section>
 
+<script src="checkout.js" defer></script>
 <script src="storage.js"></script>
 <script src="learner-state.js"></script>
 <script src="challenges.js"></script>
