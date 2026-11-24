@@ -11,7 +11,7 @@ The monthly and annual Price IDs must be created in the same Stripe mode as the 
 
 ## Current public-beta status
 
-The public GitHub Pages site does **not** currently connect its Pro buttons to Stripe. Both Pro plans are labeled **Coming Soon**, and the page explicitly states that visitors cannot purchase a subscription or be charged. The checkout client script and review panel are intentionally not loaded on the public site.
+The public GitHub Pages site does **not** currently connect its Pro buttons to Stripe. Both Pro plans display **Subscribe**, and those links lead to the existing early-access waitlist. The page explicitly states that visitors cannot purchase a subscription or be charged. The checkout client script and review panel are intentionally not loaded on the public site.
 
 The server endpoint below is staged for a future serverless deployment. It is not a working purchase flow on GitHub Pages. Do not describe Pro checkout as available until the serverless host, verified subscription lifecycle, and access controls have been implemented and tested.
 
