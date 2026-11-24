@@ -24,10 +24,10 @@ test('annual equivalent and savings are mathematically accurate and clearly desc
   assert.match(pricingSection, /About 28% savings compared with 12 monthly payments/);
 });
 
-test('paid plans are labeled Coming Soon and do not offer a purchase or checkout action', () => {
+test('Subscribe buttons link to the early-access waitlist without activating paid checkout', () => {
   assert.match(pricingSection, /Cancel anytime once paid subscriptions are available/);
-  assert.match(pricingSection, /aria-label="Better Hacker Pro monthly plan coming soon">Coming Soon/);
-  assert.match(pricingSection, /aria-label="Better Hacker Pro Annual plan coming soon">Coming Soon/);
+  assert.match(pricingSection, /<a href="#early-access" class="primary-button" aria-label="Join the waitlist for Better Hacker Pro monthly">Subscribe<\/a>/);
+  assert.match(pricingSection, /<a href="#early-access" class="primary-button" aria-label="Join the waitlist for Better Hacker Pro Annual">Subscribe<\/a>/);
   assert.match(pricingSection, /Paid plans are coming soon\. You cannot purchase a subscription or be charged from this site today\./);
   assert.doesNotMatch(pricingSection, /<button|href="[^"]*checkout|Start Pro|Start Annual|Continue to secure checkout|Review your plan/);
   assert.doesNotMatch(html, /<script src="checkout\.js"/);
