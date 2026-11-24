@@ -340,6 +340,17 @@ document.addEventListener("DOMContentLoaded", function () {
   ]);
   globalThis.BetterHackerGuidedLabEvidence = GUIDED_LABS.map(function (lab) { return { id:lab.id, title:lab.title, evidence:lab.evidence }; });
 
+  function clearStaleGuidedLabHash() {
+    const hash = typeof location !== "undefined" ? location.hash : "";
+    if (!GUIDED_LABS.some(function (lab) { return hash === "#lab-" + lab.id; })) return false;
+    if (typeof history !== "undefined" && history.replaceState && typeof location !== "undefined") {
+      history.replaceState(null, "", (location.pathname || "/") + (location.search || ""));
+    } else if (typeof location !== "undefined") {
+      location.hash = "";
+    }
+    return true;
+  }
+
   function getLabStatus(index, activeIndex) {
     const completed = readCompletedLabs();
     if (index < completed) return "Completed";
@@ -472,6 +483,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     NAVIGATION_HANDLERS.push(openFromHash);
     renderLabCards();
+    clearStaleGuidedLabHash();
     openFromHash();
   }
 

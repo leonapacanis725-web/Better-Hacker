@@ -62,9 +62,9 @@ function boot({ seed = {}, elements = {}, fetchImpl = async () => ({ ok: true, s
     createTextNode(text) { return { textContent: text }; }
   };
   const localStorage = storageImpl || new MemoryStorage(seed);
-  const exposed = source.replace(/\n\}\);\s*$/, `\n  globalThis.__app = { readCompletedLabs, readReviewResult, getDashboardState, buildRetentionSnapshot, isReviewAnswerCorrect, COURSE_REVIEW_QUESTIONS, PRACTICE_LESSONS, checkPracticeAnswers, handleNavigation, GUIDED_LABS, INVESTIGATIONS, LESSON_PROGRESS, EXTENSION_LESSONS, countCompletedExtensionLessons, completeExtensionLesson, getLabStatus, getLabAction, completeGuidedLab, completeInvestigation, ASSISTANT_TOPICS, ASSISTANT_PROGRESS_KEY, readAssistantProgress, completeAssistantTopic, renderDashboard, setDashboardCompanionContext, companion };\n});`);
+  const exposed = source.replace(/\n\}\);\s*$/, `\n  globalThis.__app = { readCompletedLabs, readReviewResult, getDashboardState, buildRetentionSnapshot, isReviewAnswerCorrect, COURSE_REVIEW_QUESTIONS, PRACTICE_LESSONS, checkPracticeAnswers, handleNavigation, GUIDED_LABS, INVESTIGATIONS, LESSON_PROGRESS, EXTENSION_LESSONS, countCompletedExtensionLessons, completeExtensionLesson, getLabStatus, getLabAction, completeGuidedLab, completeInvestigation, clearStaleGuidedLabHash, ASSISTANT_TOPICS, ASSISTANT_PROGRESS_KEY, readAssistantProgress, completeAssistantTopic, renderDashboard, setDashboardCompanionContext, companion };\n});`);
   const context = { document, localStorage, __createdElements: createdElements, fetch: fetchImpl, setTimeout: fn => fn(), clearTimeout() {}, confirm: () => true,
-    location: { reload() {} }, console, Date, JSON, Number, Math, Object, String, RegExp, Set,
+    location: { hash: "", pathname: "/", search: "", reload() {} }, history: { replaceState(_state, _title, url) { const parsed = new URL(url, "https://betterhacker.test"); this.lastUrl = parsed.pathname + parsed.search; context.location.hash = parsed.hash; } }, console, Date, JSON, Number, Math, Object, String, RegExp, Set, URL,
     BetterHackerStorage, BetterHackerState, BetterHackerChallenges, BetterHackerMilestones, BetterHackerCompanion };
   vm.createContext(context);
   vm.runInContext(exposed, context);
@@ -351,6 +351,18 @@ test('guided lab cards map to unique anchors and Start, Continue, and Review sta
   assert.equal(context.__app.getLabStatus(0, -1), 'Completed');
   assert.equal(context.__app.getLabAction('Completed'), 'Review Lab');
   for (const lab of context.__app.GUIDED_LABS) assert.match(source, new RegExp('#lab-" \\+ lab\\.id'));
+});
+
+test('a fresh page load clears a stale guided-lab URL without erasing completed progress', () => {
+  const { context, localStorage } = boot({ seed: { betterHackerCompletedLabs: '2' } });
+  context.location.hash = '#lab-linux';
+  assert.equal(context.__app.clearStaleGuidedLabHash(), true);
+  assert.equal(context.location.hash, '');
+  assert.equal(context.__app.readCompletedLabs(), 2);
+  assert.equal(localStorage.getItem('betterHackerCompletedLabs'), '2');
+  context.location.hash = '#dashboard';
+  assert.equal(context.__app.clearStaleGuidedLabHash(), false);
+  assert.equal(context.location.hash, '#dashboard');
 });
 
 test('guided lab completion preserves sequential state and never duplicates XP evidence', () => {
