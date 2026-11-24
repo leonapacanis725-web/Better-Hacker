@@ -216,7 +216,7 @@ node --check checkout.js
 
 The site displays **Free ($0)**, **Better Hacker Pro ($7.99/month)**, and **Better Hacker Pro Annual ($69/year)**. Annual is **about $5.75/month** and **about 28% savings** compared with twelve monthly payments ($95.88). Free learners can use the published beginner lessons, hands-on practice, investigations, Daily Practice, progress tracking, Learning Assistant guidance, and portfolio tools. Published beta features remain available to everyone; the site does not currently restrict features by plan.
 
-The **Continue with Pro Monthly** and **Continue with Pro Annual** buttons are clickable and open a checkout-preview panel. The preview explains that Pro features are not yet available and that checkout requires a hosted payment service to be deployed and configured. The site does not currently accept payment details, create subscriptions, or charge learners. Payment processing, authentication, subscription verification, cancellation handling, and paid-feature access control remain future work. The existing `checkout.js` file is an unconnected checkout foundation; do not enable it for live purchases until the required server-side controls and appropriate legal and support information are implemented and reviewed.
+The **Subscribe** buttons for Pro Monthly and Pro Annual link to the existing early-access waitlist. They do not open paid checkout. The site does not currently accept payment details, create subscriptions, or charge learners. The existing `checkout.js` file is an unconnected future checkout foundation; do not load or enable it for live purchases until the required server-side controls and appropriate legal and support information are implemented and reviewed.
 
 ## Better Hacker Pro Cybersecurity Jobs foundation
 
@@ -335,7 +335,7 @@ The following checks require access to external service accounts and are not rep
 - Run the local Node/Python and optional Playwright/axe-core browser suites from the repository root, then manually smoke-test learner progress after reload, all portfolio export files, and the mobile navigation/content at narrow widths. Browser tests that mock Formspree do not send a real signup.
 - Review the submitted sitemap and critical indexing/canonical issues in Google Search Console; this account-only check is not visible from the public site.
 
-Browser-local progress and portfolio exports are not accounts, cloud sync, or independently verified credentials. Pro plans are displayed for transparency and are labeled Coming Soon; paid checkout and paid features are not active, and visitors cannot purchase or be charged.
+Browser-local progress and portfolio exports are not accounts, cloud sync, or independently verified credentials. Pro plans are displayed for transparency; the Subscribe links lead to the early-access waitlist. Paid checkout and paid features are not active, and visitors cannot purchase or be charged.
 
 The focused launch-readiness Chromium runner additionally uses development-only `axe-core` and `marked` alongside Playwright. These are not shipped to learners. With those modules available to Node, run:
 
