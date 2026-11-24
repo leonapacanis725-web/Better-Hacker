@@ -51,4 +51,24 @@ index_parser = Parser()
 index_parser.feed(index)
 assert len(index_parser.script_sources) == len(set(index_parser.script_sources)), f"duplicate script includes: {index_parser.script_sources}"
 assert 'checkout.js' not in index_parser.script_sources, "inactive checkout script must not load on the public beta"
-print("HTML parsed; IDs, links, legal pages, curriculum, endpoint, and Course Review integrity checks passed.")
+# Keep the public sitemap aligned with every standalone field guide.
+import xml.etree.ElementTree as ET
+sitemap_root = ET.parse("sitemap.xml").getroot()
+namespace = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
+sitemap_urls = {
+    node.text for node in sitemap_root.findall("sm:url/sm:loc", namespace)
+}
+guide_urls = {
+    f"https://betterhacker.org/{path.as_posix()}"
+    for path in Path("guides").glob("*.html")
+}
+listed_guide_urls = {url for url in sitemap_urls if "/guides/" in url}
+assert guide_urls == listed_guide_urls, (
+    f"field-guide sitemap mismatch; missing={sorted(guide_urls - listed_guide_urls)}, "
+    f"stale={sorted(listed_guide_urls - guide_urls)}"
+)
+
+robots = Path("robots.txt").read_text()
+assert "Sitemap: https://betterhacker.org/sitemap.xml" in robots
+
+print("HTML parsed; IDs, links, legal pages, curriculum, endpoint, Course Review, robots, and field-guide sitemap integrity checks passed.")
